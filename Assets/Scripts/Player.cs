@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        sr.sortingOrder = 1;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
