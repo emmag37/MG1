@@ -12,6 +12,7 @@ public class PlayerGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Spawn the first player of the game
         spawnPlayer();
     }
 
@@ -34,6 +35,7 @@ public class PlayerGenerator : MonoBehaviour
         // instantiate a new player and set its sprite
         GameObject newPlayer = Instantiate(player, transform.position, transform.rotation);
         newPlayer.GetComponent<Player>().SetSprite(color);
+        Debug.Log("generated player");
 
     }
 }
