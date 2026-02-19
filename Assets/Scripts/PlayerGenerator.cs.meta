@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 6dfdb3c5d7f524e0e91706136bb5695d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {instanceID: 0}
+  - color1: {instanceID: 0}
+  - color2: {instanceID: 0}
+  - color3: {instanceID: 0}
+  - color4: {instanceID: 0}
+  - color5: {instanceID: 0}
+  - color6: {instanceID: 0}
+  - wildcard: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
