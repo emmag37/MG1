@@ -29,15 +29,14 @@ public class GamePlay : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // generate the first player and set its
-        player = Spawn();
-
+        player = Spawn();   // first player
     }
 
     // Update is called once per frame
     void Update()
     {
-        player.Move();
+        // recieved event from the player - snapped to board
+        // board.SetFilled(x, y);
     }
 
     private Player Spawn()

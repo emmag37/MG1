@@ -24,4 +24,9 @@ public class Board : MonoBehaviour
     {
         return grid[x, y];
     }
+
+    public void SetFilled(int x, int y)
+    {
+        // set the spot as filled
+    }
 }
