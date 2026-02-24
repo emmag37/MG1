@@ -3,31 +3,22 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer gridSprite;
-
     // Components
     private SpriteRenderer sr;
-    /*private Camera cam;
+    private Camera cam;
 
     // Move Variables
     private bool isDragging = false;
     private Vector3 dragOffset;
-    private float minX, maxX, minY, maxY;*/
+    //private float minX, maxX, minY, maxY;
 
     void Awake()
     {
         // get components
         sr = GetComponent<SpriteRenderer>();
-        //cam = Camera.main;
+        cam = Camera.main;
 
         // define boundaries
-        /*Bounds gridBounds = gridSprite.bounds;
-        float radius = sr.bounds.extents.x;
-
-        minX = gridBounds.min.x + radius;
-        maxX = gridBounds.max.x - radius;
-        minY = transform.position.y;
-        maxY = gridBounds.max.y;    // this is inaccurate - maybe scene object vs prefab? */
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -39,15 +30,16 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Move();
+        Move();
     }
 
-    /* Set the player's sprite to a new one */
+    /* Set the player's sprite to a new one, and updates the layer for visibility */
     public void SetSprite(Sprite newSprite)
     {
         sr.sprite = newSprite;
+        sr.sortingOrder = 1;
     }
-    /*
+    
     private void Move()
     {
         if (Mouse.current == null) return;
@@ -77,8 +69,8 @@ public class Player : MonoBehaviour
             Vector3 newPos = mouseWorldPos + dragOffset;    // calculate new position
 
             // clamp position to boundaries
-            newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
-            newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
+            //newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
+            //newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
 
             transform.position = newPos;
         }
@@ -90,5 +82,5 @@ public class Player : MonoBehaviour
 
             Debug.Log("stop dragging");
         }
-    }*/
+    }
 }

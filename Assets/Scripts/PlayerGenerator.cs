@@ -10,7 +10,7 @@ public class PlayerGenerator : MonoBehaviour
     public Sprite[] sprites;
 
     /* Creates a new player. */
-    public void SpawnPlayer()
+    public Player SpawnPlayer()
     {
         // use a random number to pick the sprite
         int num = Random.Range(0, 7);
@@ -21,8 +21,10 @@ public class PlayerGenerator : MonoBehaviour
 
         // instantiate a new player and set its sprite
         GameObject newPlayer = Instantiate(player, transform.position, transform.rotation);
-        newPlayer.GetComponent<Player>().SetSprite(color);
+        Player np = newPlayer.GetComponent<Player>();
+        np.SetSprite(color);
         Debug.Log("generated player");
 
+        return np;
     }
 }

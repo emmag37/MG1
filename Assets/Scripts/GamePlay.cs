@@ -6,6 +6,9 @@ public class GamePlay : MonoBehaviour
     private Board board;
     private PlayerGenerator player_gen;
 
+    // private variables
+    private Player player;
+
 
     void Awake()
     {
@@ -18,7 +21,7 @@ public class GamePlay : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        player_gen.SpawnPlayer();
+        player = player_gen.SpawnPlayer();
     }
 
     // Update is called once per frame
