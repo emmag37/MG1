@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     // Move Variables
     private bool isDragging = false;
     private Vector3 dragOffset;
-    //private float minX, maxX, minY, maxY;
+    private float minX, maxX, minY, maxY;
 
     void Awake()
     {
@@ -18,13 +18,8 @@ public class Player : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         cam = Camera.main;
 
-        // define boundaries
-    }
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
+        minX = 0; maxX = 0; maxY = 0;
+        minY = transform.position.y;
     }
 
     // Update is called once per frame
@@ -39,8 +34,20 @@ public class Player : MonoBehaviour
         sr.sprite = newSprite;
         sr.sortingOrder = 1;
     }
+
+    public void SetBoundaries(float x1, float x2, float y)
+    {
+        // adjust these with the player's radius
+        float radius = sr.bounds.extents.x; // half-width
+
+        minX = x1 + radius;
+        maxX = x2 - radius;
+        maxY = y - radius;
+
+        Debug.Log("set player boundaries");
+    }
     
-    private void Move()
+    public void Move()
     {
         if (Mouse.current == null) return;
 
@@ -69,8 +76,8 @@ public class Player : MonoBehaviour
             Vector3 newPos = mouseWorldPos + dragOffset;    // calculate new position
 
             // clamp position to boundaries
-            //newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
-            //newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
+            newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
+            newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
 
             transform.position = newPos;
         }
