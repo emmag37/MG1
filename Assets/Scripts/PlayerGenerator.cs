@@ -6,21 +6,8 @@ public class PlayerGenerator : MonoBehaviour
     public GameObject player;
 
     // Sprites - inspector
-        // 0: color1, 1: color2, 2: color3, 3: color4, 4: color5, 5: color6, 6: wildcard
+    // 0: color1, 1: color2, 2: color3, 3: color4, 4: color5, 5: color6, 6: wildcard
     public Sprite[] sprites;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        // Spawn the first player of the game
-        spawnPlayer();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     /* Creates a new player. */
     void spawnPlayer()
