@@ -10,7 +10,7 @@ public class PlayerGenerator : MonoBehaviour
     public Sprite[] sprites;
 
     /* Creates a new player. */
-    void spawnPlayer()
+    public void SpawnPlayer()
     {
         // use a random number to pick the sprite
         int num = Random.Range(0, 7);
