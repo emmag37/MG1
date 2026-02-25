@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class Player : MonoBehaviour
 {
+    // Events
+    public event Action<Player> PlayerOnGrid;
+
     // Components
     private SpriteRenderer sr;
     private Camera cam;
+    private Vector2 grid_pos = new Vector2(-3, -3);
 
     // Move Variables
     private bool isDragging = false;
@@ -54,12 +59,14 @@ public class Player : MonoBehaviour
         float grid_width = x2 - x1;
         float spacing = (grid_width - radius * 10) / 6;
         cell_offset = radius * 2 + spacing;
-        Debug.Log("grid width: " + grid_width);
-        Debug.Log("cell diameter: " + radius * 2);
-        Debug.Log("cell offset: " + cell_offset);
         cell0_pos = new Vector3(x2 - grid_width/2, y - grid_width/2, 0);
 
         Debug.Log("set player boundaries and grid math");
+    }
+
+    public Vector2 GetGridPos()
+    {
+        return grid_pos;
     }
     
     public void Move()
@@ -107,8 +114,9 @@ public class Player : MonoBehaviour
             Vector2 cell = isPlayerOnCell(transform.position);
             if (cell.x != -3)
             {
+                grid_pos = cell;
                 SnapPlayerToCell(cell);
-                // alert the game play manager with the cell it landed on
+                PlayerOnGrid?.Invoke(this);
 
                 Debug.Log("snapped player to cell");
             } else
