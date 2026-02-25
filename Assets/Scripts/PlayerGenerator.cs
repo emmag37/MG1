@@ -22,7 +22,7 @@ public class PlayerGenerator : MonoBehaviour
         // instantiate a new player and set its sprite
         GameObject newPlayer = Instantiate(player, transform.position, transform.rotation);
         Player np = newPlayer.GetComponent<Player>();
-        np.SetSprite(color);
+        np.SetSprite(color, num);
         Debug.Log("generated player");
 
         return np;

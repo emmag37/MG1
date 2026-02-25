@@ -3,7 +3,7 @@ using UnityEngine;
 public class Board : MonoBehaviour
 {
     // store the grid children here
-    private Transform[,] grid = new Transform[5, 5];
+    private Cell[,] grid = new Cell[5, 5];
 
     void Awake()
     {
@@ -14,19 +14,19 @@ public class Board : MonoBehaviour
         {
             for (int x = 0; x < 5; x++)
             {
-                grid[x, y] = transform.GetChild(index);
+                grid[x, y] = transform.GetChild(index).GetComponent<Cell>();
                 index++;
             }
         }
     }
 
-    public Transform GetCell(int x, int y)
+    public Cell GetCell(int x, int y)
     {
         return grid[x, y];
     }
 
-    public void SetFilled(int x, int y)
+    public void SetFilled(Vector2 pos, Sprite sprite, int num)
     {
-        // set the spot as filled
+        
     }
 }

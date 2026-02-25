@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     // Components
     private SpriteRenderer sr;
     private Camera cam;
+    private int sprite_num;
 
     // Move Variables
     private bool isDragging = false;
@@ -42,10 +43,12 @@ public class Player : MonoBehaviour
     }
 
     /* Set the player's sprite to a new one, and updates the layer for visibility */
-    public void SetSprite(Sprite newSprite)
+    public void SetSprite(Sprite newSprite, int num)
     {
         sr.sprite = newSprite;
         sr.sortingOrder = 1;
+
+        sprite_num = num;
     }
 
     public void SetBoundaries(float x1, float x2, float y)
