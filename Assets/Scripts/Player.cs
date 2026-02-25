@@ -51,6 +51,16 @@ public class Player : MonoBehaviour
         sprite_num = num;
     }
 
+    public Sprite GetSprite()
+    {
+        return sr.sprite;
+    }
+
+    public int GetNum()
+    {
+        return sprite_num;
+    }
+
     public void SetBoundaries(float x1, float x2, float y)
     {
         // adjust these with the player's radius
@@ -113,9 +123,9 @@ public class Player : MonoBehaviour
     }
 
     // returns the cell the player is hovering on, else returns (-1, -1)
-    public Vector2 OnCell()
+    public Vector2Int OnCell()
     {
-        Vector2 grid_pos = new Vector2(-3, -3);     // default value for not on grid
+        Vector2Int grid_pos = new Vector2Int(-3, -3);     // default value for not on grid
 
         int row = Mathf.RoundToInt((transform.position.y - cell0_pos.y) / cell_offset);
         Debug.Log("row: " + row);
@@ -132,7 +142,7 @@ public class Player : MonoBehaviour
         return grid_pos;
     }
 
-    public void SnapToCell(Vector2 cell)
+    public void SnapToCell(Vector2Int cell)
     {
         Vector3 new_pos = transform.position;
 

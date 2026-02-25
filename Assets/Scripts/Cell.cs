@@ -16,14 +16,14 @@ public class Cell : MonoBehaviour
     }
 
     // Fills the cell with the new color
-    public void AssignCell(Sprite new_sprite, int num)
+    public void AssignSprite(Sprite new_sprite, int num)
     {
         sr.sprite = new_sprite;
         color = num;
     }
 
     // Returns the current state of the cell
-    public int GetCellColor()
+    public int GetColor()
     {
         return color;
     }

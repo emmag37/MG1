@@ -55,7 +55,7 @@ public class GamePlay : MonoBehaviour
         Debug.Log("handle player released");
 
         // check if the player is on the grid
-        Vector2 cell = player.OnCell();
+        Vector2Int cell = player.OnCell();
         if (cell.x == -3)
         {
             player.ReturnToStart();
@@ -64,7 +64,7 @@ public class GamePlay : MonoBehaviour
 
         // add player to the grid
         player.SnapToCell(cell);
-        // alert the board
+        board.SetFilled(cell, player.GetSprite(), player.GetNum());
 
         // remove player and respawn
         player.PlayerReleased -= HandlePlayerReleased;
