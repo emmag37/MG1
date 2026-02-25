@@ -20,6 +20,9 @@ public class GamePlay : MonoBehaviour
 
         // cache the boundaries
         b = board.GetComponent<SpriteRenderer>().bounds;
+
+        // subscribe to events
+        board.BoardFull += HandleBoardFull;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -61,10 +64,17 @@ public class GamePlay : MonoBehaviour
         player.SnapToCell(cell);
         board.SetFilled(cell, player.GetSprite(), player.GetNum());
 
+        // check for a game over first
+
         // remove player and respawn
         player.PlayerReleased -= HandlePlayerReleased;
         Destroy(player.gameObject);
 
         player = Spawn();
+    }
+
+    private void HandleBoardFull(Board board)
+    {
+        Debug.Log("Game Over!");
     }
 }

@@ -1,9 +1,16 @@
 using UnityEngine;
+using System;
 
 public class Board : MonoBehaviour
 {
+    // Events
+    public event Action<Board> BoardFull;
+
     // store the grid children here
     private Cell[,] grid = new Cell[5, 5];
+
+    private int num_filled = 0;
+    private int wc = 6;
 
     void Awake()
     {
@@ -35,11 +42,14 @@ public class Board : MonoBehaviour
 
         // set the cell at pos
         grid[index.x, index.y].AssignSprite(sprite, num);
+        num_filled++;
 
         // check for a five in a row
-        if (FiveInRow(index, num)) return;
+        if (FiveInRow(index, num)) num_filled--;
+        Debug.Log("num filled: " + num_filled);
 
         // check for a game over
+        if (num_filled == 25) BoardFull?.Invoke(this);
     }
 
     // returns whether or not the spot is already filled
@@ -64,7 +74,7 @@ public class Board : MonoBehaviour
     }
 
     // Checks for a 5 in a row in all directions, clears row if necessary
-	// Runs in O(n)
+    // Runs in O(n)
     private bool FiveInRow(Vector2Int index, int num)
     {
         Debug.Log("Check for 5 in row");
@@ -77,37 +87,41 @@ public class Board : MonoBehaviour
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             // check the row
-            if (grid[index.x, i].GetColor() != num) row = false;
+            if (grid[index.x, i].GetColor() != num && grid[index.x, i].GetColor() != wc) row = false;
 
             // check the col
-            if (grid[i, index.y].GetColor() != num) col = false;
+            if (grid[i, index.y].GetColor() != num && grid[i, index.y].GetColor() != wc) col = false;
 
             // check the right diag
-            if (r_diag && grid[i, i].GetColor() != num) r_diag = false;
+            if (r_diag && grid[i, i].GetColor() != num && grid[i, i].GetColor() != wc) r_diag = false;
 
             // check the left diag
-            if (l_diag && grid[4 - i, i].GetColor() != num) l_diag = false;
+            if (l_diag && grid[4 - i, i].GetColor() != num && grid[4 - i, i].GetColor() != wc) l_diag = false;
         }
 
         if (row)
         {
             Debug.Log("Clear the row");
             ClearRow(index.x);
+            num_filled -= 4;
         }
         if (col)
         {
             Debug.Log("Clear the col");
             ClearCol(index.y);
+            num_filled -= 4;
         }
         if (r_diag)
         {
             Debug.Log("Clear the right diagonal");
             ClearRDiag();
+            num_filled -= 4;
         }
         if (l_diag)
         {
             Debug.Log("Clear the left diagonal");
             ClearLDiag();
+            num_filled -= 4;
         }
 
         return row || col || r_diag || l_diag;
