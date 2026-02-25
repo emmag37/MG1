@@ -51,10 +51,13 @@ public class Player : MonoBehaviour
         maxY = y - radius;
 
         // use these for grid math
-        float grid_width = maxX - minX;
+        float grid_width = x2 - x1;
         float spacing = (grid_width - radius * 10) / 6;
         cell_offset = radius * 2 + spacing;
-        cell0_pos = new Vector3(maxX - grid_width/2, maxY - grid_width/2, 0);
+        Debug.Log("grid width: " + grid_width);
+        Debug.Log("cell diameter: " + radius * 2);
+        Debug.Log("cell offset: " + cell_offset);
+        cell0_pos = new Vector3(x2 - grid_width/2, y - grid_width/2, 0);
 
         Debug.Log("set player boundaries and grid math");
     }
