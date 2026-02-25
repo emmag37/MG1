@@ -27,4 +27,10 @@ public class Cell : MonoBehaviour
     {
         return color;
     }
+
+    public void Reset()
+    {
+        sr.sprite = empty_sprite;
+        color = -1;
+    }
 }

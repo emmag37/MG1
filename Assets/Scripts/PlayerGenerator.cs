@@ -14,6 +14,7 @@ public class PlayerGenerator : MonoBehaviour
     {
         // use a random number to pick the sprite
         int num = Random.Range(0, 7);
+
         Debug.Log("random number: " + num);
 
         Sprite color = sprites[num];

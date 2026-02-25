@@ -28,12 +28,6 @@ public class GamePlay : MonoBehaviour
         player = Spawn();   // first player, enabled to move
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private Player Spawn()
     {
         Player new_player = player_gen.SpawnPlayer();
@@ -54,15 +48,16 @@ public class GamePlay : MonoBehaviour
 
         Debug.Log("handle player released");
 
-        // check if the player is on the grid
+        // check if the player is on an available spot on the grid
         Vector2Int cell = player.OnCell();
-        if (cell.x == -3)
+        if (cell.x == -3 || board.IsFilled(cell))
         {
+            Debug.Log("return player to start");
             player.ReturnToStart();
             return;
         }
 
-        // add player to the grid
+        // add player to the grid - the board checks for filled rows
         player.SnapToCell(cell);
         board.SetFilled(cell, player.GetSprite(), player.GetNum());
 
