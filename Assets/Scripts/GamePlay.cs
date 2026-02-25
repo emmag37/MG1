@@ -10,6 +10,7 @@ public class GamePlay : MonoBehaviour
     private Player player;      // current active player
     private Bounds b;           // grid bounds
 
+    // move the release logic into the game play
 
     void Awake()
     {
@@ -30,21 +31,45 @@ public class GamePlay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        player.Move();      // control the player from this script
+        
     }
 
     private Player Spawn()
     {
         Player new_player = player_gen.SpawnPlayer();
         new_player.SetBoundaries(b.min.x, b.max.x, b.max.y);
-        new_player.PlayerOnGrid += HandlePlayerOnGrid;       // enable to listen for event - remember to decrement when you disable player
+        new_player.PlayerReleased += HandlePlayerReleased;       // enable to listen for event - remember to decrement when you disable player
 
         return new_player;
     }
 
-    private void HandlePlayerOnGrid(Player player)
+    // Function is called when the player is released - resets each frame
+    private void HandlePlayerReleased(Player curr_player)
     {
-        Debug.Log("handle player on grid");
-        //  alert the board
+        if (curr_player != player)
+        {
+            Debug.Log("non active player released");
+            return; // throw an exception or something?
+        }
+
+        Debug.Log("handle player released");
+
+        // check if the player is on the grid
+        Vector2 cell = player.OnCell();
+        if (cell.x == -3)
+        {
+            player.ReturnToStart();
+            return;
+        }
+
+        // add player to the grid
+        player.SnapToCell(cell);
+        // alert the board
+
+        // remove player and respawn
+        player.PlayerReleased -= HandlePlayerReleased;
+        Destroy(player.gameObject);
+
+        player = Spawn();
     }
 }

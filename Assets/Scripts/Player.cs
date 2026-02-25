@@ -5,19 +5,19 @@ using System;
 public class Player : MonoBehaviour
 {
     // Events
-    public event Action<Player> PlayerOnGrid;
+    public event Action<Player> PlayerReleased;
 
     // Components
     private SpriteRenderer sr;
     private Camera cam;
-    private Vector2 grid_pos = new Vector2(-3, -3);
 
     // Move Variables
     private bool isDragging = false;
     private Vector3 dragOffset;
     private float minX, maxX, minY, maxY;
-
     private float radius;
+
+    // Grid Placement Variables
     private float cell_offset = 0;  // spacing + radius
     private Vector3 cell0_pos;      // origin
     private Vector3 start_pos;      // starting position
@@ -63,11 +63,6 @@ public class Player : MonoBehaviour
 
         Debug.Log("set player boundaries and grid math");
     }
-
-    public Vector2 GetGridPos()
-    {
-        return grid_pos;
-    }
     
     public void Move()
     {
@@ -110,32 +105,19 @@ public class Player : MonoBehaviour
             isDragging = false;
             Debug.Log("stop dragging");
 
-            // check if on cell
-            Vector2 cell = isPlayerOnCell(transform.position);
-            if (cell.x != -3)
-            {
-                grid_pos = cell;
-                SnapPlayerToCell(cell);
-                PlayerOnGrid?.Invoke(this);
-
-                Debug.Log("snapped player to cell");
-            } else
-            {
-                // return to the start pos
-                transform.position = start_pos;
-            }
+            PlayerReleased?.Invoke(this);
         }
     }
 
     // returns the cell the player is hovering on, else returns (-1, -1)
-    private Vector2 isPlayerOnCell(Vector3 player_pos)
+    public Vector2 OnCell()
     {
         Vector2 grid_pos = new Vector2(-3, -3);     // default value for not on grid
 
-        int row = Mathf.RoundToInt((player_pos.y - cell0_pos.y) / cell_offset);
+        int row = Mathf.RoundToInt((transform.position.y - cell0_pos.y) / cell_offset);
         Debug.Log("row: " + row);
 
-        int col = Mathf.RoundToInt((player_pos.x - cell0_pos.x) / cell_offset);
+        int col = Mathf.RoundToInt((transform.position.x - cell0_pos.x) / cell_offset);
         Debug.Log("col: " + col);
 
         if ((row >= -2 && row <= 2) && (col >= -2 && col <= 2)) // make sure it's on the grid
@@ -147,7 +129,7 @@ public class Player : MonoBehaviour
         return grid_pos;
     }
 
-    private void SnapPlayerToCell(Vector2 cell)
+    public void SnapToCell(Vector2 cell)
     {
         Vector3 new_pos = transform.position;
 
@@ -155,5 +137,10 @@ public class Player : MonoBehaviour
         new_pos.x = cell0_pos.x + cell.y * cell_offset;
 
         transform.position = new_pos;
+    }
+
+    public void ReturnToStart()
+    {
+        transform.position = start_pos;
     }
 }
