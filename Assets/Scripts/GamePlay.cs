@@ -34,18 +34,25 @@ public class GamePlay : MonoBehaviour
     void OnEnable()
     {
         // reset if the game has run before
-        if (game_over)
-        {
-            Debug.Log("Reset Game Play");
-            game_over = false;
-            board.Reset();
-        }
+        if (game_over) RestartGame();
+    }
 
-        // spawn a new player
+    void Start()
+    {
         player = Spawn();
     }
 
     // add a public pause function
+
+    private void RestartGame()
+    {
+        // reset the game play
+        game_over = false;
+        board.Reset();
+
+        // spawn the first player
+        player = Spawn();
+    }
 
     private Player Spawn()
     {

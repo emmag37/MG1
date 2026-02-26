@@ -8,24 +8,53 @@ public class PlayerGenerator : MonoBehaviour
     // Sprites - inspector
     // 0: color1, 1: color2, 2: color3, 3: color4, 4: color5, 5: color6, 6: wildcard
     public Sprite[] sprites;
+    public GameObject nextPlayer;
+
+    // private variables
+    private int num;    // holds the value of the next color to be generated
+    private SpriteRenderer sr;
+    
+    void Awake()
+    {
+        // Cache the values
+        sr = nextPlayer.GetComponent<SpriteRenderer>();
+    }
+
+    
+    void OnEnable()
+    {
+        // sets up the first player
+        num = Random.Range(0, 7);
+        Debug.Log("first player color: " + num);
+    }
 
     /* Creates a new player. */
     public Player SpawnPlayer()
     {
-        // use a random number to pick the sprite
-        int num = Random.Range(0, 7);
-
-        Debug.Log("random number: " + num);
-
         Sprite color = sprites[num];
-        Debug.Log(color ? "sprite: " + color.name : "No sprite selected");
 
         // instantiate a new player and set its sprite
         GameObject newPlayer = Instantiate(player, transform.position, transform.rotation);
         Player np = newPlayer.GetComponent<Player>();
         np.SetSprite(color, num);
-        Debug.Log("generated player");
+        Debug.Log("generated player: " + num);
+
+        SetNextPlayer();
 
         return np;
+    }
+
+    /* Sets the next gameobject and color */
+    private void SetNextPlayer()
+    {
+        // set the next color
+        num = Random.Range(0, 7);
+        Debug.Log("next color: " + num);
+
+        // set the sprite for the next color
+        Sprite color = sprites[num];
+        sr.sprite = color;  // why is this not working?????
+        Debug.Log("set next player sprite");
+
     }
 }
