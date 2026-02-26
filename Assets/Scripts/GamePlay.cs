@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class GamePlay : MonoBehaviour
@@ -15,7 +16,9 @@ public class GamePlay : MonoBehaviour
     private Bounds b;           // grid bounds
     private bool game_over = false;
 
-    // move the release logic into the game play
+    // score variables
+    [SerializeField] private Text scoreText;
+    private int score;
 
     void Awake()
     {
@@ -49,6 +52,9 @@ public class GamePlay : MonoBehaviour
         // reset the game play
         game_over = false;
         board.Reset();
+
+        score = 0;
+        UpdateScoreText();
 
         // spawn the first player
         player = Spawn();
@@ -84,9 +90,14 @@ public class GamePlay : MonoBehaviour
             return;
         }
 
-        // add player to the grid - the board checks for filled rows
+        // add player to the grid
         player.SnapToCell(cell);
-        board.SetFilled(cell, player.GetSprite(), player.GetNum());
+
+        // the board checks for filled rows and returns the points scored during the turn
+        score += board.SetFilled(cell, player.GetSprite(), player.GetNum());
+
+        // update the score text
+        UpdateScoreText();
 
         // remove player - always remove even if game over
         player.PlayerReleased -= HandlePlayerReleased;
@@ -107,5 +118,10 @@ public class GamePlay : MonoBehaviour
     {
         Debug.Log("Board Full");
         game_over = true;
+    }
+
+    private void UpdateScoreText()
+    {
+        scoreText.text = $"{score}";
     }
 }

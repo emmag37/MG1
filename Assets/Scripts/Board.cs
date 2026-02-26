@@ -9,14 +9,16 @@ public class Board : MonoBehaviour
     // store the grid children here
     private Cell[,] grid = new Cell[5, 5];
 
-    private int num_filled = 0;
+    private int num_filled;
     private int wc = 6;
 
     void Awake()
     {
+        // initialize variables
+        num_filled = 0;
+
         // access the cells from the game scene
         int index = 0;
-
         for (int x = 0; x < 5; x++)
         {
             for (int y = 0; y < 5; y++)
@@ -32,7 +34,8 @@ public class Board : MonoBehaviour
         return grid[x, y];
     }
 
-    public void SetFilled(Vector2Int pos, Sprite sprite, int num)
+    // returns the points scored on the turn
+    public int SetFilled(Vector2Int pos, Sprite sprite, int num)
     {
         Debug.Log("set cell (" + pos.x + ", " + pos.y + ") to " + num); // this num should match with the random number logged previously
 
@@ -45,11 +48,14 @@ public class Board : MonoBehaviour
         num_filled++;
 
         // check for a five in a row
-        if (FiveInRow(index, num)) num_filled--;
-        Debug.Log("num filled: " + num_filled);
+        int points = FiveInRow(index, num);
+        if (points > 0) num_filled--;   // row cleared, update grid to remove player
+        Debug.Log("points: " + points);
 
         // check for a game over
         if (num_filled == 25) BoardFull?.Invoke();
+
+        return points;
     }
 
     // returns whether or not the spot is already filled
@@ -69,6 +75,9 @@ public class Board : MonoBehaviour
         {
             cell.Reset();
         }
+
+        // reset variables
+        num_filled = 0;
     }
 
     // converts the world row, col to the grid index
@@ -85,7 +94,7 @@ public class Board : MonoBehaviour
 
     // Checks for a 5 in a row in all directions, clears row if necessary
     // Runs in O(n)
-    private bool FiveInRow(Vector2Int index, int num)
+    private int FiveInRow(Vector2Int index, int num)
     {
         Debug.Log("Check for 5 in row");
         // bug: does not clear if the wc is the placed tile that clears the row
@@ -111,32 +120,41 @@ public class Board : MonoBehaviour
             if (l_diag && grid[4 - i, i].GetColor() != num && grid[4 - i, i].GetColor() != wc) l_diag = false;
         }
 
+        int counts = 0;
         if (row)
         {
             Debug.Log("Clear the row");
             ClearRow(index.x);
-            num_filled -= 4;
+            counts++;
         }
         if (col)
         {
             Debug.Log("Clear the col");
             ClearCol(index.y);
-            num_filled -= 4;
+            counts++;
         }
         if (r_diag)
         {
             Debug.Log("Clear the right diagonal");
             ClearRDiag();
-            num_filled -= 4;
+            counts++;
         }
         if (l_diag)
         {
             Debug.Log("Clear the left diagonal");
             ClearLDiag();
-            num_filled -= 4;
+            counts++;
         }
 
-        return row || col || r_diag || l_diag;
+        return UpdateCounts(counts);
+    }
+
+    // updates grid count and returns points scored
+    private int UpdateCounts(int count)
+    {
+        // can add combo scores later
+        num_filled -= 4 * count;
+        return 5 * count;
     }
 
     private void ClearRow(int row)
