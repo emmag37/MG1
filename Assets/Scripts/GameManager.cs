@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
 {
     // private variables
     [SerializeField] private GamePlay gamePlay;
+    private int highScore;
 
     // Canvases
     [SerializeField] private GameObject gameCanvas;
@@ -21,7 +22,10 @@ public class GameManager : MonoBehaviour
         // subscribe to the game play events
         gamePlay.GameOver += HandleGameOver;
         gamePlay.UpdateScore += HandleNewScore;
-        
+
+        // load high score and initialize score text
+        highScore = PlayerPrefs.GetInt("highScore", 0);
+        UpdateScoreText(0);
     }
 
     // Update is called once per frame
@@ -48,9 +52,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleNewScore(int score)
     {
-        scoreText.text = $"{score}";
-
-        // check if it is larger than the high score
+        UpdateScoreText(score);
     }
 
     // button functions
@@ -58,11 +60,28 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Replay Button");
 
-        // enable the game play
+        // enable the game play and initialize the score
         gamePlay.gameObject.SetActive(true);
+        UpdateScoreText(0);
 
         // switch to the game play canvas
         gameOverCanvas.SetActive(false);
         gameCanvas.SetActive(true);
+    }
+
+    // helper functions
+    private void UpdateScoreText(int score)
+    {
+        scoreText.text = $"{score}";
+
+        // update high score
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt("highScore", highScore);
+            PlayerPrefs.Save();
+        }
+
+        highScoreText.text = $"{highScore}";
     }
 }
