@@ -61,6 +61,16 @@ public class Board : MonoBehaviour
         return grid[index.x, index.y].GetColor() != -1;
     }
 
+    // resets the board to empty slots
+        // O(n)
+    public void Reset()
+    {
+        foreach (Cell cell in grid)
+        {
+            cell.Reset();
+        }
+    }
+
     // converts the world row, col to the grid index
     private Vector2Int WorldPosToIndex(Vector2Int pos)
     {

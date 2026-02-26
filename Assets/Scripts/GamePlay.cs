@@ -30,14 +30,22 @@ public class GamePlay : MonoBehaviour
         board.BoardFull += HandleBoardFull;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // use to start/restart the game
+    void OnEnable()
     {
-        player = Spawn();   // first player, enabled to move
+        // reset if the game has run before
+        if (game_over)
+        {
+            Debug.Log("Reset Game Play");
+            game_over = false;
+            board.Reset();
+        }
+
+        // spawn a new player
+        player = Spawn();
     }
 
     // add a public pause function
-    // add a public restart function
 
     private Player Spawn()
     {

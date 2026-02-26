@@ -205,7 +205,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1697,7 +1697,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1138544389}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1189107353}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: OnReplayButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1138544389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1841,7 +1853,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4dbc75c6f6e34a19814945417e4614e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  game_play: {fileID: 354018344}
+  gamePlay: {fileID: 354018344}
+  gameCanvas: {fileID: 1777795628}
+  gameOverCanvas: {fileID: 31870407}
 --- !u!4 &1189107354
 Transform:
   m_ObjectHideFlags: 0

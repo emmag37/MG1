@@ -3,13 +3,17 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     // private variables
-    [SerializeField] private GamePlay game_play;
+    [SerializeField] private GamePlay gamePlay;
+
+    // Canvases
+    [SerializeField] private GameObject gameCanvas;
+    [SerializeField] private GameObject gameOverCanvas;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // subscribe to the game play events
-        game_play.GameOver += HandleGameOver;
+        gamePlay.GameOver += HandleGameOver;
         
     }
 
@@ -22,5 +26,24 @@ public class GameManager : MonoBehaviour
     private void HandleGameOver()
     {
         Debug.Log("Game Over");
+
+        // disable game play and hide the game container
+        gamePlay.gameObject.SetActive(false);
+
+        // switch to the game over canvas
+        gameCanvas.SetActive(false);
+        gameOverCanvas.SetActive(true);
+    }
+
+    public void OnReplayButtonClicked()
+    {
+        Debug.Log("Replay Button");
+
+        // enable the game play
+        gamePlay.gameObject.SetActive(true);
+
+        // switch to the game play canvas
+        gameOverCanvas.SetActive(false);
+        gameCanvas.SetActive(true);
     }
 }
