@@ -4,7 +4,7 @@ using System;
 public class Board : MonoBehaviour
 {
     // Events
-    public event Action<Board> BoardFull;
+    public event Action BoardFull;
 
     // store the grid children here
     private Cell[,] grid = new Cell[5, 5];
@@ -49,7 +49,7 @@ public class Board : MonoBehaviour
         Debug.Log("num filled: " + num_filled);
 
         // check for a game over
-        if (num_filled == 25) BoardFull?.Invoke(this);
+        if (num_filled == 25) BoardFull?.Invoke();
     }
 
     // returns whether or not the spot is already filled
@@ -78,6 +78,8 @@ public class Board : MonoBehaviour
     private bool FiveInRow(Vector2Int index, int num)
     {
         Debug.Log("Check for 5 in row");
+        // bug: does not clear if the wc is the placed tile that clears the row
+            // add a function that picks a color in the row/col/diag, set that as the num to compare to
 
         bool row = true;
         bool col = true;

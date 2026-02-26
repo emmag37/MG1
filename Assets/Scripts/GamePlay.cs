@@ -1,7 +1,11 @@
 using UnityEngine;
+using System;
 
 public class GamePlay : MonoBehaviour
 {
+    // public variables
+    public event Action GameOver;
+
     // children objects
     private Board board;
     private PlayerGenerator player_gen;
@@ -9,6 +13,7 @@ public class GamePlay : MonoBehaviour
     // private variables
     private Player player;      // current active player
     private Bounds b;           // grid bounds
+    private bool game_over = false;
 
     // move the release logic into the game play
 
@@ -31,6 +36,9 @@ public class GamePlay : MonoBehaviour
         player = Spawn();   // first player, enabled to move
     }
 
+    // add a public pause function
+    // add a public restart function
+
     private Player Spawn()
     {
         Player new_player = player_gen.SpawnPlayer();
@@ -41,6 +49,7 @@ public class GamePlay : MonoBehaviour
     }
 
     // Function is called when the player is released - resets each frame
+    // Essentially manages all of the game play actions, could clean this up with more helpers
     private void HandlePlayerReleased(Player curr_player)
     {
         if (curr_player != player)
@@ -64,17 +73,24 @@ public class GamePlay : MonoBehaviour
         player.SnapToCell(cell);
         board.SetFilled(cell, player.GetSprite(), player.GetNum());
 
-        // check for a game over first
-
-        // remove player and respawn
+        // remove player - always remove even if game over
         player.PlayerReleased -= HandlePlayerReleased;
         Destroy(player.gameObject);
+
+        // check for a game over
+        if (game_over)
+        {
+            // throw event to the game manager
+            GameOver?.Invoke();
+            return; // don't respawn
+        }
 
         player = Spawn();
     }
 
-    private void HandleBoardFull(Board board)
+    private void HandleBoardFull()
     {
-        Debug.Log("Game Over!");
+        Debug.Log("Board Full");
+        game_over = true;
     }
 }
