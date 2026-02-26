@@ -25,7 +25,6 @@ public class PlayerGenerator : MonoBehaviour
     {
         // sets up the first player
         num = Random.Range(0, 7);
-        Debug.Log("first player color: " + num);
     }
 
     /* Creates a new player. */
@@ -37,7 +36,6 @@ public class PlayerGenerator : MonoBehaviour
         GameObject newPlayer = Instantiate(player, transform.position, transform.rotation);
         Player np = newPlayer.GetComponent<Player>();
         np.SetSprite(color, num);
-        Debug.Log("generated player: " + num);
 
         SetNextPlayer();
 
@@ -49,12 +47,9 @@ public class PlayerGenerator : MonoBehaviour
     {
         // set the next color
         num = Random.Range(0, 7);
-        Debug.Log("next color: " + num);
 
         // set the sprite for the next color
         Sprite color = sprites[num];
-        sr.sprite = color;  // why is this not working?????
-        Debug.Log("set next player sprite");
-
+        sr.sprite = color;
     }
 }

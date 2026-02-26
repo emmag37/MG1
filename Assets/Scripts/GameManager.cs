@@ -3,13 +3,19 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    // Game State
+    private enum GameState { Active, Inactive };   
+    private static GameState state;
+
     // private variables
     [SerializeField] private GamePlay gamePlay;
     private int highScore;
 
     // Canvases
+    [SerializeField] private GameObject homeCanvas;
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private GameObject gameOverCanvas;
+    [SerializeField] private GameObject gameSettingsCanvas;
 
     // text
     [SerializeField] private Text scoreText;
@@ -23,31 +29,23 @@ public class GameManager : MonoBehaviour
         gamePlay.GameOver += HandleGameOver;
         gamePlay.UpdateScore += HandleNewScore;
 
-        // load high score and initialize score text
+        // load high score
         highScore = PlayerPrefs.GetInt("highScore", 0);
-        UpdateScoreText(0);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // initialize game state
+        state = GameState.Inactive;
+        Debug.Log("Inactive");
+
     }
 
     // event handlers
     private void HandleGameOver(int score)
     {
-        Debug.Log("Game Over");
-
         // update the game over text
         gameOverScoreText.text = $"{score}";
 
-        // disable game play and hide the game container
-        gamePlay.gameObject.SetActive(false);
-
-        // switch to the game over canvas
-        gameCanvas.SetActive(false);
-        gameOverCanvas.SetActive(true);
+        // exit the game scene
+        EndGame(gameOverCanvas);
     }
 
     private void HandleNewScore(int score)
@@ -56,20 +54,90 @@ public class GameManager : MonoBehaviour
     }
 
     // button functions
-    public void OnReplayButtonClicked()
+    // only called from home screen
+    public void OnPlayButtonClicked()
     {
-        Debug.Log("Replay Button");
+        // navigate to new game from home
+        NewGame(homeCanvas);
+    }
 
-        // enable the game play and initialize the score
-        gamePlay.gameObject.SetActive(true);
-        UpdateScoreText(0);
+    // called from game settings and game over
+    public void OnReplayButtonClicked(string button)
+    {
+        // choose which canvas called the func
+        GameObject canvas = ChooseCanvas(button);
 
-        // switch to the game play canvas
-        gameOverCanvas.SetActive(false);
-        gameCanvas.SetActive(true);
+        // create a new game
+        NewGame(canvas);
+    }
+
+    // called from game settings and game over
+    public void OnHomeButtonClicked(string button)
+    {
+        // choose which canvas called the function
+        GameObject canvas = ChooseCanvas(button);
+
+        // ends game if one is active and enables the home screen
+        EndGame(homeCanvas);
+
+        // disable the current canvas
+        canvas.SetActive(false);
+    }
+
+    public void OnSettingsClicked()
+    {
+        // enable settings canvas on top of game
+        gameSettingsCanvas.SetActive(true);
+
+        // pause the game play
+        gamePlay.Pause();
+    }
+
+    public void OnSettingsExitClicked()
+    {
+        // remove settings canvas
+        gameSettingsCanvas.SetActive(false);
+
+        // resume game play
+        gamePlay.Resume();
     }
 
     // helper functions
+    // navigates to a new game from the given canvas
+        // old game must be closed before hand
+        // only function that changes the game state to active
+    private void NewGame(GameObject currentCanvas)
+    {
+        // makes sure to close any currently running game
+        if (state == GameState.Active) EndGame(currentCanvas);
+
+        // enable new game
+        UpdateScoreText(0);
+        gamePlay.gameObject.SetActive(true);        // game play resets itself on enable
+        gameCanvas.SetActive(true);
+
+        // disable the current canvas
+        currentCanvas.SetActive(false);
+
+        state = GameState.Active;
+        Debug.Log("Active");
+    }
+
+    // navigates out of a game to the given canvas
+        // changes the game state to inactive
+    private void EndGame(GameObject nextCanvas)
+    {
+        // exit game
+        gamePlay.gameObject.SetActive(false);
+        gameCanvas.SetActive(false);
+
+        // enable new canvas
+        nextCanvas.SetActive(true);
+
+        state = GameState.Inactive;
+        Debug.Log("Inactive");
+    }
+
     private void UpdateScoreText(int score)
     {
         scoreText.text = $"{score}";
@@ -83,5 +151,19 @@ public class GameManager : MonoBehaviour
         }
 
         highScoreText.text = $"{highScore}";
+    }
+
+    private GameObject ChooseCanvas(string name)
+    {
+        GameObject canvas = null;
+        if (name == "gameOver")
+        {
+            canvas = gameOverCanvas;
+        }
+        else if (name == "gameSettings")
+        {
+            canvas = gameSettingsCanvas;
+        }
+        return canvas;
     }
 }

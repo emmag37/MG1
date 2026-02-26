@@ -73,8 +73,6 @@ public class Player : MonoBehaviour
         float spacing = (grid_width - radius * 10) / 6;
         cell_offset = radius * 2 + spacing;
         cell0_pos = new Vector3(x2 - grid_width/2, y - grid_width/2, 0);
-
-        Debug.Log("set player boundaries and grid math");
     }
     
     public void Move()
@@ -95,8 +93,6 @@ public class Player : MonoBehaviour
             {
                 isDragging = true;
                 dragOffset = transform.position - mouseWorldPos;    // define offset
-
-                Debug.Log("start dragging");
             }
         }
 
@@ -116,7 +112,6 @@ public class Player : MonoBehaviour
         if (isDragging && Mouse.current.leftButton.wasReleasedThisFrame)
         {
             isDragging = false;
-            Debug.Log("stop dragging");
 
             PlayerReleased?.Invoke(this);
         }
@@ -128,10 +123,8 @@ public class Player : MonoBehaviour
         Vector2Int grid_pos = new Vector2Int(-3, -3);     // default value for not on grid
 
         int row = Mathf.RoundToInt((transform.position.y - cell0_pos.y) / cell_offset);
-        Debug.Log("row: " + row);
 
         int col = Mathf.RoundToInt((transform.position.x - cell0_pos.x) / cell_offset);
-        Debug.Log("col: " + col);
 
         if ((row >= -2 && row <= 2) && (col >= -2 && col <= 2)) // make sure it's on the grid
         {

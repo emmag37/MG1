@@ -40,12 +40,34 @@ public class GamePlay : MonoBehaviour
         if (game_over) RestartGame();
     }
 
+    void OnDisable()
+    {
+        if (player == null) return;
+
+        // destroy the player
+        player.PlayerReleased -= HandlePlayerReleased;
+        Destroy(player.gameObject);
+
+        // set game over
+        game_over = true;
+    }
+
     void Start()
     {
         player = Spawn();
     }
 
-    // add a public pause function
+    public void Pause()
+    {
+        // simply disable the player
+        player.enabled = false;
+    }
+
+    public void Resume()
+    {
+        // enable the player
+        player.enabled = true;
+    }
 
     private void RestartGame()
     {
@@ -73,17 +95,13 @@ public class GamePlay : MonoBehaviour
     {
         if (curr_player != player)
         {
-            Debug.Log("non active player released");
             return; // throw an exception or something?
         }
-
-        Debug.Log("handle player released");
 
         // check if the player is on an available spot on the grid
         Vector2Int cell = player.OnCell();
         if (cell.x == -3 || board.IsFilled(cell))
         {
-            Debug.Log("return player to start");
             player.ReturnToStart();
             return;
         }
@@ -118,7 +136,6 @@ public class GamePlay : MonoBehaviour
 
     private void HandleBoardFull()
     {
-        Debug.Log("Board Full");
         game_over = true;
     }
 }

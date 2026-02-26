@@ -37,11 +37,8 @@ public class Board : MonoBehaviour
     // returns the points scored on the turn
     public int SetFilled(Vector2Int pos, Sprite sprite, int num)
     {
-        Debug.Log("set cell (" + pos.x + ", " + pos.y + ") to " + num); // this num should match with the random number logged previously
-
         // adjust the world pos to match grid indices
         Vector2Int index = WorldPosToIndex(pos);
-        Debug.Log("grid pos: (" + index.x + ", " + index.y + ")");
 
         // set the cell at pos
         grid[index.x, index.y].AssignSprite(sprite, num);
@@ -50,7 +47,6 @@ public class Board : MonoBehaviour
         // check for a five in a row
         int points = FiveInRow(index, num);
         if (points > 0) num_filled--;   // row cleared, update grid to remove player
-        Debug.Log("points: " + points);
 
         // check for a game over
         if (num_filled == 25) BoardFull?.Invoke();
@@ -96,7 +92,6 @@ public class Board : MonoBehaviour
     // Runs in O(n)
     private int FiveInRow(Vector2Int index, int num)
     {
-        Debug.Log("Check for 5 in row");
         // bug: does not clear if the wc is the placed tile that clears the row
             // add a function that picks a color in the row/col/diag, set that as the num to compare to
 
@@ -123,25 +118,21 @@ public class Board : MonoBehaviour
         int counts = 0;
         if (row)
         {
-            Debug.Log("Clear the row");
             ClearRow(index.x);
             counts++;
         }
         if (col)
         {
-            Debug.Log("Clear the col");
             ClearCol(index.y);
             counts++;
         }
         if (r_diag)
         {
-            Debug.Log("Clear the right diagonal");
             ClearRDiag();
             counts++;
         }
         if (l_diag)
         {
-            Debug.Log("Clear the left diagonal");
             ClearLDiag();
             counts++;
         }
