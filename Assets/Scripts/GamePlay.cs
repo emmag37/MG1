@@ -4,8 +4,9 @@ using System;
 
 public class GamePlay : MonoBehaviour
 {
-    // public variables
+    // events
     public event Action<int> GameOver;
+    public event Action<int> UpdateScore;
 
     // children objects
     private Board board;
@@ -17,8 +18,7 @@ public class GamePlay : MonoBehaviour
     private bool game_over = false;
 
     // score variables
-    [SerializeField] private Text scoreText;
-    private int score;
+    private int score;      // current game score
 
     void Awake()
     {
@@ -52,9 +52,7 @@ public class GamePlay : MonoBehaviour
         // reset the game play
         game_over = false;
         board.Reset();
-
         score = 0;
-        UpdateScoreText();
 
         // spawn the first player
         player = Spawn();
@@ -94,10 +92,14 @@ public class GamePlay : MonoBehaviour
         player.SnapToCell(cell);
 
         // the board checks for filled rows and returns the points scored during the turn
-        score += board.SetFilled(cell, player.GetSprite(), player.GetNum());
+        int points = board.SetFilled(cell, player.GetSprite(), player.GetNum());
 
         // update the score text
-        UpdateScoreText();
+        if (points > 0)
+        {
+            score += points;
+            UpdateScore?.Invoke(score);
+        }
 
         // remove player - always remove even if game over
         player.PlayerReleased -= HandlePlayerReleased;
@@ -118,10 +120,5 @@ public class GamePlay : MonoBehaviour
     {
         Debug.Log("Board Full");
         game_over = true;
-    }
-
-    private void UpdateScoreText()
-    {
-        scoreText.text = $"{score}";
     }
 }

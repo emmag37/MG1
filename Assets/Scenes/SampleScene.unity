@@ -826,7 +826,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78ac11d5991004d8da5b5a6b5c61ab82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  scoreText: {fileID: 2115315121}
 --- !u!4 &373269582 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421657568361316366, guid: da10a7f55ddb1463da70721112e94096, type: 3}
@@ -1949,6 +1948,8 @@ MonoBehaviour:
   gamePlay: {fileID: 354018344}
   gameCanvas: {fileID: 1777795628}
   gameOverCanvas: {fileID: 31870407}
+  scoreText: {fileID: 2115315121}
+  highScoreText: {fileID: 98315442}
   gameOverScoreText: {fileID: 1975400343}
 --- !u!4 &1189107354
 Transform:

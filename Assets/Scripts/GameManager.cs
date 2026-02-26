@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameOverCanvas;
 
     // text
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text highScoreText;
     [SerializeField] private Text gameOverScoreText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -18,6 +20,7 @@ public class GameManager : MonoBehaviour
     {
         // subscribe to the game play events
         gamePlay.GameOver += HandleGameOver;
+        gamePlay.UpdateScore += HandleNewScore;
         
     }
 
@@ -27,6 +30,7 @@ public class GameManager : MonoBehaviour
         
     }
 
+    // event handlers
     private void HandleGameOver(int score)
     {
         Debug.Log("Game Over");
@@ -42,6 +46,14 @@ public class GameManager : MonoBehaviour
         gameOverCanvas.SetActive(true);
     }
 
+    private void HandleNewScore(int score)
+    {
+        scoreText.text = $"{score}";
+
+        // check if it is larger than the high score
+    }
+
+    // button functions
     public void OnReplayButtonClicked()
     {
         Debug.Log("Replay Button");
