@@ -1949,6 +1949,7 @@ MonoBehaviour:
   gamePlay: {fileID: 354018344}
   gameCanvas: {fileID: 1777795628}
   gameOverCanvas: {fileID: 31870407}
+  gameOverScoreText: {fileID: 1975400343}
 --- !u!4 &1189107354
 Transform:
   m_ObjectHideFlags: 0
@@ -3799,7 +3800,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: XXXXXXXXXXXXXXX
+  m_Text: 
 --- !u!222 &1975400344
 CanvasRenderer:
   m_ObjectHideFlags: 0

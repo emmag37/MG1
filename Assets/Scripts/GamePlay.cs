@@ -5,7 +5,7 @@ using System;
 public class GamePlay : MonoBehaviour
 {
     // public variables
-    public event Action GameOver;
+    public event Action<int> GameOver;
 
     // children objects
     private Board board;
@@ -107,7 +107,7 @@ public class GamePlay : MonoBehaviour
         if (game_over)
         {
             // throw event to the game manager
-            GameOver?.Invoke();
+            GameOver?.Invoke(score);
             return; // don't respawn
         }
 

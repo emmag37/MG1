@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class GameManager : MonoBehaviour
     // Canvases
     [SerializeField] private GameObject gameCanvas;
     [SerializeField] private GameObject gameOverCanvas;
+
+    // text
+    [SerializeField] private Text gameOverScoreText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,9 +27,12 @@ public class GameManager : MonoBehaviour
         
     }
 
-    private void HandleGameOver()
+    private void HandleGameOver(int score)
     {
         Debug.Log("Game Over");
+
+        // update the game over text
+        gameOverScoreText.text = $"{score}";
 
         // disable game play and hide the game container
         gamePlay.gameObject.SetActive(false);
