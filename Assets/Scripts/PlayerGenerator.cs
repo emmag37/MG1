@@ -24,7 +24,7 @@ public class PlayerGenerator : MonoBehaviour
     void OnEnable()
     {
         // sets up the first player
-        num = Random.Range(0, 7);
+        num = Random.Range(0, 6);   // removed WC for now
     }
 
     /* Creates a new player. */
@@ -46,7 +46,7 @@ public class PlayerGenerator : MonoBehaviour
     private void SetNextPlayer()
     {
         // set the next color
-        num = Random.Range(0, 7);
+        num = Random.Range(0, 6);   // removed WC for now
 
         // set the sprite for the next color
         Sprite color = sprites[num];

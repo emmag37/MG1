@@ -9,18 +9,25 @@ public class Board : MonoBehaviour
     // store the grid children here
     private Cell[,] grid = new Cell[5, 5];
 
-    private int num_filled;
-    private int wc = 6;
+    // keep track of filled spots
+    private int[] rowColors = new int[5];    // -1 for mixed, 0-5 for color
+    private int mixed = -1;
+    private int fullRow = 5;
+
+    private int[] rowCounts = new int[5];
+
+    private int numFilled;
 
     void Awake()
     {
         // initialize variables
-        num_filled = 0;
+        numFilled = 0;
 
         // access the cells from the game scene
         int index = 0;
         for (int x = 0; x < 5; x++)
         {
+            // initialize the cells
             for (int y = 0; y < 5; y++)
             {
                 grid[x, y] = transform.GetChild(index).GetComponent<Cell>();
@@ -42,14 +49,18 @@ public class Board : MonoBehaviour
 
         // set the cell at pos
         grid[index.x, index.y].AssignSprite(sprite, num);
-        num_filled++;
 
-        // check for a five in a row
+        // add the player to the board
+        int points = AddToBoard(index, num);
+
+        /*
+        // **** check for a five in a row **** probably get rid of this
         int points = FiveInRow(index, num);
-        if (points > 0) num_filled--;   // row cleared, update grid to remove player
+        if (points > 0) numFilled--;   // row cleared, update grid to remove player
+        */
 
         // check for a game over
-        if (num_filled == 25) BoardFull?.Invoke();
+        if (numFilled == 25) BoardFull?.Invoke();
 
         return points;
     }
@@ -73,7 +84,12 @@ public class Board : MonoBehaviour
         }
 
         // reset variables
-        num_filled = 0;
+        numFilled = 0;
+
+        for (int i = 0; i < fullRow; i++)
+        {
+            rowCounts[i] = 0;
+        }
     }
 
     // converts the world row, col to the grid index
@@ -88,6 +104,46 @@ public class Board : MonoBehaviour
         return index;
     }
 
+    // still working on this
+    private int AddToBoard(Vector2Int index, int num)
+    {
+        int pointsScored = 0;
+
+        int row = index.x;
+
+        // add to the row
+        rowColors[row] = SetColor(rowColors[row], num, rowCounts[row]);
+        rowCounts[row]++;
+
+        // check for a filled row
+        if (rowCounts[row] == fullRow)
+        {
+            // clear the row
+            ClearLine(i => (index.x, i));   // clear grid[row, i]
+            numFilled -= 4;
+            pointsScored += 5;
+        } else
+        {
+            numFilled++;
+        }
+
+        Debug.Log("num filled: " + numFilled);
+
+        return pointsScored;
+    }
+
+    // chooses the color to be set for the row
+    private int SetColor(int currentColor, int newColor, int count)
+    {
+        if (count == 0 || currentColor == newColor)
+        {
+            return newColor;
+        } else {
+            return mixed;
+        }
+    }
+
+    /*
     // Checks for a 5 in a row in all directions, clears row if necessary
     // Runs in O(n)
     private int FiveInRow(Vector2Int index, int num)
@@ -103,16 +159,16 @@ public class Board : MonoBehaviour
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             // check the row
-            row = row && CheckSameColor(num, grid[index.x, i].GetColor());
+            if (row) row = CheckSameColor(num, grid[index.x, i].GetColor());
 
             // check the col
-            col = col && CheckSameColor(num, grid[i, index.y].GetColor());
+            if (col) col = CheckSameColor(num, grid[i, index.y].GetColor());
 
             // check the right diag
-            r_diag = r_diag && CheckSameColor(num, grid[i, i].GetColor());
+            if (r_diag) r_diag = CheckSameColor(num, grid[i, i].GetColor());
 
             // check the left diag
-            l_diag = l_diag && CheckSameColor(num, grid[grid.GetLength(0) - 1 - i, i].GetColor());
+            if (l_diag) l_diag = CheckSameColor(num, grid[grid.GetLength(0) - 1 - i, i].GetColor());
         }
 
         int pointsScored = ClearFullLines(index, row, col, r_diag, l_diag);
@@ -152,11 +208,11 @@ public class Board : MonoBehaviour
         }
 
         // update the number of filled spaces on the grid
-        num_filled -= 4 * count;
+        numFilled -= 4 * count;
 
         // return the points scored - think about adding combo scores later
         return 5 * count;
-    }
+    } */
 
     // lambda function for line clearing logic
     private void ClearLine(Func<int, (int r, int c)> indexSelector)
