@@ -103,21 +103,27 @@ public class Board : MonoBehaviour
         for (int i = 0; i < grid.GetLength(0); i++)
         {
             // check the row
-            if (grid[index.x, i].GetColor() != num && grid[index.x, i].GetColor() != wc) row = false;
+            row = row && CheckSameColor(num, grid[index.x, i].GetColor());
 
             // check the col
-            if (grid[i, index.y].GetColor() != num && grid[i, index.y].GetColor() != wc) col = false;
+            col = col && CheckSameColor(num, grid[i, index.y].GetColor());
 
             // check the right diag
-            if (r_diag && grid[i, i].GetColor() != num && grid[i, i].GetColor() != wc) r_diag = false;
+            r_diag = r_diag && CheckSameColor(num, grid[i, i].GetColor());
 
             // check the left diag
-            if (l_diag && grid[4 - i, i].GetColor() != num && grid[4 - i, i].GetColor() != wc) l_diag = false;
+            l_diag = l_diag && CheckSameColor(num, grid[grid.GetLength(0) - 1 - i, i].GetColor());
         }
 
         int pointsScored = ClearFullLines(index, row, col, r_diag, l_diag);
 
         return pointsScored;
+    }
+
+    // returns true if player matches current
+    private bool CheckSameColor(int player, int current)
+    {
+        return (current == player) || (current == wc);
     }
 
     // returns the points scored
