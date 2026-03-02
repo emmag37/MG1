@@ -93,7 +93,7 @@ public class Board : MonoBehaviour
     private int FiveInRow(Vector2Int index, int num)
     {
         // bug: does not clear if the wc is the placed tile that clears the row
-            // add a function that picks a color in the row/col/diag, set that as the num to compare to
+        // add a function that picks a color in the row/col/diag, set that as the num to compare to
 
         bool row = true;
         bool col = true;
@@ -115,68 +115,50 @@ public class Board : MonoBehaviour
             if (l_diag && grid[4 - i, i].GetColor() != num && grid[4 - i, i].GetColor() != wc) l_diag = false;
         }
 
-        int counts = 0;
+        int pointsScored = ClearFullLines(index, row, col, r_diag, l_diag);
+
+        return pointsScored;
+    }
+
+    // returns the points scored
+    private int ClearFullLines(Vector2Int index, bool row, bool col, bool r_diag, bool l_diag)
+    {
+        int count = 0;
         if (row)
         {
-            ClearRow(index.x);
-            counts++;
+            ClearLine(i => (index.x, i));   // clear grid[row, i]
+            count++;
         }
         if (col)
         {
-            ClearCol(index.y);
-            counts++;
+            ClearLine(i => (i, index.y));   // clear grid[i, col]
+            count++;
         }
         if (r_diag)
         {
-            ClearRDiag();
-            counts++;
+            ClearLine(i => (i, i));         // clear grid[i, i]
+            count++;
         }
         if (l_diag)
         {
-            ClearLDiag();
-            counts++;
+            ClearLine(i => (grid.GetLength(0) - 1 - i, i));     // clear grid[4 - i, i]
+            count++;
         }
 
-        return UpdateCounts(counts);
-    }
-
-    // updates grid count and returns points scored
-    private int UpdateCounts(int count)
-    {
-        // can add combo scores later
+        // update the number of filled spaces on the grid
         num_filled -= 4 * count;
+
+        // return the points scored - think about adding combo scores later
         return 5 * count;
     }
 
-    private void ClearRow(int row)
+    // lambda function for line clearing logic
+    private void ClearLine(Func<int, (int r, int c)> indexSelector)
     {
         for (int i = 0; i < grid.GetLength(0); i++)
         {
-            grid[row, i].Reset();
-        }
-    }
-
-    private void ClearCol(int col)
-    {
-        for (int i = 0; i < grid.GetLength(0); i++)
-        {
-            grid[i, col].Reset();
-        }
-    }
-
-    private void ClearRDiag()
-    {
-        for (int i = 0; i < grid.GetLength(0); i++)
-        {
-            grid[i, i].Reset();
-        }
-    }
-
-    private void ClearLDiag()
-    {
-        for (int i = 0; i < grid.GetLength(0); i++)
-        {
-            grid[4 - i, i].Reset();
+            var (r, c) = indexSelector(i);
+            grid[r, c].Reset();
         }
     }
 }
