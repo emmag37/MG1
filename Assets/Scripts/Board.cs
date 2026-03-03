@@ -11,10 +11,12 @@ public class Board : MonoBehaviour
 
     // keep track of filled spots
     private int[] rowColors = new int[5];    // -1 for mixed, 0-5 for color
+    private int[] colColors = new int[5];
     private int mixed = -1;
     private int fullRow = 5;
 
     private int[] rowCounts = new int[5];
+    private int[] colCounts = new int[5];
 
     private int numFilled;
 
@@ -50,14 +52,8 @@ public class Board : MonoBehaviour
         // set the cell at pos
         grid[index.x, index.y].AssignSprite(sprite, num);
 
-        // add the player to the board
-        int points = AddToBoard(index, num);
-
-        /*
-        // **** check for a five in a row **** probably get rid of this
+        // add the player to the board - clears full rows and returns any points scored
         int points = FiveInRow(index, num);
-        if (points > 0) numFilled--;   // row cleared, update grid to remove player
-        */
 
         // check for a game over
         if (numFilled == 25) BoardFull?.Invoke();
@@ -75,7 +71,6 @@ public class Board : MonoBehaviour
     }
 
     // resets the board to empty slots
-        // O(n)
     public void Reset()
     {
         foreach (Cell cell in grid)
@@ -83,12 +78,13 @@ public class Board : MonoBehaviour
             cell.Reset();
         }
 
-        // reset variables
+        // reset fill state variables
         numFilled = 0;
 
         for (int i = 0; i < fullRow; i++)
         {
             rowCounts[i] = 0;
+            colCounts[i] = 0;
         }
     }
 
@@ -105,31 +101,55 @@ public class Board : MonoBehaviour
     }
 
     // still working on this
-    private int AddToBoard(Vector2Int index, int num)
+    // returns the points scored
+    // updates numFilled
+    private int FiveInRow(Vector2Int index, int num)
     {
         int pointsScored = 0;
-
         int row = index.x;
+        int col = index.y;
+
+        // add to the board
+        AddToBoard(index, num);
+
+        // check for a filled row
+        if (rowCounts[row] == fullRow && rowColors[row] != mixed)
+        {
+            // clear the row
+            ClearLine(i => (row, i));   // clear grid[row, i]
+            rowCounts[row] = 0;
+
+            pointsScored += 5;
+        }
+
+        // check for a filled column
+        if (colCounts[col] == fullRow && colColors[col] != mixed)
+        {
+            // clear the column
+            ClearLine(i => (i, col));   // clear grid[i, col]
+            colCounts[col] = 0;
+
+            pointsScored += 5;
+        }
+
+        // update the numFilled with the player
+        if (pointsScored == 0) numFilled++;
+
+        return pointsScored;
+    }
+
+    private void AddToBoard(Vector2Int index, int num)
+    {
+        int row = index.x;
+        int col = index.y;
 
         // add to the row
         rowColors[row] = SetColor(rowColors[row], num, rowCounts[row]);
         rowCounts[row]++;
 
-        // check for a filled row
-        if (rowCounts[row] == fullRow)
-        {
-            // clear the row
-            ClearLine(i => (index.x, i));   // clear grid[row, i]
-            numFilled -= 4;
-            pointsScored += 5;
-        } else
-        {
-            numFilled++;
-        }
-
-        Debug.Log("num filled: " + numFilled);
-
-        return pointsScored;
+        // add to the column
+        colColors[col] = SetColor(colColors[col], num, colCounts[col]);
+        colCounts[col]++;
     }
 
     // chooses the color to be set for the row
@@ -141,6 +161,18 @@ public class Board : MonoBehaviour
         } else {
             return mixed;
         }
+    }
+
+    // parameter is a lambda function for line clearing logic
+    private void ClearLine(Func<int, (int r, int c)> indexSelector)
+    {
+        for (int i = 0; i < grid.GetLength(0); i++)
+        {
+            var (r, c) = indexSelector(i);
+            grid[r, c].Reset();
+        }
+
+        numFilled -= 4;
     }
 
     /*
@@ -214,14 +246,6 @@ public class Board : MonoBehaviour
         return 5 * count;
     } */
 
-    // lambda function for line clearing logic
-    private void ClearLine(Func<int, (int r, int c)> indexSelector)
-    {
-        for (int i = 0; i < grid.GetLength(0); i++)
-        {
-            var (r, c) = indexSelector(i);
-            grid[r, c].Reset();
-        }
-    }
+
 }
  
