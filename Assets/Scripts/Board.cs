@@ -106,7 +106,6 @@ public class Board : MonoBehaviour
     // works by only scanning when a row/col is filled
     private int FiveInRow(Vector2Int index, int color)
     {
-        int pointsScored = 0;
         int row = index.x;
         int col = index.y;
 
@@ -122,59 +121,26 @@ public class Board : MonoBehaviour
         bool clearLDiag = (lDiagCount == RowSize) && ScanLineColors(i => (RowSize - 1 - i, i), color);
 
         // clear filled lines
-        if (clearRow)
-        {
-            ClearLine(i => (row, i));   // clear grid[row, i]
-            rowCounts[row] = 0;
+        if (clearRow) ClearRow(row);
+        if (clearCol) ClearColumn(col);
+        if (clearRDiag) ClearRDiagonal();
+        if (clearLDiag) ClearLDiagonal();
 
-            // update the other counts
-            for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
-            rDiagCount = DecrementCount(rDiagCount);
-            lDiagCount = DecrementCount(lDiagCount);
-
-            pointsScored += 5;
-        }
-        if (clearCol)
-        {
-            ClearLine(i => (i, col));   // clear grid[i, col]
-            colCounts[col] = 0;
-
-            // update the other counts
-            for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
-            rDiagCount = DecrementCount(rDiagCount);
-            lDiagCount = DecrementCount(lDiagCount);
-
-            pointsScored += 5;
-        }
-        if (clearRDiag)
-        {
-            ClearLine(i => (i, i));      // clear grid[i, i]
-            rDiagCount = 0;
-
-            // update the other counts
-            for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
-            for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
-            lDiagCount = DecrementCount(lDiagCount);
-
-            pointsScored += 5;
-        }
-        if (clearLDiag)
-        {
-            ClearLine(i => (RowSize - 1 - i, i));
-            lDiagCount = 0;
-
-            // update the other counts
-            for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
-            for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
-            rDiagCount = DecrementCount(rDiagCount);
-
-            pointsScored += 5;
-        }
+        // calculate points
+        int pointsScored = CalculatePoints(clearRow, clearCol, clearRDiag, clearLDiag);
 
         // update the numFilled with the player if no lines cleared
         if (pointsScored == 0) numFilled++;
 
         return pointsScored;
+    }
+
+    // returns the number of points scored
+    private int CalculatePoints(bool row, bool col, bool rDiag, bool lDiag)
+    {
+        int linesCleared = (row ? 1 : 0) + (col ? 1 : 0) + (rDiag ? 1 : 0) + (lDiag ? 1 : 0);
+
+        return linesCleared * 5;
     }
 
     // param is a lambda for the index, and returns whether a line is all the same color
@@ -190,7 +156,7 @@ public class Board : MonoBehaviour
     }
 
     // parameter is a lambda function for line clearing logic
-    private void ClearLine(Func<int, (int r, int c)> indexSelector)
+    private void ClearGridLine(Func<int, (int r, int c)> indexSelector)
     {
         for (int i = 0; i < RowSize; i++)
         {
@@ -211,77 +177,46 @@ public class Board : MonoBehaviour
         return 0;
     }
 
-    /*
-    // Checks for a 5 in a row in all directions, clears row if necessary
-    // Runs in O(n)
-    private int FiveInRow(Vector2Int index, int num)
+    // Line Clearing Helpers
+    private void ClearRow(int row)
     {
-        // bug: does not clear if the wc is the placed tile that clears the row
-        // add a function that picks a color in the row/col/diag, set that as the num to compare to
+        ClearGridLine(i => (row, i));   // clear grid[row, i]
+        rowCounts[row] = 0;
 
-        bool row = true;
-        bool col = true;
-        bool r_diag = (index.x == index.y);     // only check if the index is actually on the diagonal
-        bool l_diag = (4 - index.x == index.y);
-
-        for (int i = 0; i < grid.GetLength(0); i++)
-        {
-            // check the row
-            if (row) row = CheckSameColor(num, grid[index.x, i].GetColor());
-
-            // check the col
-            if (col) col = CheckSameColor(num, grid[i, index.y].GetColor());
-
-            // check the right diag
-            if (r_diag) r_diag = CheckSameColor(num, grid[i, i].GetColor());
-
-            // check the left diag
-            if (l_diag) l_diag = CheckSameColor(num, grid[grid.GetLength(0) - 1 - i, i].GetColor());
-        }
-
-        int pointsScored = ClearFullLines(index, row, col, r_diag, l_diag);
-
-        return pointsScored;
+        // update the other counts
+        for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+        rDiagCount = DecrementCount(rDiagCount);
+        lDiagCount = DecrementCount(lDiagCount);
     }
-
-    // returns true if player matches current
-    private bool CheckSameColor(int player, int current)
+    private void ClearColumn(int col)
     {
-        return (current == player) || (current == wc);
+        ClearGridLine(i => (i, col));   // clear grid[i, col]
+        colCounts[col] = 0;
+
+        // update the other counts
+        for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+        rDiagCount = DecrementCount(rDiagCount);
+        lDiagCount = DecrementCount(lDiagCount);
     }
-
-    // returns the points scored
-    private int ClearFullLines(Vector2Int index, bool row, bool col, bool r_diag, bool l_diag)
+    private void ClearRDiagonal()
     {
-        int count = 0;
-        if (row)
-        {
-            ClearLine(i => (index.x, i));   // clear grid[row, i]
-            count++;
-        }
-        if (col)
-        {
-            ClearLine(i => (i, index.y));   // clear grid[i, col]
-            count++;
-        }
-        if (r_diag)
-        {
-            ClearLine(i => (i, i));         // clear grid[i, i]
-            count++;
-        }
-        if (l_diag)
-        {
-            ClearLine(i => (grid.GetLength(0) - 1 - i, i));     // clear grid[4 - i, i]
-            count++;
-        }
+        ClearGridLine(i => (i, i));      // clear grid[i, i]
+        rDiagCount = 0;
 
-        // update the number of filled spaces on the grid
-        numFilled -= 4 * count;
+        // update the other counts
+        for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+        for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+        lDiagCount = DecrementCount(lDiagCount);
+    }
+    private void ClearLDiagonal()
+    {
+        ClearGridLine(i => (RowSize - 1 - i, i));
+        lDiagCount = 0;
 
-        // return the points scored - think about adding combo scores later
-        return 5 * count;
-    } */
-
+        // update the other counts
+        for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+        for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+        rDiagCount = DecrementCount(rDiagCount);
+    }
 
 }
- 
