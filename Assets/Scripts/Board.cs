@@ -4,6 +4,7 @@ using System;
 public class Board : MonoBehaviour
 {
     private const int RowSize = 5;
+    private const int WildCard = 6;
 
     // Events
     public event Action BoardFull;
@@ -101,9 +102,7 @@ public class Board : MonoBehaviour
     }
 
     // still working on this
-    // returns the points scored
-    // updates numFilled
-    // works by only scanning when a row/col is filled
+    // returns the points scored, updates numFilled, works by only scanning when a row/col is filled (worst case O(n) but generally O(1))
     private int FiveInRow(Vector2Int index, int color)
     {
         int row = index.x;
@@ -144,12 +143,19 @@ public class Board : MonoBehaviour
     }
 
     // param is a lambda for the index, and returns whether a line is all the same color
+        // add the wild card logic to this function
     private bool ScanLineColors(Func<int, (int r, int c)> indexSelector, int color)
     {
         for (int i = 0; i < RowSize; i++)
         {
             var (r, c) = indexSelector(i);
-            if (grid[r, c].GetColor() != color) return false;
+            int cellColor = grid[r, c].GetColor();
+
+            // need to set the color if a wild card
+            if (color == WildCard) color = cellColor;
+
+            // check for color matches
+            if (cellColor != color && cellColor != WildCard) return false;
         }
 
         return true;
