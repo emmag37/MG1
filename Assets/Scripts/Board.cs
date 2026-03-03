@@ -3,20 +3,17 @@ using System;
 
 public class Board : MonoBehaviour
 {
+    private const int RowSize = 5;
+
     // Events
     public event Action BoardFull;
 
     // store the grid children here
-    private Cell[,] grid = new Cell[5, 5];
+    private Cell[,] grid = new Cell[RowSize, RowSize];
 
     // keep track of filled spots
-    private int[] rowColors = new int[5];    // -1 for mixed, 0-5 for color
-    private int[] colColors = new int[5];
-    private int mixed = -1;
-    private int fullRow = 5;
-
-    private int[] rowCounts = new int[5];
-    private int[] colCounts = new int[5];
+    private int[] rowCounts = new int[RowSize];
+    private int[] colCounts = new int[RowSize];
 
     private int numFilled;
 
@@ -27,10 +24,10 @@ public class Board : MonoBehaviour
 
         // access the cells from the game scene
         int index = 0;
-        for (int x = 0; x < 5; x++)
+        for (int x = 0; x < RowSize; x++)
         {
             // initialize the cells
-            for (int y = 0; y < 5; y++)
+            for (int y = 0; y < RowSize; y++)
             {
                 grid[x, y] = transform.GetChild(index).GetComponent<Cell>();
                 index++;
@@ -56,7 +53,7 @@ public class Board : MonoBehaviour
         int points = FiveInRow(index, num);
 
         // check for a game over
-        if (numFilled == 25) BoardFull?.Invoke();
+        if (numFilled == RowSize * RowSize) BoardFull?.Invoke();
 
         return points;
     }
@@ -80,8 +77,7 @@ public class Board : MonoBehaviour
 
         // reset fill state variables
         numFilled = 0;
-
-        for (int i = 0; i < fullRow; i++)
+        for (int i = 0; i < RowSize; i++)
         {
             rowCounts[i] = 0;
             colCounts[i] = 0;
@@ -103,76 +99,80 @@ public class Board : MonoBehaviour
     // still working on this
     // returns the points scored
     // updates numFilled
-    private int FiveInRow(Vector2Int index, int num)
+    // works by only scanning when a row/col is filled
+    private int FiveInRow(Vector2Int index, int color)
     {
         int pointsScored = 0;
         int row = index.x;
         int col = index.y;
 
         // add to the board
-        AddToBoard(index, num);
+        rowCounts[row]++;
+        colCounts[col]++;
 
-        // check for a filled row
-        if (rowCounts[row] == fullRow && rowColors[row] != mixed)
+        bool clearRow = rowCounts[row] == RowSize && ScanLineColors(i => (row, i), color);
+        bool clearCol = colCounts[col] == RowSize && ScanLineColors(i => (i, col), color);
+
+        // clear filled lines
+        if (clearRow)
         {
-            // clear the row
             ClearLine(i => (row, i));   // clear grid[row, i]
             rowCounts[row] = 0;
 
+            // update the column counts
+            for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+
             pointsScored += 5;
         }
-
-        // check for a filled column
-        if (colCounts[col] == fullRow && colColors[col] != mixed)
+        if (clearCol)
         {
-            // clear the column
             ClearLine(i => (i, col));   // clear grid[i, col]
             colCounts[col] = 0;
 
+            // update the row counts
+            for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+
             pointsScored += 5;
         }
 
-        // update the numFilled with the player
+        // update the numFilled with the player if no lines cleared
         if (pointsScored == 0) numFilled++;
 
         return pointsScored;
     }
 
-    private void AddToBoard(Vector2Int index, int num)
+    // param is a lambda for the index, and returns whether a line is all the same color
+    private bool ScanLineColors(Func<int, (int r, int c)> indexSelector, int color)
     {
-        int row = index.x;
-        int col = index.y;
-
-        // add to the row
-        rowColors[row] = SetColor(rowColors[row], num, rowCounts[row]);
-        rowCounts[row]++;
-
-        // add to the column
-        colColors[col] = SetColor(colColors[col], num, colCounts[col]);
-        colCounts[col]++;
-    }
-
-    // chooses the color to be set for the row
-    private int SetColor(int currentColor, int newColor, int count)
-    {
-        if (count == 0 || currentColor == newColor)
+        for (int i = 0; i < RowSize; i++)
         {
-            return newColor;
-        } else {
-            return mixed;
+            var (r, c) = indexSelector(i);
+            if (grid[r, c].GetColor() != color) return false;
         }
+
+        return true;
     }
 
     // parameter is a lambda function for line clearing logic
     private void ClearLine(Func<int, (int r, int c)> indexSelector)
     {
-        for (int i = 0; i < grid.GetLength(0); i++)
+        for (int i = 0; i < RowSize; i++)
         {
             var (r, c) = indexSelector(i);
             grid[r, c].Reset();
         }
 
         numFilled -= 4;
+    }
+
+    // safe count decrementer, ensures count never goes below 0
+    private int DecrementCount(int count)
+    {
+        if (count > 0)
+        {
+            return count - 1;
+        }
+        return 0;
     }
 
     /*
