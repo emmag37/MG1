@@ -14,6 +14,8 @@ public class Board : MonoBehaviour
     // keep track of filled spots
     private int[] rowCounts = new int[RowSize];
     private int[] colCounts = new int[RowSize];
+    private int rDiagCount;
+    private int lDiagCount;
 
     private int numFilled;
 
@@ -77,6 +79,8 @@ public class Board : MonoBehaviour
 
         // reset fill state variables
         numFilled = 0;
+        rDiagCount = 0;
+        lDiagCount = 0;
         for (int i = 0; i < RowSize; i++)
         {
             rowCounts[i] = 0;
@@ -109,9 +113,13 @@ public class Board : MonoBehaviour
         // add to the board
         rowCounts[row]++;
         colCounts[col]++;
+        if (row == col) rDiagCount++;
+        if (RowSize - 1 - row == col) lDiagCount++;
 
-        bool clearRow = rowCounts[row] == RowSize && ScanLineColors(i => (row, i), color);
-        bool clearCol = colCounts[col] == RowSize && ScanLineColors(i => (i, col), color);
+        bool clearRow = (rowCounts[row] == RowSize) && ScanLineColors(i => (row, i), color);
+        bool clearCol = (colCounts[col] == RowSize) && ScanLineColors(i => (i, col), color);
+        bool clearRDiag = (rDiagCount == RowSize) && ScanLineColors(i => (i, i), color);
+        bool clearLDiag = (lDiagCount == RowSize) && ScanLineColors(i => (RowSize - 1 - i, i), color);
 
         // clear filled lines
         if (clearRow)
@@ -119,8 +127,10 @@ public class Board : MonoBehaviour
             ClearLine(i => (row, i));   // clear grid[row, i]
             rowCounts[row] = 0;
 
-            // update the column counts
+            // update the other counts
             for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+            rDiagCount = DecrementCount(rDiagCount);
+            lDiagCount = DecrementCount(lDiagCount);
 
             pointsScored += 5;
         }
@@ -129,8 +139,34 @@ public class Board : MonoBehaviour
             ClearLine(i => (i, col));   // clear grid[i, col]
             colCounts[col] = 0;
 
-            // update the row counts
+            // update the other counts
             for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+            rDiagCount = DecrementCount(rDiagCount);
+            lDiagCount = DecrementCount(lDiagCount);
+
+            pointsScored += 5;
+        }
+        if (clearRDiag)
+        {
+            ClearLine(i => (i, i));      // clear grid[i, i]
+            rDiagCount = 0;
+
+            // update the other counts
+            for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+            for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+            lDiagCount = DecrementCount(lDiagCount);
+
+            pointsScored += 5;
+        }
+        if (clearLDiag)
+        {
+            ClearLine(i => (RowSize - 1 - i, i));
+            lDiagCount = 0;
+
+            // update the other counts
+            for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+            for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+            rDiagCount = DecrementCount(rDiagCount);
 
             pointsScored += 5;
         }
