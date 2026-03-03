@@ -139,7 +139,7 @@ public class Board : MonoBehaviour
     {
         int linesCleared = (row ? 1 : 0) + (col ? 1 : 0) + (rDiag ? 1 : 0) + (lDiag ? 1 : 0);
 
-        return linesCleared * 5;
+        return linesCleared * linesCleared * 5; // multiply by lines cleared again for the combo score
     }
 
     // param is a lambda for the index, and returns whether a line is all the same color
