@@ -1,3 +1,8 @@
+/**
+ * Insert File Description
+ * 
+ */
+
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -110,7 +115,7 @@ public class GamePlay : MonoBehaviour
         player.SnapToCell(cell);
 
         // the board checks for filled rows and returns the points scored during the turn
-        int points = board.SetFilled(cell, player.GetSprite(), player.GetNum());
+        int points = board.AddToBoard(cell, player.GetSprite(), player.GetNum());
 
         // update the score text
         if (points > 0)
