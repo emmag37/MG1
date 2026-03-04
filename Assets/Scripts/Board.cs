@@ -67,7 +67,7 @@ public class Board : MonoBehaviour
     }
 
     // returns the points scored on the turn
-    public int SetFilled(Vector2Int pos, Sprite sprite, int num)
+    public int AddToBoard(Vector2Int pos, Sprite sprite, int num)
     {
         Vector2Int index = WorldPosToIndex(pos);
         grid[index.x, index.y].AssignSprite(sprite, num);           // render the player
