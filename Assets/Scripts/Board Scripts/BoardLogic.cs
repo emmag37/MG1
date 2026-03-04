@@ -1,3 +1,9 @@
+/**
+ * Insert File Description
+ * 
+ */
+
+
 using UnityEngine;
 using System;
 
@@ -19,14 +25,12 @@ public class BoardLogic
 
     }
 
-
     // ================================
     // Constants
     // ================================
     private const int RowSize = 5;
     private const int WildCard = 6;
     private const int Empty = -1;
-
 
     // ================================
     // Private Fields
@@ -227,5 +231,7 @@ public class BoardLogic
             var (r, c) = indexSelector(i);
             gridColors[r, c] = Empty;
         }
+
+        numSpotsFilled -= 4;
     }
 }

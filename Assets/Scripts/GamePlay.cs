@@ -9,28 +9,37 @@ using System;
 
 public class GamePlay : MonoBehaviour
 {
-
-    // Prefabs/gameobjects
-    public Player playerPrefab;
-
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private PlayerImage nextPlayerImage;
-
-    // events
+    // ================================
+    // Events
+    // ================================
     public event Action<int> GameOver;
     public event Action<int> UpdateScore;
 
-    // children objects
+    // ================================
+    // Prefabs
+    // ================================
+    public Player playerPrefab;
+
+    // ================================
+    // Inspector Fields
+    // ================================
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private PlayerImage nextPlayerImage;
+
+    // ================================
+    // Private Fields
+    // ================================
     private Board board;
     private PlayerPicker picker;
+    private Player player;                  // current active player
+    private Bounds boardBounds;             // grid bounds (for the player)
 
-    // private variables
-    private Player player;      // current active player
-    private Bounds boardBounds;           // grid bounds
     private bool gameOver = false;
+    private int score;                      // current game score
 
-    // score variables
-    private int score;      // current game score
+    // ================================
+    // Unity Lifecycle Methods
+    // ================================
 
     void Awake()
     {
@@ -69,6 +78,11 @@ public class GamePlay : MonoBehaviour
         SpawnNewPlayer();
     }
 
+
+    // ================================
+    // Public Methods
+    // ================================
+
     public void Pause()
     {
         // simply disable the player
@@ -81,31 +95,9 @@ public class GamePlay : MonoBehaviour
         player.enabled = true;
     }
 
-    private void RestartGame()
-    {
-        // reset the game play
-        gameOver = false;
-        board.Reset();
-        picker.Reset();
-        score = 0;
-
-        // spawn the first player
-        SpawnNewPlayer();
-    }
-
-    // updating this function to instantiate the player, instead of player generator
-    private void SpawnNewPlayer()
-    {
-        int nextColor = picker.GetNextPlayerColor();    // must call this BEFORE new color
-        nextPlayerImage.SetSprite(nextColor);
-
-        int color = picker.GetNewPlayerColor();
-
-        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation); // need to make sure the initial position is correct
-        player.Initialize(color, boardBounds);
-
-        player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;       // enable to listen for event - remember to decrement when you disable player
-    }
+    // ================================
+    // Event Handlers
+    // ================================
 
     // Function is called when the player is released - resets each frame
     // Essentially manages all of the game play actions, could clean this up with more helpers
@@ -150,4 +142,37 @@ public class GamePlay : MonoBehaviour
     {
         gameOver = true;
     }
+
+
+    // ================================
+    // Private Methods
+    // ================================
+
+    private void RestartGame()
+    {
+        // reset the game play
+        gameOver = false;
+        board.Reset();
+        picker.Reset();
+        score = 0;
+
+        // spawn the first player
+        SpawnNewPlayer();
+    }
+
+    // updating this function to instantiate the player, instead of player generator
+    private void SpawnNewPlayer()
+    {
+        int nextColor = picker.GetNextPlayerColor();    // must call this BEFORE new color
+        nextPlayerImage.SetSprite(nextColor);
+
+        int color = picker.GetNewPlayerColor();
+
+        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation); // need to make sure the initial position is correct
+        player.Initialize(color, boardBounds);
+
+        player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;       // enable to listen for event - remember to decrement when you disable player
+    }
+
+    
 }

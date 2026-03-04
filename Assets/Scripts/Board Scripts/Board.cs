@@ -1,49 +1,34 @@
+/**
+ * Insert File Description
+ * 
+ */
+
+
 using UnityEngine;
 using System;
 
 public class Board : MonoBehaviour
 {
     // ================================
-    // Public Types
-    // ================================
-
-    // ================================
     // Constants
     // ================================
+    private const int RowSize = 5;
 
     // ================================
     // Events
     // ================================
-
-    // ================================
-    // Inspector Fields
-    // ================================
+    public event Action BoardFull;
 
     // ================================
     // Private Fields
     // ================================
+    private BoardLogic logic;
+    private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
+
 
     // ================================
     // Unity Lifecycle Methods
     // ================================
-
-    // ================================
-    // Public Methods
-    // ================================
-
-    // ================================
-    // Private Methods
-    // ================================
-
-    private BoardLogic logic;
-
-    private const int RowSize = 5;
-
-    // Events
-    public event Action BoardFull;
-
-    // store the grid children here
-    private Cell[,] grid = new Cell[RowSize, RowSize];
 
     void Awake()
     {
@@ -61,12 +46,13 @@ public class Board : MonoBehaviour
         }
     }
 
-    public Cell GetCell(int x, int y)
-    {
-        return grid[x, y];
-    }
+
+    // ================================
+    // Public Methods
+    // ================================
 
     // returns the points scored on the turn
+    // add a longer description
     public int AddToBoard(Vector2Int index, Sprite sprite, int num)
     {
         grid[index.x, index.y].AssignSprite(sprite, num);           // render the player
@@ -84,12 +70,14 @@ public class Board : MonoBehaviour
     }
 
     // returns whether or not the spot is already filled
+    // add a longer description
     public bool IsFilled(Vector2Int index)
     {
         return logic.PosIsFilled(index.x, index.y);
     }
 
     // resets the board to empty slots
+    // add a longer description
     public void Reset()
     {
         foreach (Cell cell in grid)
@@ -100,7 +88,11 @@ public class Board : MonoBehaviour
         logic.ResetBoard();
     }
 
-    // parameter is a lambda function for line clearing logic
+
+    // ================================
+    // Private Methods
+    // ================================
+
     private void ClearGridLine(Func<int, (int r, int c)> indexSelector)
     {
         for (int i = 0; i < RowSize; i++)
