@@ -9,18 +9,25 @@ using System;
 
 public class GamePlay : MonoBehaviour
 {
+
+    // Prefabs/gameobjects
+    public Player playerPrefab;
+
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private PlayerImage nextPlayerImage;
+
     // events
     public event Action<int> GameOver;
     public event Action<int> UpdateScore;
 
     // children objects
     private Board board;
-    private PlayerGenerator player_gen;
+    private PlayerPicker picker;
 
     // private variables
     private Player player;      // current active player
-    private Bounds b;           // grid bounds
-    private bool game_over = false;
+    private Bounds boardBounds;           // grid bounds
+    private bool gameOver = false;
 
     // score variables
     private int score;      // current game score
@@ -29,10 +36,10 @@ public class GamePlay : MonoBehaviour
     {
         // cache the children objects
         board = transform.GetChild(0).GetComponent<Board>();
-        player_gen = transform.GetChild(1).GetComponent<PlayerGenerator>();
+        picker = new PlayerPicker();
 
         // cache the boundaries
-        b = board.GetComponent<SpriteRenderer>().bounds;
+        boardBounds = board.GetComponent<SpriteRenderer>().bounds;
 
         // subscribe to events
         board.BoardFull += HandleBoardFull;
@@ -42,7 +49,7 @@ public class GamePlay : MonoBehaviour
     void OnEnable()
     {
         // reset if the game has run before
-        if (game_over) RestartGame();
+        if (gameOver) RestartGame();
     }
 
     void OnDisable()
@@ -54,12 +61,12 @@ public class GamePlay : MonoBehaviour
         Destroy(player.gameObject);
 
         // set game over
-        game_over = true;
+        gameOver = true;
     }
 
     void Start()
     {
-        player = Spawn();
+        SpawnNewPlayer();
     }
 
     public void Pause()
@@ -77,21 +84,27 @@ public class GamePlay : MonoBehaviour
     private void RestartGame()
     {
         // reset the game play
-        game_over = false;
+        gameOver = false;
         board.Reset();
+        picker.Reset();
         score = 0;
 
         // spawn the first player
-        player = Spawn();
+        SpawnNewPlayer();
     }
 
-    private Player Spawn()
+    // updating this function to instantiate the player, instead of player generator
+    private void SpawnNewPlayer()
     {
-        Player new_player = player_gen.SpawnPlayer();
-        new_player.SetBoundaries(b.min.x, b.max.x, b.max.y);
-        new_player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;       // enable to listen for event - remember to decrement when you disable player
+        int nextColor = picker.GetNextPlayerColor();    // must call this BEFORE new color
+        nextPlayerImage.SetSprite(nextColor);
 
-        return new_player;
+        int color = picker.GetNewPlayerColor();
+
+        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation); // need to make sure the initial position is correct
+        player.Initialize(color, boardBounds);
+
+        player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;       // enable to listen for event - remember to decrement when you disable player
     }
 
     // Function is called when the player is released - resets each frame
@@ -109,7 +122,7 @@ public class GamePlay : MonoBehaviour
         player.SnapToBoard();
 
         // the board checks for filled rows and returns the points scored during the turn
-        int points = board.AddToBoard(boardIndex, player.GetSprite(), player.GetNum());
+        int points = board.AddToBoard(boardIndex, player.GetSprite(), player.GetSpriteNum());
 
         // update the score text
         if (points > 0)
@@ -123,18 +136,18 @@ public class GamePlay : MonoBehaviour
         Destroy(player.gameObject);
 
         // check for a game over
-        if (game_over)
+        if (gameOver)
         {
             // throw event to the game manager
             GameOver?.Invoke(score);
             return; // don't respawn
         }
 
-        player = Spawn();
+        SpawnNewPlayer();
     }
 
     private void HandleBoardFull()
     {
-        game_over = true;
+        gameOver = true;
     }
 }

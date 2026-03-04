@@ -13,10 +13,9 @@ public class Player : MonoBehaviour
     public event Action<Vector2Int> PlayerReleasedOnBoard;
 
     // Components
-    private SpriteRenderer sr;
     private Camera cam;
-    private int sprite_num;
-
+    private PlayerImage image;
+    
     // Move Variables
     private bool isDragging = false;
     private Vector3 dragOffset;
@@ -35,12 +34,12 @@ public class Player : MonoBehaviour
     void Awake()
     {
         // get components
-        sr = GetComponent<SpriteRenderer>();
         cam = Camera.main;
+        image = GetComponent<PlayerImage>();
 
         minX = 0; maxX = 0; maxY = 0;
         minY = transform.position.y;
-        radius = sr.bounds.extents.x; // half-width
+        radius = image.GetSpriteBounds().extents.x; // half-width
 
         start_pos = transform.position;
 
@@ -53,39 +52,23 @@ public class Player : MonoBehaviour
         Move();
     }
 
-    /* Set the player's sprite to a new one, and updates the layer for visibility */
-    public void SetSprite(Sprite newSprite, int num)
+    // add a more in depth explanation
+    public void Initialize(int color, Bounds boardBounds)
     {
-        sr.sprite = newSprite;
-        sr.sortingOrder = 1;
-
-        sprite_num = num;
+        image.SetSprite(color);
+        SetBoundaries(boardBounds.min.x, boardBounds.max.x, boardBounds.max.y);
     }
 
     public Sprite GetSprite()
     {
-        return sr.sprite;
+        return image.GetSprite();
     }
 
-    public int GetNum()
+    public int GetSpriteNum()
     {
-        return sprite_num;
+        return image.GetNum();
     }
 
-    public void SetBoundaries(float x1, float x2, float y)
-    {
-        // adjust these with the player's radius
-        minX = x1 + radius;
-        maxX = x2 - radius;
-        maxY = y - radius;
-
-        // use these for grid math
-        float grid_width = x2 - x1;
-        float spacing = (grid_width - radius * 10) / 6;
-        cell_offset = radius * 2 + spacing;
-        cell0_pos = new Vector3(x2 - grid_width/2, y - grid_width/2, 0);
-    }
-    
     public void Move()
     {
         if (Mouse.current == null) return;
@@ -137,8 +120,23 @@ public class Player : MonoBehaviour
     }
 
     // returns the cell the player is hovering on, else returns (-1, -1)
-        // change this to set an internal position(useful for the transform math),
-		// but return a position usable by other game objects
+    // change this to set an internal position(useful for the transform math),
+    // but return a position usable by other game objects
+
+    private void SetBoundaries(float x1, float x2, float y)
+    {
+        // adjust these with the player's radius
+        minX = x1 + radius;
+        maxX = x2 - radius;
+        maxY = y - radius;
+
+        // use these for grid math
+        float grid_width = x2 - x1;
+        float spacing = (grid_width - radius * 10) / 6;
+        cell_offset = radius * 2 + spacing;
+        cell0_pos = new Vector3(x2 - grid_width / 2, y - grid_width / 2, 0);
+    }
+
     private Vector2Int CheckOnBoard()
     {
         int row = Mathf.RoundToInt((transform.position.y - cell0_pos.y) / cell_offset);
