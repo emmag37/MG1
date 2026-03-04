@@ -113,7 +113,7 @@ public class BoardLogic
         if (result.ClearRDiag) ClearRDiagonal();
         if (result.ClearLDiag) ClearLDiagonal();
 
-        CalculatePoints(result);
+        result.Points = CalculatePoints(result);
 
         if (result.Points == 0) numSpotsFilled++;   // The player fills a spot if no lines cleared
 
@@ -140,7 +140,7 @@ public class BoardLogic
     }
 
     // sets the number of points scored in result
-    private void CalculatePoints(PlayResult result)
+    private int CalculatePoints(PlayResult result)
     {
         int linesCleared =
             (result.ClearRow ? 1 : 0) +
@@ -148,7 +148,8 @@ public class BoardLogic
             (result.ClearRDiag ? 1 : 0) +
             (result.ClearLDiag ? 1 : 0);
 
-        result.Points = linesCleared * linesCleared * 5; // multiply by lines cleared again for the combo score
+        int points = linesCleared * linesCleared * 5; // multiply by lines cleared again for the combo score
+        return points;
     }
 
     // returns whether the line indicated by indexSelector is all color, assumes that the line is full
@@ -180,6 +181,7 @@ public class BoardLogic
     // Line Clearing Helpers
     private void ClearRow(int row)
     {
+        SetLineEmpty(i => (row, i));
         rowCounts[row] = 0;
 
         // update the other counts
@@ -189,6 +191,7 @@ public class BoardLogic
     }
     private void ClearColumn(int col)
     {
+        SetLineEmpty(i => (i, col));
         colCounts[col] = 0;
 
         // update the other counts
@@ -198,6 +201,7 @@ public class BoardLogic
     }
     private void ClearRDiagonal()
     {
+        SetLineEmpty(i => (i, i));
         rDiagCount = 0;
 
         // update the other counts
@@ -207,11 +211,21 @@ public class BoardLogic
     }
     private void ClearLDiagonal()
     {
+        SetLineEmpty(i => (RowSize - 1 - i, i));
         lDiagCount = 0;
 
         // update the other counts
         for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
         for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
         rDiagCount = DecrementCount(rDiagCount);
+    }
+
+    private void SetLineEmpty(Func<int, (int r, int c)> indexSelector)
+    {
+        for (int i = 0; i < RowSize; i++)
+        {
+            var (r, c) = indexSelector(i);
+            gridColors[r, c] = Empty;
+        }
     }
 }

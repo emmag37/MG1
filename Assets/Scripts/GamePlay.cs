@@ -50,7 +50,7 @@ public class GamePlay : MonoBehaviour
         if (player == null) return;
 
         // destroy the player
-        player.PlayerReleased -= HandlePlayerReleased;
+        player.PlayerReleasedOnBoard -= HandlePlayerReleasedOnBoard;
         Destroy(player.gameObject);
 
         // set game over
@@ -89,33 +89,27 @@ public class GamePlay : MonoBehaviour
     {
         Player new_player = player_gen.SpawnPlayer();
         new_player.SetBoundaries(b.min.x, b.max.x, b.max.y);
-        new_player.PlayerReleased += HandlePlayerReleased;       // enable to listen for event - remember to decrement when you disable player
+        new_player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;       // enable to listen for event - remember to decrement when you disable player
 
         return new_player;
     }
 
     // Function is called when the player is released - resets each frame
     // Essentially manages all of the game play actions, could clean this up with more helpers
-    private void HandlePlayerReleased(Player curr_player)
+    private void HandlePlayerReleasedOnBoard(Vector2Int boardIndex)
     {
-        if (curr_player != player)
-        {
-            return; // throw an exception or something?
-        }
-
         // check if the player is on an available spot on the grid
-        Vector2Int cell = player.OnCell();
-        if (cell.x == -3 || board.IsFilled(cell))
+        if (board.IsFilled(boardIndex))
         {
             player.ReturnToStart();
             return;
         }
 
         // add player to the grid
-        player.SnapToCell(cell);
+        player.SnapToBoard();
 
         // the board checks for filled rows and returns the points scored during the turn
-        int points = board.AddToBoard(cell, player.GetSprite(), player.GetNum());
+        int points = board.AddToBoard(boardIndex, player.GetSprite(), player.GetNum());
 
         // update the score text
         if (points > 0)
@@ -125,7 +119,7 @@ public class GamePlay : MonoBehaviour
         }
 
         // remove player - always remove even if game over
-        player.PlayerReleased -= HandlePlayerReleased;
+        player.PlayerReleasedOnBoard -= HandlePlayerReleasedOnBoard;
         Destroy(player.gameObject);
 
         // check for a game over

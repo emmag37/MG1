@@ -10,7 +10,7 @@ using System;
 public class Player : MonoBehaviour
 {
     // Events
-    public event Action<Player> PlayerReleased;
+    public event Action<Vector2Int> PlayerReleasedOnBoard;
 
     // Components
     private SpriteRenderer sr;
@@ -28,6 +28,10 @@ public class Player : MonoBehaviour
     private Vector3 cell0_pos;      // origin
     private Vector3 start_pos;      // starting position
 
+    private Vector2Int gridPos;        // index on coord sys centered at origin
+
+    private static readonly Vector2Int NotOnBoard = new Vector2Int(-1, -1);
+
     void Awake()
     {
         // get components
@@ -39,6 +43,8 @@ public class Player : MonoBehaviour
         radius = sr.bounds.extents.x; // half-width
 
         start_pos = transform.position;
+
+        gridPos = new Vector2Int(-3, -3);   // default for not on grid
     }
 
     // Update is called once per frame
@@ -118,34 +124,43 @@ public class Player : MonoBehaviour
         {
             isDragging = false;
 
-            PlayerReleased?.Invoke(this);
+            // if the player is on a cell, invoke player released
+            Vector2Int boardIndex = CheckOnBoard();
+            if (boardIndex == NotOnBoard)
+            {
+                ReturnToStart();
+            } else
+            {
+                PlayerReleasedOnBoard?.Invoke(boardIndex);
+            }
         }
     }
 
     // returns the cell the player is hovering on, else returns (-1, -1)
-    public Vector2Int OnCell()
+        // change this to set an internal position(useful for the transform math),
+		// but return a position usable by other game objects
+    private Vector2Int CheckOnBoard()
     {
-        Vector2Int grid_pos = new Vector2Int(-3, -3);     // default value for not on grid
-
         int row = Mathf.RoundToInt((transform.position.y - cell0_pos.y) / cell_offset);
-
         int col = Mathf.RoundToInt((transform.position.x - cell0_pos.x) / cell_offset);
 
         if ((row >= -2 && row <= 2) && (col >= -2 && col <= 2)) // make sure it's on the grid
         {
-            grid_pos.x = row;
-            grid_pos.y = col;
+            gridPos.x = row;
+            gridPos.y = col;
+
+            return GridPosToBoardIndex(gridPos);
         }
 
-        return grid_pos;
+        return NotOnBoard;
     }
 
-    public void SnapToCell(Vector2Int cell)
+    public void SnapToBoard()
     {
         Vector3 new_pos = transform.position;
 
-        new_pos.y = cell0_pos.y + cell.x * cell_offset;
-        new_pos.x = cell0_pos.x + cell.y * cell_offset;
+        new_pos.y = cell0_pos.y + gridPos.x * cell_offset;
+        new_pos.x = cell0_pos.x + gridPos.y * cell_offset;
 
         transform.position = new_pos;
     }
@@ -153,5 +168,17 @@ public class Player : MonoBehaviour
     public void ReturnToStart()
     {
         transform.position = start_pos;
+    }
+
+    // converts the world row, col to the grid index
+    private Vector2Int GridPosToBoardIndex(Vector2Int pos)
+    {
+        // where do these Vector2s exist?
+        Vector2Int index = new Vector2Int();
+
+        index.x = (pos.x * -1) + 2;   // reverse row direction first
+        index.y = pos.y + 2;
+
+        return index;
     }
 }

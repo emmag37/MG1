@@ -67,9 +67,8 @@ public class Board : MonoBehaviour
     }
 
     // returns the points scored on the turn
-    public int AddToBoard(Vector2Int pos, Sprite sprite, int num)
+    public int AddToBoard(Vector2Int index, Sprite sprite, int num)
     {
-        Vector2Int index = WorldPosToIndex(pos);
         grid[index.x, index.y].AssignSprite(sprite, num);           // render the player
 
         var result = logic.PlacePlayer(index, num);                 // run the play calculations
@@ -85,9 +84,9 @@ public class Board : MonoBehaviour
     }
 
     // returns whether or not the spot is already filled
-    public bool IsFilled(Vector2Int pos)
+    public bool IsFilled(Vector2Int index)
     {
-        return logic.PosIsFilled(pos.x, pos.y);
+        return logic.PosIsFilled(index.x, index.y);
     }
 
     // resets the board to empty slots
@@ -99,18 +98,6 @@ public class Board : MonoBehaviour
         }
 
         logic.ResetBoard();
-    }
-
-    // converts the world row, col to the grid index
-    private Vector2Int WorldPosToIndex(Vector2Int pos)
-    {
-        // where do these Vector2s exist?
-        Vector2Int index = new Vector2Int();
-
-        index.x = (pos.x * -1) + 2;   // reverse row direction first
-        index.y = pos.y + 2;
-
-        return index;
     }
 
     // parameter is a lambda function for line clearing logic
