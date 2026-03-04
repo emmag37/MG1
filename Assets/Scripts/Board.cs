@@ -1,13 +1,42 @@
-/**
- * Insert File Description
- * 
- */
-
 using UnityEngine;
 using System;
 
 public class Board : MonoBehaviour
 {
+    // ================================
+    // Public Types
+    // ================================
+
+    // ================================
+    // Constants
+    // ================================
+
+    // ================================
+    // Events
+    // ================================
+
+    // ================================
+    // Inspector Fields
+    // ================================
+
+    // ================================
+    // Private Fields
+    // ================================
+
+    // ================================
+    // Unity Lifecycle Methods
+    // ================================
+
+    // ================================
+    // Public Methods
+    // ================================
+
+    // ================================
+    // Private Methods
+    // ================================
+
+    private BoardLogic logic;
+
     private const int RowSize = 5;
 
     // Events
@@ -15,8 +44,6 @@ public class Board : MonoBehaviour
 
     // store the grid children here
     private Cell[,] grid = new Cell[RowSize, RowSize];
-
-    private BoardLogic logic;
 
     void Awake()
     {
@@ -26,7 +53,6 @@ public class Board : MonoBehaviour
         int index = 0;
         for (int x = 0; x < RowSize; x++)
         {
-            // initialize the cells
             for (int y = 0; y < RowSize; y++)
             {
                 grid[x, y] = transform.GetChild(index).GetComponent<Cell>();
@@ -35,12 +61,33 @@ public class Board : MonoBehaviour
         }
     }
 
+    public Cell GetCell(int x, int y)
+    {
+        return grid[x, y];
+    }
+
+    // returns the points scored on the turn
+    public int SetFilled(Vector2Int pos, Sprite sprite, int num)
+    {
+        Vector2Int index = WorldPosToIndex(pos);
+        grid[index.x, index.y].AssignSprite(sprite, num);           // render the player
+
+        var result = logic.PlacePlayer(index, num);                 // run the play calculations
+        if (result.FullBoard) BoardFull?.Invoke();                  // activate a game over
+
+        // render empty sprites for full lines
+        if (result.ClearRow) ClearGridLine(i => (index.x, i));
+        if (result.ClearCol) ClearGridLine(i => (i, index.y));
+        if (result.ClearRDiag) ClearGridLine(i => (i, i));
+        if (result.ClearLDiag) ClearGridLine(i => (RowSize - 1 - i, i));
+
+        return result.Points;
+    }
+
     // returns whether or not the spot is already filled
     public bool IsFilled(Vector2Int pos)
     {
-        Vector2Int index = WorldPosToIndex(pos);
-
-        return logic.PosIsFilled(index.x, index.y);
+        return logic.PosIsFilled(pos.x, pos.y);
     }
 
     // resets the board to empty slots
@@ -52,27 +99,6 @@ public class Board : MonoBehaviour
         }
 
         logic.ResetBoard();
-    }
-
-    // returns the points scored on the turn
-    public int AddToBoard(Vector2Int pos, Sprite sprite, int num)
-    {
-        Vector2Int index = WorldPosToIndex(pos);
-        int row = index.x;
-        int col = index.y;
-
-        grid[row, col].AssignSprite(sprite, num);           // render the player
-
-        var result = logic.PlacePlayer(index, num);         // runs the play
-        if (result.FullBoard) BoardFull?.Invoke();          // initiate a game over, ends function
-
-        // clear filled lines to empty sprites
-        if (result.ClearRow) ClearGridLine(i => (row, i));
-        if (result.ClearCol) ClearGridLine(i => (i, col));
-        if (result.ClearRDiag) ClearGridLine(i => (i, i));
-        if (result.ClearLDiag) ClearGridLine(i => (RowSize - 1 - i, i));
-
-        return result.Points;
     }
 
     // converts the world row, col to the grid index

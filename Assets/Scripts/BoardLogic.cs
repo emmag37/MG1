@@ -9,7 +9,7 @@ public class BoardLogic
     public struct PlayResult
     {
         public int Points;
-        
+
         public bool ClearRow;
         public bool ClearCol;
         public bool ClearRDiag;
