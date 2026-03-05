@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float cellOffset;               // grid calculation variables
     private Vector3 originCellPos;
+    private int rowSize;
 
     private Vector3 startPos;
 
@@ -50,14 +51,20 @@ public class PlayerMovement : MonoBehaviour
     // ================================
     // Public Methods
     // ================================
-    public void InitializeBoundaries(float boardLeft, float boardRight, float boardTop, float radius)
+    public void InitializeBoundaries(Bounds board, float radius, int boardRowSize)
     {
+        rowSize = boardRowSize;
+
+        float boardLeft = board.min.x;
+        float boardRight = board.max.x;
+        float boardTop = board.max.y;
+
         minX = boardLeft + radius;
         maxX = boardRight - radius;
         maxY = boardTop - radius;
 
         float gridWidth = boardRight - boardLeft;
-        float spacing = (gridWidth - radius * 10) / 6;      // magic number
+        float spacing = (gridWidth - radius * (rowSize * 2)) / (rowSize + 1);
 
         cellOffset = radius * 2 + spacing;
         originCellPos = new Vector3(boardRight - gridWidth / 2, boardTop - gridWidth / 2, 0);
@@ -141,8 +148,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2Int index = new Vector2Int();
 
-        index.x = 2 - pos.x;   // reverse row direction first
-        index.y = pos.y + 2;
+        index.x = (rowSize - 1) / 2 - pos.x;   // reverse row direction first
+        index.y = pos.y + (rowSize - 1) / 2;
 
         return index;
     }
@@ -151,8 +158,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2Int index = new Vector2Int();
 
-        index.x = 2 - pos.x;   // reverse row direction first
-        index.y = pos.y - 2;
+        index.x = (rowSize - 1) / 2 - pos.x;   // reverse row direction first
+        index.y = pos.y - (rowSize - 1) / 2;
 
         return index;
     }

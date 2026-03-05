@@ -9,11 +9,6 @@ using System;
 public class Player : MonoBehaviour
 {
     // ================================
-    // Constants
-    // ================================
-    private static readonly Vector2Int NotOnBoard = new Vector2Int(-1, -1);
-
-    // ================================
     // Events
     // ================================
     public event Action<Vector2Int> PlayerReleasedOnBoard;
@@ -24,7 +19,8 @@ public class Player : MonoBehaviour
     private GamePieceImage image;
     private PlayerMovement movement;
 
-    private Vector2Int boardPos;             
+    private int rowSize;
+    private Vector2Int boardPos;
 
     // ================================
     // Unity Lifecycle Methods
@@ -43,10 +39,12 @@ public class Player : MonoBehaviour
     // ================================
 
     // add summaries
-    public void Initialize(int color, Bounds boardBounds)
+    public void Initialize(int color, Bounds boardBounds, int boardRowSize)
     {
+        rowSize = boardRowSize;
+
         image.SetSprite(color);
-        movement.InitializeBoundaries(boardBounds.min.x, boardBounds.max.x, boardBounds.max.y, image.GetSpriteBounds().extents.x);
+        movement.InitializeBoundaries(boardBounds, image.GetSpriteBounds().extents.x, rowSize);
     }
 
     public int GetSpriteColor()
@@ -91,12 +89,9 @@ public class Player : MonoBehaviour
     // Private Methods
     // ================================
     
-    // returns the cell the player is hovering on, else returns (-1, -1)
-    // change this to set an internal position(useful for the transform math),
-    // but return a position usable by other game objects
     private bool CheckOnBoard(int row, int col)
     {
-        return (row >= 0 && row <= 4) && (col >= 0 && col <= 4);
+        return (row >= 0 && row <= rowSize - 1) && (col >= 0 && col <= rowSize - 1);
     }
 
     

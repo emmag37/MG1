@@ -12,6 +12,11 @@ public class GamePlay : MonoBehaviour
     // ================================
     // Events
     // ================================
+    private const RowSize = 5;  // if you change row size in the future it must be odd for an origin cell
+
+    // ================================
+    // Events
+    // ================================
     public event Action<int> GameOver;
     public event Action<int> UpdateScore;
 
@@ -167,7 +172,7 @@ public class GamePlay : MonoBehaviour
         nextPlayerImage.SetSprite(playerColors.nextColor);
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation); // need to make sure the initial position is correct
-        player.Initialize(playerColors.color, boardBounds);
+        player.Initialize(playerColors.color, boardBounds, RowSize);
 
         player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;       // enable to listen for event - remember to decrement when you disable player
     }
