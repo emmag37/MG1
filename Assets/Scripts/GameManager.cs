@@ -8,13 +8,10 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    // Game State
-    private enum GameState { Active, Inactive };   
-    private static GameState state;
-
-    // private variables
+    // ================================
+    // Inspector Fields
+    // ================================
     [SerializeField] private GamePlay gamePlay;
-    private int highScore;
 
     // Canvases
     [SerializeField] private GameObject homeCanvas;
@@ -27,7 +24,20 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text highScoreText;
     [SerializeField] private Text gameOverScoreText;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    // ================================
+    // Private Fields
+    // ================================
+    private enum GameState { Active, Inactive };
+    private static GameState state;
+
+    private int highScore;
+
+
+    // ================================
+    // Unity Lifecycle Methods
+    // ================================
+
     void Start()
     {
         // subscribe to the game play events
@@ -43,22 +53,11 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // event handlers
-    private void HandleGameOver(int score)
-    {
-        // update the game over text
-        gameOverScoreText.text = $"{score}";
 
-        // exit the game scene
-        EndGame(gameOverCanvas);
-    }
+    // ================================
+    // Button Methods
+    // ================================
 
-    private void HandleNewScore(int score)
-    {
-        UpdateScoreText(score);
-    }
-
-    // button functions
     // only called from home screen
     public void OnPlayButtonClicked()
     {
@@ -107,10 +106,33 @@ public class GameManager : MonoBehaviour
         gamePlay.Resume();
     }
 
-    // helper functions
+
+    // ================================
+    // Event Handlers
+    // ================================
+
+    private void HandleGameOver(int score)
+    {
+        // update the game over text
+        gameOverScoreText.text = $"{score}";
+
+        // exit the game scene
+        EndGame(gameOverCanvas);
+    }
+
+    private void HandleNewScore(int score)
+    {
+        UpdateScoreText(score);
+    }
+
+
+    // ================================
+    // Private Methods
+    // ================================
+
     // navigates to a new game from the given canvas
-        // old game must be closed before hand
-        // only function that changes the game state to active
+    // old game must be closed before hand
+    // only function that changes the game state to active
     private void NewGame(GameObject currentCanvas)
     {
         // makes sure to close any currently running game
@@ -143,6 +165,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Inactive");
     }
 
+    // UI Helpers
     private void UpdateScoreText(int score)
     {
         scoreText.text = $"{score}";

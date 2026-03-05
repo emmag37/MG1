@@ -9,50 +9,69 @@ using System;
 
 public class Player : MonoBehaviour
 {
+    // ================================
+    // Public Types
+    // ================================
+
+    // ================================
+    // Constants
+    // ================================
+    private static readonly Vector2Int NotOnBoard = new Vector2Int(-1, -1);
+    private static readonly Vector2Int NotOnGrid = new Vector2Int(-3, -3);
+
+    // ================================
     // Events
+    // ================================
     public event Action<Vector2Int> PlayerReleasedOnBoard;
 
-    // Components
+    // ================================
+    // Inspector Fields
+    // ================================
+
+    // ================================
+    // Private Fields
+    // ================================
     private Camera cam;
     private PlayerImage image;
-    
-    // Move Variables
+
     private bool isDragging = false;
     private Vector3 dragOffset;
-    private float minX, maxX, minY, maxY;
+
+    private float minX, maxX, minY, maxY;   // boundary variables
     private float radius;
+    
+    private float cellOffset;               // grid calculation variables
+    private Vector3 originCellPos;          
 
-    // Grid Placement Variables
-    private float cell_offset = 0;  // spacing + radius
-    private Vector3 cell0_pos;      // origin
-    private Vector3 start_pos;      // starting position
+    private Vector3 startPos;
+    private Vector2Int gridPos;             // index on coord sys centered at origin
 
-    private Vector2Int gridPos;        // index on coord sys centered at origin
-
-    private static readonly Vector2Int NotOnBoard = new Vector2Int(-1, -1);
+    // ================================
+    // Unity Lifecycle Methods
+    // ================================
 
     void Awake()
     {
-        // get components
         cam = Camera.main;
         image = GetComponent<PlayerImage>();
 
-        minX = 0; maxX = 0; maxY = 0;
         minY = transform.position.y;
-        radius = image.GetSpriteBounds().extents.x; // half-width
+        radius = image.GetSpriteBounds().extents.x;
 
-        start_pos = transform.position;
-
-        gridPos = new Vector2Int(-3, -3);   // default for not on grid
+        startPos = transform.position;
+        gridPos = NotOnGrid;
     }
 
-    // Update is called once per frame
     void Update()
     {
         Move();
     }
 
-    // add a more in depth explanation
+    // ================================
+    // Initializers and Access
+    // ================================
+
+    // add summaries
     public void Initialize(int color, Bounds boardBounds)
     {
         image.SetSprite(color);
@@ -69,24 +88,28 @@ public class Player : MonoBehaviour
         return image.GetNum();
     }
 
+    // ================================
+    // Public Methods
+    // ================================
+
+    // add description - maybe even simplify this further
+    // why is this public??
     public void Move()
     {
         if (Mouse.current == null) return;
-
-        // obtain the mouse world coordinates
-        Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
+        
+        Vector2 mouseScreenPos = Mouse.current.position.ReadValue();    // obtain the mouse world coordinates
         Vector3 mouseWorldPos = cam.ScreenToWorldPoint(mouseScreenPos);
         mouseWorldPos.z = 0;
 
         // start moving
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            // check if mouse is on the collider
-            Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos);
+            Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos); // check if mouse is on the collider
             if (hit && hit.gameObject == gameObject)
             {
                 isDragging = true;
-                dragOffset = transform.position - mouseWorldPos;    // define offset
+                dragOffset = transform.position - mouseWorldPos;
             }
         }
 
@@ -95,8 +118,7 @@ public class Player : MonoBehaviour
         {
             Vector3 newPos = mouseWorldPos + dragOffset;    // calculate new position
 
-            // clamp position to boundaries
-            newPos.x = Mathf.Clamp(newPos.x, minX, maxX);
+            newPos.x = Mathf.Clamp(newPos.x, minX, maxX);   // clamp position to boundaries
             newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
 
             transform.position = newPos;
@@ -107,40 +129,42 @@ public class Player : MonoBehaviour
         {
             isDragging = false;
 
-            // if the player is on a cell, invoke player released
             Vector2Int boardIndex = CheckOnBoard();
             if (boardIndex == NotOnBoard)
             {
                 ReturnToStart();
-            } else
+            }
+            else
             {
-                PlayerReleasedOnBoard?.Invoke(boardIndex);
+                PlayerReleasedOnBoard?.Invoke(boardIndex);      // throw event to the game manager
             }
         }
+    }
+
+    // ================================
+    // Private Methods
+    // ================================
+
+    private void InitializeBoundaries(float boardLeft, float boardRight, float boardTop)
+    {
+        minX = boardLeft + radius;
+        maxX = boardRight - radius;
+        maxY = boardTop - radius;
+
+        float gridWidth = boardRight - boardLeft;
+        float spacing = (gridWidth - radius * 10) / 6;      // magic number
+
+        cellOffset = radius * 2 + spacing;
+        originCellPos = new Vector3(boardRight - gridWidth / 2, boardTop - gridWidth / 2, 0);
     }
 
     // returns the cell the player is hovering on, else returns (-1, -1)
     // change this to set an internal position(useful for the transform math),
     // but return a position usable by other game objects
-
-    private void SetBoundaries(float x1, float x2, float y)
-    {
-        // adjust these with the player's radius
-        minX = x1 + radius;
-        maxX = x2 - radius;
-        maxY = y - radius;
-
-        // use these for grid math
-        float grid_width = x2 - x1;
-        float spacing = (grid_width - radius * 10) / 6;
-        cell_offset = radius * 2 + spacing;
-        cell0_pos = new Vector3(x2 - grid_width / 2, y - grid_width / 2, 0);
-    }
-
     private Vector2Int CheckOnBoard()
     {
-        int row = Mathf.RoundToInt((transform.position.y - cell0_pos.y) / cell_offset);
-        int col = Mathf.RoundToInt((transform.position.x - cell0_pos.x) / cell_offset);
+        int row = Mathf.RoundToInt((transform.position.y - originCellPos.y) / cellOffset);
+        int col = Mathf.RoundToInt((transform.position.x - originCellPos.x) / cellOffset);
 
         if ((row >= -2 && row <= 2) && (col >= -2 && col <= 2)) // make sure it's on the grid
         {
@@ -157,15 +181,15 @@ public class Player : MonoBehaviour
     {
         Vector3 new_pos = transform.position;
 
-        new_pos.y = cell0_pos.y + gridPos.x * cell_offset;
-        new_pos.x = cell0_pos.x + gridPos.y * cell_offset;
+        new_pos.y = originCellPos.y + gridPos.x * cellOffset;
+        new_pos.x = originCellPos.x + gridPos.y * cellOffset;
 
         transform.position = new_pos;
     }
 
     public void ReturnToStart()
     {
-        transform.position = start_pos;
+        transform.position = startPos;
     }
 
     // converts the world row, col to the grid index

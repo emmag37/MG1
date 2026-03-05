@@ -8,10 +8,6 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     // ================================
-    // Public Types
-    // ================================
-
-    // ================================
     // Constants
     // ================================
 
@@ -22,6 +18,7 @@ public class Cell : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
+    [SerializeField] private Sprite emptySprite;
 
     // ================================
     // Private Fields
@@ -42,7 +39,6 @@ public class Cell : MonoBehaviour
 
     // Components
     private SpriteRenderer sr;
-    private Sprite empty_sprite;
     private int color = -1;    // represents the color that the space is filled with, -1 means empty
 
     // Called before start
@@ -50,7 +46,6 @@ public class Cell : MonoBehaviour
     {
         // Cache values
         sr = GetComponent<SpriteRenderer>();
-        empty_sprite = sr.sprite;
     }
 
     // Fills the cell with the new color
@@ -68,7 +63,7 @@ public class Cell : MonoBehaviour
 
     public void Reset()
     {
-        sr.sprite = empty_sprite;
+        sr.sprite = emptySprite;
         color = -1;
     }
 }
