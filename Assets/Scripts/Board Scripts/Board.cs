@@ -52,11 +52,13 @@ public class Board : MonoBehaviour
 
     // returns the points scored on the turn
     // add a longer description
-    public int AddToBoard(Vector2Int index, int num)
+    public int AddToBoard(Vector2Int index, int color)
     {
-        grid[index.x, index.y].SetSprite(num);                      // render the player on the board
+        grid[index.x, index.y].SetSprite(color);                      // render the player on the board
 
-        var result = logic.PlacePlayer(index, num);                 // run the play calculations
+        Debug.Log("add color " + color + " to the board");
+
+        var result = logic.PlacePlayer(index, color);                 // run the play calculations
         if (result.FullBoard) BoardFull?.Invoke();                  // activate a game over
 
         // render empty sprites for full lines

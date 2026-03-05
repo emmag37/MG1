@@ -114,7 +114,7 @@ public class GamePlay : MonoBehaviour
         player.SnapToBoard();
 
         // the board checks for filled rows and returns the points scored during the turn
-        int points = board.AddToBoard(boardIndex, player.GetSpriteNum());
+        int points = board.AddToBoard(boardIndex, player.GetSpriteColor());
 
         // update the score text
         if (points > 0)

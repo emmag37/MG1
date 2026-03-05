@@ -29,8 +29,8 @@ public class BoardLogic
     // Constants
     // ================================
     private const int RowSize = 5;
-    private const int WildCard = 6;
-    private const int Empty = -1;
+    private const int WildCard = 7;
+    private const int Empty = 0;
 
     // ================================
     // Private Fields

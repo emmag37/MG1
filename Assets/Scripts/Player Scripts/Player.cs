@@ -70,7 +70,7 @@ public class Player : MonoBehaviour
         InitializeBoundaries(boardBounds.min.x, boardBounds.max.x, boardBounds.max.y);
     }
 
-    public int GetSpriteNum()
+    public int GetSpriteColor()
     {
         return image.GetNum();
     }

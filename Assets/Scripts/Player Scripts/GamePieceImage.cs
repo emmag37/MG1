@@ -10,7 +10,6 @@ public class GamePieceImage : MonoBehaviour
     // ================================
     // Constants
     // ================================
-    private const int sortLayer = 1;
     private const int emptyColor = 0;
 
     // ================================
@@ -44,7 +43,6 @@ public class GamePieceImage : MonoBehaviour
     public void SetSprite(int color)
     {
         gamePieceRenderer.sprite = sprites[color];
-        gamePieceRenderer.sortingOrder = sortLayer;
 
         spriteColor = color;
     }
@@ -62,6 +60,7 @@ public class GamePieceImage : MonoBehaviour
     // add short summary
     public void ResetPiece()
     {
+        Debug.Log("Reset piece");
         gamePieceRenderer.sprite = sprites[emptyColor];
         spriteColor = emptyColor;
     }
