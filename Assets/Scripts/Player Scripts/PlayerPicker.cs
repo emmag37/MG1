@@ -9,18 +9,21 @@ public class PlayerPicker
     // ================================
     // Public Types
     // ================================
-    // want to add a struct so that it returns both colors at once
+    public struct Colors
+    {
+        public int color;
+        public int nextColor;
+    }
 
     // ================================
     // Constants
     // ================================
     private const int numColors = 7;
-    
+
     // ================================
     // Private Fields
     // ================================
-    private int color;     // holds the value of the current color
-    private int nextColor; // holds the value of the next color
+    private Colors currentColors;
 
     // ================================
     // Constructors
@@ -34,8 +37,8 @@ public class PlayerPicker
     // reset for a new game
     public void Reset()
     {
-        color = ChooseColor(); // sets up the first color
-        nextColor = ChooseColor(); // sets up the next color
+        currentColors.color = ChooseColor(); // sets up the first color
+        currentColors.nextColor = ChooseColor(); // sets up the next color
     }
 
     // ================================
@@ -43,26 +46,20 @@ public class PlayerPicker
     // ================================
 
     // only function that updates the color
-    public int GetNewPlayerColor()
+    public Colors GetNewPlayerColors()
     {
-        int current = color;
+        Colors colors = currentColors;              // return the current, non-updated state
 
-        color = nextColor;
-        nextColor = ChooseColor();
+        currentColors.color = currentColors.nextColor;
+        currentColors.nextColor = ChooseColor();
 
-        return current;
+        return colors;
     }
-
-    // combine this into get new player color
-    public int GetNextPlayerColor()
-    {
-        return nextColor;
-    }
-
 
     // ================================
     // Private Methods
     // ================================
+
 
     // want to eventually create an algorithm so that this isn't just random
     private int ChooseColor()

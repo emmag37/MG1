@@ -31,9 +31,9 @@ public class GamePlay : MonoBehaviour
     // ================================
     private Board board;
     private PlayerPicker picker;
-    private Player player;                  // current active player
     private Bounds boardBounds;             // grid bounds (for the player)
 
+    private Player player;                  // current active player
     private bool gameOver = false;
     private int score;                      // current game score
 
@@ -163,13 +163,11 @@ public class GamePlay : MonoBehaviour
     // updating this function to instantiate the player, instead of player generator
     private void SpawnNewPlayer()
     {
-        int nextColor = picker.GetNextPlayerColor();    // must call this BEFORE new color
-        nextPlayerImage.SetSprite(nextColor);
-
-        int color = picker.GetNewPlayerColor();
+        var playerColors = picker.GetNewPlayerColors();
+        nextPlayerImage.SetSprite(playerColors.nextColor);
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation); // need to make sure the initial position is correct
-        player.Initialize(color, boardBounds);
+        player.Initialize(playerColors.color, boardBounds);
 
         player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;       // enable to listen for event - remember to decrement when you disable player
     }
