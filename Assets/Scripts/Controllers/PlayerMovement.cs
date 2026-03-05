@@ -37,9 +37,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         cam = Camera.main;
-
         minY = transform.position.y;
-
         startPos = transform.position;
     }
 

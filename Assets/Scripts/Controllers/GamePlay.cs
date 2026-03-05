@@ -12,7 +12,7 @@ public class GamePlay : MonoBehaviour
     // ================================
     // Events
     // ================================
-    private const RowSize = 5;  // if you change row size in the future it must be odd for an origin cell
+    private const int RowSize = 5;  // if you change row size in the future it must be odd for an origin cell
 
     // ================================
     // Events
