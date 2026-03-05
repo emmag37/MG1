@@ -118,15 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d48585638463417da58dc58cb510e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerImage
-  sprites:
-  - {fileID: -8018301501876842473, guid: dacb0099cb045420288ef259b2a71223, type: 3}
-  - {fileID: -4398183398628465896, guid: 3fa1e98c71ad441f5aefc31fa4e6d43b, type: 3}
-  - {fileID: -889739676950766307, guid: 0cdf620c3e04b4b7d9db6ad41ba63fc5, type: 3}
-  - {fileID: 1100518483029294565, guid: 4614f53b00f9e48c4a90f852b0f6b65f, type: 3}
-  - {fileID: -9169288093058239792, guid: e6640541384cd4c5fb1979ed1dbc1804, type: 3}
-  - {fileID: -8220739445154938260, guid: 1a4eacc705e844e119f4abde42805c18, type: 3}
-  - {fileID: -3960636200471010725, guid: 832291117dce94591ba960d0614b4b1d, type: 3}
-  - {fileID: 8486922304394019570, guid: 3b1529c46ee694b30bc3f0ce4759dc5d, type: 3}
+  spriteD8: {fileID: 11400000, guid: 544cef78139544414a071eeb8de0df91, type: 2}
   gamePieceRenderer: {fileID: 228505503889433268}
 --- !u!58 &2672367680601543132
 CircleCollider2D:

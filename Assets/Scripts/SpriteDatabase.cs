@@ -1,16 +1,12 @@
+/**
+ * Insert File Description
+ * 
+ */
+
 using UnityEngine;
 
-public class SpriteDatabase : MonoBehaviour
+[CreateAssetMenu(fileName = "SpriteDatabase", menuName = "Game/Sprite Database")]
+public class SpriteDatabase : ScriptableObject
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Sprite[] sprites;
 }

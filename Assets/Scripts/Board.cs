@@ -56,8 +56,6 @@ public class Board : MonoBehaviour
     {
         grid[index.x, index.y].SetSprite(color);                      // render the player on the board
 
-        Debug.Log("add color " + color + " to the board");
-
         var result = logic.PlacePlayer(index, color);                 // run the play calculations
         if (result.FullBoard) BoardFull?.Invoke();                  // activate a game over
 

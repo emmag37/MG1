@@ -16,8 +16,7 @@ public class GamePieceImage : MonoBehaviour
     // Inspector Fields
     // ================================
     // 0: empty, 1: color1, 2: color2, 3: color3, 4: color4, 5: color5, 6: color6, 7: wildcard
-    public Sprite[] sprites;
-
+    [SerializeField] private SpriteDatabase spriteD8;
     [SerializeField] private SpriteRenderer gamePieceRenderer;
 
     // ================================
@@ -42,7 +41,7 @@ public class GamePieceImage : MonoBehaviour
     // need to add one to the player picker
     public void SetSprite(int color)
     {
-        gamePieceRenderer.sprite = sprites[color];
+        gamePieceRenderer.sprite = spriteD8.sprites[color];
 
         spriteColor = color;
     }
@@ -60,8 +59,7 @@ public class GamePieceImage : MonoBehaviour
     // add short summary
     public void ResetPiece()
     {
-        Debug.Log("Reset piece");
-        gamePieceRenderer.sprite = sprites[emptyColor];
+        gamePieceRenderer.sprite = spriteD8.sprites[emptyColor];
         spriteColor = emptyColor;
     }
 
