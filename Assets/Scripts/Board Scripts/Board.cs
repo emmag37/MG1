@@ -3,7 +3,6 @@
  * 
  */
 
-
 using UnityEngine;
 using System;
 
@@ -23,7 +22,7 @@ public class Board : MonoBehaviour
     // Private Fields
     // ================================
     private BoardLogic logic;
-    private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
+    private GamePieceImage[,] grid = new GamePieceImage[RowSize, RowSize];  // grid children
 
 
     // ================================
@@ -40,7 +39,7 @@ public class Board : MonoBehaviour
         {
             for (int y = 0; y < RowSize; y++)
             {
-                grid[x, y] = transform.GetChild(index).GetComponent<Cell>();
+                grid[x, y] = transform.GetChild(index).GetComponent<GamePieceImage>();
                 index++;
             }
         }
@@ -53,9 +52,9 @@ public class Board : MonoBehaviour
 
     // returns the points scored on the turn
     // add a longer description
-    public int AddToBoard(Vector2Int index, Sprite sprite, int num)
+    public int AddToBoard(Vector2Int index, int num)
     {
-        grid[index.x, index.y].AssignSprite(sprite, num);           // render the player
+        grid[index.x, index.y].SetSprite(num);                      // render the player on the board
 
         var result = logic.PlacePlayer(index, num);                 // run the play calculations
         if (result.FullBoard) BoardFull?.Invoke();                  // activate a game over
@@ -80,9 +79,9 @@ public class Board : MonoBehaviour
     // add a longer description
     public void Reset()
     {
-        foreach (Cell cell in grid)
+        foreach (GamePieceImage image in grid)
         {
-            cell.Reset();
+            image.ResetPiece();
         }
 
         logic.ResetBoard();
@@ -98,7 +97,7 @@ public class Board : MonoBehaviour
         for (int i = 0; i < RowSize; i++)
         {
             var (r, c) = indexSelector(i);
-            grid[r, c].Reset();
+            grid[r, c].ResetPiece();
         }
     }
 }

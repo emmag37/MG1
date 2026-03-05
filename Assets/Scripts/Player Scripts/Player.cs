@@ -10,10 +10,6 @@ using System;
 public class Player : MonoBehaviour
 {
     // ================================
-    // Public Types
-    // ================================
-
-    // ================================
     // Constants
     // ================================
     private static readonly Vector2Int NotOnBoard = new Vector2Int(-1, -1);
@@ -25,14 +21,10 @@ public class Player : MonoBehaviour
     public event Action<Vector2Int> PlayerReleasedOnBoard;
 
     // ================================
-    // Inspector Fields
-    // ================================
-
-    // ================================
     // Private Fields
     // ================================
     private Camera cam;
-    private PlayerImage image;
+    private GamePieceImage image;
 
     private bool isDragging = false;
     private Vector3 dragOffset;
@@ -53,7 +45,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         cam = Camera.main;
-        image = GetComponent<PlayerImage>();
+        image = GetComponent<GamePieceImage>();
 
         minY = transform.position.y;
         radius = image.GetSpriteBounds().extents.x;
@@ -68,25 +60,21 @@ public class Player : MonoBehaviour
     }
 
     // ================================
-    // Initializers and Access
+    // Initialize and Access Methods
     // ================================
 
     // add summaries
     public void Initialize(int color, Bounds boardBounds)
     {
         image.SetSprite(color);
-        SetBoundaries(boardBounds.min.x, boardBounds.max.x, boardBounds.max.y);
-    }
-
-    public Sprite GetSprite()
-    {
-        return image.GetSprite();
+        InitializeBoundaries(boardBounds.min.x, boardBounds.max.x, boardBounds.max.y);
     }
 
     public int GetSpriteNum()
     {
         return image.GetNum();
     }
+
 
     // ================================
     // Public Methods
@@ -141,6 +129,24 @@ public class Player : MonoBehaviour
         }
     }
 
+    // add a summary
+    public void SnapToBoard()
+    {
+        Vector3 newTransform = transform.position;
+
+        newTransform.y = originCellPos.y + gridPos.x * cellOffset;
+        newTransform.x = originCellPos.x + gridPos.y * cellOffset;
+
+        transform.position = newTransform;
+    }
+
+    // add a summary
+    public void ReturnToStart()
+    {
+        transform.position = startPos;
+    }
+
+
     // ================================
     // Private Methods
     // ================================
@@ -166,7 +172,7 @@ public class Player : MonoBehaviour
         int row = Mathf.RoundToInt((transform.position.y - originCellPos.y) / cellOffset);
         int col = Mathf.RoundToInt((transform.position.x - originCellPos.x) / cellOffset);
 
-        if ((row >= -2 && row <= 2) && (col >= -2 && col <= 2)) // make sure it's on the grid
+        if ((row >= -2 && row <= 2) && (col >= -2 && col <= 2)) // check for a grid index - magic numbers, get rid of these
         {
             gridPos.x = row;
             gridPos.y = col;
@@ -177,25 +183,9 @@ public class Player : MonoBehaviour
         return NotOnBoard;
     }
 
-    public void SnapToBoard()
-    {
-        Vector3 new_pos = transform.position;
-
-        new_pos.y = originCellPos.y + gridPos.x * cellOffset;
-        new_pos.x = originCellPos.x + gridPos.y * cellOffset;
-
-        transform.position = new_pos;
-    }
-
-    public void ReturnToStart()
-    {
-        transform.position = startPos;
-    }
-
     // converts the world row, col to the grid index
     private Vector2Int GridPosToBoardIndex(Vector2Int pos)
     {
-        // where do these Vector2s exist?
         Vector2Int index = new Vector2Int();
 
         index.x = (pos.x * -1) + 2;   // reverse row direction first

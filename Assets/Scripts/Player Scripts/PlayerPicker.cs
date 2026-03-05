@@ -67,6 +67,6 @@ public class PlayerPicker
     // want to eventually create an algorithm so that this isn't just random
     private int ChooseColor()
     {
-        return Random.Range(0, numColors);
+        return Random.Range(1, numColors + 1);  // 0 is reserved for the empty sprite
     }
 }
