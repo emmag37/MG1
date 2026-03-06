@@ -3,9 +3,8 @@
  * 
  */
 
-// pick up where you left off:
-    // link everything in the inspector
-    // perform the canvas changing functions
+// continue editing:
+    // game over does not launch game over canvas
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,9 +24,9 @@ public class UIManager : MonoBehaviour
 
     // Canvases
     [SerializeField] private GameObject homeCanvas;
-    [SerializeField] private GameObject gameCanvas;
+    [SerializeField] private GameObject gamePlayCanvas;
     [SerializeField] private GameObject gameOverCanvas;
-    [SerializeField] private GameObject gameSettingsCanvas;
+    [SerializeField] private GameObject settingsCanvas;
 
     // text
     [SerializeField] private Text scoreText;
@@ -43,16 +42,26 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Events
     // ==================================================
-    public event Action<> StartGame;
-    public event Action<> EndGame;
-    public event Action<> PauseGame;
-    public event Action<> ResumeGame;
+    public event Action StartGame;
+    public event Action EndGame;
+    public event Action PauseGame;
+    public event Action ResumeGame;
 
 
     // ==================================================
     // Private Fields
     // ==================================================
+    private GameObject currentCanvas;
 
+
+    // ================================
+    // Unity Lifecycle Methods
+    // ================================
+
+    void Start()
+    {
+        currentCanvas = homeCanvas;
+    }
 
     // ==================================================
     // Public Methods
@@ -61,21 +70,14 @@ public class UIManager : MonoBehaviour
     {
         gameOverScoreText.text = $"{score}";    // update the score text
 
-        // update the ui canvases
+        ChangeCanvas(gameOverCanvas);
     }
 
-    public void UpdateScoreText(int score)
+    public void UpdateScoreText(int score, int highScore)
     {
+        Debug.Log("score: " + score + ", high score: " + highScore);
+
         scoreText.text = $"{score}";
-
-        // update high score
-        if (score > highScore)
-        {
-            highScore = score;
-            PlayerPrefs.SetInt("highScore", highScore);
-            PlayerPrefs.Save();
-        }
-
         highScoreText.text = $"{highScore}";
     }
 
@@ -84,46 +86,54 @@ public class UIManager : MonoBehaviour
     // Button Methods
     // ================================
 
-    // only called from home screen
-    public void OnPlayButtonClicked()
+    public void OnPlayClicked()
     {
+        // assume current canvas is the home screen or game over screen
+
+        ChangeCanvas(gamePlayCanvas);
         StartGame?.Invoke();
-
-        // change the canvas
-
     }
 
-    // called from game settings and game over
-    public void OnReplayButtonClicked(string button)
+    public void OnHomeClicked()
     {
+        // assume game over screen
+
+        ChangeCanvas(homeCanvas);
+    }
+
+    public void OnReplayClicked()
+    {
+        // assume the current canvas is the settings screen
+            // leave as not pop up for now, add that back in later
+
         EndGame?.Invoke();
 
+        ChangeCanvas(gamePlayCanvas);
         StartGame?.Invoke();
-
-        // change the canvas
     }
 
-    // called from game settings and game over
-    public void OnHomeButtonClicked(string button)
+    public void OnExitGameClicked()
     {
-        EndGame?.Invoke();
+        // assume the current canvas is the settings screen
 
-        // change the canvas
+        EndGame?.Invoke();
+        ChangeCanvas(homeCanvas);
     }
 
-    // also a pause
+    public void OnCloseSettingsClicked()
+    {
+        // assume the current canvas is the settings screen
+
+        ChangeCanvas(gamePlayCanvas);
+        ResumeGame?.Invoke();
+    }
+
     public void OnSettingsClicked()
     {
+        // assume the current canvas is the game play screen
+
         PauseGame?.Invoke();
-
-        // change the canvas
-    }
-
-    public void OnSettingsExitClicked()
-    {
-        ResumeGame?.Invoke();
-
-        // change the canvas
+        ChangeCanvas(settingsCanvas);
     }
 
 
@@ -131,6 +141,12 @@ public class UIManager : MonoBehaviour
     // Private Methods
     // ==================================================
 
+    private void ChangeCanvas(GameObject newCanvas)
+    {
+        currentCanvas.SetActive(false);
+        newCanvas.SetActive(true);
 
+        currentCanvas = newCanvas;
+    }
 
 }

@@ -18,8 +18,8 @@ public class GameManager : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
-    private enum GameState { Active, Inactive };
-    private static GameState state;
+    //private enum GameState { Active, Inactive };    // update this
+    //private static GameState state;
 
     private int highScore;
 
@@ -42,11 +42,9 @@ public class GameManager : MonoBehaviour
 
         // load high score
         highScore = PlayerPrefs.GetInt("highScore", 0);
+        Debug.Log("loaded high score: " + highScore);
 
-        // initialize game state
-        state = GameState.Inactive;
-        Debug.Log("Inactive");
-
+        uiManager.UpdateScoreText(0, highScore);
     }
     
 
@@ -66,15 +64,20 @@ public class GameManager : MonoBehaviour
 
     private void HandleNewScore(int score)
     {
-        uiManager.UpdateScoreText(score);
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt("highScore", highScore);
+            PlayerPrefs.Save();
+        }
+
+        uiManager.UpdateScoreText(score, highScore);
     }
 
     // UI Manager Events
     private void HandleStartGame()
     {
-        gamePlay.gameObject.SetActive(true);        // game play resets itself on enable
-
-        state = GameState.Active;
+        gamePlay.gameObject.SetActive(true);
     }
 
     private void HandleEndGame()
@@ -100,8 +103,6 @@ public class GameManager : MonoBehaviour
     private void EndGame()
     {
         gamePlay.gameObject.SetActive(false);
-
-        state = GameState.Inactive;
     }
 
 }
