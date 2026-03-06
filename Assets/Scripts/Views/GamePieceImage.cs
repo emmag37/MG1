@@ -10,19 +10,18 @@ public class GamePieceImage : MonoBehaviour
     // ================================
     // Constants
     // ================================
+
     private const int emptyColor = 0;
+
 
     // ================================
     // Inspector Fields
     // ================================
+
     // 0: empty, 1: color1, 2: color2, 3: color3, 4: color4, 5: color5, 6: color6, 7: wildcard
     [SerializeField] private SpriteDatabase spriteD8;
     [SerializeField] private SpriteRenderer gamePieceRenderer;
 
-    // ================================
-    // Private Fields
-    // ================================
-    private int spriteColor;
 
     // ================================
     // Unity Lifecycle Methods
@@ -33,6 +32,7 @@ public class GamePieceImage : MonoBehaviour
         gamePieceRenderer = GetComponent<SpriteRenderer>();
     }
 
+
     // ================================
     // Access Methods
     // ================================
@@ -42,25 +42,17 @@ public class GamePieceImage : MonoBehaviour
     public void SetSprite(int color)
     {
         gamePieceRenderer.sprite = spriteD8.sprites[color];
-
-        spriteColor = color;
     }
 
-    public int GetNum()
+    public float GetRadius()
     {
-        return spriteColor;
-    }
-
-    public Bounds GetSpriteBounds()
-    {
-        return gamePieceRenderer.bounds;
+        return gamePieceRenderer.bounds.extents.x;
     }
 
     // add short summary
     public void ResetPiece()
     {
         gamePieceRenderer.sprite = spriteD8.sprites[emptyColor];
-        spriteColor = emptyColor;
     }
 
 

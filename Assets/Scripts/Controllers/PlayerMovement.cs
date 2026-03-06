@@ -7,12 +7,19 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
+// edits to do:
+    // change this class so that it ONLY moves the player
+    // does not know anything about the grid
+    // needs:
+        // boundaries to clamp movement to
+        // pass a position to this class when the player should snap to the grid
+
 public class PlayerMovement : MonoBehaviour
 {
     // ================================
     // Events
     // ================================
-    public event Action<Vector2Int> PlayerReleased;
+    public event Action<Vector3> PlayerReleased;
 
     // ================================
     // Private Fields
@@ -22,11 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isDragging = false;
     private Vector3 dragOffset;
 
-    private float minX, maxX, minY, maxY;   // boundary variables
-
-    private float cellOffset;               // grid calculation variables
-    private Vector3 originCellPos;
-    private int rowSize;
+    private float minX, maxX, minY, maxY;
 
     private Vector3 startPos;
 
@@ -37,7 +40,6 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         cam = Camera.main;
-        minY = transform.position.y;
         startPos = transform.position;
     }
 
@@ -47,37 +49,26 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // ================================
-    // Public Methods
+    // Initialization
     // ================================
-    public void InitializeBoundaries(Bounds board, float radius, int boardRowSize)
+
+    public void Initialize(float left, float right, float top)
     {
-        rowSize = boardRowSize;
-
-        float boardLeft = board.min.x;
-        float boardRight = board.max.x;
-        float boardTop = board.max.y;
-
-        minX = boardLeft + radius;
-        maxX = boardRight - radius;
-        maxY = boardTop - radius;
-
-        float gridWidth = boardRight - boardLeft;
-        float spacing = (gridWidth - radius * (rowSize * 2)) / (rowSize + 1);
-
-        cellOffset = radius * 2 + spacing;
-        originCellPos = new Vector3(boardRight - gridWidth / 2, boardTop - gridWidth / 2, 0);
+        minX = left;
+        maxX = right;
+        minY = startPos.y;
+        maxY = top;
     }
 
+
+    // ================================
+    // Public Methods
+    // ================================
+
     // add a summary
-    public void SnapToBoard(Vector2Int boardIndex)
+    public void SnapToPosition(Vector3 newPosition)
     {
-        Vector3 newTransform = transform.position;
-        Vector2Int gridIndex = BoardToGridIndex(boardIndex);
-
-        newTransform.y = originCellPos.y + gridIndex.x * cellOffset;
-        newTransform.x = originCellPos.x + gridIndex.y * cellOffset;
-
-        transform.position = newTransform;
+        transform.position = newPosition;
     }
 
     // add a summary
@@ -125,41 +116,10 @@ public class PlayerMovement : MonoBehaviour
         if (isDragging && Mouse.current.leftButton.wasReleasedThisFrame)
         {
             isDragging = false;
-
-            Vector2Int boardIndex = TransformToBoardIndex();
-            PlayerReleased?.Invoke(boardIndex);      // throw event to the player
+            PlayerReleased?.Invoke(transform.position);      // throw event to the player
         }
     }
 
-    // Index Calculations
-    private Vector2Int TransformToBoardIndex()
-    {
-        Vector2Int gridIndex = new Vector2Int();
-
-        gridIndex.x = Mathf.RoundToInt((transform.position.y - originCellPos.y) / cellOffset);
-        gridIndex.y = Mathf.RoundToInt((transform.position.x - originCellPos.x) / cellOffset);
-
-        return GridToBoardIndex(gridIndex);
-    }
-
-    private Vector2Int GridToBoardIndex(Vector2Int pos)
-    {
-        Vector2Int index = new Vector2Int();
-
-        index.x = (rowSize - 1) / 2 - pos.x;   // reverse row direction first
-        index.y = pos.y + (rowSize - 1) / 2;
-
-        return index;
-    }
-
-    private Vector2Int BoardToGridIndex(Vector2Int pos)
-    {
-        Vector2Int index = new Vector2Int();
-
-        index.x = (rowSize - 1) / 2 - pos.x;   // reverse row direction first
-        index.y = pos.y - (rowSize - 1) / 2;
-
-        return index;
-    }
+    
 
 }

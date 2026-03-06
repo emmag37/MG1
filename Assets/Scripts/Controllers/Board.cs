@@ -22,6 +22,8 @@ public class Board : MonoBehaviour
     // Private Fields
     // ================================
     private BoardLogic logic;
+    private BoardGeometry boardGeometry;
+
     private GamePieceImage[,] grid = new GamePieceImage[RowSize, RowSize];  // grid children
 
 
@@ -32,6 +34,8 @@ public class Board : MonoBehaviour
     void Awake()
     {
         logic = new BoardLogic();
+
+        boardGeometry = GetComponent<BoardGeometry>();
 
         // access the cells from the game scene
         int index = 0;
@@ -52,8 +56,10 @@ public class Board : MonoBehaviour
 
     // returns the points scored on the turn
     // add a longer description
-    public int AddToBoard(Vector2Int index, int color)
+    public int AddToBoard(Vector3 position, int color)
     {
+        Vector2Int index = new Vector2Int(0, 0);        // need to convert the position to the grid index
+
         grid[index.x, index.y].SetSprite(color);                      // render the player on the board
 
         var result = logic.PlacePlayer(index, color);                 // run the play calculations
@@ -68,11 +74,11 @@ public class Board : MonoBehaviour
         return result.Points;
     }
 
-    // returns whether or not the spot is already filled
+    // calculates the new postion of the player on the board. returns positive infinity if invalid
     // add a longer description
-    public bool IsFilled(Vector2Int index)
+    public Vector3 GetNewPlayerPosition(Vector3 position)
     {
-        return logic.PosIsFilled(index.x, index.y);
+        return Vector3.positiveInfinity;
     }
 
     // resets the board to empty slots

@@ -13,11 +13,6 @@ using System;
 public class UIManager : MonoBehaviour
 {
     // ==================================================
-    // Constants
-    // ==================================================
-
-
-    // ==================================================
     // Inspector Fields
     // (Editable in Unity Inspector)
     // ==================================================
@@ -69,14 +64,11 @@ public class UIManager : MonoBehaviour
     public void GameOver(int score)
     {
         gameOverScoreText.text = $"{score}";    // update the score text
-
         ChangeCanvas(gameOverCanvas);
     }
 
     public void UpdateScoreText(int score, int highScore)
     {
-        Debug.Log("score: " + score + ", high score: " + highScore);
-
         scoreText.text = $"{score}";
         highScoreText.text = $"{highScore}";
     }
@@ -107,7 +99,6 @@ public class UIManager : MonoBehaviour
             // leave as not pop up for now, add that back in later
 
         EndGame?.Invoke();
-
         ChangeCanvas(gamePlayCanvas);
         StartGame?.Invoke();
     }

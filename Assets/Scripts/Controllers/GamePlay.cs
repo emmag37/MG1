@@ -10,30 +10,39 @@ using System;
 public class GamePlay : MonoBehaviour
 {
     // ================================
-    // Events
+    // Constants
     // ================================
+
     private const int RowSize = 5;  // if you change row size in the future it must be odd for an origin cell
+
 
     // ================================
     // Events
     // ================================
+
     public event Action<int> GameOver;
     public event Action<int> UpdateScore;
+
 
     // ================================
     // Prefabs
     // ================================
+
     public Player playerPrefab;
+
 
     // ================================
     // Inspector Fields
     // ================================
+
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private GamePieceImage nextPlayerImage;
+
 
     // ================================
     // Private Fields
     // ================================
+
     private Board board;
     private PlayerPicker picker;
     private Bounds boardBounds;             // grid bounds (for the player)
@@ -42,39 +51,33 @@ public class GamePlay : MonoBehaviour
     private bool gameOver = false;
     private int score;                      // current game score
 
+
     // ================================
     // Unity Lifecycle Methods
     // ================================
 
     void Awake()
     {
-        // cache the children objects
         board = transform.GetChild(0).GetComponent<Board>();
         picker = new PlayerPicker();
 
-        // cache the boundaries
         boardBounds = board.GetComponent<SpriteRenderer>().bounds;
 
-        // subscribe to events
         board.BoardFull += HandleBoardFull;
     }
 
-    // use to start/restart the game
+    // use to restart the game
     void OnEnable()
     {
-        // reset if the game has run before
-        if (gameOver) RestartGame();
+        if (gameOver) RestartGame();        // reset on subsequent games only
     }
 
+    // ends the game
     void OnDisable()
     {
         if (player == null) return;
 
-        // destroy the player
-        player.PlayerReleasedOnBoard -= HandlePlayerReleasedOnBoard;
-        Destroy(player.gameObject);
-
-        // set game over
+        RemoveCurrentPlayer();
         gameOver = true;
     }
 
@@ -90,54 +93,43 @@ public class GamePlay : MonoBehaviour
 
     public void Pause()
     {
-        // simply disable the player
         player.enabled = false;
     }
 
     public void Resume()
     {
-        // enable the player
         player.enabled = true;
     }
+
 
     // ================================
     // Event Handlers
     // ================================
 
-    // Function is called when the player is released - resets each frame
-    // Essentially manages all of the game play actions, could clean this up with more helpers
-    private void HandlePlayerReleasedOnBoard(Vector2Int boardIndex)
+    // runs the turn initiated by the player being released
+    private void HandlePlayerReleasedOnBoard(Vector3 position, int color)
     {
-        // check if the player is on an available spot on the grid
-        if (board.IsFilled(boardIndex))
+        Vector3 newPosition = board.GetNewPlayerPosition(position);
+        if (newPosition == Vector3.positiveInfinity)                        // invalid position
         {
             player.ReturnToStart();
             return;
         }
+        player.SnapToBoard(newPosition);                                    // render the snapping movement to the board
 
-        // add player to the grid
-        player.SnapToBoard();
-
-        // the board checks for filled rows and returns the points scored during the turn
-        int points = board.AddToBoard(boardIndex, player.GetSpriteColor());
-
-        // update the score text
-        if (points > 0)
+        int pointsScored = board.AddToBoard(newPosition, color);            // runs all board logic
+        if (pointsScored > 0)
         {
-            score += points;
+            score += pointsScored;
             UpdateScore?.Invoke(score);
         }
 
-        // remove player - always remove even if game over
-        player.PlayerReleasedOnBoard -= HandlePlayerReleasedOnBoard;
-        Destroy(player.gameObject);
+        RemoveCurrentPlayer();
 
-        // check for a game over
         if (gameOver)
         {
-            // throw event to the game manager
             GameOver?.Invoke(score);
-            return; // don't respawn
+            return;                                                         // don't respawn
         }
 
         SpawnNewPlayer();
@@ -155,13 +147,11 @@ public class GamePlay : MonoBehaviour
 
     private void RestartGame()
     {
-        // reset the game play
         gameOver = false;
         board.Reset();
         picker.Reset();
         score = 0;
 
-        // spawn the first player
         SpawnNewPlayer();
     }
 
@@ -171,11 +161,15 @@ public class GamePlay : MonoBehaviour
         var playerColors = picker.GetNewPlayerColors();
         nextPlayerImage.SetSprite(playerColors.nextColor);
 
-        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation); // need to make sure the initial position is correct
+        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.Initialize(playerColors.color, boardBounds, RowSize);
 
-        player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;       // enable to listen for event - remember to decrement when you disable player
+        player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;
     }
 
-    
+    private void RemoveCurrentPlayer()
+    {
+        player.PlayerReleasedOnBoard -= HandlePlayerReleasedOnBoard;        
+        Destroy(player.gameObject);
+    }
 }

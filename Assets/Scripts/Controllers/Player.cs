@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     // ================================
     // Events
     // ================================
-    public event Action<Vector2Int> PlayerReleasedOnBoard;
+    public event Action<Vector3, int> PlayerReleasedOnBoard;
 
     // ================================
     // Private Fields
@@ -19,8 +19,8 @@ public class Player : MonoBehaviour
     private GamePieceImage image;
     private PlayerMovement movement;
 
-    private int rowSize;
-    private Vector2Int boardPos;
+    private int color;
+
 
     // ================================
     // Unity Lifecycle Methods
@@ -39,33 +39,26 @@ public class Player : MonoBehaviour
     // ================================
 
     // add summaries
-    public void Initialize(int color, Bounds boardBounds, int boardRowSize)
+    public void Initialize(int newColor, Bounds boardBounds, int boardRowSize)
     {
-        rowSize = boardRowSize;
-
+        color = newColor;
         image.SetSprite(color);
-        movement.InitializeBoundaries(boardBounds, image.GetSpriteBounds().extents.x, rowSize);
-    }
 
-    public int GetSpriteColor()
-    {
-        return image.GetNum();
+        float radius = image.GetRadius();         // adjust the board boundaries to the player size
+        float left = boardBounds.min.x + radius;
+        float right = boardBounds.max.x - radius;
+        float top = boardBounds.max.y - radius;
+
+        movement.Initialize(left, right, top);
     }
+    
 
     // ================================
     // Event Handlers
     // ================================
-    public void HandlePlayerRealeased(Vector2Int index)
+    public void HandlePlayerRealeased(Vector3 position)
     {
-        if (CheckOnBoard(index.x, index.y))
-        {
-            boardPos = index;
-            PlayerReleasedOnBoard?.Invoke(boardPos);
-        } else
-        {
-            movement.ReturnToStart();
-        }
-
+        PlayerReleasedOnBoard?.Invoke(position, color);
     }
 
     // ================================
@@ -73,9 +66,9 @@ public class Player : MonoBehaviour
     // ================================
 
     // add a summary
-    public void SnapToBoard()
+    public void SnapToBoard(Vector3 position)
     {
-        movement.SnapToBoard(boardPos);
+        movement.SnapToPosition(position);
     }
 
     // add a summary
@@ -83,16 +76,4 @@ public class Player : MonoBehaviour
     {
         movement.ReturnToStart();
     }
-
-
-    // ================================
-    // Private Methods
-    // ================================
-    
-    private bool CheckOnBoard(int row, int col)
-    {
-        return (row >= 0 && row <= rowSize - 1) && (col >= 0 && col <= rowSize - 1);
-    }
-
-    
 }
