@@ -15,21 +15,12 @@ public class GamePlay : MonoBehaviour
 
     private const int RowSize = 5;  // if you change row size in the future it must be odd for an origin cell
 
-
     // ================================
     // Events
     // ================================
 
     public event Action<int> GameOver;
     public event Action<int> UpdateScore;
-
-
-    // ================================
-    // Prefabs
-    // ================================
-
-    public Player playerPrefab;
-
 
     // ================================
     // Inspector Fields
@@ -38,6 +29,7 @@ public class GamePlay : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private GamePieceImage nextPlayerImage;
 
+    public Player playerPrefab;
 
     // ================================
     // Private Fields
@@ -45,7 +37,6 @@ public class GamePlay : MonoBehaviour
 
     private Board board;
     private PlayerPicker picker;
-    private Bounds boardBounds;             // grid bounds (for the player)
 
     private Player player;                  // current active player
     private bool gameOver = false;
@@ -60,8 +51,6 @@ public class GamePlay : MonoBehaviour
     {
         board = transform.GetChild(0).GetComponent<Board>();
         picker = new PlayerPicker();
-
-        boardBounds = board.GetComponent<SpriteRenderer>().bounds;
 
         board.BoardFull += HandleBoardFull;
     }
@@ -162,7 +151,7 @@ public class GamePlay : MonoBehaviour
         nextPlayerImage.SetSprite(playerColors.nextColor);
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        player.Initialize(playerColors.color, boardBounds, RowSize);
+        player.Initialize(playerColors.color, board.GetBounds(), RowSize);
 
         player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;
     }

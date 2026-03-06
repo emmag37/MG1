@@ -21,8 +21,10 @@ public class Board : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
+    Bounds boardBounds;
+
     private BoardLogic logic;
-    private BoardGeometry boardGeometry;
+    private BoardGeometry geometry;
 
     private GamePieceImage[,] grid = new GamePieceImage[RowSize, RowSize];  // grid children
 
@@ -33,9 +35,7 @@ public class Board : MonoBehaviour
 
     void Awake()
     {
-        logic = new BoardLogic();
-
-        boardGeometry = GetComponent<BoardGeometry>();
+        boardBounds = GetComponent<SpriteRenderer>().bounds;
 
         // access the cells from the game scene
         int index = 0;
@@ -47,6 +47,11 @@ public class Board : MonoBehaviour
                 index++;
             }
         }
+
+        logic = new BoardLogic();
+
+        geometry = new BoardGeometry();
+        geometry.Initialize(RowSize, grid[0, 0].GetRadius(), boardBounds);
     }
 
 
@@ -58,7 +63,7 @@ public class Board : MonoBehaviour
     // add a longer description
     public int AddToBoard(Vector3 position, int color)
     {
-        Vector2Int index = new Vector2Int(0, 0);        // need to convert the position to the grid index
+        Vector2Int index = geometry.TransformToBoardIndex(position);        
 
         grid[index.x, index.y].SetSprite(color);                      // render the player on the board
 
@@ -78,7 +83,11 @@ public class Board : MonoBehaviour
     // add a longer description
     public Vector3 GetNewPlayerPosition(Vector3 position)
     {
-        return Vector3.positiveInfinity;
+        Vector2Int index = geometry.TransformToBoardIndex(position);
+
+        if (!logic.ValidPosition(index.x, index.y)) return Vector3.positiveInfinity;
+
+        return geometry.BoardIndexToTransform(index);
     }
 
     // resets the board to empty slots
@@ -91,6 +100,11 @@ public class Board : MonoBehaviour
         }
 
         logic.ResetBoard();
+    }
+
+    public Bounds GetBounds()
+    {
+        return boardBounds;
     }
 
 

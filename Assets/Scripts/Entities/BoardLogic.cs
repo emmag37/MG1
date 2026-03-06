@@ -56,9 +56,14 @@ public class BoardLogic
     }
 
     // Add a longer description of this method
-    public bool PosIsFilled(int row, int col)
+    public bool ValidPosition(int row, int col)
     {
-        return gridColors[row, col] != Empty;
+        bool valid =
+            (row >= 0 && row <= RowSize - 1) &&
+            (col >= 0 && col <= RowSize - 1) &&
+            gridColors[row, col] != Empty;
+
+        return valid;
     }
 
     // Add a longer description of this method

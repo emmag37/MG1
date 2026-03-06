@@ -10,20 +10,20 @@ using System;
 // edits to do:
     // change this class so that it ONLY moves the player
     // does not know anything about the grid
-    // needs:
-        // boundaries to clamp movement to
-        // pass a position to this class when the player should snap to the grid
 
 public class PlayerMovement : MonoBehaviour
 {
     // ================================
     // Events
     // ================================
+
     public event Action<Vector3> PlayerReleased;
+
 
     // ================================
     // Private Fields
     // ================================
+
     private Camera cam;
 
     private bool isDragging = false;
@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     // ================================
     // Unity Lifecycle Methods
     // ================================
+
     void Awake()
     {
         cam = Camera.main;
@@ -47,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
     }
+
 
     // ================================
     // Initialization
@@ -119,7 +121,4 @@ public class PlayerMovement : MonoBehaviour
             PlayerReleased?.Invoke(transform.position);      // throw event to the player
         }
     }
-
-    
-
 }

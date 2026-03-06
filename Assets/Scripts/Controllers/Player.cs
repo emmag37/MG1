@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
         movement.PlayerReleased += HandlePlayerRealeased;
     }
 
+
     // ================================
     // Initialize and Access Methods
     // ================================
@@ -60,6 +61,7 @@ public class Player : MonoBehaviour
     {
         PlayerReleasedOnBoard?.Invoke(position, color);
     }
+
 
     // ================================
     // Public Methods
