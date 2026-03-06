@@ -1,6 +1,5 @@
 /**
- * Insert File Description
- * 
+ * Insert file description
  */
 
 using UnityEngine;
