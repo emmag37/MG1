@@ -98,15 +98,18 @@ public class GamePlay : MonoBehaviour
     // runs the turn initiated by the player being released
     private void HandlePlayerReleasedOnBoard(Vector3 position, int color)
     {
-        Vector3 newPosition = board.GetNewPlayerPosition(position);
-        if (newPosition == Vector3.positiveInfinity)                        // invalid position
+        Vector3 newPosition;
+        bool validPosition = board.TryGetPlayerPosition(position, out newPosition);
+
+        if (!validPosition)                        
         {
             player.ReturnToStart();
             return;
         }
+
         player.SnapToBoard(newPosition);                                    // render the snapping movement to the board
 
-        int pointsScored = board.AddToBoard(newPosition, color);            // runs all board logic
+        int pointsScored = board.RunPlay(newPosition, color);            // runs all board logic
         if (pointsScored > 0)
         {
             score += pointsScored;

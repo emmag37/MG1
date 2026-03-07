@@ -61,7 +61,7 @@ public class BoardLogic
         bool valid =
             (row >= 0 && row <= RowSize - 1) &&
             (col >= 0 && col <= RowSize - 1) &&
-            gridColors[row, col] != Empty;
+            gridColors[row, col] == Empty;
 
         return valid;
     }

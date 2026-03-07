@@ -61,7 +61,7 @@ public class Board : MonoBehaviour
 
     // returns the points scored on the turn
     // add a longer description
-    public int AddToBoard(Vector3 position, int color)
+    public int RunPlay(Vector3 position, int color)
     {
         Vector2Int index = geometry.TransformToBoardIndex(position);        
 
@@ -81,13 +81,18 @@ public class Board : MonoBehaviour
 
     // calculates the new postion of the player on the board. returns positive infinity if invalid
     // add a longer description
-    public Vector3 GetNewPlayerPosition(Vector3 position)
+    public bool TryGetPlayerPosition(Vector3 position, out Vector3 newPosition)
     {
         Vector2Int index = geometry.TransformToBoardIndex(position);
 
-        if (!logic.ValidPosition(index.x, index.y)) return Vector3.positiveInfinity;
+        if (!logic.ValidPosition(index.x, index.y))
+        {
+            newPosition = Vector3.zero;
+            return false;
+        }
 
-        return geometry.BoardIndexToTransform(index);
+        newPosition = geometry.BoardIndexToTransform(index);
+        return true;
     }
 
     // resets the board to empty slots

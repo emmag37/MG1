@@ -42,7 +42,6 @@ public class GameManager : MonoBehaviour
 
         // load high score
         highScore = PlayerPrefs.GetInt("highScore", 0);
-        Debug.Log("loaded high score: " + highScore);
 
         uiManager.UpdateScoreText(0, highScore);
     }
