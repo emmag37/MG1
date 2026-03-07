@@ -1,15 +1,17 @@
-/**
- * Insert File Description
- * 
- */
 using UnityEngine;
 
+/// <summary>
+/// 
+/// </summary>
 public class PlayerPicker
 {
     // ================================
     // Public Types
     // ================================
-    public struct Colors
+    /// <summary>
+	/// 
+	/// </summary>
+    public struct PlayerColors
     {
         public int color;
         public int nextColor;
@@ -23,32 +25,31 @@ public class PlayerPicker
     // ================================
     // Private Fields
     // ================================
-    private Colors currentColors;
+    private PlayerColors currentColors;
 
     // ================================
     // Constructors
     // ================================
-
+    /// <summary>
+	/// 
+	/// </summary>
     public PlayerPicker()
     {
         Reset();    // function also initializes the values
     }
 
-    // reset for a new game
-    public void Reset()
-    {
-        currentColors.color = ChooseColor(); // sets up the first color
-        currentColors.nextColor = ChooseColor(); // sets up the next color
-    }
 
     // ================================
     // Public Methods
     // ================================
 
-    // only function that updates the color
-    public Colors GetNewPlayerColors()
+    /// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+    public PlayerColors CalculateNewPlayerColors()
     {
-        Colors colors = currentColors;              // return the current, non-updated state
+        PlayerColors colors = currentColors;              // return the current, non-updated state
 
         currentColors.color = currentColors.nextColor;
         currentColors.nextColor = ChooseColor();
@@ -56,12 +57,20 @@ public class PlayerPicker
         return colors;
     }
 
+    /// <summary>
+	/// 
+	/// </summary>
+    public void Reset()
+    {
+        currentColors.color = ChooseColor(); // sets up the first color
+        currentColors.nextColor = ChooseColor(); // sets up the next color
+    }
+
+
     // ================================
     // Private Methods
     // ================================
 
-
-    // want to eventually create an algorithm so that this isn't just random
     private int ChooseColor()
     {
         return Random.Range(1, numColors + 1);  // 0 is reserved for the empty sprite, colors start at 1

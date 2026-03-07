@@ -1,8 +1,9 @@
-/**
- * Insert File Description
- * 
- */
-
+/// <summary>
+/// 
+/// The board logic file is responsible for maintaining the board states and
+/// calucalting filled lines to clear.
+/// 
+/// </summary>
 
 using UnityEngine;
 using System;
@@ -48,14 +49,21 @@ public class BoardLogic
     // Public Methods
     // ================================
 
-    // need a constructor to initialize variables - modify this description
+    /// <summary>
+	/// 
+	/// </summary>
     public BoardLogic()
     {
         // Set the colors on the grid to empty
         ResetGrid();
     }
 
-    // Add a longer description of this method
+    /// <summary>
+	/// 
+	/// </summary>
+	/// <param name="row"></param>
+	/// <param name="col"></param>
+	/// <returns></returns>
     public bool ValidPosition(int row, int col)
     {
         bool valid =
@@ -66,7 +74,9 @@ public class BoardLogic
         return valid;
     }
 
-    // Add a longer description of this method
+    /// <summary>
+	/// 
+	/// </summary>
     public void ResetBoard()
     {
         // Reset counts
@@ -83,7 +93,12 @@ public class BoardLogic
         ResetGrid();
     }
 
-    // Add a longer description of this method
+    /// <summary>
+	/// 
+	/// </summary>
+	/// <param name="index"></param>
+	/// <param name="color"></param>
+	/// <returns></returns>
     public PlayResult PlacePlayer(Vector2Int index, int color)
     {
         PlayResult result = new PlayResult();
@@ -180,10 +195,7 @@ public class BoardLogic
     // safe count decrementer, ensures count never goes below 0
     private int DecrementCount(int count)
     {
-        if (count > 0)
-        {
-            return count - 1;
-        }
+        if (count > 0) return count - 1;
         return 0;
     }
 
@@ -192,8 +204,7 @@ public class BoardLogic
     {
         SetLineEmpty(i => (row, i));
         rowCounts[row] = 0;
-
-        // update the other counts
+        
         for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
         rDiagCount = DecrementCount(rDiagCount);
         lDiagCount = DecrementCount(lDiagCount);
@@ -203,7 +214,6 @@ public class BoardLogic
         SetLineEmpty(i => (i, col));
         colCounts[col] = 0;
 
-        // update the other counts
         for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
         rDiagCount = DecrementCount(rDiagCount);
         lDiagCount = DecrementCount(lDiagCount);
@@ -213,7 +223,6 @@ public class BoardLogic
         SetLineEmpty(i => (i, i));
         rDiagCount = 0;
 
-        // update the other counts
         for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
         for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
         lDiagCount = DecrementCount(lDiagCount);
@@ -223,7 +232,6 @@ public class BoardLogic
         SetLineEmpty(i => (RowSize - 1 - i, i));
         lDiagCount = 0;
 
-        // update the other counts
         for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
         for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
         rDiagCount = DecrementCount(rDiagCount);

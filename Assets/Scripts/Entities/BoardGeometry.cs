@@ -1,3 +1,7 @@
+/// <summary>
+/// 
+/// </summary>
+
 using UnityEngine;
 
 public class BoardGeometry
@@ -14,6 +18,12 @@ public class BoardGeometry
     // Initialization
     // ==================================================
 
+    /// <summary>
+	/// 
+	/// </summary>
+	/// <param name="rows"></param>
+	/// <param name="cellRadius"></param>
+	/// <param name="board"></param>
     public void Initialize(int rows, float cellRadius, Bounds board)
     {
         rowSize = rows;
@@ -34,6 +44,11 @@ public class BoardGeometry
     // Public Methods
     // ==================================================
 
+    /// <summary>
+	/// 
+	/// </summary>
+	/// <param name="position"></param>
+	/// <returns></returns>
     public Vector2Int TransformToBoardIndex(Vector3 position)
     {
         Vector2Int gridIndex = new Vector2Int();
@@ -44,6 +59,11 @@ public class BoardGeometry
         return GridToBoardIndex(gridIndex);
     }
 
+    /// <summary>
+	/// 
+	/// </summary>
+	/// <param name="index"></param>
+	/// <returns></returns>
     public Vector3 BoardIndexToTransform(Vector2Int index)
     {
         Vector3 newTransform = Vector3.zero;

@@ -1,12 +1,10 @@
-/**
- * Insert File Description
- * 
- */
-
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+/// 
+/// </summary>
 public class GamePlay : MonoBehaviour
 {
     // ================================
@@ -150,7 +148,7 @@ public class GamePlay : MonoBehaviour
     // updating this function to instantiate the player, instead of player generator
     private void SpawnNewPlayer()
     {
-        var playerColors = picker.GetNewPlayerColors();
+        var playerColors = picker.CalculateNewPlayerColors();
         nextPlayerImage.SetSprite(playerColors.nextColor);
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);

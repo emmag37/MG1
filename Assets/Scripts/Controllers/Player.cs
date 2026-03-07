@@ -1,16 +1,18 @@
-/**
- * Insert File Description
- * 
- */
-
 using UnityEngine;
 using System;
 
+/// <summary>
+/// 
+/// </summary>
 public class Player : MonoBehaviour
 {
     // ================================
     // Events
     // ================================
+
+    /// <summary>
+	/// 
+	/// </summary>
     public event Action<Vector3, int> PlayerReleasedOnBoard;
 
     // ================================
@@ -39,7 +41,12 @@ public class Player : MonoBehaviour
     // Initialize and Access Methods
     // ================================
 
-    // add summaries
+    /// <summary>
+	/// 
+	/// </summary>
+	/// <param name="newColor"></param>
+	/// <param name="boardBounds"></param>
+	/// <param name="boardRowSize"></param>
     public void Initialize(int newColor, Bounds boardBounds, int boardRowSize)
     {
         color = newColor;
@@ -57,7 +64,12 @@ public class Player : MonoBehaviour
     // ================================
     // Event Handlers
     // ================================
-    public void HandlePlayerRealeased(Vector3 position)
+
+    /// <summary>
+	/// 
+	/// </summary>
+	/// <param name="position"></param>
+    private void HandlePlayerRealeased(Vector3 position)
     {
         PlayerReleasedOnBoard?.Invoke(position, color);
     }
