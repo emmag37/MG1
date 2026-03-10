@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using System;
 
 /// <summary>
-/// 
+/// Controls the game states and initiates plays.
+/// Bridges communication between player instances, the board, and UI updates.
 /// </summary>
 public class GamePlay : MonoBehaviour
 {
@@ -17,7 +18,14 @@ public class GamePlay : MonoBehaviour
     // Events
     // ================================
 
+    /// <summary>
+	/// Invoked when there is a game over.
+	/// </summary>
     public event Action<int> GameOver;
+
+    /// <summary>
+	/// Invoked when the player scores points.
+	/// </summary>
     public event Action<int> UpdateScore;
 
     // ================================
@@ -25,20 +33,21 @@ public class GamePlay : MonoBehaviour
     // ================================
 
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private Player playerPrefab;
+
     [SerializeField] private GamePieceImage nextPlayerImage;
 
-    public Player playerPrefab;
+    [SerializeField] private Board board;
 
     // ================================
     // Private Fields
     // ================================
 
-    private Board board;
     private PlayerPicker picker;
-
-    private Player player;                  // current active player
+    private Player player;
+    
     private bool gameOver = false;
-    private int score;                      // current game score
+    private int score;                      
 
 
     // ================================
@@ -47,19 +56,16 @@ public class GamePlay : MonoBehaviour
 
     void Awake()
     {
-        board = transform.GetChild(0).GetComponent<Board>();
         picker = new PlayerPicker();
 
         board.BoardFull += HandleBoardFull;
     }
 
-    // use to restart the game
     void OnEnable()
     {
         if (gameOver) RestartGame();        // reset on subsequent games only
     }
 
-    // ends the game
     void OnDisable()
     {
         if (player == null) return;
@@ -78,11 +84,17 @@ public class GamePlay : MonoBehaviour
     // Public Methods
     // ================================
 
+    /// <summary>
+	/// Pauses the gameplay.
+	/// </summary>
     public void Pause()
     {
         player.enabled = false;
     }
 
+    /// <summary>
+	/// Resumes the gameplay.
+	/// </summary>
     public void Resume()
     {
         player.enabled = true;
@@ -94,10 +106,12 @@ public class GamePlay : MonoBehaviour
     // ================================
 
     // runs the turn initiated by the player being released
-    private void HandlePlayerReleasedOnBoard(Vector3 position, int color)
+    private void HandlePlayerReleasedOnBoard(Player playerReleased)
     {
+        // check to make sure it's the same player?
+
         Vector3 newPosition;
-        bool validPosition = board.TryGetPlayerPosition(position, out newPosition);
+        bool validPosition = board.TryGetPlayerPosition(player.Position, out newPosition);
 
         if (!validPosition)                        
         {
@@ -107,7 +121,7 @@ public class GamePlay : MonoBehaviour
 
         player.SnapToBoard(newPosition);                                    // render the snapping movement to the board
 
-        int pointsScored = board.RunPlay(newPosition, color);            // runs all board logic
+        int pointsScored = board.RunPlay(newPosition, player.Color);        // runs all board logic
         if (pointsScored > 0)
         {
             score += pointsScored;
@@ -145,14 +159,13 @@ public class GamePlay : MonoBehaviour
         SpawnNewPlayer();
     }
 
-    // updating this function to instantiate the player, instead of player generator
     private void SpawnNewPlayer()
     {
         var playerColors = picker.CalculateNewPlayerColors();
         nextPlayerImage.SetSprite(playerColors.nextColor);
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        player.Initialize(playerColors.color, board.GetBounds(), RowSize);
+        player.Initialize(playerColors.color, board.BoardBounds);
 
         player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;
     }

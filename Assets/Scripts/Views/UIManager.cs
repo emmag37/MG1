@@ -1,20 +1,14 @@
-/**
- * Insert File Description
- * 
- */
-
-// continue editing:
-    // game over does not launch game over canvas
-
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+/// 
+/// </summary>
 public class UIManager : MonoBehaviour
 {
     // ==================================================
     // Inspector Fields
-    // (Editable in Unity Inspector)
     // ==================================================
 
     // Canvases
@@ -27,12 +21,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text scoreText;
     [SerializeField] private Text highScoreText;
     [SerializeField] private Text gameOverScoreText;
-
-
-    // ==================================================
-    // Public Properties
-    // ==================================================
-
 
     // ==================================================
     // Events

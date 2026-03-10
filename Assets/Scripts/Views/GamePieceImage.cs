@@ -1,18 +1,24 @@
-/**
- * Insert File Description
- * 
- */
-
 using UnityEngine;
 
+/// <summary>
+/// Manages the visuals for players and board cells.
+/// </summary>
 public class GamePieceImage : MonoBehaviour
 {
     // ================================
     // Constants
     // ================================
 
-    private const int emptyColor = 0;
+    private const int EmptyColor = 0;
 
+    // ================================
+    // Public Properties
+    // ================================
+
+    /// <summary>
+	/// Radius of the game object.
+	/// </summary>
+    public float Radius { get; private set; }
 
     // ================================
     // Inspector Fields
@@ -34,25 +40,25 @@ public class GamePieceImage : MonoBehaviour
 
 
     // ================================
-    // Access Methods
+    // Public Methods
     // ================================
 
-    /* Set the player's sprite to a new one, and updates the layer for visibility */
-    // need to add one to the player picker
+    /// <summary>
+	/// Sets the objects sprite to the given color.
+	/// </summary>
+	/// <param name="color">Color id of the sprite.</param>
+	/// <remarks>Accesses the sprite from the sprite database.</remarks>
     public void SetSprite(int color)
     {
         gamePieceRenderer.sprite = spriteD8.sprites[color];
     }
 
-    public float GetRadius()
-    {
-        return gamePieceRenderer.bounds.extents.x;
-    }
-
-    // add short summary
+    /// <summary>
+	/// Changes the image to the 'empty' sprite.
+	/// </summary>
     public void ResetPiece()
     {
-        gamePieceRenderer.sprite = spriteD8.sprites[emptyColor];
+        gamePieceRenderer.sprite = spriteD8.sprites[EmptyColor];
     }
 
 

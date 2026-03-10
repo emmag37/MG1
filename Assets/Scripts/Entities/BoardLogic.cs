@@ -1,18 +1,20 @@
-/// <summary>
-/// 
-/// The board logic file is responsible for maintaining the board states and
-/// calucalting filled lines to clear.
-/// 
-/// </summary>
-
 using UnityEngine;
 using System;
 
+/// <summary>
+/// Manages a representation of the board.
+/// Respsonsible for row checking/clearing logic and point calculation.
+/// </summary>
 public class BoardLogic
 {
     // ================================
     // Public Types
     // ================================
+
+    /// <summary>
+    /// Result of placing a piece on the board.
+    /// Contains line clear information, score, and whether or not the board is full.
+    /// </summary>
     public struct PlayResult
     {
         public int Points;
@@ -29,6 +31,7 @@ public class BoardLogic
     // ================================
     // Constants
     // ================================
+
     private const int RowSize = 5;
     private const int WildCard = 7;
     private const int Empty = 0;
@@ -36,6 +39,7 @@ public class BoardLogic
     // ================================
     // Private Fields
     // ================================
+
     private int[] rowCounts = new int[RowSize];
     private int[] colCounts = new int[RowSize];
     private int rDiagCount = 0;
@@ -50,21 +54,22 @@ public class BoardLogic
     // ================================
 
     /// <summary>
-	/// 
+	/// Initializes the board for a game.
 	/// </summary>
     public BoardLogic()
     {
-        // Set the colors on the grid to empty
         ResetGrid();
     }
 
     /// <summary>
-	/// 
-	/// </summary>
-	/// <param name="row"></param>
-	/// <param name="col"></param>
-	/// <returns></returns>
-    public bool ValidPosition(int row, int col)
+    /// Checks whether the index is within bounds and open.
+    /// </summary>
+    /// <param name="row">The row to check.</param>
+    /// <param name="col">The column to check.</param>
+    /// <returns>
+    /// <c>true</c> if the index is valid; otherwise <c>false</c>
+    /// </returns>
+    public bool ValidIndex(int row, int col)
     {
         bool valid =
             (row >= 0 && row <= RowSize - 1) &&
@@ -75,11 +80,10 @@ public class BoardLogic
     }
 
     /// <summary>
-	/// 
+	/// Resets the board for a new game.
 	/// </summary>
     public void ResetBoard()
     {
-        // Reset counts
         for (int i = 0; i < RowSize; i++)
         {
             rowCounts[i] = 0;
@@ -94,11 +98,11 @@ public class BoardLogic
     }
 
     /// <summary>
-	/// 
+	/// Adds the player to the board and runs the play.
 	/// </summary>
-	/// <param name="index"></param>
-	/// <param name="color"></param>
-	/// <returns></returns>
+	/// <param name="index">Player index on the board.</param>
+	/// <param name="color">Color of the player.</param>
+	/// <returns>Information about the result of the play.</returns>
     public PlayResult PlacePlayer(Vector2Int index, int color)
     {
         PlayResult result = new PlayResult();

@@ -1,15 +1,16 @@
 using UnityEngine;
 
 /// <summary>
-/// 
+/// Manages the color generation of players.
 /// </summary>
 public class PlayerPicker
 {
     // ================================
     // Public Types
     // ================================
+
     /// <summary>
-	/// 
+	/// Contains the color value of the current player and the next player.
 	/// </summary>
     public struct PlayerColors
     {
@@ -25,17 +26,18 @@ public class PlayerPicker
     // ================================
     // Private Fields
     // ================================
-    private PlayerColors currentColors;
+    private int nextColor;
 
     // ================================
     // Constructors
     // ================================
+
     /// <summary>
-	/// 
+	/// Chooses the first 'next' color of the game.
 	/// </summary>
     public PlayerPicker()
     {
-        Reset();    // function also initializes the values
+        nextColor = ChooseColor();
     }
 
 
@@ -44,26 +46,27 @@ public class PlayerPicker
     // ================================
 
     /// <summary>
-	/// 
+	/// Calculates the next player's color.
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>The current player and next player's color.</returns>
     public PlayerColors CalculateNewPlayerColors()
     {
-        PlayerColors colors = currentColors;              // return the current, non-updated state
+        PlayerColors newColors = new PlayerColors();              // return the current, non-updated state
 
-        currentColors.color = currentColors.nextColor;
-        currentColors.nextColor = ChooseColor();
+        newColors.color = nextColor;
+        newColors.nextColor = ChooseColor();
 
-        return colors;
+        nextColor = newColors.nextColor;
+
+        return newColors;
     }
 
     /// <summary>
-	/// 
+	/// Chooses a new 'next' color for a fresh game.
 	/// </summary>
     public void Reset()
     {
-        currentColors.color = ChooseColor(); // sets up the first color
-        currentColors.nextColor = ChooseColor(); // sets up the next color
+        nextColor = ChooseColor();
     }
 
 
@@ -71,6 +74,9 @@ public class PlayerPicker
     // Private Methods
     // ================================
 
+    // Calculates a color based on the built-in random generator.
+        // - want to make this more advanced to adjust to the game
+        // - when you improve it, put it in its own script
     private int ChooseColor()
     {
         return Random.Range(1, numColors + 1);  // 0 is reserved for the empty sprite, colors start at 1

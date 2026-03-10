@@ -2,7 +2,8 @@ using UnityEngine;
 using System;
 
 /// <summary>
-/// 
+/// Manages the player in the game scene.
+/// Handles the player movement and visual state.
 /// </summary>
 public class Player : MonoBehaviour
 {
@@ -11,9 +12,23 @@ public class Player : MonoBehaviour
     // ================================
 
     /// <summary>
-	/// 
+	/// Invoked when the player is released.
 	/// </summary>
-    public event Action<Vector3, int> PlayerReleasedOnBoard;
+    public event Action<Player> PlayerReleasedOnBoard;
+
+    // ================================
+    // Public Properties
+    // ================================
+
+    /// <summary>
+	/// Color of the player object.
+	/// </summary>
+    public int Color { get; private set; }
+
+    /// <summary>
+	/// Current position of the player.
+	/// </summary>
+    public Vector3 Position { get; private set; }
 
     // ================================
     // Private Fields
@@ -21,7 +36,7 @@ public class Player : MonoBehaviour
     private GamePieceImage image;
     private PlayerMovement movement;
 
-    private int color;
+    private Vector3 startPos;
 
 
     // ================================
@@ -34,44 +49,33 @@ public class Player : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
 
         movement.PlayerReleased += HandlePlayerRealeased;
+
+        startPos = transform.position;
     }
 
 
     // ================================
-    // Initialize and Access Methods
+    // Initializers
     // ================================
 
     /// <summary>
-	/// 
+	/// Initializes a player to be moved around the board and sets its color.
 	/// </summary>
-	/// <param name="newColor"></param>
-	/// <param name="boardBounds"></param>
-	/// <param name="boardRowSize"></param>
-    public void Initialize(int newColor, Bounds boardBounds, int boardRowSize)
+	/// <param name="color">Color id of the player.</param>
+	/// <param name="boardBounds">Boundaries of the board.</param>
+    public void Initialize(int color, Bounds boardBounds)
     {
-        color = newColor;
+        Color = color;
         image.SetSprite(color);
 
-        float radius = image.GetRadius();         // adjust the board boundaries to the player size
+        float radius = image.Radius;
+
+        // adjust the board boundaries to the player size
         float left = boardBounds.min.x + radius;
         float right = boardBounds.max.x - radius;
         float top = boardBounds.max.y - radius;
 
-        movement.Initialize(left, right, top);
-    }
-    
-
-    // ================================
-    // Event Handlers
-    // ================================
-
-    /// <summary>
-	/// 
-	/// </summary>
-	/// <param name="position"></param>
-    private void HandlePlayerRealeased(Vector3 position)
-    {
-        PlayerReleasedOnBoard?.Invoke(position, color);
+        movement.Initialize(left, right, top, startPos.y);
     }
 
 
@@ -79,15 +83,32 @@ public class Player : MonoBehaviour
     // Public Methods
     // ================================
 
-    // add a summary
+    /// <summary>
+	/// Moves the player to a position and disables player movement.
+	/// </summary>
+	/// <param name="position">New position for the player.</param>
     public void SnapToBoard(Vector3 position)
     {
         movement.SnapToPosition(position);
+        movement.enabled = false;
     }
 
-    // add a summary
+    /// <summary>
+	/// Returns the player to the start position.
+	/// </summary>
     public void ReturnToStart()
     {
-        movement.ReturnToStart();
+        movement.SnapToPosition(startPos);
+    }
+
+
+    // ================================
+    // Event Handlers
+    // ================================
+
+    private void HandlePlayerRealeased(Vector3 position)
+    {
+        Position = position;
+        PlayerReleasedOnBoard?.Invoke(this);
     }
 }

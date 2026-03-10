@@ -1,9 +1,8 @@
-/// <summary>
-/// 
-/// </summary>
-
 using UnityEngine;
 
+/// <summary>
+/// Manages the index and coordinate calculations of the board.
+/// </summary>
 public class BoardGeometry
 {
     // ==================================================
@@ -19,11 +18,11 @@ public class BoardGeometry
     // ==================================================
 
     /// <summary>
-	/// 
+	/// Calculates the cell offset and origin world coordinates.
 	/// </summary>
-	/// <param name="rows"></param>
-	/// <param name="cellRadius"></param>
-	/// <param name="board"></param>
+	/// <param name="rows">Number of rows on the board.</param>
+	/// <param name="cellRadius">Radius of a spot on the board.</param>
+	/// <param name="board">Boundaries of box that holds the board.</param>
     public void Initialize(int rows, float cellRadius, Bounds board)
     {
         rowSize = rows;
@@ -45,13 +44,13 @@ public class BoardGeometry
     // ==================================================
 
     /// <summary>
-	/// 
+	/// Calculates the board index from a position.
 	/// </summary>
-	/// <param name="position"></param>
-	/// <returns></returns>
+	/// <param name="position">Transform in world coordinates</param>
+	/// <returns>The board index corresponding to the board array.</returns>
     public Vector2Int TransformToBoardIndex(Vector3 position)
     {
-        Vector2Int gridIndex = new Vector2Int();
+        Vector2Int gridIndex = new Vector2Int();    // intermediary where the origin is the center
 
         gridIndex.x = Mathf.RoundToInt((position.y - originCellPos.y) / cellOffset);
         gridIndex.y = Mathf.RoundToInt((position.x - originCellPos.x) / cellOffset);
@@ -60,14 +59,14 @@ public class BoardGeometry
     }
 
     /// <summary>
-	/// 
+	/// Calculates the world position of a cell.
 	/// </summary>
-	/// <param name="index"></param>
-	/// <returns></returns>
+	/// <param name="index">Board index of the cell.</param>
+	/// <returns>The world positon of the cell.</returns>
     public Vector3 BoardIndexToTransform(Vector2Int index)
     {
         Vector3 newTransform = Vector3.zero;
-        Vector2Int gridIndex = BoardToGridIndex(index);
+        Vector2Int gridIndex = BoardToGridIndex(index);     // intermediary where the origin is the center
 
         newTransform.y = originCellPos.y + gridIndex.x * cellOffset;
         newTransform.x = originCellPos.x + gridIndex.y * cellOffset;
@@ -79,7 +78,8 @@ public class BoardGeometry
     // ==================================================
     // Private Methods
     // ==================================================
-    
+
+    // Adjusts the rounded world grid index to a value useful for array access.
     private Vector2Int GridToBoardIndex(Vector2Int pos)
     {
         Vector2Int index = new Vector2Int();

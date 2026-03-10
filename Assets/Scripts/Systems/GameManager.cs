@@ -1,16 +1,15 @@
-/**
- * Insert File Description
- * 
- */
-
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     // ================================
     // Inspector Fields
     // ================================
+
     [SerializeField] private GamePlay gamePlay;
     [SerializeField] private UIManager uiManager;
 
@@ -18,8 +17,6 @@ public class GameManager : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
-    //private enum GameState { Active, Inactive };    // update this
-    //private static GameState state;
 
     private int highScore;
 
