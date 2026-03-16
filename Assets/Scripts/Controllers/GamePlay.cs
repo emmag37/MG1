@@ -35,7 +35,7 @@ public class GamePlay : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Player playerPrefab;
 
-    [SerializeField] private GamePieceImage nextPlayerImage;
+    [SerializeField] private SpriteView nextPlayerImage;
 
     [SerializeField] private Board board;
 
@@ -47,7 +47,9 @@ public class GamePlay : MonoBehaviour
     private Player player;
     
     private bool gameOver = false;
-    private int score;                      
+    private int score;
+
+    private Bounds playerBoundaries;
 
 
     // ================================
@@ -57,6 +59,8 @@ public class GamePlay : MonoBehaviour
     void Awake()
     {
         picker = new PlayerPicker();
+
+        InitPlayerBoundaries();
 
         board.BoardFull += HandleBoardFull;
     }
@@ -115,11 +119,11 @@ public class GamePlay : MonoBehaviour
 
         if (!validPosition)                        
         {
-            player.ReturnToStart();
+            player.Move(spawnPoint.position);
             return;
         }
 
-        player.SnapToBoard(newPosition);                                    // render the snapping movement to the board
+        player.Move(newPosition);                                    // render the snapping movement to the board
 
         int pointsScored = board.RunPlay(newPosition, player.Color);        // runs all board logic
         if (pointsScored > 0)
@@ -162,17 +166,28 @@ public class GamePlay : MonoBehaviour
     private void SpawnNewPlayer()
     {
         var playerColors = picker.CalculateNewPlayerColors();
-        nextPlayerImage.SetSprite(playerColors.nextColor);
+        nextPlayerImage.SetSprite(SpriteDatabase.Instance.sprites[playerColors.nextColor]);        
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        player.Initialize(playerColors.color, board.BoardBounds);
+        player.Initialize(playerColors.color, SpriteDatabase.Instance.sprites[playerColors.color], playerBoundaries);      
 
-        player.PlayerReleasedOnBoard += HandlePlayerReleasedOnBoard;
+        player.PlayerReleased += HandlePlayerReleasedOnBoard;
     }
 
     private void RemoveCurrentPlayer()
     {
-        player.PlayerReleasedOnBoard -= HandlePlayerReleasedOnBoard;        
+        player.PlayerReleased -= HandlePlayerReleasedOnBoard;        
         Destroy(player.gameObject);
     }
+
+    private void InitPlayerBoundaries()
+    {
+        playerBoundaries = board.BoardBounds;
+        
+        Vector3 min = playerBoundaries.min;
+        min.y = spawnPoint.position.y;
+
+        playerBoundaries.SetMinMax(min, playerBoundaries.max);
+    }
+
 }

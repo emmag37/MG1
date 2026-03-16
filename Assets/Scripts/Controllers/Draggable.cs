@@ -2,14 +2,19 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
+// IF YOU MAKE REUSABLE:
+    // set camera as a serialized field
+    // add event for drag started
+
 /// <summary>
-/// Performs all player movement operations including user input dragging
-/// and moving the player to a specified position.
+/// Performs object movement operations including user input dragging
+/// and dropping the object at specified position.
+/// 
 /// </summary>
 /// <remarks>
-/// When enabled, the user can drag the player.
+/// When enabled, the user can drag the object.
 /// </remarks>
-public class PlayerMovement : MonoBehaviour
+public class Draggable : MonoBehaviour
 {
     // ================================
     // Events
@@ -18,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
 	/// Invoked when the user releases the player.
 	/// </summary>
-    public event Action<Vector3> PlayerReleased;
+    public event Action<Vector3> Released;
 
     // ================================
     // Private Fields
@@ -31,8 +36,6 @@ public class PlayerMovement : MonoBehaviour
 
     private float minX, maxX, minY, maxY;
 
-    private Vector3 startPos;
-
 
     // ================================
     // Unity Lifecycle Methods
@@ -41,12 +44,11 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         cam = Camera.main;
-        startPos = transform.position;
     }
 
     void Update()
     {
-        MouseDrag();
+        Drag();
     }
 
 
@@ -75,10 +77,10 @@ public class PlayerMovement : MonoBehaviour
     // ================================
 
     /// <summary>
-	/// Updates the player's transform.
+	/// Updates the player's transform position.
 	/// </summary>
 	/// <param name="newPosition">New position for the player.</param>
-    public void SnapToPosition(Vector3 newPosition)
+    public void Drop(Vector3 newPosition)
     {
         transform.position = newPosition;
     }
@@ -88,30 +90,32 @@ public class PlayerMovement : MonoBehaviour
     // Private Methods
     // ================================
 
-    // Drags and drops the player from user input. Relies on Update().
-    private void MouseDrag()
+    /// <summary>
+	/// Drags and drops the player from user input. Relies on Update().
+	/// </summary>
+    private void Drag()
     {
-        if (Mouse.current == null) return;
+        if (Pointer.current == null) return;
 
-        Vector2 mouseScreenPos = Mouse.current.position.ReadValue();    // obtain the mouse world coordinates
-        Vector3 mouseWorldPos = cam.ScreenToWorldPoint(mouseScreenPos);
-        mouseWorldPos.z = 0;
+        Vector2 pointerScreenPos = Pointer.current.position.ReadValue();    // obtain the mouse world coordinates
+        Vector3 pointerWorldPos = cam.ScreenToWorldPoint(pointerScreenPos);
+        pointerWorldPos.z = 0;
 
         // start moving
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Pointer.current.press.wasPressedThisFrame)
         {
-            Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos); // check if mouse is on the collider
+            Collider2D hit = Physics2D.OverlapPoint(pointerWorldPos); // check if mouse is on the collider
             if (hit && hit.gameObject == gameObject)
             {
                 isDragging = true;
-                dragOffset = transform.position - mouseWorldPos;
+                dragOffset = transform.position - pointerWorldPos;
             }
         }
 
         // continue moving
-        if (isDragging && Mouse.current.leftButton.isPressed)
+        if (isDragging && Pointer.current.press.isPressed)
         {
-            Vector3 newPos = mouseWorldPos + dragOffset;    // calculate new position
+            Vector3 newPos = pointerWorldPos + dragOffset;    // calculate new position
 
             newPos.x = Mathf.Clamp(newPos.x, minX, maxX);   // clamp position to boundaries
             newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
@@ -120,10 +124,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // release
-        if (isDragging && Mouse.current.leftButton.wasReleasedThisFrame)
+        if (isDragging && Pointer.current.press.wasReleasedThisFrame)
         {
             isDragging = false;
-            PlayerReleased?.Invoke(transform.position);      // throw event to the player script
+            Released?.Invoke(transform.position);      // throw event to the player script
         }
     }
+        
 }

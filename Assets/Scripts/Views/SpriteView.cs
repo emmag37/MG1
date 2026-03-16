@@ -1,16 +1,14 @@
 using UnityEngine;
 
+// MAKE MORE REUSABLE
+    // Can add other useful measurements like height, width, for non circular objects
+
 /// <summary>
-/// Manages the visuals for players and board cells.
+/// Manages the sprite view.
 /// </summary>
-public class GamePieceImage : MonoBehaviour
+[RequireComponent(typeof(SpriteRenderer))]
+public class SpriteView : MonoBehaviour
 {
-    // ================================
-    // Constants
-    // ================================
-
-    private const int EmptyColor = 0;
-
     // ================================
     // Public Properties
     // ================================
@@ -23,10 +21,7 @@ public class GamePieceImage : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-
-    // 0: empty, 1: color1, 2: color2, 3: color3, 4: color4, 5: color5, 6: color6, 7: wildcard
-    [SerializeField] private SpriteDatabase spriteD8;
-    [SerializeField] private SpriteRenderer gamePieceRenderer;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
 
     // ================================
@@ -35,7 +30,10 @@ public class GamePieceImage : MonoBehaviour
 
     void Awake()
     {
-        gamePieceRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+        UpdateRadius();
     }
 
 
@@ -48,18 +46,19 @@ public class GamePieceImage : MonoBehaviour
 	/// </summary>
 	/// <param name="color">Color id of the sprite.</param>
 	/// <remarks>Accesses the sprite from the sprite database.</remarks>
-    public void SetSprite(int color)
+    public void SetSprite(Sprite sprite)
     {
-        gamePieceRenderer.sprite = spriteD8.sprites[color];
-    }
-
-    /// <summary>
-	/// Changes the image to the 'empty' sprite.
-	/// </summary>
-    public void ResetPiece()
-    {
-        gamePieceRenderer.sprite = spriteD8.sprites[EmptyColor];
+        spriteRenderer.sprite = sprite;
+        UpdateRadius();
     }
 
 
+    // ================================
+    // Private Methods
+    // ================================
+
+    private void UpdateRadius()
+    {
+        Radius = spriteRenderer.sprite.bounds.extents.x;
+    }
 }

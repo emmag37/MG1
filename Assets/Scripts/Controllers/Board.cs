@@ -13,11 +13,12 @@ public class Board : MonoBehaviour
     // ================================
 
     private const int RowSize = 5;
+    private const int Empty = 0;
 
     // ================================
     // Events
     // ================================
-
+    
     /// <summary>
 	/// Invoked when all board spots are filled with players.
 	/// </summary>
@@ -39,7 +40,7 @@ public class Board : MonoBehaviour
     private BoardLogic logic;
     private BoardGeometry geometry;
 
-    private GamePieceImage[,] grid = new GamePieceImage[RowSize, RowSize];  // grid children
+    private SpriteView[,] grid = new SpriteView[RowSize, RowSize];  // grid children
 
 
     // ================================
@@ -56,7 +57,7 @@ public class Board : MonoBehaviour
             for (int y = 0; y < RowSize; y++)
             {
                 // access the cells from the game scene
-                grid[x, y] = transform.GetChild(index).GetComponent<GamePieceImage>();
+                grid[x, y] = transform.GetChild(index).GetComponent<SpriteView>();
                 index++;
             }
         }
@@ -85,7 +86,8 @@ public class Board : MonoBehaviour
     {
         Vector2Int index = geometry.TransformToBoardIndex(position);        
 
-        grid[index.x, index.y].SetSprite(color);                      // render the player on the board
+        // CHANGE
+        grid[index.x, index.y].SetSprite(null);                      // render the player on the board
 
         var result = logic.PlacePlayer(index, color);                 // run the play calculations
         if (result.FullBoard) BoardFull?.Invoke();                  // activate a game over
@@ -128,9 +130,10 @@ public class Board : MonoBehaviour
 	/// </summary>
     public void Reset()
     {
-        foreach (GamePieceImage image in grid)
+        foreach (SpriteView image in grid)
         {
-            image.ResetPiece();
+            // CHANGE
+            image.SetSprite(null);
         }
 
         logic.ResetBoard();
@@ -146,7 +149,7 @@ public class Board : MonoBehaviour
         for (int i = 0; i < RowSize; i++)
         {
             var (r, c) = indexSelector(i);
-            grid[r, c].ResetPiece();
+            grid[r, c].SetSprite(null); // CHANGE
         }
     }
 }

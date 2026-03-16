@@ -4,6 +4,12 @@ using System;
 /// <summary>
 /// Manages the player in the game scene.
 /// Handles the player movement and visual state.
+///
+/// Can:
+/// - Move the player within specified boundaries
+/// - Maintain a sprite/color state for the image, relies on sprite database
+/// - Enabling/disabling the player only affects user dragging
+/// 
 /// </summary>
 public class Player : MonoBehaviour
 {
@@ -14,7 +20,7 @@ public class Player : MonoBehaviour
     /// <summary>
 	/// Invoked when the player is released.
 	/// </summary>
-    public event Action<Player> PlayerReleasedOnBoard;
+    public event Action<Player> PlayerReleased;
 
     // ================================
     // Public Properties
@@ -30,13 +36,12 @@ public class Player : MonoBehaviour
 	/// </summary>
     public Vector3 Position { get; private set; }
 
+
     // ================================
     // Private Fields
     // ================================
-    private GamePieceImage image;
-    private PlayerMovement movement;
-
-    private Vector3 startPos;
+    private SpriteView image;
+    private Draggable movement;
 
 
     // ================================
@@ -45,12 +50,11 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        image = GetComponent<GamePieceImage>();
-        movement = GetComponent<PlayerMovement>();
+        image = GetComponent<SpriteView>();
+        movement = GetComponent<Draggable>();
+        Position = transform.position;
 
-        movement.PlayerReleased += HandlePlayerRealeased;
-
-        startPos = transform.position;
+        movement.Released += HandlePlayerReleased;
     }
 
 
@@ -62,20 +66,20 @@ public class Player : MonoBehaviour
 	/// Initializes a player to be moved around the board and sets its color.
 	/// </summary>
 	/// <param name="color">Color id of the player.</param>
-	/// <param name="boardBounds">Boundaries of the board.</param>
-    public void Initialize(int color, Bounds boardBounds)
+	/// <param name="boundaries">Boundaries of the board.</param>
+    public void Initialize(int color, Sprite sprite, Bounds boundaries)
     {
         Color = color;
-        image.SetSprite(color);
+        image.SetSprite(sprite);
 
         float radius = image.Radius;
 
-        // adjust the board boundaries to the player size
-        float left = boardBounds.min.x + radius;
-        float right = boardBounds.max.x - radius;
-        float top = boardBounds.max.y - radius;
+        float left = boundaries.min.x + radius;     // adjust the board boundaries to the player size
+        float right = boundaries.max.x - radius;
+        float top = boundaries.max.y - radius;
+        float bottom = boundaries.min.y + radius;
 
-        movement.Initialize(left, right, top, startPos.y);
+        movement.Initialize(left, right, top, bottom);
     }
 
 
@@ -84,21 +88,13 @@ public class Player : MonoBehaviour
     // ================================
 
     /// <summary>
-	/// Moves the player to a position and disables player movement.
+	/// Moves the player to a position.
 	/// </summary>
 	/// <param name="position">New position for the player.</param>
-    public void SnapToBoard(Vector3 position)
+    public void Move(Vector3 position)
     {
-        movement.SnapToPosition(position);
-        movement.enabled = false;
-    }
-
-    /// <summary>
-	/// Returns the player to the start position.
-	/// </summary>
-    public void ReturnToStart()
-    {
-        movement.SnapToPosition(startPos);
+        movement.Drop(position);
+        Position = position;
     }
 
 
@@ -106,9 +102,9 @@ public class Player : MonoBehaviour
     // Event Handlers
     // ================================
 
-    private void HandlePlayerRealeased(Vector3 position)
+    private void HandlePlayerReleased(Vector3 position)
     {
         Position = position;
-        PlayerReleasedOnBoard?.Invoke(this);
+        PlayerReleased?.Invoke(this);
     }
 }
