@@ -58,6 +58,11 @@ public class GamePlay : MonoBehaviour
 
     void Awake()
     {
+        Debug.Assert(spawnPoint != null);
+        Debug.Assert(playerPrefab != null);
+        Debug.Assert(nextPlayerImage != null);
+        Debug.Assert(board != null);
+
         picker = new PlayerPicker();
 
         InitPlayerBoundaries();
@@ -93,6 +98,8 @@ public class GamePlay : MonoBehaviour
 	/// </summary>
     public void Pause()
     {
+        Debug.Assert(player != null);
+
         player.enabled = false;
     }
 
@@ -101,6 +108,8 @@ public class GamePlay : MonoBehaviour
 	/// </summary>
     public void Resume()
     {
+        Debug.Assert(player != null);
+
         player.enabled = true;
     }
 
@@ -112,7 +121,7 @@ public class GamePlay : MonoBehaviour
     // runs the turn initiated by the player being released
     private void HandlePlayerReleasedOnBoard(Player playerReleased)
     {
-        // check to make sure it's the same player?
+        Debug.Assert(playerReleased && player && playerReleased == player, "Player released is not current player");
 
         Vector3 newPosition;
         bool validPosition = board.TryGetPlayerPosition(player.Position, out newPosition);
@@ -155,6 +164,8 @@ public class GamePlay : MonoBehaviour
 
     private void RestartGame()
     {
+        Debug.assert(player == null);
+
         gameOver = false;
         board.Reset();
         picker.Reset();
@@ -165,6 +176,8 @@ public class GamePlay : MonoBehaviour
 
     private void SpawnNewPlayer()
     {
+        Debug.assert(player == null);
+
         var playerColors = picker.CalculateNewPlayerColors();
         nextPlayerImage.SetSprite(SpriteDatabase.Instance.sprites[playerColors.nextColor]);        
 
@@ -176,6 +189,8 @@ public class GamePlay : MonoBehaviour
 
     private void RemoveCurrentPlayer()
     {
+        Debug.assert(player != null);
+
         player.PlayerReleased -= HandlePlayerReleasedOnBoard;        
         Destroy(player.gameObject);
     }

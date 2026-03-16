@@ -47,6 +47,7 @@ public class UIManager : MonoBehaviour
         PushCanvas(homeCanvas);
     }
 
+
     // ==================================================
     // Public Methods
     // ==================================================
