@@ -48,7 +48,7 @@ public class GamePlay : MonoBehaviour
     
     private bool gameOver = false;
     private int score;
-
+    
     private Bounds playerBoundaries;
 
 
@@ -62,7 +62,7 @@ public class GamePlay : MonoBehaviour
 
         InitPlayerBoundaries();
 
-        board.BoardFull += HandleBoardFull;
+        board.FullBoard += HandleFullBoard;
     }
 
     void OnEnable()
@@ -143,7 +143,7 @@ public class GamePlay : MonoBehaviour
         SpawnNewPlayer();
     }
 
-    private void HandleBoardFull()
+    private void HandleFullBoard()
     {
         gameOver = true;
     }

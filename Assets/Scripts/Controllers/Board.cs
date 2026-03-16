@@ -22,7 +22,7 @@ public class Board : MonoBehaviour
     /// <summary>
 	/// Invoked when all board spots are filled with players.
 	/// </summary>
-    public event Action BoardFull;
+    public event Action FullBoard;
 
     // ================================
     // Public Properties
@@ -80,17 +80,16 @@ public class Board : MonoBehaviour
 	/// <param name="color">Color of the player to be added.</param>
 	/// <returns>Points scored on the play.</returns>
 	/// <remarks>
-	/// Invokes <see cref="BoardFull"/> if the board becomes full.
+	/// Invokes <see cref="FullBoard"/> if the board becomes full.
 	/// </remarks>
     public int RunPlay(Vector3 position, int color)
     {
         Vector2Int index = geometry.TransformToBoardIndex(position);        
 
-        // CHANGE
-        grid[index.x, index.y].SetSprite(null);                      // render the player on the board
+        grid[index.x, index.y].SetSprite(SpriteDatabase.Instance.sprites[color]);                      // render the player on the board
 
         var result = logic.PlacePlayer(index, color);                 // run the play calculations
-        if (result.FullBoard) BoardFull?.Invoke();                  // activate a game over
+        if (result.FullBoard) FullBoard?.Invoke();                  // activate a game over
 
         // render empty sprites for full lines
         if (result.ClearRow) ClearGridLine(i => (index.x, i));
@@ -132,8 +131,7 @@ public class Board : MonoBehaviour
     {
         foreach (SpriteView image in grid)
         {
-            // CHANGE
-            image.SetSprite(null);
+            image.SetSprite(SpriteDatabase.Instance.sprites[Empty]);
         }
 
         logic.ResetBoard();
@@ -149,7 +147,7 @@ public class Board : MonoBehaviour
         for (int i = 0; i < RowSize; i++)
         {
             var (r, c) = indexSelector(i);
-            grid[r, c].SetSprite(null); // CHANGE
+            grid[r, c].SetSprite(SpriteDatabase.Instance.sprites[Empty]);
         }
     }
 }

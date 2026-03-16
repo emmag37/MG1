@@ -77,7 +77,7 @@ public class Player : MonoBehaviour
         float left = boundaries.min.x + radius;     // adjust the board boundaries to the player size
         float right = boundaries.max.x - radius;
         float top = boundaries.max.y - radius;
-        float bottom = boundaries.min.y + radius;
+        float bottom = boundaries.min.y;
 
         movement.Initialize(left, right, top, bottom);
     }
