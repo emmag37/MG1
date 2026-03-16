@@ -3,7 +3,9 @@ using UnityEngine.UI;
 using System;
 
 /// <summary>
-/// 
+/// Controls the screen that is displayed.
+///
+/// Also contains all button functions.
 /// </summary>
 public class UIManager : MonoBehaviour
 {
@@ -30,11 +32,10 @@ public class UIManager : MonoBehaviour
     public event Action PauseGame;
     public event Action ResumeGame;
 
-
     // ==================================================
     // Private Fields
     // ==================================================
-    private GameObject currentCanvas;
+    private Stack<GameObject> canvasStack = new Stack<GameObject>;
 
 
     // ================================
@@ -43,7 +44,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        currentCanvas = homeCanvas;
+        PushCanvas(homeCanvas);
     }
 
     // ==================================================
@@ -52,7 +53,8 @@ public class UIManager : MonoBehaviour
     public void GameOver(int score)
     {
         gameOverScoreText.text = $"{score}";    // update the score text
-        ChangeCanvas(gameOverCanvas);
+
+        PushCanvas(gameOverCanvas);
     }
 
     public void UpdateScoreText(int score, int highScore)
@@ -68,51 +70,47 @@ public class UIManager : MonoBehaviour
 
     public void OnPlayClicked()
     {
-        // assume current canvas is the home screen or game over screen
+        ClearStack();
+        PushCanvas(gamePlayCanvas);
 
-        ChangeCanvas(gamePlayCanvas);
         StartGame?.Invoke();
     }
 
     public void OnHomeClicked()
     {
-        // assume game over screen
-
-        ChangeCanvas(homeCanvas);
+        ClearStack();
+        PushCanvas(homeCanvas);
     }
 
     public void OnReplayClicked()
     {
-        // assume the current canvas is the settings screen
-            // leave as not pop up for now, add that back in later
-
         EndGame?.Invoke();
-        ChangeCanvas(gamePlayCanvas);
+
+        PopCanvas();
+
         StartGame?.Invoke();
     }
 
     public void OnExitGameClicked()
     {
-        // assume the current canvas is the settings screen
-
         EndGame?.Invoke();
-        ChangeCanvas(homeCanvas);
+
+        ClearStack();
+        PushCanvas(homeCanvas);
     }
 
     public void OnCloseSettingsClicked()
     {
-        // assume the current canvas is the settings screen
+        PopCanvas();
 
-        ChangeCanvas(gamePlayCanvas);
         ResumeGame?.Invoke();
     }
 
     public void OnSettingsClicked()
     {
-        // assume the current canvas is the game play screen
-
         PauseGame?.Invoke();
-        ChangeCanvas(settingsCanvas);
+
+        PushCanvas(settingsCanvas);
     }
 
 
@@ -120,12 +118,36 @@ public class UIManager : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    private void ChangeCanvas(GameObject newCanvas)
+    // Stack Navigation
+    private void PushCanvas(GameObject canvas)
     {
-        currentCanvas.SetActive(false);
-        newCanvas.SetActive(true);
+        if (canvasStack.Count > 0)
+        {
+            canvasStack.Peek().SetActive(false);
+        }
 
-        currentCanvas = newCanvas;
+        canvas.SetActive(true);
+        canvasStack.Push(canvas);
+    }
+    private void PopCanvas()
+    {
+        if (canvasStack.Count == 0) return;
+
+        GameObject top = canvasStack.Pop();
+        top.SetActive(false);
+
+        if (canvasStack.Count > 0)
+        {
+            canvasStack.Peek().SetActive(true);
+        }
+    }
+    private void ClearStack()
+    {
+        while (canvasStack.Count > 0)
+        {
+            GameObject canvas = canvasStack.Pop();
+            canvas.SetActive(false);
+        }
     }
 
 }
