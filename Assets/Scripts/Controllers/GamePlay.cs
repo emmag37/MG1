@@ -70,8 +70,11 @@ public class GamePlay : MonoBehaviour
 
         state = GameState.Fresh;
         picker = new PlayerPicker();
-        InitPlayerBoundaries();
+    }
 
+    void Start()
+    {
+        InitPlayerBoundaries();
         board.FullBoard += HandleFullBoard;
     }
 
@@ -128,7 +131,7 @@ public class GamePlay : MonoBehaviour
             RemoveCurrentPlayer();
 
         board.Reset();
-        picker.Reset();
+        picker.Reset();     // validate in picker
         score = 0;
 
         state = GameState.Fresh;
@@ -147,9 +150,10 @@ public class GamePlay : MonoBehaviour
         Debug.Assert(player != null, "Player released but no active player");
         Debug.Assert(player == playerReleased, "Player released is not the current player");
 
-        if (!TryPlacePlayer(player.Position)) return;
+        Vector2Int index;
+        if (!TryPlacePlayer(player.Position, out index)) return;
 
-        ExecuteTurn(player.Position, player.Color);
+        ExecuteTurn(index, player.Color);
         RemoveCurrentPlayer();
 
         if (state == GameState.Playing) SpawnNewPlayer();
@@ -157,7 +161,7 @@ public class GamePlay : MonoBehaviour
 
     private void HandleFullBoard()
     {
-        Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}")
+        Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}");
 
         state = GameState.GameOver;
         GameOver?.Invoke(score);
@@ -170,7 +174,7 @@ public class GamePlay : MonoBehaviour
 
     private void InitPlayerBoundaries()
     {
-        playerBoundaries = board.BoardBounds;       // guarantee this in board
+        playerBoundaries = board.BoardBounds;
 
         Vector3 min = playerBoundaries.min;
         min.y = spawnPoint.position.y;
@@ -201,10 +205,10 @@ public class GamePlay : MonoBehaviour
         Destroy(player.gameObject);
     }
 
-    private bool TryPlacePlayer(Vector3 position)
+    private bool TryPlacePlayer(Vector3 position, out Vector2Int index)
     {
         Vector3 newPosition;
-        bool valid = board.TryGetPlayerPosition(position, out newPosition); // all validation runs in this function
+        bool valid = board.TryGetPlayerPosition(position, out newPosition, out index);
 
         if (!valid)
         {
@@ -217,9 +221,9 @@ public class GamePlay : MonoBehaviour
         return valid;
     }
 
-    private void ExecuteTurn(Vector3 position, int color)
+    private void ExecuteTurn(Vector2Int index, int color)
     {
-        int pointsScored = board.RunPlay(position, color);        // runs all board logic, all validation happens in here
+        int pointsScored = board.RunPlay(index, color);
 
         if (pointsScored > 0)
         {
