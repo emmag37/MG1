@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
     private void HandleStartGame()
     {
         gamePlay.gameObject.SetActive(true);
+        gamePlay.StartGame();
     }
 
     private void HandleEndGame()
@@ -83,12 +84,12 @@ public class GameManager : MonoBehaviour
 
     private void HandlePauseGame()
     {
-        gamePlay.Pause();
+        gamePlay.PauseGame();
     }
 
     private void HandleResumeGame()
     {
-        gamePlay.Resume();
+        gamePlay.ResumeGame();
     }
 
 
@@ -98,6 +99,7 @@ public class GameManager : MonoBehaviour
 
     private void EndGame()
     {
+        gamePlay.ExitGame();
         gamePlay.gameObject.SetActive(false);
     }
 

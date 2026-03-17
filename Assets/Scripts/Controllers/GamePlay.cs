@@ -13,6 +13,13 @@ public class GamePlay : MonoBehaviour
     // ================================
 
     private const int RowSize = 5;  // if you change row size in the future it must be odd for an origin cell
+    private enum GameState
+    {
+        Playing,
+        Paused,
+        GameOver,
+        Fresh
+    }
 
     // ================================
     // Events
@@ -34,23 +41,21 @@ public class GamePlay : MonoBehaviour
 
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Player playerPrefab;
-
     [SerializeField] private SpriteView nextPlayerImage;
-
     [SerializeField] private Board board;
 
     // ================================
     // Private Fields
     // ================================
 
+    private GameState state;
+
     private PlayerPicker picker;
     private Player player;
-    
-    private bool gameOver = false;
-    private int score;
-    
     private Bounds playerBoundaries;
 
+    private int score;
+   
 
     // ================================
     // Unity Lifecycle Methods
@@ -63,29 +68,16 @@ public class GamePlay : MonoBehaviour
         Debug.Assert(nextPlayerImage != null);
         Debug.Assert(board != null);
 
+        state = GameState.Fresh;
         picker = new PlayerPicker();
-
         InitPlayerBoundaries();
 
         board.FullBoard += HandleFullBoard;
     }
 
-    void OnEnable()
+    void OnDestroy()
     {
-        if (gameOver) RestartGame();        // reset on subsequent games only
-    }
-
-    void OnDisable()
-    {
-        if (player == null) return;
-
-        RemoveCurrentPlayer();
-        gameOver = true;
-    }
-
-    void Start()
-    {
-        SpawnNewPlayer();
+        board.FullBoard -= HandleFullBoard;
     }
 
 
@@ -94,23 +86,52 @@ public class GamePlay : MonoBehaviour
     // ================================
 
     /// <summary>
+	/// Starts new game.
+	/// </summary>
+    public void StartGame()
+    {
+        Debug.Assert(state == GameState.Fresh, $"Start called with invalid state: {state}");
+
+        SpawnNewPlayer();
+    }
+
+    /// <summary>
 	/// Pauses the gameplay.
 	/// </summary>
-    public void Pause()
+    public void PauseGame()
     {
-        Debug.Assert(player != null);
+        Debug.Assert(state == GameState.Playing, $"Pause called with invalid state: {state}");
 
+        state = GameState.Paused;
         player.enabled = false;
     }
 
     /// <summary>
 	/// Resumes the gameplay.
 	/// </summary>
-    public void Resume()
+    public void ResumeGame()
     {
-        Debug.Assert(player != null);
+        Debug.Assert(state == GameState.Paused, $"Resume called with invalid state: {state}");
 
+        state = GameState.Playing;
         player.enabled = true;
+    }
+
+    /// <summary>
+	/// Ends the game play and erases the scene.
+	/// </summary>
+    public void ExitGame()
+    {
+        Debug.Assert(state == GameState.Paused || state == GameState.GameOver, $"Exit called with invalid state: {state}");
+
+        if (state == GameState.Paused)      // user exit
+            RemoveCurrentPlayer();
+
+        board.Reset();
+        picker.Reset();
+        score = 0;
+
+        state = GameState.Fresh;
     }
 
 
@@ -118,43 +139,28 @@ public class GamePlay : MonoBehaviour
     // Event Handlers
     // ================================
 
-    // runs the turn initiated by the player being released
-    private void HandlePlayerReleasedOnBoard(Player playerReleased)
+    // moves the player back to start or on the board.
+    // if on the board, executes the player's turn.
+    private void HandlePlayerReleased(Player playerReleased)
     {
-        Debug.Assert(playerReleased && player && playerReleased == player, "Player released is not current player");
+        Debug.Assert(state == GameState.Playing, $"Player released during invalid state: {state}");
+        Debug.Assert(player != null, "Player released but no active player");
+        Debug.Assert(player == playerReleased, "Player released is not the current player");
 
-        Vector3 newPosition;
-        bool validPosition = board.TryGetPlayerPosition(player.Position, out newPosition);
+        if (!TryPlacePlayer(player.Position)) return;
 
-        if (!validPosition)                        
-        {
-            player.Move(spawnPoint.position);
-            return;
-        }
-
-        player.Move(newPosition);                                    // render the snapping movement to the board
-
-        int pointsScored = board.RunPlay(newPosition, player.Color);        // runs all board logic
-        if (pointsScored > 0)
-        {
-            score += pointsScored;
-            UpdateScore?.Invoke(score);
-        }
-
+        ExecuteTurn(player.Position, player.Color);
         RemoveCurrentPlayer();
 
-        if (gameOver)
-        {
-            GameOver?.Invoke(score);
-            return;                                                         // don't respawn
-        }
-
-        SpawnNewPlayer();
+        if (state == GameState.Playing) SpawnNewPlayer();
     }
 
     private void HandleFullBoard()
     {
-        gameOver = true;
+        Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}")
+
+        state = GameState.GameOver;
+        GameOver?.Invoke(score);
     }
 
 
@@ -162,47 +168,63 @@ public class GamePlay : MonoBehaviour
     // Private Methods
     // ================================
 
-    private void RestartGame()
-    {
-        Debug.assert(player == null);
-
-        gameOver = false;
-        board.Reset();
-        picker.Reset();
-        score = 0;
-
-        SpawnNewPlayer();
-    }
-
-    private void SpawnNewPlayer()
-    {
-        Debug.assert(player == null);
-
-        var playerColors = picker.CalculateNewPlayerColors();
-        nextPlayerImage.SetSprite(SpriteDatabase.Instance.sprites[playerColors.nextColor]);        
-
-        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        player.Initialize(playerColors.color, SpriteDatabase.Instance.sprites[playerColors.color], playerBoundaries);      
-
-        player.PlayerReleased += HandlePlayerReleasedOnBoard;
-    }
-
-    private void RemoveCurrentPlayer()
-    {
-        Debug.assert(player != null);
-
-        player.PlayerReleased -= HandlePlayerReleasedOnBoard;        
-        Destroy(player.gameObject);
-    }
-
     private void InitPlayerBoundaries()
     {
-        playerBoundaries = board.BoardBounds;
-        
+        playerBoundaries = board.BoardBounds;       // guarantee this in board
+
         Vector3 min = playerBoundaries.min;
         min.y = spawnPoint.position.y;
 
         playerBoundaries.SetMinMax(min, playerBoundaries.max);
     }
 
+    private void SpawnNewPlayer()
+    {
+        Debug.Assert(player != null, "Player still in existence");
+
+        if (state == GameState.GameOver) return;      // don't respawn on game over
+
+        var playerColors = picker.CalculateNewPlayerColors();       // validate this value in picker
+        nextPlayerImage.SetSprite(SpriteDatabase.Instance.sprites[playerColors.nextColor]);     // validate this in the sprite database   
+
+        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        player.Initialize(playerColors.color, SpriteDatabase.Instance.sprites[playerColors.color], playerBoundaries);     // validate this in player 
+
+        player.PlayerReleased += HandlePlayerReleased;
+    }
+
+    private void RemoveCurrentPlayer()
+    {
+        Debug.Assert(player != null, "No actve player");
+
+        player.PlayerReleased -= HandlePlayerReleased;        
+        Destroy(player.gameObject);
+    }
+
+    private bool TryPlacePlayer(Vector3 position)
+    {
+        Vector3 newPosition;
+        bool valid = board.TryGetPlayerPosition(position, out newPosition); // all validation runs in this function
+
+        if (!valid)
+        {
+            player.Move(spawnPoint.position);
+        } else
+        {
+            player.Move(newPosition);                                    // render the snapping movement to the board
+        }
+
+        return valid;
+    }
+
+    private void ExecuteTurn(Vector3 position, int color)
+    {
+        int pointsScored = board.RunPlay(position, color);        // runs all board logic, all validation happens in here
+
+        if (pointsScored > 0)
+        {
+            score += pointsScored;
+            UpdateScore?.Invoke(score);
+        }
+    }
 }

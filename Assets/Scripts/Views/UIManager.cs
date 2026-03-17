@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Controls the screen that is displayed.
@@ -35,7 +36,7 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private Stack<GameObject> canvasStack = new Stack<GameObject>;
+    private Stack<GameObject> canvasStack = new Stack<GameObject>();
 
 
     // ================================
