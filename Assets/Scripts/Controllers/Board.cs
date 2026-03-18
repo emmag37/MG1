@@ -75,11 +75,14 @@ public class Board : MonoBehaviour
     /// </remarks>
     public int RunPlay(Vector2Int index, CellColor color)
     {
-        Debug.Assert(logic.ValidIndex(index.x, index.y), $"Ran play with invalid index: {index}");
-
         grid[index.x, index.y].SetColor(color);                       // render the player on the board
 
-        var result = logic.PlacePlayer(index, color);                 // run the play calculations, validate result in logic
+        BoardLogic.PlayResult result;
+        if (logic.TryPlacePlayer(index.x, index.y, color, out result))     // run the board logic
+        {
+            Debug.LogError($"Ran play with invalid index or color: {index}, {color}");
+        }
+
         if (result.FullBoard) FullBoard?.Invoke();                    // activate a game over
 
         // set full rows to empty cells
@@ -108,7 +111,7 @@ public class Board : MonoBehaviour
     {
         index = geometry.TransformToBoardIndex(position);
 
-        if (!logic.ValidIndex(index.x, index.y))
+        if (!logic.ValidCell(index.x, index.y))
         {
             newPosition = Vector3.zero;
             return false;

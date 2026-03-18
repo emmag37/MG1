@@ -191,7 +191,7 @@ public class GamePlay : MonoBehaviour
         nextPlayerImage.SetSprite(SpriteDatabase.Instance.GetSprite(playerColors.nextColor));     // move this to UI
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        player.Initialize(playerColors.color, playerBoundaries);     // validate this in player 
+        player.Initialize(playerColors.color, playerBoundaries);
 
         player.PlayerReleased += HandlePlayerReleased;
     }

@@ -44,6 +44,7 @@ public class Draggable : MonoBehaviour
     void Awake()
     {
         cam = Camera.main;
+        Debug.Assert(cam != null, "Main camera not found");
     }
 
     void Update()
@@ -95,14 +96,15 @@ public class Draggable : MonoBehaviour
 	/// </summary>
     private void Drag()
     {
-        if (Pointer.current == null) return;
+        var pointer = Pointer.current;
+        if (pointer == null) return;
 
-        Vector2 pointerScreenPos = Pointer.current.position.ReadValue();    // obtain the mouse world coordinates
+        Vector2 pointerScreenPos = pointer.position.ReadValue();    // obtain the mouse world coordinates
         Vector3 pointerWorldPos = cam.ScreenToWorldPoint(pointerScreenPos);
         pointerWorldPos.z = 0;
 
         // start moving
-        if (Pointer.current.press.wasPressedThisFrame)
+        if (pointer.press.wasPressedThisFrame)
         {
             Collider2D hit = Physics2D.OverlapPoint(pointerWorldPos); // check if mouse is on the collider
             if (hit && hit.gameObject == gameObject)
@@ -113,7 +115,7 @@ public class Draggable : MonoBehaviour
         }
 
         // continue moving
-        if (isDragging && Pointer.current.press.isPressed)
+        if (isDragging && pointer.press.isPressed)
         {
             Vector3 newPos = pointerWorldPos + dragOffset;    // calculate new position
 
@@ -124,7 +126,7 @@ public class Draggable : MonoBehaviour
         }
 
         // release
-        if (isDragging && Pointer.current.press.wasReleasedThisFrame)
+        if (isDragging && pointer.press.wasReleasedThisFrame)
         {
             isDragging = false;
             Released?.Invoke(transform.position);      // throw event to the player script

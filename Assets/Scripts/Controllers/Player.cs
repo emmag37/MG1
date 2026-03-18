@@ -11,6 +11,8 @@ using System;
 /// - Enabling/disabling the player only affects user dragging
 /// 
 /// </summary>
+[RequireComponent(typeof(SpriteView))]
+[RequireComponent(typeof(Draggable))]
 public class Player : MonoBehaviour
 {
     // ================================

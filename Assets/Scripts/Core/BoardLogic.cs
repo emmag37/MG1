@@ -1,5 +1,5 @@
-using UnityEngine;
 using System;
+using System.Diagnostics;
 
 /// <summary>
 /// Manages a representation of the board.
@@ -66,7 +66,7 @@ public class BoardLogic
     /// <returns>
     /// <c>true</c> if the index is valid; otherwise <c>false</c>
     /// </returns>
-    public bool ValidIndex(int row, int col)
+    public bool ValidCell(int row, int col)
     {
         bool valid =
             (row >= 0 && row < GameConstants.RowSize) &&
@@ -94,21 +94,26 @@ public class BoardLogic
         ResetColors();
     }
 
+    
+
+
     /// <summary>
-	/// Adds the player to the board and runs the play.
+	/// If the parameters are valid, adds the player to the board and
+	/// checks the internal state for wins.
 	/// </summary>
-	/// <param name="index">Player index on the board.</param>
+	/// <param name="row">Row of the player.</param>
+	/// <param name="col">Column of the player.</param>
 	/// <param name="color">Color of the player.</param>
-	/// <returns>Information about the result of the play.</returns>
-    public PlayResult PlacePlayer(Vector2Int index, CellColor color)
+	/// <param name="result">Contains information about the play.</param>
+	/// <returns><c>true</c> if the index and color were valid; otherwise <c>false</c>.</returns>
+    public bool TryPlacePlayer(int row, int col, CellColor color, out PlayResult result)
     {
-        Debug.Assert(ValidIndex(index.x, index.y), $"Attempted placing at invalid index: {index}");
-        Debug.Assert(color != CellColor.Empty, $"Attempted placing an empty player");
+        result = new PlayResult();
 
-        PlayResult result = new PlayResult();
-
-        int row = index.x;
-        int col = index.y;
+        if (!ValidCell(row, col) || color == CellColor.Empty)
+        {
+            return false;
+        }
 
         // Add player to the board
         gridColors[row, col] = color;
@@ -148,7 +153,22 @@ public class BoardLogic
         result.Points = CalculatePoints(result);
         result.FullBoard = (numSpotsFilled == NumSpots);
 
-        return result;
+        return true;
+    }
+
+
+    // ================================
+    // Internal Methods - Testing Only
+    // ================================
+
+    internal CellColor GetCellColor(int row, int col)
+    {
+        return gridColors[row, col];
+    }
+
+    internal int GetSpotsFilled()
+    {
+        return numSpotsFilled;
     }
 
 

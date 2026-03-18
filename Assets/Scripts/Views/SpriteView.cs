@@ -19,9 +19,10 @@ public class SpriteView : MonoBehaviour
     public float Radius { get; private set; }
 
     // ================================
-    // Inspector Fields
+    // Private Fields
     // ================================
-    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    private SpriteRenderer spriteRenderer;
 
 
     // ================================
@@ -30,8 +31,7 @@ public class SpriteView : MonoBehaviour
 
     void Awake()
     {
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         UpdateRadius();
     }
@@ -48,6 +48,8 @@ public class SpriteView : MonoBehaviour
 	/// <remarks>Accesses the sprite from the sprite database.</remarks>
     public void SetSprite(Sprite sprite)
     {
+        Debug.Assert(sprite != null, "Attempted to set sprite to null");
+
         spriteRenderer.sprite = sprite;
         UpdateRadius();
     }
@@ -59,6 +61,8 @@ public class SpriteView : MonoBehaviour
 
     private void UpdateRadius()
     {
-        Radius = spriteRenderer.sprite.bounds.extents.x;
+        Debug.Assert(spriteRenderer.sprite != null, "Sprite not set");
+
+        Radius = spriteRenderer.bounds.extents.x;
     }
 }
