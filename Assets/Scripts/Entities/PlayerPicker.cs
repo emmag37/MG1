@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Manages the color generation of players.
+/// Manages the color generation of players using the CellColor enum.
 /// </summary>
 public class PlayerPicker
 {
@@ -14,19 +14,14 @@ public class PlayerPicker
 	/// </summary>
     public struct PlayerColors
     {
-        public int color;
-        public int nextColor;
+        public CellColor color;
+        public CellColor nextColor;
     }
-
-    // ================================
-    // Constants
-    // ================================
-    private const int numColors = 7;
 
     // ================================
     // Private Fields
     // ================================
-    private int nextColor;
+    private CellColor nextColor;
 
     // ================================
     // Constructors
@@ -77,8 +72,8 @@ public class PlayerPicker
     // Calculates a color based on the built-in random generator.
         // - want to make this more advanced to adjust to the game
         // - when you improve it, put it in its own script
-    private int ChooseColor()
+    private CellColor ChooseColor()
     {
-        return Random.Range(1, numColors + 1);  // 0 is reserved for the empty sprite, colors start at 1
+        return (CellColor)Random.Range(1, (int)CellColor.Count);  // 0 is reserved for the empty sprite, colors start at 1
     }
 }

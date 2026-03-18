@@ -24,7 +24,7 @@ public class Cell : MonoBehaviour
     // ==================================================
     private int rowSize;
     private SpriteView image;
-    private int color = Empty;
+    private CellColor color = CellColor.Empty;
 
     // ==================================================
     // Unity Lifecycle Methods
@@ -59,9 +59,9 @@ public class Cell : MonoBehaviour
 	/// Sets the cell sprite to the given color.
 	/// </summary>
 	/// <param name="newColor">New color for the cell.</param>
-    public void SetColor(int newColor)
+    public void SetColor(CellColor newColor)
     {
-        image.SetSprite(SpriteDatabase.Instance.sprites[newColor]);     // validate in sprite database
+        image.SetSprite(SpriteDatabase.Instance.GetSprite(newColor));     // validate in sprite database
         color = newColor;
     }
 
@@ -70,6 +70,8 @@ public class Cell : MonoBehaviour
 	/// </summary>
     public void SetEmpty()
     {
-        SetColor(Empty);
+        if (color == CellColor.Empty) return;
+
+        SetColor(CellColor.Empty);
     }
 }

@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     /// <summary>
 	/// Color of the player object.
 	/// </summary>
-    public int Color { get; private set; }
+    public CellColor Color { get; private set; }
 
     /// <summary>
 	/// Current position of the player.
@@ -67,10 +67,10 @@ public class Player : MonoBehaviour
 	/// </summary>
 	/// <param name="color">Color id of the player.</param>
 	/// <param name="boundaries">Boundaries of the board.</param>
-    public void Initialize(int color, Bounds boundaries)
+    public void Initialize(CellColor color, Bounds boundaries)
     {
         Color = color;
-        image.SetSprite(SpriteDatabase.Instance.sprites[color]);
+        image.SetSprite(SpriteDatabase.Instance.GetSprite(color));
 
         float radius = image.Radius;
 

@@ -189,7 +189,7 @@ public class GamePlay : MonoBehaviour
         if (state == GameState.GameOver) return;      // don't respawn on game over
 
         var playerColors = picker.CalculateNewPlayerColors();       // validate this value in picker
-        nextPlayerImage.SetSprite(SpriteDatabase.Instance.sprites[playerColors.nextColor]);     // move this to UI
+        nextPlayerImage.SetSprite(SpriteDatabase.Instance.GetSprite(playerColors.nextColor));     // move this to UI
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.Initialize(playerColors.color, playerBoundaries);     // validate this in player 
@@ -221,7 +221,7 @@ public class GamePlay : MonoBehaviour
         return valid;
     }
 
-    private void ExecuteTurn(Vector2Int index, int color)
+    private void ExecuteTurn(Vector2Int index, CellColor color)
     {
         int pointsScored = board.RunPlay(index, color);
 

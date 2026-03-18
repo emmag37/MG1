@@ -33,8 +33,7 @@ public class BoardLogic
     // ================================
 
     private const int RowSize = 5;
-    private const int WildCard = 7;
-    private const int Empty = 0;
+    private const int NumSpots = RowSize * RowSize;
 
     // ================================
     // Private Fields
@@ -46,7 +45,7 @@ public class BoardLogic
     private int lDiagCount = 0;
 
     private int numSpotsFilled = 0;
-    private int[,] gridColors = new int[RowSize, RowSize];
+    private CellColor[,] gridColors = new CellColor[RowSize, RowSize];
 
 
     // ================================
@@ -58,7 +57,7 @@ public class BoardLogic
 	/// </summary>
     public BoardLogic()
     {
-        ResetGrid();
+        ResetColors();
     }
 
     /// <summary>
@@ -72,9 +71,9 @@ public class BoardLogic
     public bool ValidIndex(int row, int col)
     {
         bool valid =
-            (row >= 0 && row <= RowSize - 1) &&
-            (col >= 0 && col <= RowSize - 1) &&
-            gridColors[row, col] == Empty;
+            (row >= 0 && row < RowSize) &&
+            (col >= 0 && col < RowSize) &&
+            gridColors[row, col] == CellColor.Empty;
 
         return valid;
     }
@@ -94,7 +93,7 @@ public class BoardLogic
 
         // Reset the grid
         numSpotsFilled = 0;
-        ResetGrid();
+        ResetColors();
     }
 
     /// <summary>
@@ -103,8 +102,11 @@ public class BoardLogic
 	/// <param name="index">Player index on the board.</param>
 	/// <param name="color">Color of the player.</param>
 	/// <returns>Information about the result of the play.</returns>
-    public PlayResult PlacePlayer(Vector2Int index, int color)
+    public PlayResult PlacePlayer(Vector2Int index, CellColor color)
     {
+        Debug.Assert(ValidIndex(index.x, index.y), $"Attempted placing at invalid index: {index}");
+        Debug.Assert(color != CellColor.Empty, $"Attempted placing an empty player");
+
         PlayResult result = new PlayResult();
 
         int row = index.x;
@@ -141,11 +143,12 @@ public class BoardLogic
         if (result.ClearRDiag) ClearRDiagonal();
         if (result.ClearLDiag) ClearLDiagonal();
 
+        if (!result.ClearRow && !result.ClearCol && !result.ClearRDiag && !result.ClearLDiag) // no lines cleared
+            numSpotsFilled++;
+        Debug.Assert(numSpotsFilled >= 0 && numSpotsFilled <= NumSpots, $"Invalid fill count: {numSpotsFilled}");
+
         result.Points = CalculatePoints(result);
-
-        if (result.Points == 0) numSpotsFilled++;   // The player fills a spot if no lines cleared
-
-        result.FullBoard = (numSpotsFilled == RowSize * RowSize);   // checks if there is a full board
+        result.FullBoard = (numSpotsFilled == NumSpots);
 
         return result;
     }
@@ -156,13 +159,13 @@ public class BoardLogic
     // ================================
 
     // sets grid colors to empty
-    private void ResetGrid()
+    private void ResetColors()
     {
         for (int x = 0; x < RowSize; x++)
         {
             for (int y = 0; y < RowSize; y++)
             {
-                gridColors[x, y] = Empty;
+                gridColors[x, y] = CellColor.Empty;
             }
         }
     }
@@ -181,16 +184,16 @@ public class BoardLogic
     }
 
     // returns whether the line indicated by indexSelector is all color, assumes that the line is full
-    private bool LineColorsMatch(Func<int, (int r, int c)> indexSelector, int color)
+    private bool LineColorsMatch(Func<int, (int r, int c)> indexSelector, CellColor color)
     {
         for (int i = 0; i < RowSize; i++)
         {
             var (r, c) = indexSelector(i);
-            int cellColor = gridColors[r, c];
+            CellColor cellColor = gridColors[r, c];
 
-            if (color == WildCard) color = cellColor;   // pick color to compare to if color is WildCard
+            if (color == CellColor.WildCard) color = cellColor;   // pick color to compare to if color is WildCard
 
-            if (cellColor != color && cellColor != WildCard) return false;
+            if (cellColor != color && cellColor != CellColor.WildCard) return false;
         }
 
         return true;
@@ -246,7 +249,7 @@ public class BoardLogic
         for (int i = 0; i < RowSize; i++)
         {
             var (r, c) = indexSelector(i);
-            gridColors[r, c] = Empty;
+            gridColors[r, c] = CellColor.Empty;
         }
 
         numSpotsFilled -= 4;

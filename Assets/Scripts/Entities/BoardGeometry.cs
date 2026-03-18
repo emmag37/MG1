@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Manages the index and coordinate calculations of the board.
+/// Performs the index and world coordinate calculations of the board.
 /// </summary>
 public class BoardGeometry
 {

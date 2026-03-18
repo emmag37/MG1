@@ -14,7 +14,6 @@ public class Board : MonoBehaviour
     // ================================
 
     private const int RowSize = 5;  // this also needs to be some sort of global, define elsewhere
-    private const int Empty = 0;    // put this as a global in sprite database?
 
     // ================================
     // Events
@@ -75,17 +74,16 @@ public class Board : MonoBehaviour
 	/// <remarks>
 	/// Invokes <see cref="FullBoard"/> if the board becomes full.
 	/// </remarks>
-    public int RunPlay(Vector2Int index, int color)
+    public int RunPlay(Vector2Int index, CellColor color)
     {
-        Debug.Assert(logic.ValidIndex(index.x, index.y), $"Ran play with invalid index: ({index.x}, {index.y})");
+        Debug.Assert(logic.ValidIndex(index.x, index.y), $"Ran play with invalid index: {index}");
 
-        // validate color in the sprite database
-        grid[index.x, index.y].SetColor(color);                      // render the player on the board
+        grid[index.x, index.y].SetColor(color);                       // render the player on the board
 
         var result = logic.PlacePlayer(index, color);                 // run the play calculations, validate result in logic
-        if (result.FullBoard) FullBoard?.Invoke();                  // activate a game over
+        if (result.FullBoard) FullBoard?.Invoke();                    // activate a game over
 
-        // render empty sprites for full lines
+        // set full rows to empty cells
         if (result.ClearRow) ClearRow(index.x);
         if (result.ClearCol) ClearColumn(index.y);
         if (result.ClearRDiag) ClearRightDiagonal();
@@ -109,15 +107,15 @@ public class Board : MonoBehaviour
     /// </returns>
     public bool TryGetPlayerPosition(Vector3 position, out Vector3 newPosition, out Vector2Int index)
     {
-        index = geometry.TransformToBoardIndex(position);    // validate in geometry, assuming if incorrect (-1, -1)?
+        index = geometry.TransformToBoardIndex(position);
 
-        if (!logic.ValidIndex(index.x, index.y))    // validate in logic
+        if (!logic.ValidIndex(index.x, index.y))
         {
             newPosition = Vector3.zero;
             return false;
         }
 
-        newPosition = geometry.BoardIndexToTransform(index);    // validate in geometry
+        newPosition = geometry.BoardIndexToTransform(index);
         return true;
     }
 
@@ -151,7 +149,7 @@ public class Board : MonoBehaviour
         {
             Vector2Int index = cell.Index;
 
-            Debug.Assert(index.x > 0 && index.x < RowSize && index.y > 0 && index.y <= RowSize,
+            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y <= RowSize,
                 $"Index {index} is out of bounds");
             Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
 

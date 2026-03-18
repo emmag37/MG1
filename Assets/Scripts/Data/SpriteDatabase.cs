@@ -10,7 +10,9 @@ using UnityEngine;
 public class SpriteDatabase : ScriptableObject
 {
     private static SpriteDatabase instance;
+    private Sprite[] sprites;
 
+    // singleton initialization
     public static SpriteDatabase Instance
     {
         get
@@ -22,5 +24,17 @@ public class SpriteDatabase : ScriptableObject
         }
     }
 
-    public Sprite[] sprites;
+    /// <summary>
+	/// Safe access to the sprite database.
+	/// </summary>
+	/// <param name="color">Color sprite to get</param>
+	/// <returns>The sprite object associated with color</returns>
+    public Sprite GetSprite(CellColor color)
+    {
+        int index = (int)color;
+        Debug.Assert(index >= 0 && index < sprites.Length,
+            $"Invalid index {index} for length {sprites.Length}");
+
+        return sprites[index];
+    }
 }
