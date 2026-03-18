@@ -31,21 +31,19 @@ public class BoardLogic
     // ================================
     // Constants
     // ================================
-
-    private const int RowSize = 5;
-    private const int NumSpots = RowSize * RowSize;
+    private const int NumSpots = GameConstants.RowSize * GameConstants.RowSize;
 
     // ================================
     // Private Fields
     // ================================
 
-    private int[] rowCounts = new int[RowSize];
-    private int[] colCounts = new int[RowSize];
+    private int[] rowCounts = new int[GameConstants.RowSize];
+    private int[] colCounts = new int[GameConstants.RowSize];
     private int rDiagCount = 0;
     private int lDiagCount = 0;
 
     private int numSpotsFilled = 0;
-    private CellColor[,] gridColors = new CellColor[RowSize, RowSize];
+    private CellColor[,] gridColors = new CellColor[GameConstants.RowSize, GameConstants.RowSize];
 
 
     // ================================
@@ -71,8 +69,8 @@ public class BoardLogic
     public bool ValidIndex(int row, int col)
     {
         bool valid =
-            (row >= 0 && row < RowSize) &&
-            (col >= 0 && col < RowSize) &&
+            (row >= 0 && row < GameConstants.RowSize) &&
+            (col >= 0 && col < GameConstants.RowSize) &&
             gridColors[row, col] == CellColor.Empty;
 
         return valid;
@@ -83,7 +81,7 @@ public class BoardLogic
 	/// </summary>
     public void ResetBoard()
     {
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < GameConstants.RowSize; i++)
         {
             rowCounts[i] = 0;
             colCounts[i] = 0;
@@ -118,24 +116,24 @@ public class BoardLogic
         rowCounts[row]++;
         colCounts[col]++;
         if (row == col) rDiagCount++;
-        if (RowSize - 1 - row == col) lDiagCount++;
+        if (GameConstants.RowSize - 1 - row == col) lDiagCount++;
 
         // Check for full and matching lines
         result.ClearRow =
-            (rowCounts[row] == RowSize) &&
+            (rowCounts[row] == GameConstants.RowSize) &&
             LineColorsMatch(i => (row, i), color);
 
         result.ClearCol =
-            (colCounts[col] == RowSize) &&
+            (colCounts[col] == GameConstants.RowSize) &&
             LineColorsMatch(i => (i, col), color);
 
         result.ClearRDiag =
-            (rDiagCount == RowSize) &&
+            (rDiagCount == GameConstants.RowSize) &&
             LineColorsMatch(i => (i, i), color);
 
         result.ClearLDiag =
-            (lDiagCount == RowSize) &&
-            LineColorsMatch(i => (RowSize - 1 - i, i), color);
+            (lDiagCount == GameConstants.RowSize) &&
+            LineColorsMatch(i => (GameConstants.RowSize - 1 - i, i), color);
 
         // Clear any filled lines
         if (result.ClearRow) ClearRow(row);
@@ -161,9 +159,9 @@ public class BoardLogic
     // sets grid colors to empty
     private void ResetColors()
     {
-        for (int x = 0; x < RowSize; x++)
+        for (int x = 0; x < GameConstants.RowSize; x++)
         {
-            for (int y = 0; y < RowSize; y++)
+            for (int y = 0; y < GameConstants.RowSize; y++)
             {
                 gridColors[x, y] = CellColor.Empty;
             }
@@ -186,7 +184,7 @@ public class BoardLogic
     // returns whether the line indicated by indexSelector is all color, assumes that the line is full
     private bool LineColorsMatch(Func<int, (int r, int c)> indexSelector, CellColor color)
     {
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < GameConstants.RowSize; i++)
         {
             var (r, c) = indexSelector(i);
             CellColor cellColor = gridColors[r, c];
@@ -212,7 +210,7 @@ public class BoardLogic
         SetLineEmpty(i => (row, i));
         rowCounts[row] = 0;
         
-        for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+        for (int i = 0; i < GameConstants.RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
         rDiagCount = DecrementCount(rDiagCount);
         lDiagCount = DecrementCount(lDiagCount);
     }
@@ -221,7 +219,7 @@ public class BoardLogic
         SetLineEmpty(i => (i, col));
         colCounts[col] = 0;
 
-        for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+        for (int i = 0; i < GameConstants.RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
         rDiagCount = DecrementCount(rDiagCount);
         lDiagCount = DecrementCount(lDiagCount);
     }
@@ -230,23 +228,23 @@ public class BoardLogic
         SetLineEmpty(i => (i, i));
         rDiagCount = 0;
 
-        for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
-        for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+        for (int i = 0; i < GameConstants.RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+        for (int i = 0; i < GameConstants.RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
         lDiagCount = DecrementCount(lDiagCount);
     }
     private void ClearLDiagonal()
     {
-        SetLineEmpty(i => (RowSize - 1 - i, i));
+        SetLineEmpty(i => (GameConstants.RowSize - 1 - i, i));
         lDiagCount = 0;
 
-        for (int i = 0; i < RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
-        for (int i = 0; i < RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
+        for (int i = 0; i < GameConstants.RowSize; i++) colCounts[i] = DecrementCount(colCounts[i]);
+        for (int i = 0; i < GameConstants.RowSize; i++) rowCounts[i] = DecrementCount(rowCounts[i]);
         rDiagCount = DecrementCount(rDiagCount);
     }
 
     private void SetLineEmpty(Func<int, (int r, int c)> indexSelector)
     {
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < GameConstants.RowSize; i++)
         {
             var (r, c) = indexSelector(i);
             gridColors[r, c] = CellColor.Empty;

@@ -8,7 +8,6 @@ public class BoardGeometry
     // ==================================================
     // Private Fields
     // ==================================================
-    private int rowSize;
     private float cellOffset;               
     private Vector3 originCellPos;
 
@@ -23,16 +22,14 @@ public class BoardGeometry
 	/// <param name="rows">Number of rows on the board.</param>
 	/// <param name="cellRadius">Radius of a spot on the board.</param>
 	/// <param name="board">Boundaries of box that holds the board.</param>
-    public void Initialize(int rows, float cellRadius, Bounds board)
+    public void Initialize(float cellRadius, Bounds board)
     {
-        rowSize = rows;
-
         float boardLeft = board.min.x;
         float boardRight = board.max.x;
         float boardTop = board.max.y;
 
         float gridWidth = boardRight - boardLeft;
-        float spacing = (gridWidth - cellRadius * (rowSize * 2)) / (rowSize + 1);
+        float spacing = (gridWidth - cellRadius * (GameConstants.RowSize * 2)) / (GameConstants.RowSize + 1);
 
         cellOffset = cellRadius * 2 + spacing;
         originCellPos = new Vector3(boardRight - gridWidth / 2, boardTop - gridWidth / 2, 0);
@@ -84,8 +81,8 @@ public class BoardGeometry
     {
         Vector2Int index = new Vector2Int();
 
-        index.x = (rowSize - 1) / 2 - pos.x;   // reverse row direction first
-        index.y = pos.y + (rowSize - 1) / 2;
+        index.x = (GameConstants.RowSize - 1) / 2 - pos.x;   // reverse row direction first
+        index.y = pos.y + (GameConstants.RowSize - 1) / 2;
 
         return index;
     }
@@ -94,8 +91,8 @@ public class BoardGeometry
     {
         Vector2Int index = new Vector2Int();
 
-        index.x = (rowSize - 1) / 2 - pos.x;   // reverse row direction first
-        index.y = pos.y - (rowSize - 1) / 2;
+        index.x = (GameConstants.RowSize - 1) / 2 - pos.x;   // reverse row direction first
+        index.y = pos.y - (GameConstants.RowSize - 1) / 2;
 
         return index;
     }

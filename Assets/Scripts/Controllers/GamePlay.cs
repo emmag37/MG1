@@ -9,19 +9,6 @@ using System;
 public class GamePlay : MonoBehaviour
 {
     // ================================
-    // Constants
-    // ================================
-
-    private const int RowSize = 5;  // if you change row size in the future it must be odd for an origin cell
-    private enum GameState
-    {
-        Playing,
-        Paused,
-        GameOver,
-        Fresh
-    }
-
-    // ================================
     // Events
     // ================================
 
@@ -43,6 +30,18 @@ public class GamePlay : MonoBehaviour
     [SerializeField] private Player playerPrefab;
     [SerializeField] private SpriteView nextPlayerImage;
     [SerializeField] private Board board;
+
+    // ================================
+    // Private Types
+    // ================================
+
+    private enum GameState
+    {
+        Playing,
+        Paused,
+        GameOver,
+        Fresh
+    }
 
     // ================================
     // Private Fields
@@ -131,7 +130,7 @@ public class GamePlay : MonoBehaviour
             RemoveCurrentPlayer();
 
         board.Reset();
-        picker.Reset();     // validate in picker
+        picker.Reset();
         score = 0;
 
         state = GameState.Fresh;
@@ -188,7 +187,7 @@ public class GamePlay : MonoBehaviour
 
         if (state == GameState.GameOver) return;      // don't respawn on game over
 
-        var playerColors = picker.CalculateNewPlayerColors();       // validate this value in picker
+        var playerColors = picker.CalculateNewPlayerColors();
         nextPlayerImage.SetSprite(SpriteDatabase.Instance.GetSprite(playerColors.nextColor));     // move this to UI
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);

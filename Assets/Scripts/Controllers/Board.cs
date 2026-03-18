@@ -10,12 +10,6 @@ using System;
 public class Board : MonoBehaviour
 {
     // ================================
-    // Constants
-    // ================================
-
-    private const int RowSize = 5;  // this also needs to be some sort of global, define elsewhere
-
-    // ================================
     // Events
     // ================================
     
@@ -40,7 +34,7 @@ public class Board : MonoBehaviour
     private BoardLogic logic;
     private BoardGeometry geometry;
 
-    private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
+    private Cell[,] grid = new Cell[GameConstants.RowSize, GameConstants.RowSize];  // grid children
 
 
     // ================================
@@ -57,8 +51,13 @@ public class Board : MonoBehaviour
         logic = new BoardLogic();
 
         geometry = new BoardGeometry();
-        geometry.Initialize(RowSize, grid[0, 0].Radius, BoardBounds); // validate the radius in sprite view
+        geometry.Initialize(grid[0, 0].Radius, BoardBounds); // validate the radius in sprite view
     }
+
+
+    // ================================
+    // Initializers
+    // ================================
 
 
     // ================================
@@ -66,14 +65,14 @@ public class Board : MonoBehaviour
     // ================================
 
     /// <summary>
-	/// Sets cell to the player's image and clears completed lines.
-	/// </summary>
-	/// <param name="position">World position of the player to be added.</param>
-	/// <param name="color">Color of the player to be added.</param>
-	/// <returns>Points scored on the play.</returns>
-	/// <remarks>
-	/// Invokes <see cref="FullBoard"/> if the board becomes full.
-	/// </remarks>
+    /// Sets cell to the player's image and clears completed lines.
+    /// </summary>
+    /// <param name="position">World position of the player to be added.</param>
+    /// <param name="color">Color of the player to be added.</param>
+    /// <returns>Points scored on the play.</returns>
+    /// <remarks>
+    /// Invokes <see cref="FullBoard"/> if the board becomes full.
+    /// </remarks>
     public int RunPlay(Vector2Int index, CellColor color)
     {
         Debug.Assert(logic.ValidIndex(index.x, index.y), $"Ran play with invalid index: {index}");
@@ -142,23 +141,23 @@ public class Board : MonoBehaviour
     {
         Cell[] cells = GetComponentsInChildren<Cell>();
 
-        int expected = RowSize * RowSize;
+        int expected = GameConstants.RowSize * GameConstants.RowSize;
         Debug.Assert(expected == cells.Length, $"Expected {expected}, found {cells.Length}");
 
         foreach (Cell cell in cells)
         {
             Vector2Int index = cell.Index;
 
-            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y <= RowSize,
+            Debug.Assert(index.x >= 0 && index.x < GameConstants.RowSize && index.y >= 0 && index.y <= GameConstants.RowSize,
                 $"Index {index} is out of bounds");
             Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
 
             grid[index.x, index.y] = cell;
         }
 
-        for (int x = 0; x < RowSize; x++)
+        for (int x = 0; x < GameConstants.RowSize; x++)
         {
-            for (int y = 0; y < RowSize; y++)
+            for (int y = 0; y < GameConstants.RowSize; y++)
             {
                 Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
             }
@@ -169,28 +168,28 @@ public class Board : MonoBehaviour
     // Helpers to reset the grid sprites
     private void ClearRow(int row)
     {
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < GameConstants.RowSize; i++)
         {
             grid[row, i].SetEmpty();     // validate this in sprite database
         }
     }
     private void ClearColumn(int col)
     {
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < GameConstants.RowSize; i++)
         {
             grid[i, col].SetEmpty();
         }
     }
     private void ClearRightDiagonal()
     {
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < GameConstants.RowSize; i++)
         {
             grid[i, i].SetEmpty();
         }
     }
     private void ClearLeftDiagonal()
     {
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < GameConstants.RowSize; i++)
         {
             grid[i, i].SetEmpty();
         }

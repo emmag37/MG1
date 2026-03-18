@@ -35,7 +35,7 @@ public class PlayerPicker
         nextColor = ChooseColor();
     }
 
-
+    
     // ================================
     // Public Methods
     // ================================
