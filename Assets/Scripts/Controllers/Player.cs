@@ -67,10 +67,10 @@ public class Player : MonoBehaviour
 	/// </summary>
 	/// <param name="color">Color id of the player.</param>
 	/// <param name="boundaries">Boundaries of the board.</param>
-    public void Initialize(int color, Sprite sprite, Bounds boundaries)
+    public void Initialize(int color, Bounds boundaries)
     {
         Color = color;
-        image.SetSprite(sprite);
+        image.SetSprite(SpriteDatabase.Instance.sprites[color]);
 
         float radius = image.Radius;
 

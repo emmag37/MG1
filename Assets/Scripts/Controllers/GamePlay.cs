@@ -189,10 +189,10 @@ public class GamePlay : MonoBehaviour
         if (state == GameState.GameOver) return;      // don't respawn on game over
 
         var playerColors = picker.CalculateNewPlayerColors();       // validate this value in picker
-        nextPlayerImage.SetSprite(SpriteDatabase.Instance.sprites[playerColors.nextColor]);     // validate this in the sprite database   
+        nextPlayerImage.SetSprite(SpriteDatabase.Instance.sprites[playerColors.nextColor]);     // move this to UI
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        player.Initialize(playerColors.color, SpriteDatabase.Instance.sprites[playerColors.color], playerBoundaries);     // validate this in player 
+        player.Initialize(playerColors.color, playerBoundaries);     // validate this in player 
 
         player.PlayerReleased += HandlePlayerReleased;
     }
