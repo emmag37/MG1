@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 421657568361316366}
   - component: {fileID: 4055884118901066201}
   - component: {fileID: -4738901623334893058}
+  - component: {fileID: 1252488783021972421}
   m_Layer: 0
   m_Name: Cell
   m_TagString: Untagged
@@ -104,5 +105,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d48585638463417da58dc58cb510e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GamePieceImage
-  spriteD8: {fileID: 11400000, guid: 544cef78139544414a071eeb8de0df91, type: 2}
-  gamePieceRenderer: {fileID: 4055884118901066201}
+  spriteRenderer: {fileID: 4055884118901066201}
+--- !u!114 &1252488783021972421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2181350689164714117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e30c1e807af045fa9804cab9a956bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cell
+  index: {x: 0, y: 0}
