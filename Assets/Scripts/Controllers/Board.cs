@@ -13,7 +13,7 @@ public class Board : MonoBehaviour
     // Constants
     // ================================
 
-    private const int RowSize = 5;
+    private const int RowSize = 5;  // this also needs to be some sort of global, define elsewhere
     private const int Empty = 0;    // put this as a global in sprite database?
 
     // ================================
@@ -41,7 +41,7 @@ public class Board : MonoBehaviour
     private BoardLogic logic;
     private BoardGeometry geometry;
 
-    private SpriteView[,] grid = new SpriteView[RowSize, RowSize];  // grid children
+    private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
 
 
     // ================================
@@ -53,18 +53,7 @@ public class Board : MonoBehaviour
         BoardBounds = GetComponent<SpriteRenderer>().bounds;
         Debug.Assert(BoardBounds.size != Vector3.zero, "Invalid board bounds");
 
-        // validate grid initialization
-        int index = 0;
-        for (int x = 0; x < RowSize; x++)
-        {
-            for (int y = 0; y < RowSize; y++)
-            {
-                // access the cells from the game scene
-                grid[x, y] = transform.GetChild(index).GetComponent<SpriteView>();
-                index++;
-            }
-        }
-        Debug.Assert(grid[0, 0] != null, "Grid origin not initialized");
+        InitializeGrid();
 
         logic = new BoardLogic();
 
@@ -91,7 +80,7 @@ public class Board : MonoBehaviour
         Debug.Assert(logic.ValidIndex(index.x, index.y), $"Ran play with invalid index: ({index.x}, {index.y})");
 
         // validate color in the sprite database
-        grid[index.x, index.y].SetSprite(SpriteDatabase.Instance.sprites[color]);                      // render the player on the board
+        grid[index.x, index.y].SetColor(color);                      // render the player on the board
 
         var result = logic.PlacePlayer(index, color);                 // run the play calculations, validate result in logic
         if (result.FullBoard) FullBoard?.Invoke();                  // activate a game over
@@ -137,9 +126,9 @@ public class Board : MonoBehaviour
 	/// </summary>
     public void Reset()
     {
-        foreach (SpriteView image in grid)
+        foreach (Cell cell in grid)
         {
-            image.SetSprite(SpriteDatabase.Instance.sprites[Empty]);    // validate in sprite database
+            cell.SetEmpty();
         }
 
         logic.ResetBoard(); // validate in logic
@@ -150,33 +139,62 @@ public class Board : MonoBehaviour
     // Private Methods
     // ================================
 
+    // Initializes the grid cells using children in the scene view
+    private void InitializeGrid()
+    {
+        Cell[] cells = GetComponentsInChildren<Cell>();
+
+        int expected = RowSize * RowSize;
+        Debug.Assert(expected == cells.Length, $"Expected {expected}, found {cells.Length}");
+
+        foreach (Cell cell in cells)
+        {
+            Vector2Int index = cell.Index;
+
+            Debug.Assert(index.x > 0 && index.x < RowSize && index.y > 0 && index.y <= RowSize,
+                $"Index {index} is out of bounds");
+            Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
+
+            grid[index.x, index.y] = cell;
+        }
+
+        for (int x = 0; x < RowSize; x++)
+        {
+            for (int y = 0; y < RowSize; y++)
+            {
+                Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
+            }
+        }
+    }
+
+
     // Helpers to reset the grid sprites
     private void ClearRow(int row)
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[row, i].SetSprite(SpriteDatabase.Instance.sprites[Empty]);     // validate this in sprite database
+            grid[row, i].SetEmpty();     // validate this in sprite database
         }
     }
     private void ClearColumn(int col)
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[i, col].SetSprite(SpriteDatabase.Instance.sprites[Empty]);
+            grid[i, col].SetEmpty();
         }
     }
     private void ClearRightDiagonal()
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[i, i].SetSprite(SpriteDatabase.Instance.sprites[Empty]);
+            grid[i, i].SetEmpty();
         }
     }
     private void ClearLeftDiagonal()
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[i, i].SetSprite(SpriteDatabase.Instance.sprites[Empty]);
+            grid[i, i].SetEmpty();
         }
     }
 }

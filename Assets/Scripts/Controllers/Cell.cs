@@ -32,8 +32,6 @@ public class Cell : MonoBehaviour
 
     void Awake()
     {
-        Debug.Assert(index.x > 0 && index.y > 0, "Index must be non-negative");      
-
         image = GetComponent<SpriteView>();
         Radius = image.Radius;
     }
@@ -47,11 +45,8 @@ public class Cell : MonoBehaviour
 	/// Initialize the cell's row count and sprite.
 	/// </summary>
 	/// <param name="rows">Number of rows in the grid.</param>
-    public void Initialize(int rows)
+    public void Initialize()    // leave this function for future additions, ie animations, sound effects
     {
-        rowSize = rows;
-        Debug.Assert(index.x <= rowSize && index.y <= rowSize, "Invalid index for number of rows");
-
         SetEmpty();
     }
 
@@ -66,7 +61,7 @@ public class Cell : MonoBehaviour
 	/// <param name="newColor">New color for the cell.</param>
     public void SetColor(int newColor)
     {
-        image.SetSprite(SpriteDatabase.Instance.sprites[newColor]);
+        image.SetSprite(SpriteDatabase.Instance.sprites[newColor]);     // validate in sprite database
         color = newColor;
     }
 
