@@ -51,35 +51,128 @@ public class BoardLogicTests
     [Test, Category("Place players")]
     public void Place_Single_Player()
     {
-        int count = 0;
-
         // test 1: Place valid player on empty board
-        int x = 0;
-        int y = 0;
-        CellColor color = CellColor.Color1;
-        count++;
+        TestPlacePlayer(0, 0, 0, CellColor.Color1);
 
-        BoardLogic.PlayResult result;
-        bool success = board.TryPlacePlayer(x, y, color, out result);
-
-        Assert.IsTrue(success);
-        Assert.AreEqual(color, board.GetCellColor(x, y));
-        Assert.AreEqual(count, board.GetSpotsFilled());
-
-        // test 2: Check valid cell on top of player
-        Assert.IsFalse(board.ValidCell(x, y));
+        // test 2: Check invalid cell on top of player
+        Assert.IsFalse(board.ValidCell(0, 0));
     }
 
     
     [Test, Category("Place players")]
     public void Place_Multiple_Players()
     {
+        // test: scatter players around the board (no filled lines)
+        int count = 0;
 
+        // player 1
+        count++;
+        TestPlacePlayer(count, 0, 0, CellColor.Color1);
+
+        // player 2
+        count++;
+        TestPlacePlayer(count, 4, 4, CellColor.Color2);
+
+        // player 3
+        count++;
+        TestPlacePlayer(count, 0, 4, CellColor.Color3);
+
+        // player 4
+        count++;
+        TestPlacePlayer(count, 4, 0, CellColor.Color4);
+
+        // player 5
+        count++;
+        TestPlacePlayer(count, 2, 2, CellColor.Color5);
     }
 
 
     // ================================
-    // Win Checking
+    // Singular Win Checking
     // ================================
 
+    [Test, Category("Single Wins")]
+    public void Single_Win_Row()
+    {
+
+    }
+
+    [Test, Category("Single Wins")]
+    public void Single_Win_Column()
+    {
+
+    }
+
+    [Test, Category("Single Wins")]
+    public void Single_Win_Right_Diagonal()
+    {
+
+    }
+
+    [Test, Category("Single Wins")]
+    public void Single_Win_Left_Diagonal()
+    {
+
+    }
+
+    [Test, Category("Single Wins")]
+    public void Single_Win_WildCard()
+    {
+        // place the wild card last for the win
+    }
+
+
+    // ================================
+    // Multiple Win Checking
+    // ================================
+
+    [Test, Category("Multiple Wins")]
+    public void Sequential_Wins()
+    {
+        // row
+
+        // same row
+
+        // column
+
+        // same column
+    }
+
+    [Test, Category("Multiple Wins")]
+    public void Combo_Win()
+    {
+        // row and column
+
+        // row, column, right diagonal, and left diagonal
+    }
+
+    [Test, Category("Multiple Wins")]
+    public void Combo_Win_WildCard()
+    {
+        // row and column same color
+
+        // row and column different colors
+    }
+
+    // ================================
+    // Game Over
+    // ================================
+
+    // test game overs
+
+    // also test reset board
+
+    // ================================
+    // Helper Functions
+    // ================================
+
+    private void TestPlacePlayer(int count, int x, int y, CellColor color)
+    {
+        BoardLogic.PlayResult result;
+        bool success = board.TryPlacePlayer(x, y, color, out result);
+
+        Assert.IsTrue(success);
+        Assert.AreEqual(color, board.GetCellColor(x, y));
+        Assert.AreEqual(count, board.GetSpotsFilled());
+    }
 }

@@ -94,9 +94,6 @@ public class BoardLogic
         ResetColors();
     }
 
-    
-
-
     /// <summary>
 	/// If the parameters are valid, adds the player to the board and
 	/// checks the internal state for wins.
@@ -108,12 +105,41 @@ public class BoardLogic
 	/// <returns><c>true</c> if the index and color were valid; otherwise <c>false</c>.</returns>
     public bool TryPlacePlayer(int row, int col, CellColor color, out PlayResult result)
     {
-        result = new PlayResult();
-
         if (!ValidCell(row, col) || color == CellColor.Empty)
         {
+            result = new PlayResult();
             return false;
         }
+
+        result = PlacePlayer(row, col, color);
+
+        return true;
+    }
+   
+
+    // ================================
+    // Internal Methods - Testing Only
+    // ================================
+
+    internal CellColor GetCellColor(int row, int col)
+    {
+        return gridColors[row, col];
+    }
+
+    internal int GetSpotsFilled()
+    {
+        return numSpotsFilled;
+    }
+
+
+    // ================================
+    // Private Methods
+    // ================================
+
+    // places the player on the board and sets play result values
+    private PlayResult PlacePlayer(int row, int col, CellColor color)
+    {
+        PlayResult result = new PlayResult();
 
         // Add player to the board
         gridColors[row, col] = color;
@@ -153,28 +179,8 @@ public class BoardLogic
         result.Points = CalculatePoints(result);
         result.FullBoard = (numSpotsFilled == NumSpots);
 
-        return true;
+        return result;
     }
-
-
-    // ================================
-    // Internal Methods - Testing Only
-    // ================================
-
-    internal CellColor GetCellColor(int row, int col)
-    {
-        return gridColors[row, col];
-    }
-
-    internal int GetSpotsFilled()
-    {
-        return numSpotsFilled;
-    }
-
-
-    // ================================
-    // Private Methods
-    // ================================
 
     // sets grid colors to empty
     private void ResetColors()
