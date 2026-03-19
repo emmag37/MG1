@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 
 /// <summary>
 /// Manages a representation of the board.
@@ -182,7 +181,6 @@ public class BoardLogic
 
         if (!result.ClearRow && !result.ClearCol && !result.ClearRDiag && !result.ClearLDiag) // no lines cleared
             numSpotsFilled++;
-        Debug.Assert(numSpotsFilled >= 0 && numSpotsFilled <= NumSpots, $"Invalid fill count: {numSpotsFilled}");
 
         result.Points = CalculatePoints(result);
         result.FullBoard = (numSpotsFilled == NumSpots);

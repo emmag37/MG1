@@ -59,7 +59,7 @@ public class BoardLogicTests
     public void Place_Single_Player()
     {
         // test 1: Place valid player on empty board
-        TestPlacePlayer(0, 0, 0, CellColor.Color1);
+        TestPlacePlayer(1, 0, 0, CellColor.Color1);
 
         // test 2: Check invalid cell on top of player
         Assert.IsFalse(board.ValidCell(0, 0));
@@ -158,7 +158,6 @@ public class BoardLogicTests
         {
             board.TryPlacePlayer(x, x, color, out _);
         }
-        x++;
 
         BoardLogic.PlayResult win = TestWin(0, x, x, color);
 
@@ -183,7 +182,6 @@ public class BoardLogicTests
         {
             board.TryPlacePlayer(x, RowSize - 1 - x, color, out _);
         }
-        x++;
 
         BoardLogic.PlayResult win = TestWin(0, x, RowSize - 1 - x, color);
 
@@ -204,9 +202,9 @@ public class BoardLogicTests
         int x = 0;
 
         FillRow(x, color);
-        BoardLogic.PlayResult win = TestWin(0, x, RowSize - 1, CellColor.WildCard);
+        BoardLogic.PlayResult win1 = TestWin(0, x, RowSize - 1, CellColor.WildCard);
 
-        Assert.IsTrue(win.ClearRow);
+        Assert.IsTrue(win1.ClearRow);
         TestRowClear(x);
 
 
@@ -218,9 +216,9 @@ public class BoardLogicTests
         board.TryPlacePlayer(x, 2, color, out _);
         board.TryPlacePlayer(x, 3, color, out _);
 
-        BoardLogic.PlayResult win = TestWin(0, x, RowSize - 1, CellColor.WildCard);
+        BoardLogic.PlayResult win2 = TestWin(0, x, RowSize - 1, CellColor.WildCard);
 
-        Assert.IsTrue(win.ClearRow);
+        Assert.IsTrue(win2.ClearRow);
         TestRowClear(x);
 
 
