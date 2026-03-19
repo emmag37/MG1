@@ -10,12 +10,18 @@ using System;
 public class Board : MonoBehaviour
 {
     // ================================
+    // Constants
+    // ================================
+
+    private const int RowSize = GameConstants.RowSize;
+
+    // ================================
     // Events
     // ================================
-    
+
     /// <summary>
-	/// Invoked when all board spots are filled with players.
-	/// </summary>
+    /// Invoked when all board spots are filled with players.
+    /// </summary>
     public event Action FullBoard;
 
     // ================================
@@ -34,7 +40,7 @@ public class Board : MonoBehaviour
     private BoardLogic logic;
     private BoardGeometry geometry;
 
-    private Cell[,] grid = new Cell[GameConstants.RowSize, GameConstants.RowSize];  // grid children
+    private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
 
 
     // ================================
@@ -144,23 +150,23 @@ public class Board : MonoBehaviour
     {
         Cell[] cells = GetComponentsInChildren<Cell>();
 
-        int expected = GameConstants.RowSize * GameConstants.RowSize;
+        int expected = RowSize * RowSize;
         Debug.Assert(expected == cells.Length, $"Expected {expected}, found {cells.Length}");
 
         foreach (Cell cell in cells)
         {
             Vector2Int index = cell.Index;
 
-            Debug.Assert(index.x >= 0 && index.x < GameConstants.RowSize && index.y >= 0 && index.y <= GameConstants.RowSize,
+            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y <= RowSize,
                 $"Index {index} is out of bounds");
             Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
 
             grid[index.x, index.y] = cell;
         }
 
-        for (int x = 0; x < GameConstants.RowSize; x++)
+        for (int x = 0; x < RowSize; x++)
         {
-            for (int y = 0; y < GameConstants.RowSize; y++)
+            for (int y = 0; y < RowSize; y++)
             {
                 Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
             }
@@ -171,28 +177,28 @@ public class Board : MonoBehaviour
     // Helpers to reset the grid sprites
     private void ClearRow(int row)
     {
-        for (int i = 0; i < GameConstants.RowSize; i++)
+        for (int i = 0; i < RowSize; i++)
         {
             grid[row, i].SetEmpty();     // validate this in sprite database
         }
     }
     private void ClearColumn(int col)
     {
-        for (int i = 0; i < GameConstants.RowSize; i++)
+        for (int i = 0; i < RowSize; i++)
         {
             grid[i, col].SetEmpty();
         }
     }
     private void ClearRightDiagonal()
     {
-        for (int i = 0; i < GameConstants.RowSize; i++)
+        for (int i = 0; i < RowSize; i++)
         {
             grid[i, i].SetEmpty();
         }
     }
     private void ClearLeftDiagonal()
     {
-        for (int i = 0; i < GameConstants.RowSize; i++)
+        for (int i = 0; i < RowSize; i++)
         {
             grid[i, i].SetEmpty();
         }
