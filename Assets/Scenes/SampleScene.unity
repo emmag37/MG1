@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 31870410}
   - component: {fileID: 31870409}
   - component: {fileID: 31870408}
+  - component: {fileID: 31870412}
   m_Layer: 5
   m_Name: Game Over Canvas
   m_TagString: Untagged
@@ -235,6 +236,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &31870412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31870407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddfbbb9df60ed47ada363ec0333bade6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameOverView
+  homeButton: {fileID: 2118693160}
+  replayButton: {fileID: 1138544388}
 --- !u!1 &55911017
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,9 +636,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 230092281}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OnCloseSettingsClicked
+      - m_Target: {fileID: 1734186019}
+        m_TargetAssemblyTypeName: SettingsView, Assembly-CSharp
+        m_MethodName: OnExitClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -705,10 +720,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0abd12d0089144ef962a5bdb160d889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  homeCanvas: {fileID: 569730861}
-  gamePlayCanvas: {fileID: 1777795628}
-  gameOverCanvas: {fileID: 31870407}
-  settingsCanvas: {fileID: 1734186014}
+  homeView: {fileID: 569730866}
+  gamePlayView: {fileID: 1777795633}
+  gameOverView: {fileID: 31870412}
+  settingsView: {fileID: 1734186019}
   scoreText: {fileID: 2115315121}
   highScoreText: {fileID: 98315442}
   gameOverScoreText: {fileID: 1975400343}
@@ -1274,13 +1289,14 @@ GameObject:
   - component: {fileID: 569730864}
   - component: {fileID: 569730863}
   - component: {fileID: 569730862}
+  - component: {fileID: 569730866}
   m_Layer: 5
   m_Name: Home Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &569730862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1366,6 +1382,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &569730866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569730861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b420653d0aa8343b6ac6a62863b8d652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HomeView
+  playButton: {fileID: 1389166396}
 --- !u!1001 &588990787
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1953,9 +1982,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 230092281}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OnPlayClicked
+      - m_Target: {fileID: 31870412}
+        m_TargetAssemblyTypeName: GameOverView, Assembly-CSharp
+        m_MethodName: OnReplayClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2357,8 +2386,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 230092281}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 1777795633}
+        m_TargetAssemblyTypeName: PlayView, Assembly-CSharp
         m_MethodName: OnSettingsClicked
         m_Mode: 1
         m_Arguments:
@@ -2489,8 +2518,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 230092281}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 569730866}
+        m_TargetAssemblyTypeName: HomeView, Assembly-CSharp
         m_MethodName: OnPlayClicked
         m_Mode: 1
         m_Arguments:
@@ -3001,8 +3030,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 230092281}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 1734186019}
+        m_TargetAssemblyTypeName: SettingsView, Assembly-CSharp
         m_MethodName: OnReplayClicked
         m_Mode: 1
         m_Arguments:
@@ -3409,6 +3438,7 @@ GameObject:
   - component: {fileID: 1734186017}
   - component: {fileID: 1734186016}
   - component: {fileID: 1734186015}
+  - component: {fileID: 1734186019}
   m_Layer: 5
   m_Name: Settings Canvas
   m_TagString: Untagged
@@ -3502,6 +3532,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1734186019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1734186014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba1dc34be6aa64234933b6a934c2a995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsView
+  homeButton: {fileID: 1990685552}
+  restartButton: {fileID: 1593412191}
+  exitButton: {fileID: 211410066}
 --- !u!4 &1746567687 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421657568361316366, guid: da10a7f55ddb1463da70721112e94096, type: 3}
@@ -3519,6 +3564,7 @@ GameObject:
   - component: {fileID: 1777795631}
   - component: {fileID: 1777795630}
   - component: {fileID: 1777795629}
+  - component: {fileID: 1777795633}
   m_Layer: 5
   m_Name: Game Scene Canvas
   m_TagString: Untagged
@@ -3612,6 +3658,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1777795633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777795628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d53b4203fcc445cda8bd124f670159d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayView
+  settingsButton: {fileID: 1387991153}
 --- !u!1001 &1787194630
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4179,9 +4238,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 230092281}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OnExitGameClicked
+      - m_Target: {fileID: 1734186019}
+        m_TargetAssemblyTypeName: SettingsView, Assembly-CSharp
+        m_MethodName: OnHomeClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4806,8 +4865,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 230092281}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 31870412}
+        m_TargetAssemblyTypeName: GameOverView, Assembly-CSharp
         m_MethodName: OnHomeClicked
         m_Mode: 1
         m_Arguments:
