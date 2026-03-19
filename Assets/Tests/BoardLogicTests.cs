@@ -208,7 +208,7 @@ public class BoardLogicTests
         Assert.IsTrue(win2.ClearRow);
     }
 
-    [Test, Category("Multiple Wins")]
+    [Test, Category("Wins")]
     public void Combo_Win()
     {
         int x = RowSize - 1;
@@ -224,7 +224,7 @@ public class BoardLogicTests
         Assert.IsTrue(win.ClearCol);
     }
 
-    [Test, Category("Multiple Wins")]
+    [Test, Category("Wins")]
     public void Combo_Win_WildCard()
     {
         // row and column different colors
@@ -238,15 +238,58 @@ public class BoardLogicTests
         FillColumn(y, colColor);
 
         BoardLogic.PlayResult win = TestWin(0, x, y, CellColor.WildCard);
+
+        Assert.IsTrue(win.ClearRow);
+        Assert.IsTrue(win.ClearCol);
     }
 
     // ================================
     // Game Over
     // ================================
 
-    // test game overs
+    [Test, Category("Game Over")]
+    public void Game_Over_And_Reset()
+    {
+        // test 1: game over is true
+        FillRow(0, CellColor.Color1);
+        FillRow(1, CellColor.Color2);
+        FillRow(2, CellColor.Color1);
+        FillRow(3, CellColor.Color2);
+        FillRow(4, CellColor.Color1);
+        FillColumn(4, CellColor.Color3);
 
-    // also test reset board
+        BoardLogic.PlayResult gameOver = TestPlacePlayer(RowSize * RowSize, 4, 4, CellColor.Color4);
+
+        Assert.IsTrue(gameOver.FullBoard);
+
+        // test 2: reset board works
+        board.ResetBoard();
+
+        for (int x = 0; x < RowSize; x++)
+        {
+            for (int y = 0; y < RowSize; y++)
+            {
+                Assert.AreEqual(CellColor.Empty, board.GetCellColor(x, y));
+            }
+        }
+    }
+
+    [Test, Category("Game Over")]
+    public void Almost_Game_Over()
+    {
+        FillRow(0, CellColor.Color1);
+        FillRow(1, CellColor.Color2);
+        FillRow(2, CellColor.Color1);
+        FillRow(3, CellColor.Color2);
+        FillRow(4, CellColor.Color1);
+        FillColumn(4, CellColor.Color3);
+
+        BoardLogic.PlayResult almostOver = TestWin(RowSize * (RowSize - 1), 4, 4, CellColor.Color3);
+
+        Assert.IsTrue(almostOver.ClearCol);
+        Assert.IsFalse(almostOver.FullBoard);
+    }
+
 
     // ================================
     // Helper Functions
