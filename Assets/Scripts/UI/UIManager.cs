@@ -32,7 +32,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text gameOverScoreText;
 
     // Images
-    [SerializeField] private SpriteView playerPreview;
+    [SerializeField] private Image playerPreview;
 
     // ==================================================
     // Events
@@ -92,7 +92,7 @@ public class UIManager : MonoBehaviour
     public void GameOver(int score)
     {
         gameOverScoreText.text = $"{score}";    // update the score text
-
+        
         ClearStack();
         PushView(gameOverView);
     }
@@ -114,7 +114,7 @@ public class UIManager : MonoBehaviour
 	/// <param name="color">New sprite color.</param>
     public void UpdatePlayerPreview(CellColor color)
     {
-        playerPreview.SetSprite(SpriteDatabase.Instance.GetSprite(color));
+        playerPreview.sprite = SpriteDatabase.Instance.GetSprite(color);
     }
 
 
