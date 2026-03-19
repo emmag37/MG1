@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 
@@ -19,20 +18,12 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
+    [SerializeField] private HUDController hudController;
 
-    // Views
     [SerializeField] private HomeView homeView;
     [SerializeField] private PlayView gamePlayView;
     [SerializeField] private GameOverView gameOverView;
     [SerializeField] private SettingsView settingsView;
-
-    // Text
-    [SerializeField] private Text scoreText;
-    [SerializeField] private Text highScoreText;
-    [SerializeField] private Text gameOverScoreText;
-
-    // Images
-    [SerializeField] private Image playerPreview;
 
     // ==================================================
     // Events
@@ -54,16 +45,12 @@ public class UIManager : MonoBehaviour
 
     void OnValidate()
     {
+        Debug.Assert(hudController != null, "HUD controller not set");
+
         Debug.Assert(homeView != null, "Home view not set");
         Debug.Assert(gamePlayView != null, "Game play view not set");
         Debug.Assert(gameOverView != null, "Game over view not set");
         Debug.Assert(settingsView != null, "Settings view not set");
-
-        Debug.Assert(scoreText != null, "Score text not set");
-        Debug.Assert(highScoreText != null, "High score text not set");
-        Debug.Assert(gameOverScoreText != null, "Game over score text not set");
-
-        Debug.Assert(playerPreview != null, "Player preview not set");
     }
 
     void Awake()
@@ -82,8 +69,18 @@ public class UIManager : MonoBehaviour
 
 
     // ==================================================
-    // Public Methods (HUD)
+    // Public Methods
     // ==================================================
+
+    public void UpdateScore(int score, int highScore)
+    {
+        hudController.UpdateScoreText(score, highScore);
+    }
+
+    public void UpdatePlayerPreview(CellColor color)
+    {
+        hudController.UpdatePlayerPreviewSprite(color);
+    }
 
     /// <summary>
 	/// Updates UI to the Game Over view and score.
@@ -91,50 +88,29 @@ public class UIManager : MonoBehaviour
 	/// <param name="score">Score earned during game play.</param>
     public void GameOver(int score)
     {
-        gameOverScoreText.text = $"{score}";    // update the score text
-        
+        gameOverView.UpdateGameOverScoreText(score);
+
         ClearStack();
+        hudController.Hide();
+
         PushView(gameOverView);
     }
 
     /// <summary>
-	/// Updates the score and high score UI.
-	/// </summary>
-	/// <param name="score">New score earned during game.</param>
-	/// <param name="highScore">Current high score for this user.</param>
-    public void UpdateScoreText(int score, int highScore)
-    {
-        scoreText.text = $"{score}";
-        highScoreText.text = $"{highScore}";
-    }
-
-    /// <summary>
-	/// Updates the player preview sprite with the given color.
-	/// </summary>
-	/// <param name="color">New sprite color.</param>
-    public void UpdatePlayerPreview(CellColor color)
-    {
-        playerPreview.sprite = SpriteDatabase.Instance.GetSprite(color);
-    }
-
-
-    // ==================================================
-    // Public Methods (Views)
-    // ==================================================
-
-    /// <summary>
-	/// Updates UI and alerts the game manager for a fresh game scene.
-	/// </summary>
-	/// <param name="activeGame">Describes if there is currently an open game.</param>
+    /// Updates UI and alerts the game manager for a fresh game scene.
+    /// </summary>
+    /// <param name="activeGame">Describes if there is currently an open game.</param>
     public void LaunchNewGame(bool activeGame)
     {
         if (activeGame)
         {
             EndGame?.Invoke();
+            hudController.Hide();
         }
 
         ClearStack();
         PushView(gamePlayView);
+        hudController.Show();
 
         StartGame?.Invoke();
     }
@@ -148,6 +124,7 @@ public class UIManager : MonoBehaviour
         if (activeGame)
         {
             EndGame?.Invoke();
+            hudController.Hide();
         }
 
         ClearStack();

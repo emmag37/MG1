@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// 
@@ -12,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GamePlay gamePlay;
     [SerializeField] private UIManager uiManager;
+    
 
 
     // ================================
@@ -24,6 +24,12 @@ public class GameManager : MonoBehaviour
     // ================================
     // Unity Lifecycle Methods
     // ================================
+
+    void OnValidate()
+    {
+        Debug.Assert(gamePlay != null, "Game play not set");
+        Debug.Assert(uiManager != null, "UI manager not set");
+    }
 
     void Start()
     {
@@ -40,8 +46,7 @@ public class GameManager : MonoBehaviour
 
         // load high score
         highScore = PlayerPrefs.GetInt("highScore", 0);
-
-        uiManager.UpdateScoreText(0, highScore);
+        uiManager.UpdateScore(0, highScore);
     }
 
     void OnDestroy()
@@ -82,7 +87,7 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        uiManager.UpdateScoreText(score, highScore);
+        uiManager.UpdateScore(score, highScore);
     }
 
     private void HandleNewPlayerPreview(CellColor color)
