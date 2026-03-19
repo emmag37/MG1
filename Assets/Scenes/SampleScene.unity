@@ -779,6 +779,11 @@ MonoBehaviour:
   gamePlayView: {fileID: 96805675}
   gameOverView: {fileID: 31870412}
   settingsView: {fileID: 1734186019}
+  viewList:
+  - {fileID: 569730866}
+  - {fileID: 96805675}
+  - {fileID: 31870412}
+  - {fileID: 1734186019}
 --- !u!4 &230092282
 Transform:
   m_ObjectHideFlags: 0

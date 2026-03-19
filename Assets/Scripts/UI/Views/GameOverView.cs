@@ -14,6 +14,7 @@ public class GameOverView: UIView
 
     [SerializeField] private Text gameOverScoreText;
 
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -32,12 +33,12 @@ public class GameOverView: UIView
 
     public void OnHomeClicked()
     {
-        UIManager.Instance.LaunchHomeScreen(false);
+        UI.ShowView(ViewType.Home);
     }
 
     public void OnReplayClicked()
     {
-        UIManager.Instance.LaunchNewGame(false);
+        UI.ShowView(ViewType.GamePlay);
     }
 
 

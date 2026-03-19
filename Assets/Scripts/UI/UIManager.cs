@@ -19,11 +19,7 @@ public class UIManager : MonoBehaviour
     // Inspector Fields
     // ==================================================
     [SerializeField] private HUDController hudController;
-
-    [SerializeField] private HomeView homeView;
-    [SerializeField] private PlayView gamePlayView;
-    [SerializeField] private GameOverView gameOverView;
-    [SerializeField] private SettingsView settingsView;
+    [SerializeField] private UIView[] viewList;
 
     // ==================================================
     // Events
@@ -36,7 +32,10 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private Stack<UIView> viewStack = new Stack<UIView>();
+    private Dictionary<ViewType, UIView> views = new Dictionary<ViewType, UIView>();
+
+    private UIView currentView;
+    private UIView overlayView; // can turn this into a stack once you define pop up views
 
 
     // ================================
@@ -46,11 +45,7 @@ public class UIManager : MonoBehaviour
     void OnValidate()
     {
         Debug.Assert(hudController != null, "HUD controller not set");
-
-        Debug.Assert(homeView != null, "Home view not set");
-        Debug.Assert(gamePlayView != null, "Game play view not set");
-        Debug.Assert(gameOverView != null, "Game over view not set");
-        Debug.Assert(settingsView != null, "Settings view not set");
+        Debug.Assert(viewList.Length > 0, "View list not set");
     }
 
     void Awake()
@@ -60,11 +55,23 @@ public class UIManager : MonoBehaviour
             Instance = this;
         }
         Debug.Assert(Instance == this, "Another UI manager was set as Instance first");
+
+        foreach (UIView view in viewList)
+        {
+            if (views.ContainsKey(view.Type))
+            {
+                Debug.LogError($"Duplicate view type: {view.Type}");
+                continue;
+            }
+
+            views.Add(view.Type, view);
+        }
     }
 
     void Start()
     {
-        PushView(homeView);
+        currentView = GetView(ViewType.Home);
+        currentView.Show();
     }
 
 
@@ -88,67 +95,57 @@ public class UIManager : MonoBehaviour
 	/// <param name="score">Score earned during game play.</param>
     public void GameOver(int score)
     {
-        gameOverView.UpdateGameOverScoreText(score);
+        GameOverView view = (GameOverView)GetView(ViewType.GameOver);         // see if there is a better way, overload Show()?
+        view.UpdateGameOverScoreText(score);
 
-        ClearStack();
         hudController.Hide();
-
-        PushView(gameOverView);
+        ShowView(ViewType.GameOver);
     }
 
-    /// <summary>
-    /// Updates UI and alerts the game manager for a fresh game scene.
-    /// </summary>
-    /// <param name="activeGame">Describes if there is currently an open game.</param>
-    public void LaunchNewGame(bool activeGame)
+    public void ShowView(ViewType type)
     {
-        if (activeGame)
+        if (overlayView != null)
+            PopOverlay();
+
+        if (currentView.Type == ViewType.GamePlay)
         {
             EndGame?.Invoke();
             hudController.Hide();
         }
 
-        ClearStack();
-        PushView(gamePlayView);
-        hudController.Show();
+        currentView.Hide();
 
-        StartGame?.Invoke();
+        currentView = GetView(type);
+        currentView.Show();
+
+        if (type == ViewType.GamePlay)
+        {
+            hudController.Show();
+            StartGame?.Invoke();
+        }
     }
 
-    /// <summary>
-	/// Updates UI to return to the home screen.
-	/// </summary>
-	/// <param name="activeGame">Describes if there is currently an open game.</param>
-    public void LaunchHomeScreen(bool activeGame)
+    public void PushOverlay(ViewType type)
     {
-        if (activeGame)
+        if (currentView.Type == ViewType.GamePlay)
         {
-            EndGame?.Invoke();
-            hudController.Hide();
+            PauseGame?.Invoke();
         }
 
-        ClearStack();
-        PushView(homeView);
+        overlayView = GetView(type);
+        overlayView.Show();
+
     }
 
-    /// <summary>
-	/// Opens the settings pop-up menu.
-	/// </summary>
-    public void OpenSettings()
+    public void PopOverlay()
     {
-        PauseGame?.Invoke();
-        PushView(settingsView);
-    }
+        overlayView.Hide();
+        overlayView = null;
 
-    /// <summary>
-	/// Closes the settings pop-up menu.
-	/// </summary>
-    public void CloseSettings()
-    {
-        Debug.Log("Close settings");
-
-        PopView();
-        ResumeGame?.Invoke();
+        if (currentView.Type == ViewType.GamePlay)
+        {
+            ResumeGame?.Invoke();
+        }
     }
 
 
@@ -156,36 +153,14 @@ public class UIManager : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    // Stack Navigation
-    private void PushView(UIView view)
+    private UIView GetView(ViewType type)
     {
-        if (viewStack.Count > 0)
+        UIView view;
+        if (!views.TryGetValue(type, out view))
         {
-            viewStack.Peek().Show();
+            Debug.LogError($"Could not access view for type {type}");
         }
 
-        view.Show();
-        viewStack.Push(view);
+        return view;
     }
-    private void PopView()
-    {
-        if (viewStack.Count == 0) return;
-
-        UIView top = viewStack.Pop();
-        top.Hide();
-
-        if (viewStack.Count > 0)
-        {
-            viewStack.Peek().Show();
-        }
-    }
-    private void ClearStack()
-    {
-        while (viewStack.Count > 0)
-        {
-            UIView view = viewStack.Pop();
-            view.Hide();
-        }
-    }
-
 }

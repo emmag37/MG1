@@ -27,6 +27,6 @@ public class HomeView: UIView
 
     public void OnPlayClicked()
     {
-        UIManager.Instance.LaunchNewGame(false);
+        UI.ShowView(ViewType.GamePlay);
     }
 }

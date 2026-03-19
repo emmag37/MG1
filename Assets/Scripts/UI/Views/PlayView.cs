@@ -29,6 +29,6 @@ public class PlayView: UIView
 
     public void OnSettingsClicked()
     {
-        UIManager.Instance.OpenSettings();
+        UI.PushOverlay(ViewType.Settings);
     }
 }

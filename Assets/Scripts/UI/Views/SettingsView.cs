@@ -6,6 +6,8 @@ using UnityEngine.UI;
 /// </summary>
 public class SettingsView: UIView
 {
+
+
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -31,16 +33,16 @@ public class SettingsView: UIView
 
     public void OnHomeClicked()
     {
-        UIManager.Instance.LaunchHomeScreen(true);
+        UI.ShowView(ViewType.Home);
     }
 
     public void OnReplayClicked()
     {
-        UIManager.Instance.LaunchNewGame(true);
+        UI.ShowView(ViewType.GamePlay);
     }
 
     public void OnExitClicked()
     {
-        UIManager.Instance.CloseSettings();
+        UI.PopOverlay();
     }
 }
