@@ -248,6 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddfbbb9df60ed47ada363ec0333bade6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverView
+  type: 2
   homeButton: {fileID: 2118693160}
   replayButton: {fileID: 1138544388}
   gameOverScoreText: {fileID: 1975400343}
@@ -380,6 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d53b4203fcc445cda8bd124f670159d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayView
+  type: 1
   settingsButton: {fileID: 1387991153}
 --- !u!1 &97809703
 GameObject:
@@ -1413,6 +1415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b420653d0aa8343b6ac6a62863b8d652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HomeView
+  type: 0
   playButton: {fileID: 1389166396}
 --- !u!1001 &588990787
 PrefabInstance:
@@ -3563,6 +3566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1dc34be6aa64234933b6a934c2a995, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsView
+  type: 3
   homeButton: {fileID: 1990685552}
   restartButton: {fileID: 1593412191}
   exitButton: {fileID: 211410066}

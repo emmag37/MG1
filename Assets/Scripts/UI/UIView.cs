@@ -5,6 +5,9 @@ using UnityEngine;
 /// </summary>
 public abstract class UIView : MonoBehaviour
 {
+    [SerializeField] private ViewType type;
+    public ViewType Type => type;
+
     public virtual void Show()
     {
         gameObject.SetActive(true);
