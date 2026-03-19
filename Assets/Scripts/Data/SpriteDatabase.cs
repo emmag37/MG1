@@ -9,10 +9,37 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SpriteDatabase", menuName = "Game/Sprite Database")]
 public class SpriteDatabase : ScriptableObject
 {
-    private static SpriteDatabase instance;
-    private Sprite[] sprites;
+    // ================================
+    // Inspector Fields
+    // ================================
+    [SerializeField] private Sprite[] sprites = new Sprite[GameConstants.NumberColors + 1]; // account for the empty sprite
 
-    // singleton initialization
+    // ================================
+    // Private Fields
+    // ================================
+    private static SpriteDatabase instance;
+
+
+    // ================================
+    // Unity Lifecycle
+    // ================================
+
+    private void OnValidate()
+    {
+        // catch sprites not set
+        for (int i = 0; i < sprites.Length; i++)
+        {
+            Debug.Assert(sprites[i] != null, $"Sprite not set in database at index {i}");
+        }
+    }
+
+    // ================================
+    // Public Methods
+    // ================================
+
+    /// <summary>
+	/// Singleton initialization.
+	/// </summary>
     public static SpriteDatabase Instance
     {
         get
@@ -37,4 +64,9 @@ public class SpriteDatabase : ScriptableObject
 
         return sprites[index];
     }
+
+
+    
+
+
 }

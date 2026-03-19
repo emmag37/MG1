@@ -9,7 +9,5 @@ public enum CellColor
     Color4,
     Color5,
     Color6,
-    WildCard,
-
-    Count   // sentinel value
+    WildCard
 }

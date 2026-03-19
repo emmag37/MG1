@@ -32,7 +32,7 @@ public class SpriteView : MonoBehaviour
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
+        
         UpdateRadius();
     }
 
