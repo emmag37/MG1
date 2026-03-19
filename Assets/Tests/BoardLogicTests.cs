@@ -34,15 +34,20 @@ public class BoardLogicTests
         y = RowSize * 2;
         Assert.IsFalse(board.ValidCell(x, y));
 
-        // test 4: Min edge case
-        x = 0;
-        y = 0;
-        Assert.IsFalse(board.ValidCell(x, y));
-
         // test 5: Max edge case
         x = RowSize;
         y = RowSize;
         Assert.IsFalse(board.ValidCell(x, y));
+    }
+
+    [Test, Category("Bounds")]
+    public void TryPlace_Invalid_ReturnsFalse()
+    {
+        bool success = board.TryPlacePlayer(-1, 0, CellColor.Color1, out _);
+        Assert.IsFalse(success);
+
+        success = board.TryPlacePlayer(0, 0, CellColor.Empty, out _);
+        Assert.IsFalse(success);
     }
 
 
@@ -88,6 +93,16 @@ public class BoardLogicTests
         TestPlacePlayer(count, RowSize / 2, RowSize / 2, CellColor.Color5);
     }
 
+    [Test, Category("Place players")]
+    public void Place_On_Occupied_Cell_Fails()
+    {
+        board.TryPlacePlayer(0, 0, CellColor.Color1, out _);
+
+        bool success = board.TryPlacePlayer(0, 0, CellColor.Color2, out _);
+
+        Assert.IsFalse(success);
+    }
+
 
     // ================================
     // Singular Win Checking
@@ -104,6 +119,7 @@ public class BoardLogicTests
         BoardLogic.PlayResult win = TestWin(0, x, RowSize - 1, color);
 
         Assert.IsTrue(win.ClearRow);
+        TestRowClear(x);
 
 
         // test 2: filled for loss
@@ -127,6 +143,7 @@ public class BoardLogicTests
         BoardLogic.PlayResult win = TestWin(0, RowSize - 1, y, color);
 
         Assert.IsTrue(win.ClearCol);
+        TestColumnClear(y);
     }
 
     [Test, Category("Wins")]
@@ -136,17 +153,22 @@ public class BoardLogicTests
         CellColor color = CellColor.Color1;
 
         // fill the right diagonal
-        BoardLogic.PlayResult result;
         int x;
         for (x = 0; x < RowSize - 1; x++)
         {
-            board.TryPlacePlayer(x, x, color, out result);
+            board.TryPlacePlayer(x, x, color, out _);
         }
         x++;
 
         BoardLogic.PlayResult win = TestWin(0, x, x, color);
 
         Assert.IsTrue(win.ClearRDiag);
+
+        // check diagonal is clear
+        for (x = 0; x < RowSize; x++)
+        {
+            Assert.AreEqual(CellColor.Empty, board.GetCellColor(x, x));
+        }
     }
 
     [Test, Category("Wins")]
@@ -156,23 +178,28 @@ public class BoardLogicTests
         CellColor color = CellColor.Color1;
 
         // fill the left diagonal
-        BoardLogic.PlayResult result;
         int x;
         for (x = 0; x < RowSize - 1; x++)
         {
-            board.TryPlacePlayer(x, RowSize - 1 - x, color, out result);
+            board.TryPlacePlayer(x, RowSize - 1 - x, color, out _);
         }
         x++;
 
         BoardLogic.PlayResult win = TestWin(0, x, RowSize - 1 - x, color);
 
         Assert.IsTrue(win.ClearLDiag);
+
+        // check diagonal is clear
+        for (x = 0; x < RowSize; x++)
+        {
+            Assert.AreEqual(CellColor.Empty, board.GetCellColor(x, RowSize - 1 - x));
+        }
     }
 
     [Test, Category("Wins")]
     public void Single_Win_WildCard()
     {
-        // test 1: filled for win
+        // test 1: one wild card
         CellColor color = CellColor.Color1;
         int x = 0;
 
@@ -180,6 +207,34 @@ public class BoardLogicTests
         BoardLogic.PlayResult win = TestWin(0, x, RowSize - 1, CellColor.WildCard);
 
         Assert.IsTrue(win.ClearRow);
+        TestRowClear(x);
+
+
+        // test 2: multiple wild cards
+        x = 1;
+
+        board.TryPlacePlayer(x, 0, color, out _);
+        board.TryPlacePlayer(x, 1, CellColor.WildCard, out _);
+        board.TryPlacePlayer(x, 2, color, out _);
+        board.TryPlacePlayer(x, 3, color, out _);
+
+        BoardLogic.PlayResult win = TestWin(0, x, RowSize - 1, CellColor.WildCard);
+
+        Assert.IsTrue(win.ClearRow);
+        TestRowClear(x);
+
+
+        // test 3: mixed row and wild card (loss)
+        x = 2;
+
+        board.TryPlacePlayer(x, 0, color, out _);
+        board.TryPlacePlayer(x, 1, CellColor.Color2, out _);
+        board.TryPlacePlayer(x, 2, color, out _);
+        board.TryPlacePlayer(x, 3, color, out _);
+
+        BoardLogic.PlayResult loss = TestPlacePlayer(RowSize, x, RowSize - 1, CellColor.WildCard);
+
+        Assert.IsFalse(loss.ClearRow);
     }
 
 
@@ -198,6 +253,7 @@ public class BoardLogicTests
         BoardLogic.PlayResult win1 = TestWin(0, x, RowSize - 1, color1);
 
         Assert.IsTrue(win1.ClearRow);
+        TestRowClear(x);
 
         // same row again - new color
         CellColor color2 = CellColor.Color2;
@@ -206,6 +262,7 @@ public class BoardLogicTests
         BoardLogic.PlayResult win2 = TestWin(0, x, RowSize - 1, color2);
 
         Assert.IsTrue(win2.ClearRow);
+        TestRowClear(x);
     }
 
     [Test, Category("Wins")]
@@ -222,6 +279,9 @@ public class BoardLogicTests
 
         Assert.IsTrue(win.ClearRow);
         Assert.IsTrue(win.ClearCol);
+
+        TestRowClear(x);
+        TestColumnClear(y);
     }
 
     [Test, Category("Wins")]
@@ -241,6 +301,9 @@ public class BoardLogicTests
 
         Assert.IsTrue(win.ClearRow);
         Assert.IsTrue(win.ClearCol);
+
+        TestRowClear(x);
+        TestColumnClear(y);
     }
 
     // ================================
@@ -267,11 +330,10 @@ public class BoardLogicTests
 
         for (int x = 0; x < RowSize; x++)
         {
-            for (int y = 0; y < RowSize; y++)
-            {
-                Assert.AreEqual(CellColor.Empty, board.GetCellColor(x, y));
-            }
+            TestRowClear(x);
         }
+
+        Assert.AreEqual(0, board.GetSpotsFilled());
     }
 
     [Test, Category("Game Over")]
@@ -285,6 +347,7 @@ public class BoardLogicTests
         FillColumn(4, CellColor.Color3);
 
         BoardLogic.PlayResult almostOver = TestWin(RowSize * (RowSize - 1), 4, 4, CellColor.Color3);
+        TestColumnClear(4);
 
         Assert.IsTrue(almostOver.ClearCol);
         Assert.IsFalse(almostOver.FullBoard);
@@ -316,28 +379,41 @@ public class BoardLogicTests
 
         Assert.IsTrue(success);
         Assert.AreEqual(count, board.GetSpotsFilled());
-        Assert.AreEqual(CellColor.Empty, board.GetCellColor(x, y));
 
         return result;
+    }
+
+    private void TestRowClear(int x)
+    {
+        for (int y = 0; y < RowSize; y++)
+        {
+            Assert.AreEqual(CellColor.Empty, board.GetCellColor(x, y));
+        }
+    }
+
+    private void TestColumnClear(int y)
+    {
+        for (int x = 0; x < RowSize; x++)
+        {
+            Assert.AreEqual(CellColor.Empty, board.GetCellColor(x, y));
+        }
     }
 
     // fills the first RowSize - 1 cells in a row
     private void FillRow(int x, CellColor color)
     {
-        BoardLogic.PlayResult result;
         for (int y = 0; y < RowSize - 1; y++)
         {
-            board.TryPlacePlayer(x, y, color, out result);
+            board.TryPlacePlayer(x, y, color, out _);
         }
     }
 
     // fills the first RowSize - 1 cells in a column
     private void FillColumn(int y, CellColor color)
     {
-        BoardLogic.PlayResult result;
         for (int x = 0; x < RowSize - 1; x++)
         {
-            board.TryPlacePlayer(x, y, color, out result);
+            board.TryPlacePlayer(x, y, color, out _);
         }
     }
 }
