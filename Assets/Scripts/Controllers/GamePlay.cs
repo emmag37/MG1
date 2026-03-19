@@ -94,6 +94,7 @@ public class GamePlay : MonoBehaviour
     {
         Debug.Assert(state == GameState.Fresh, $"Start called with invalid state: {state}");
 
+        state = GameState.Playing;
         SpawnNewPlayer();
     }
 
@@ -183,12 +184,12 @@ public class GamePlay : MonoBehaviour
 
     private void SpawnNewPlayer()
     {
-        Debug.Assert(player != null, "Player still in existence");
+        Debug.Assert(player == null, "Player still in existence");  // player should be null on start?
 
         if (state == GameState.GameOver) return;      // don't respawn on game over
 
         var playerColors = picker.CalculateNewPlayerColors();
-        nextPlayerImage.SetSprite(SpriteDatabase.Instance.GetSprite(playerColors.nextColor));     // move this to UI
+        nextPlayerImage.SetSprite(SpriteDatabase.Instance.GetSprite(playerColors.nextColor));     // move this to UI - caused error
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.Initialize(playerColors.color, playerBoundaries);
@@ -202,6 +203,7 @@ public class GamePlay : MonoBehaviour
 
         player.PlayerReleased -= HandlePlayerReleased;        
         Destroy(player.gameObject);
+        player = null;
     }
 
     private bool TryPlacePlayer(Vector3 position, out Vector2Int index)

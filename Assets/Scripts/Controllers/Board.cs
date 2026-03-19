@@ -84,7 +84,7 @@ public class Board : MonoBehaviour
         grid[index.x, index.y].SetColor(color);                       // render the player on the board
 
         BoardLogic.PlayResult result;
-        if (logic.TryPlacePlayer(index.x, index.y, color, out result))     // run the board logic
+        if (!logic.TryPlacePlayer(index.x, index.y, color, out result))     // run the board logic
         {
             Debug.LogError($"Ran play with invalid index or color: {index}, {color}");
         }
