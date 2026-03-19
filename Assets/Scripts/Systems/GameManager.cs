@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
         // subscribe to the game play events
         gamePlay.GameOver += HandleGameOver;
         gamePlay.UpdateScore += HandleNewScore;
+        gamePlay.UpdatePlayerPreview += HandleNewPlayerPreview;
 
         // subscribe to ui events
         uiManager.StartGame += HandleStartGame;
@@ -41,6 +42,20 @@ public class GameManager : MonoBehaviour
         highScore = PlayerPrefs.GetInt("highScore", 0);
 
         uiManager.UpdateScoreText(0, highScore);
+    }
+
+    void OnDestroy()
+    {
+        // unsubscribe from the game play events
+        gamePlay.GameOver -= HandleGameOver;
+        gamePlay.UpdateScore -= HandleNewScore;
+        gamePlay.UpdatePlayerPreview -= HandleNewPlayerPreview;
+
+        // unsubscribe from the ui events
+        uiManager.StartGame -= HandleStartGame;
+        uiManager.EndGame -= HandleEndGame;
+        uiManager.PauseGame -= HandlePauseGame;
+        uiManager.ResumeGame -= HandleResumeGame;
     }
     
 
@@ -70,10 +85,17 @@ public class GameManager : MonoBehaviour
         uiManager.UpdateScoreText(score, highScore);
     }
 
+    private void HandleNewPlayerPreview(CellColor color)
+    {
+        uiManager.UpdatePlayerPreview(color);
+    }
+
     // UI Manager Events
     private void HandleStartGame()
     {
         gamePlay.gameObject.SetActive(true);
+
+        gamePlay.Initialize();
         gamePlay.StartGame();
     }
 

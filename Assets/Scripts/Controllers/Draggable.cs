@@ -110,6 +110,7 @@ public class Draggable : MonoBehaviour
             if (hit && hit.gameObject == gameObject)
             {
                 isDragging = true;
+
                 dragOffset = transform.position - pointerWorldPos;
             }
         }
@@ -132,5 +133,4 @@ public class Draggable : MonoBehaviour
             Released?.Invoke(transform.position);      // throw event to the player script
         }
     }
-        
 }

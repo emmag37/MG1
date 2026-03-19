@@ -22,13 +22,17 @@ public class GamePlay : MonoBehaviour
 	/// </summary>
     public event Action<int> UpdateScore;
 
+    /// <summary>
+	/// Invoked when a new player preview color is set.
+	/// </summary>
+    public event Action<CellColor> UpdatePlayerPreview;
+
     // ================================
     // Inspector Fields
     // ================================
 
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Player playerPrefab;
-    [SerializeField] private SpriteView nextPlayerImage;
     [SerializeField] private Board board;
 
     // ================================
@@ -60,21 +64,21 @@ public class GamePlay : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
-    void Awake()
+    void OnValidate()
     {
-        Debug.Assert(spawnPoint != null);
-        Debug.Assert(playerPrefab != null);
-        Debug.Assert(nextPlayerImage != null);
-        Debug.Assert(board != null);
-
-        state = GameState.Fresh;
-        picker = new PlayerPicker();
+        Debug.Assert(spawnPoint != null, "Spawn point not set");
+        Debug.Assert(playerPrefab != null, "Player prefab not set");
+        Debug.Assert(board != null, "Board not set");
     }
 
-    void Start()
+    void Awake()
     {
-        InitPlayerBoundaries();
+        state = GameState.Fresh;
+        picker = new PlayerPicker();
+
         board.FullBoard += HandleFullBoard;
+
+        InitializePlayerBoundaries();
     }
 
     void OnDestroy()
@@ -88,6 +92,15 @@ public class GamePlay : MonoBehaviour
     // ================================
 
     /// <summary>
+	/// Initializes the game values that are dependent on other assests
+	/// being ready.
+	/// </summary>
+    public void Initialize()
+    {
+        InitializePlayerBoundaries();
+    }
+
+    /// <summary>
 	/// Starts new game.
 	/// </summary>
     public void StartGame()
@@ -95,6 +108,7 @@ public class GamePlay : MonoBehaviour
         Debug.Assert(state == GameState.Fresh, $"Start called with invalid state: {state}");
 
         state = GameState.Playing;
+
         SpawnNewPlayer();
     }
 
@@ -172,9 +186,9 @@ public class GamePlay : MonoBehaviour
     // Private Methods
     // ================================
 
-    private void InitPlayerBoundaries()
+    private void InitializePlayerBoundaries()
     {
-        playerBoundaries = board.BoardBounds;
+        playerBoundaries = board.BoardBounds;   // incorrect on first run
 
         Vector3 min = playerBoundaries.min;
         min.y = spawnPoint.position.y;
@@ -189,7 +203,8 @@ public class GamePlay : MonoBehaviour
         if (state == GameState.GameOver) return;      // don't respawn on game over
 
         var playerColors = picker.CalculateNewPlayerColors();
-        nextPlayerImage.SetSprite(SpriteDatabase.Instance.GetSprite(playerColors.nextColor));     // move this to UI - caused error
+
+        UpdatePlayerPreview?.Invoke(playerColors.nextColor);
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.Initialize(playerColors.color, playerBoundaries);

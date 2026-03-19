@@ -712,6 +712,7 @@ MonoBehaviour:
   scoreText: {fileID: 2115315121}
   highScoreText: {fileID: 98315442}
   gameOverScoreText: {fileID: 1975400343}
+  playerPreview: {fileID: 564595699}
 --- !u!4 &230092282
 Transform:
   m_ObjectHideFlags: 0
@@ -810,7 +811,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &354018342
 SpriteRenderer:
   serializedVersion: 2
@@ -903,7 +904,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   spawnPoint: {fileID: 801581748}
   playerPrefab: {fileID: -7188902738792039867, guid: c9e0dae5772f042f2ab436716638954a, type: 3}
-  nextPlayerImage: {fileID: 564595699}
   board: {fileID: 1405004971}
 --- !u!4 &373269582 stripped
 Transform:
@@ -1262,7 +1262,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d48585638463417da58dc58cb510e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerImage
-  spriteRenderer: {fileID: 564595698}
 --- !u!1 &569730861
 GameObject:
   m_ObjectHideFlags: 0

@@ -49,7 +49,7 @@ public class Board : MonoBehaviour
 
     void Awake()
     {
-        BoardBounds = GetComponent<SpriteRenderer>().bounds;
+        CalculateBounds();
         Debug.Assert(BoardBounds.size != Vector3.zero, "Invalid board bounds");
 
         InitializeGrid();
@@ -144,6 +144,19 @@ public class Board : MonoBehaviour
     // ================================
     // Private Methods
     // ================================
+
+    // Deterministic bounds calculation - does not rely on Unity lifecycle
+    private void CalculateBounds()
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Sprite sprite = spriteRenderer.sprite;
+        Bounds local = sprite.bounds;
+
+        Vector3 center = transform.TransformPoint(local.center);
+        Vector3 size = Vector3.Scale(local.size, transform.lossyScale);
+
+        BoardBounds = new Bounds(center, size);
+    }
 
     // Initializes the grid cells using children in the scene view
     private void InitializeGrid()

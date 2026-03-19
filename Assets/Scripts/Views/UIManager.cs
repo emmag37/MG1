@@ -20,10 +20,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject gameOverCanvas;
     [SerializeField] private GameObject settingsCanvas;
 
-    // text
+    // Text
     [SerializeField] private Text scoreText;
     [SerializeField] private Text highScoreText;
     [SerializeField] private Text gameOverScoreText;
+
+    // Images
+    [SerializeField] private SpriteView playerPreview;
 
     // ==================================================
     // Events
@@ -43,6 +46,20 @@ public class UIManager : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
+    void OnValidate()
+    {
+        Debug.Assert(homeCanvas != null, "Home canvas not set");
+        Debug.Assert(gamePlayCanvas != null, "Game play canvas not set");
+        Debug.Assert(gameOverCanvas != null, "Game over canvas not set");
+        Debug.Assert(settingsCanvas != null, "Settings canvas not set");
+
+        Debug.Assert(scoreText != null, "Score text not set");
+        Debug.Assert(highScoreText != null, "High score text not set");
+        Debug.Assert(gameOverScoreText != null, "Game over score text not set");
+
+        Debug.Assert(playerPreview != null, "Player preview not set");
+    }
+
     void Start()
     {
         PushCanvas(homeCanvas);
@@ -52,6 +69,11 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Public Methods
     // ==================================================
+
+    /// <summary>
+	/// Updates UI to the Game Over canvas and score.
+	/// </summary>
+	/// <param name="score">Score earned during game play.</param>
     public void GameOver(int score)
     {
         gameOverScoreText.text = $"{score}";    // update the score text
@@ -59,10 +81,24 @@ public class UIManager : MonoBehaviour
         PushCanvas(gameOverCanvas);
     }
 
+    /// <summary>
+	/// Updates the score and high score UI.
+	/// </summary>
+	/// <param name="score">New score earned during game.</param>
+	/// <param name="highScore">Current high score for this user.</param>
     public void UpdateScoreText(int score, int highScore)
     {
         scoreText.text = $"{score}";
         highScoreText.text = $"{highScore}";
+    }
+
+    /// <summary>
+	/// Updates the player preview sprite with the given color.
+	/// </summary>
+	/// <param name="color">New sprite color.</param>
+    public void UpdatePlayerPreview(CellColor color)
+    {
+        playerPreview.SetSprite(SpriteDatabase.Instance.GetSprite(color));
     }
 
 
