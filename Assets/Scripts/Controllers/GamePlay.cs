@@ -77,8 +77,6 @@ public class GamePlay : MonoBehaviour
         picker = new PlayerPicker();
 
         board.FullBoard += HandleFullBoard;
-
-        InitializePlayerBoundaries();
     }
 
     void OnDestroy()
