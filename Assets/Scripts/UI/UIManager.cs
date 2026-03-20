@@ -92,16 +92,6 @@ public class UIManager : MonoBehaviour
 
             popUpViews.Add(view.Type, view);
         }
-
-
-    }
-
-    void Start()
-    {
-        currentView = GetBaseView(BaseViewType.Home);
-        currentView.Show();
-
-        Debug.Assert(currentView != null, "Current view was not initialized properly");
     }
 
 
@@ -173,7 +163,7 @@ public class UIManager : MonoBehaviour
 
         Debug.Assert(!(overlayView.Type == PopUpViewType.Profile || overlayView.Type == PopUpViewType.ScoreHistory)
             || overlayStack.Count == 1,
-            "Too many views in overlay stack while paused");
+            "Too many views in overlay stack");
 
         overlayView.Hide();
         overlayStack.Pop();
@@ -226,7 +216,7 @@ public class UIManager : MonoBehaviour
 
     private void HideCurrentView(BaseViewType type)
     {
-        Debug.Assert(currentView != null, "Current view not set");
+        if (currentView == null) return;
 
         ClearOverlay();
         Debug.Assert(overlayStack.Count == 0, "Overlay stack not empty after clearing");

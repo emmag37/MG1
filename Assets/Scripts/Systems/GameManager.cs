@@ -42,8 +42,20 @@ public class GameManager : MonoBehaviour
         uiManager.ResumeGame += HandleResumeGame;
 
         // load high score
-        highScore = PlayerPrefs.GetInt("highScore", 0);
+        highScore = GamePrefs.HighScore;
         uiManager.UpdateScore(0, highScore);
+
+        // initiate UI
+        uiManager.ShowView(BaseViewType.Home);
+
+        if (!GamePrefs.HasLaunchedBefore)
+        {
+            uiManager.PushOverlay(PopUpViewType.Tutorial1);
+
+            GamePrefs.HasLaunchedBefore = true;
+            GamePrefs.Save();
+        }
+
     }
 
     void OnDestroy()
@@ -77,8 +89,9 @@ public class GameManager : MonoBehaviour
         if (score > highScore)
         {
             highScore = score;
-            PlayerPrefs.SetInt("highScore", highScore);
-            PlayerPrefs.Save();
+
+            GamePrefs.HighScore = score;
+            GamePrefs.Save();
         }
 
         uiManager.UpdateScore(score, highScore);
