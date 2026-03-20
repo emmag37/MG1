@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the game over screen.
 /// </summary>
-public class GameOverView: BaseUIView
+public class GameOverView: BaseView
 {
     // ==================================================
     // Inspector Fields
@@ -26,9 +26,20 @@ public class GameOverView: BaseUIView
         Debug.Assert(gameOverScoreText != null, "Game over score text not set in game over view");
     }
 
+    // ==================================================
+    // Inherited Methods
+    // ==================================================
+
+    public override void Show(ViewData data)
+    {
+        int score = data.FinalScore;
+        gameOverScoreText.text = $"{score}";
+
+        base.Show();
+    }
 
     // ==================================================
-    // Button Methods
+    // Public Methods
     // ==================================================
 
     public void OnHomeClicked()
@@ -40,15 +51,4 @@ public class GameOverView: BaseUIView
     {
         UI.ShowView(BaseViewType.GamePlay);
     }
-
-
-    // ==================================================
-    // Text Methods
-    // ==================================================
-
-    public void UpdateGameOverScoreText(int score)
-    {
-        gameOverScoreText.text = $"{score}";
-    }
-
 }

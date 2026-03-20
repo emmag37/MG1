@@ -18,13 +18,18 @@ public abstract class UIView : MonoBehaviour
     }
 }
 
-public abstract class BaseUIView : UIView
+public abstract class BaseView : UIView
 {
     [SerializeField] private BaseViewType type;
     public BaseViewType Type => type;
+
+    public virtual void Show(ViewData data)
+    {
+        Show();
+    }
 }
 
-public abstract class PopUpUIView : UIView
+public abstract class PopUpView : UIView
 {
     [SerializeField] private PopUpViewType type;
     public PopUpViewType Type => type;

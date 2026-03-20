@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the settings menu.
 /// </summary>
-public class PauseView: PopUpUIView
+public class PauseView: PopUpView
 {
     // ==================================================
     // Inspector Fields

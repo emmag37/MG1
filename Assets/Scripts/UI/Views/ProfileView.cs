@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProfileView : PopUpUIView
+public class ProfileView : PopUpView
 {
     // ==================================================
     // Inspector Fields
