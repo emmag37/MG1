@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
     private Dictionary<PopUpViewType, PopUpView> popUpViews = new Dictionary<PopUpViewType, PopUpView>();
 
     private BaseView currentView;
-    private PopUpView overlayView;
+    private PopUpView overlayView;  // it's time to implement the stack
 
 
     // ================================

@@ -10,5 +10,8 @@ public enum PopUpViewType
 {
     Pause,
     Profile,
-    ScoreHistory
+    ScoreHistory,
+    HowTo1,
+    HowTo2,
+    HowTo3
 }

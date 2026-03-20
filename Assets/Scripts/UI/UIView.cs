@@ -44,7 +44,7 @@ public abstract class PopUpView : UIView
 
     public void OnExitClicked()
     {
-        UI.PopOverlay();
+        UI.PopOverlay();    // change this to pop the full stack
     }
 }
 
