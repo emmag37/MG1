@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
         uiManager.GameOver(score);
 
         // exit the game scene
-        EndGame();
+        HandleEndGame();
     }
 
     private void HandleNewScore(int score)
@@ -106,7 +106,8 @@ public class GameManager : MonoBehaviour
 
     private void HandleEndGame()
     {
-        EndGame();
+        gamePlay.ExitGame();
+        gamePlay.gameObject.SetActive(false);
     }
 
     private void HandlePauseGame()
@@ -117,17 +118,6 @@ public class GameManager : MonoBehaviour
     private void HandleResumeGame()
     {
         gamePlay.ResumeGame();
-    }
-
-
-    // ================================
-    // Private Methods
-    // ================================
-
-    private void EndGame()
-    {
-        gamePlay.ExitGame();
-        gamePlay.gameObject.SetActive(false);
     }
 
 }

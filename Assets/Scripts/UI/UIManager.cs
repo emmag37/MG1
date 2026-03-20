@@ -45,7 +45,12 @@ public class UIManager : MonoBehaviour
     void OnValidate()
     {
         Debug.Assert(hudController != null, "HUD controller not set");
-        Debug.Assert(viewList.Length > 0, "View list not set");
+        Debug.Assert(viewList.Length > 0, "View list not initialized");
+
+        foreach (UIView view in viewList)
+        {
+            Debug.Assert(view != null, $"View in view list is not initialized");
+        }
     }
 
     void Awake()
@@ -72,6 +77,8 @@ public class UIManager : MonoBehaviour
     {
         currentView = GetView(ViewType.Home);
         currentView.Show();
+
+        Debug.Assert(currentView != null, "Current view was not initialized properly");
     }
 
 
@@ -95,38 +102,55 @@ public class UIManager : MonoBehaviour
 	/// <param name="score">Score earned during game play.</param>
     public void GameOver(int score)
     {
+        Debug.Assert(currentView.Type == ViewType.GamePlay, $"Game over called from invalid view {currentView.Type}");
+
         GameOverView view = (GameOverView)GetView(ViewType.GameOver);         // see if there is a better way, overload Show()?
         view.UpdateGameOverScoreText(score);
 
         hudController.Hide();
         ShowView(ViewType.GameOver);
+
+        Debug.Assert(currentView != null && currentView.Type == ViewType.GameOver, "Game over not set");
     }
 
     public void ShowView(ViewType type)
     {
-        if (overlayView != null)
-            PopOverlay();
+        Debug.Assert(currentView != null, "Current view not set");
 
-        if (currentView.Type == ViewType.GamePlay)
+        if (overlayView != null) PopOverlay();
+        Debug.Assert(overlayView == null, "Dangling overlay view");
+
+        if (currentView.Type == ViewType.GamePlay && type != ViewType.GameOver)
         {
+            Debug.Assert(currentView.Type == ViewType.GamePlay, $"Attempted exiting gameplay from invalid view {currentView.Type}");
+
             EndGame?.Invoke();
             hudController.Hide();
         }
 
         currentView.Hide();
+        ViewType oldType = currentView.Type;
 
         currentView = GetView(type);
         currentView.Show();
 
         if (type == ViewType.GamePlay)
         {
+            Debug.Assert(oldType != ViewType.Settings, $"Attempted showing gameplay from invalid view {oldType}");
+
             hudController.Show();
             StartGame?.Invoke();
         }
+
+        Debug.Assert(currentView != null, "Current view not set");
+        Debug.Assert(currentView.Type == type, $"Show type mismatch. Expected: {type}, Found: {currentView.Type}");
+        
     }
 
     public void PushOverlay(ViewType type)
     {
+        Debug.Assert(overlayView == null, "Cannot push overlay until current one is resolved.");
+
         if (currentView.Type == ViewType.GamePlay)
         {
             PauseGame?.Invoke();
@@ -135,10 +159,14 @@ public class UIManager : MonoBehaviour
         overlayView = GetView(type);
         overlayView.Show();
 
+        Debug.Assert(overlayView != null, "Current view not set");
+        Debug.Assert(overlayView.Type == type, $"Push type mismatch. Expected: {type}, Found: {overlayView.Type}");
     }
 
     public void PopOverlay()
     {
+        Debug.Assert(overlayView != null, "Attempted to pop null overlay");
+
         overlayView.Hide();
         overlayView = null;
 
@@ -146,6 +174,8 @@ public class UIManager : MonoBehaviour
         {
             ResumeGame?.Invoke();
         }
+
+        Debug.Assert(overlayView == null, "Overlay view not popped");
     }
 
 
