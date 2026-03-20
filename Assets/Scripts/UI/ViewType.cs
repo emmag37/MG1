@@ -10,5 +10,5 @@ public enum BaseViewType
 public enum PopUpViewType
 {
     Pause,
-    Settings
+    Profile
 }

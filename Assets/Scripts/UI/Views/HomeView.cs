@@ -9,6 +9,7 @@ public class HomeView: BaseUIView
     // ==================================================
     // Inspector Fields
     // ==================================================
+    [SerializeField] private Button profileButton;
     [SerializeField] private Button playButton;
 
     // ==================================================
@@ -17,6 +18,7 @@ public class HomeView: BaseUIView
 
     void OnValidate()
     {
+        Debug.Assert(profileButton != null, "Profile button not set in home view");
         Debug.Assert(playButton != null, "Play button not set in home view");
     }
 
@@ -24,6 +26,11 @@ public class HomeView: BaseUIView
     // ==================================================
     // Button Methods
     // ==================================================
+
+    public void OnProfileClicked()
+    {
+        UI.PushOverlay(PopUpViewType.Profile);
+    }
 
     public void OnPlayClicked()
     {

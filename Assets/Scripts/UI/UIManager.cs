@@ -158,7 +158,6 @@ public class UIManager : MonoBehaviour
 
         if (type == BaseViewType.GamePlay)
         {
-            // add debug again when you add more UI views
             hudController.Show();
             StartGame?.Invoke();
         }
