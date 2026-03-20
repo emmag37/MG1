@@ -6,8 +6,6 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayView: BaseView
 {
-
-
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -22,13 +20,8 @@ public class PlayView: BaseView
         Debug.Assert(pauseButton != null, "Pause button not set in play view");
     }
 
-
-    // ==================================================
-    // Button Methods
-    // ==================================================
-
-    public void OnPauseClicked()
+    void Awake()
     {
-        UI.PushOverlay(PopUpViewType.Pause);
+        pauseButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Pause));
     }
 }

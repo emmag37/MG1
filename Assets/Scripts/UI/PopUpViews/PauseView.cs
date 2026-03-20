@@ -11,29 +11,27 @@ public class PauseView: PopUpView
     // ==================================================
     [SerializeField] private Button homeButton;
     [SerializeField] private Button restartButton;
+    [SerializeField] private Button helpButton;
 
     // ==================================================
     // Unity Lifecycle
     // ==================================================
 
-    void OnValidate()
+    protected override void OnValidate()
     {
+        base.OnValidate();
+
         Debug.Assert(homeButton != null, "Home button not set in pause view");
         Debug.Assert(restartButton != null, "Restart button not set in pause view");
+        Debug.Assert(helpButton != null, "Help button not set in pause view");
     }
 
-
-    // ==================================================
-    // Button Methods
-    // ==================================================
-
-    public void OnHomeClicked()
+    protected override void Awake()
     {
-        UI.ShowView(BaseViewType.Home);
-    }
+        base.Awake();
 
-    public void OnReplayClicked()
-    {
-        UI.ShowView(BaseViewType.GamePlay);
+        homeButton.onClick.AddListener(() => UI.ShowView(BaseViewType.Home));
+        restartButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
+        helpButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Tutorial1));
     }
 }

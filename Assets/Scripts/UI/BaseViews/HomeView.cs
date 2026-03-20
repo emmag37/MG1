@@ -24,23 +24,10 @@ public class HomeView: BaseView
         Debug.Assert(playButton != null, "Play button not set in home view");
     }
 
-
-    // ==================================================
-    // Button Methods
-    // ==================================================
-
-    public void OnProfileClicked()
+    void Awake()
     {
-        UI.PushOverlay(PopUpViewType.Profile);
-    }
-
-    public void OnScoreHistoryClicked()
-    {
-        UI.PushOverlay(PopUpViewType.ScoreHistory);
-    }
-
-    public void OnPlayClicked()
-    {
-        UI.ShowView(BaseViewType.GamePlay);
+        profileButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Profile));
+        scoreHistoryButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.ScoreHistory));
+        playButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
     }
 }

@@ -37,14 +37,14 @@ public abstract class PopUpView : UIView
 
     [SerializeField] private Button exitButton;
 
-    void OnValidate()
+    protected virtual void OnValidate()
     {
         Debug.Assert(exitButton != null, "Exit button not set in pop up view");
     }
 
-    public void OnExitClicked()
+    protected virtual void Awake()
     {
-        UI.PopOverlay();    // change this to pop the full stack
+        exitButton.onClick.AddListener(() => UI.ClearOverlay());
     }
 }
 

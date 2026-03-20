@@ -31,6 +31,13 @@ public class GameOverView: BaseView
         Debug.Assert(highScoreText != null, "High score text not set in game over view");
     }
 
+    void Awake()
+    {
+        homeButton.onClick.AddListener(() => UI.ShowView(BaseViewType.Home));
+        replayButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
+        scoreHistoryButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.ScoreHistory));
+    }
+
     // ==================================================
     // Inherited Methods
     // ==================================================
@@ -41,24 +48,5 @@ public class GameOverView: BaseView
         highScoreText.text = $"{data.HighScore}";
 
         base.Show();
-    }
-
-    // ==================================================
-    // Public Methods
-    // ==================================================
-
-    public void OnHomeClicked()
-    {
-        UI.ShowView(BaseViewType.Home);
-    }
-
-    public void OnReplayClicked()
-    {
-        UI.ShowView(BaseViewType.GamePlay);
-    }
-
-    public void OnScoreHistoryClicked()
-    {
-        UI.PushOverlay(PopUpViewType.ScoreHistory);
     }
 }

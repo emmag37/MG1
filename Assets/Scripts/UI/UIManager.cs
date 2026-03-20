@@ -38,7 +38,7 @@ public class UIManager : MonoBehaviour
     private Dictionary<PopUpViewType, PopUpView> popUpViews = new Dictionary<PopUpViewType, PopUpView>();
 
     private BaseView currentView;
-    private PopUpView overlayView;  // it's time to implement the stack
+    private Stack<PopUpView> overlayStack = new Stack<PopUpView>();
 
 
     // ================================
@@ -135,33 +135,66 @@ public class UIManager : MonoBehaviour
     
     public void PushOverlay(PopUpViewType type)
     {
-        Debug.Assert(overlayView == null, "Cannot push overlay until current one is resolved.");
+        int count = overlayStack.Count;
+        if (count > 0)
+        {
+            Debug.Assert(type != PopUpViewType.Pause && type != PopUpViewType.Profile && type != PopUpViewType.ScoreHistory,
+                $"Attempted to push type {type} to a non-empty overlay stack");
+
+            overlayStack.Peek().Hide();
+        }
 
         if (type == PopUpViewType.Pause)
         {
             PauseGame?.Invoke();
         }
 
-        overlayView = GetPopUpView(type);
+        PopUpView overlayView = GetPopUpView(type);
         overlayView.Show();
+        overlayStack.Push(overlayView);
 
-        Debug.Assert(overlayView != null, "Overlay view not set");
-        Debug.Assert(overlayView.Type == type, $"Push type mismatch. Expected: {type}, Found: {overlayView.Type}");
+        Debug.Assert(count + 1 == overlayStack.Count, "Push did not increase the overlay stack count");
     }
+
 
     public void PopOverlay()
     {
-        Debug.Assert(overlayView != null, "Attempted to pop null overlay");
+        int count = overlayStack.Count;
+        Debug.Assert(count > 0, "Attempted to pop from empty overlay stack");
+
+        PopUpView overlayView = overlayStack.Peek();
 
         if (overlayView.Type == PopUpViewType.Pause)
         {
+            Debug.Assert(overlayStack.Count == 1, "Too many views in overlay stack while paused");
+
             ResumeGame?.Invoke();
         }
 
-        overlayView.Hide();
-        overlayView = null;
+        Debug.Assert(!(overlayView.Type == PopUpViewType.Profile || overlayView.Type == PopUpViewType.ScoreHistory)
+            || overlayStack.Count == 1,
+            "Too many views in overlay stack while paused");
 
-        Debug.Assert(overlayView == null, "Overlay view not popped");
+        overlayView.Hide();
+        overlayStack.Pop();
+
+        Debug.Assert(count - 1 == overlayStack.Count, "Pop did not decrease the overlay stack count");
+
+        if (overlayStack.Count > 0)
+        {
+            overlayStack.Peek().Show();
+        }
+    }
+
+    public void ClearOverlay()
+    {
+        int count = overlayStack.Count;
+        while (overlayStack.TryPeek(out PopUpView view))
+        {
+            if (count > 1 && view.Type == PopUpViewType.Pause) return;  // don't exit pause menu from tutorial
+
+            PopOverlay();
+        }
     }
 
 
@@ -195,8 +228,8 @@ public class UIManager : MonoBehaviour
     {
         Debug.Assert(currentView != null, "Current view not set");
 
-        if (overlayView != null) PopOverlay();
-        Debug.Assert(overlayView == null, "Dangling overlay view");
+        ClearOverlay();
+        Debug.Assert(overlayStack.Count == 0, "Overlay stack not empty after clearing");
 
         if (currentView.Type == BaseViewType.GamePlay)
         {
