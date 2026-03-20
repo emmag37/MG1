@@ -8,6 +8,11 @@ using System;
 /// </summary>
 public class GamePlay : MonoBehaviour
 {
+
+    // i want to toggle a game over for testing purposes
+    public bool InitiateGameOver;
+
+
     // ================================
     // Events
     // ================================
@@ -77,6 +82,11 @@ public class GamePlay : MonoBehaviour
         picker = new PlayerPicker();
 
         board.FullBoard += HandleFullBoard;
+    }
+
+    void Update()
+    {
+        if (InitiateGameOver) HandleFullBoard();    // for testing only!!!
     }
 
     void OnDestroy()

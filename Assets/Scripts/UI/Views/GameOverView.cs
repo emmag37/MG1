@@ -12,7 +12,8 @@ public class GameOverView: BaseView
     [SerializeField] private Button homeButton;
     [SerializeField] private Button replayButton;
 
-    [SerializeField] private Text gameOverScoreText;
+    [SerializeField] private Text gameScoreText;
+    [SerializeField] private Text highScoreText;
 
 
     // ==================================================
@@ -23,7 +24,9 @@ public class GameOverView: BaseView
     {
         Debug.Assert(homeButton != null, "Home button not set in game over view");
         Debug.Assert(replayButton != null, "Replay button not set in game over view");
-        Debug.Assert(gameOverScoreText != null, "Game over score text not set in game over view");
+
+        Debug.Assert(gameScoreText != null, "Game score text not set in game over view");
+        Debug.Assert(highScoreText != null, "High score text not set in game over view");
     }
 
     // ==================================================
@@ -32,8 +35,8 @@ public class GameOverView: BaseView
 
     public override void Show(ViewData data)
     {
-        int score = data.FinalScore;
-        gameOverScoreText.text = $"{score}";
+        gameScoreText.text = $"{data.GameScore}";
+        highScoreText.text = $"{data.HighScore}";
 
         base.Show();
     }

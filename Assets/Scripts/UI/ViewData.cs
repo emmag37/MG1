@@ -1,10 +1,13 @@
 
 public class ViewData
 {
-    public int FinalScore { get; private set; }
+    public int GameScore { get; private set; }
+    public int HighScore { get; private set; }
 
-    public ViewData(int score)
+
+    public ViewData(int score, int highScore)
     {
-        FinalScore = score;
+        GameScore = score;
+        HighScore = highScore;
     }
 }

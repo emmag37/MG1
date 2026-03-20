@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
     // Game Play Events
     private void HandleGameOver(int score)
     {
-        ViewData data = new ViewData(score);
+        ViewData data = new ViewData(score, highScore);
         uiManager.ShowView(BaseViewType.GameOver, data);    // this will initiate end game
     }
 
