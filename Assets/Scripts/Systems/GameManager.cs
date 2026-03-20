@@ -55,7 +55,6 @@ public class GameManager : MonoBehaviour
             GamePrefs.HasLaunchedBefore = true;
             GamePrefs.Save();
         }
-
     }
 
     void OnDestroy()
