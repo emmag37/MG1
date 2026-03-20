@@ -11,7 +11,6 @@ public class PauseView: PopUpView
     // ==================================================
     [SerializeField] private Button homeButton;
     [SerializeField] private Button restartButton;
-    [SerializeField] private Button exitButton;
 
     // ==================================================
     // Unity Lifecycle
@@ -21,7 +20,6 @@ public class PauseView: PopUpView
     {
         Debug.Assert(homeButton != null, "Home button not set in pause view");
         Debug.Assert(restartButton != null, "Restart button not set in pause view");
-        Debug.Assert(exitButton != null, "Exit button not set in pause view");
     }
 
 
@@ -37,10 +35,5 @@ public class PauseView: PopUpView
     public void OnReplayClicked()
     {
         UI.ShowView(BaseViewType.GamePlay);
-    }
-
-    public void OnExitClicked()
-    {
-        UI.PopOverlay();
     }
 }

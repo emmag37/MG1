@@ -10,6 +10,7 @@ public class HomeView: BaseView
     // Inspector Fields
     // ==================================================
     [SerializeField] private Button profileButton;
+    [SerializeField] private Button scoreHistoryButton;
     [SerializeField] private Button playButton;
 
     // ==================================================
@@ -19,6 +20,7 @@ public class HomeView: BaseView
     void OnValidate()
     {
         Debug.Assert(profileButton != null, "Profile button not set in home view");
+        Debug.Assert(scoreHistoryButton != null, "Score history button not set in home view");
         Debug.Assert(playButton != null, "Play button not set in home view");
     }
 
@@ -30,6 +32,11 @@ public class HomeView: BaseView
     public void OnProfileClicked()
     {
         UI.PushOverlay(PopUpViewType.Profile);
+    }
+
+    public void OnScoreHistoryClicked()
+    {
+        UI.PushOverlay(PopUpViewType.ScoreHistory);
     }
 
     public void OnPlayClicked()

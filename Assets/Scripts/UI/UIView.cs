@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Base class for all UI views.
@@ -33,5 +34,17 @@ public abstract class PopUpView : UIView
 {
     [SerializeField] private PopUpViewType type;
     public PopUpViewType Type => type;
+
+    [SerializeField] private Button exitButton;
+
+    void OnValidate()
+    {
+        Debug.Assert(exitButton != null, "Exit button not set in pop up view");
+    }
+
+    public void OnExitClicked()
+    {
+        UI.PopOverlay();
+    }
 }
 

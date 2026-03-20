@@ -86,7 +86,12 @@ public class GamePlay : MonoBehaviour
 
     void Update()
     {
-        if (InitiateGameOver) HandleFullBoard();    // for testing only!!!
+        if (InitiateGameOver)
+        {
+            RemoveCurrentPlayer();
+            HandleFullBoard();    // for testing only!!!
+        }
+            
     }
 
     void OnDestroy()

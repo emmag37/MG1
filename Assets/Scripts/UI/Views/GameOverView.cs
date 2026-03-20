@@ -11,6 +11,7 @@ public class GameOverView: BaseView
     // ==================================================
     [SerializeField] private Button homeButton;
     [SerializeField] private Button replayButton;
+    [SerializeField] private Button scoreHistoryButton;
 
     [SerializeField] private Text gameScoreText;
     [SerializeField] private Text highScoreText;
@@ -24,6 +25,7 @@ public class GameOverView: BaseView
     {
         Debug.Assert(homeButton != null, "Home button not set in game over view");
         Debug.Assert(replayButton != null, "Replay button not set in game over view");
+        Debug.Assert(scoreHistoryButton != null, "Score history button not set in game over view");
 
         Debug.Assert(gameScoreText != null, "Game score text not set in game over view");
         Debug.Assert(highScoreText != null, "High score text not set in game over view");
@@ -53,5 +55,10 @@ public class GameOverView: BaseView
     public void OnReplayClicked()
     {
         UI.ShowView(BaseViewType.GamePlay);
+    }
+
+    public void OnScoreHistoryClicked()
+    {
+        UI.PushOverlay(PopUpViewType.ScoreHistory);
     }
 }
