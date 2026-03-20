@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the game over screen.
 /// </summary>
-public class GameOverView: UIView
+public class GameOverView: BaseUIView
 {
     // ==================================================
     // Inspector Fields
@@ -33,12 +33,12 @@ public class GameOverView: UIView
 
     public void OnHomeClicked()
     {
-        UI.ShowView(ViewType.Home);
+        UI.ShowView(BaseViewType.Home);
     }
 
     public void OnReplayClicked()
     {
-        UI.ShowView(ViewType.GamePlay);
+        UI.ShowView(BaseViewType.GamePlay);
     }
 
 

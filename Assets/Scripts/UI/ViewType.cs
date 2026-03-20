@@ -1,9 +1,14 @@
 using UnityEngine;
 
-public enum ViewType
+public enum BaseViewType
 {
     Home,
     GamePlay,
-    GameOver,
+    GameOver
+}
+
+public enum PopUpViewType
+{
+    Pause,
     Settings
 }

@@ -4,10 +4,8 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the settings menu.
 /// </summary>
-public class SettingsView: UIView
+public class PauseView: PopUpUIView
 {
-
-
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -21,9 +19,9 @@ public class SettingsView: UIView
 
     void OnValidate()
     {
-        Debug.Assert(homeButton != null, "Home button not set in settings view");
-        Debug.Assert(restartButton != null, "Restart button not set in settings view");
-        Debug.Assert(exitButton != null, "Exit button not set in settings view");
+        Debug.Assert(homeButton != null, "Home button not set in pause view");
+        Debug.Assert(restartButton != null, "Restart button not set in pause view");
+        Debug.Assert(exitButton != null, "Exit button not set in pause view");
     }
 
 
@@ -33,12 +31,12 @@ public class SettingsView: UIView
 
     public void OnHomeClicked()
     {
-        UI.ShowView(ViewType.Home);
+        UI.ShowView(BaseViewType.Home);
     }
 
     public void OnReplayClicked()
     {
-        UI.ShowView(ViewType.GamePlay);
+        UI.ShowView(BaseViewType.GamePlay);
     }
 
     public void OnExitClicked()

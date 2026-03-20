@@ -19,7 +19,9 @@ public class UIManager : MonoBehaviour
     // Inspector Fields
     // ==================================================
     [SerializeField] private HUDController hudController;
-    [SerializeField] private UIView[] viewList;
+
+    [SerializeField] private BaseUIView[] baseViewList;
+    [SerializeField] private PopUpUIView[] popUpViewList;
 
     // ==================================================
     // Events
@@ -32,10 +34,11 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private Dictionary<ViewType, UIView> views = new Dictionary<ViewType, UIView>();
+    private Dictionary<BaseViewType, BaseUIView> baseViews = new Dictionary<BaseViewType, BaseUIView>();
+    private Dictionary<PopUpViewType, PopUpUIView> popUpViews = new Dictionary<PopUpViewType, PopUpUIView>();
 
-    private UIView currentView;
-    private UIView overlayView; // can turn this into a stack once you define pop up views
+    private BaseUIView currentView;
+    private PopUpUIView overlayView;
 
 
     // ================================
@@ -45,11 +48,17 @@ public class UIManager : MonoBehaviour
     void OnValidate()
     {
         Debug.Assert(hudController != null, "HUD controller not set");
-        Debug.Assert(viewList.Length > 0, "View list not initialized");
+        Debug.Assert(baseViewList.Length > 0, "Base view list not initialized");
+        Debug.Assert(popUpViewList.Length > 0, "Pop up view list not initialized");
 
-        foreach (UIView view in viewList)
+        foreach (BaseUIView view in baseViewList)
         {
-            Debug.Assert(view != null, $"View in view list is not initialized");
+            Debug.Assert(view != null, $"View in base view list is not initialized");
+        }
+
+        foreach (PopUpUIView view in popUpViewList)
+        {
+            Debug.Assert(view != null, $"View in pop up view list is not initialized");
         }
     }
 
@@ -61,21 +70,35 @@ public class UIManager : MonoBehaviour
         }
         Debug.Assert(Instance == this, "Another UI manager was set as Instance first");
 
-        foreach (UIView view in viewList)
+        // initialize view dictionaries
+        foreach (BaseUIView view in baseViewList)
         {
-            if (views.ContainsKey(view.Type))
+            if (baseViews.ContainsKey(view.Type))
             {
-                Debug.LogError($"Duplicate view type: {view.Type}");
+                Debug.LogError($"Duplicate base view type: {view.Type}");
                 continue;
             }
 
-            views.Add(view.Type, view);
+            baseViews.Add(view.Type, view);
         }
+
+        foreach (PopUpUIView view in popUpViewList)
+        {
+            if (popUpViews.ContainsKey(view.Type))
+            {
+                Debug.LogError($"Duplicate pop up view type: {view.Type}");
+                continue;
+            }
+
+            popUpViews.Add(view.Type, view);
+        }
+
+
     }
 
     void Start()
     {
-        currentView = GetView(ViewType.Home);
+        currentView = GetBaseView(BaseViewType.Home);
         currentView.Show();
 
         Debug.Assert(currentView != null, "Current view was not initialized properly");
@@ -102,42 +125,40 @@ public class UIManager : MonoBehaviour
 	/// <param name="score">Score earned during game play.</param>
     public void GameOver(int score)
     {
-        Debug.Assert(currentView.Type == ViewType.GamePlay, $"Game over called from invalid view {currentView.Type}");
+        Debug.Assert(currentView.Type == BaseViewType.GamePlay, $"Game over called from invalid view {currentView.Type}");
 
-        GameOverView view = (GameOverView)GetView(ViewType.GameOver);         // see if there is a better way, overload Show()?
+        GameOverView view = (GameOverView)GetBaseView(BaseViewType.GameOver);         // see if there is a better way, overload Show()?
         view.UpdateGameOverScoreText(score);
 
         hudController.Hide();
-        ShowView(ViewType.GameOver);
+        ShowView(BaseViewType.GameOver);
 
-        Debug.Assert(currentView != null && currentView.Type == ViewType.GameOver, "Game over not set");
+        Debug.Assert(currentView != null && currentView.Type == BaseViewType.GameOver, "Game over not set");
     }
 
-    public void ShowView(ViewType type)
+    public void ShowView(BaseViewType type)
     {
         Debug.Assert(currentView != null, "Current view not set");
 
         if (overlayView != null) PopOverlay();
         Debug.Assert(overlayView == null, "Dangling overlay view");
 
-        if (currentView.Type == ViewType.GamePlay && type != ViewType.GameOver)
+        if (currentView.Type == BaseViewType.GamePlay && type != BaseViewType.GameOver)
         {
-            Debug.Assert(currentView.Type == ViewType.GamePlay, $"Attempted exiting gameplay from invalid view {currentView.Type}");
+            Debug.Assert(currentView.Type == BaseViewType.GamePlay, $"Attempted exiting gameplay from invalid view {currentView.Type}");
 
             EndGame?.Invoke();
             hudController.Hide();
         }
 
         currentView.Hide();
-        ViewType oldType = currentView.Type;
 
-        currentView = GetView(type);
+        currentView = GetBaseView(type);
         currentView.Show();
 
-        if (type == ViewType.GamePlay)
+        if (type == BaseViewType.GamePlay)
         {
-            Debug.Assert(oldType != ViewType.Settings, $"Attempted showing gameplay from invalid view {oldType}");
-
+            // add debug again when you add more UI views
             hudController.Show();
             StartGame?.Invoke();
         }
@@ -147,19 +168,19 @@ public class UIManager : MonoBehaviour
         
     }
 
-    public void PushOverlay(ViewType type)
+    public void PushOverlay(PopUpViewType type)
     {
         Debug.Assert(overlayView == null, "Cannot push overlay until current one is resolved.");
 
-        if (currentView.Type == ViewType.GamePlay)
+        if (type == PopUpViewType.Pause)
         {
             PauseGame?.Invoke();
         }
 
-        overlayView = GetView(type);
+        overlayView = GetPopUpView(type);
         overlayView.Show();
 
-        Debug.Assert(overlayView != null, "Current view not set");
+        Debug.Assert(overlayView != null, "Overlay view not set");
         Debug.Assert(overlayView.Type == type, $"Push type mismatch. Expected: {type}, Found: {overlayView.Type}");
     }
 
@@ -167,13 +188,13 @@ public class UIManager : MonoBehaviour
     {
         Debug.Assert(overlayView != null, "Attempted to pop null overlay");
 
-        overlayView.Hide();
-        overlayView = null;
-
-        if (currentView.Type == ViewType.GamePlay)
+        if (overlayView.Type == PopUpViewType.Pause)
         {
             ResumeGame?.Invoke();
         }
+
+        overlayView.Hide();
+        overlayView = null;
 
         Debug.Assert(overlayView == null, "Overlay view not popped");
     }
@@ -183,12 +204,23 @@ public class UIManager : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    private UIView GetView(ViewType type)
+    private BaseUIView GetBaseView(BaseViewType type)
     {
-        UIView view;
-        if (!views.TryGetValue(type, out view))
+        BaseUIView view;
+        if (!baseViews.TryGetValue(type, out view))
         {
-            Debug.LogError($"Could not access view for type {type}");
+            Debug.LogError($"Could not access base view for type {type}");
+        }
+
+        return view;
+    }
+
+    private PopUpUIView GetPopUpView(PopUpViewType type)
+    {
+        PopUpUIView view;
+        if (!popUpViews.TryGetValue(type, out view))
+        {
+            Debug.LogError($"Could not access pop up view for type {type}");
         }
 
         return view;

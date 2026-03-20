@@ -5,9 +5,6 @@ using UnityEngine;
 /// </summary>
 public abstract class UIView : MonoBehaviour
 {
-    [SerializeField] private ViewType type;
-    public ViewType Type => type;
-
     protected UIManager UI => UIManager.Instance;
 
     public virtual void Show()
@@ -20,3 +17,16 @@ public abstract class UIView : MonoBehaviour
         gameObject.SetActive(false);
     }
 }
+
+public abstract class BaseUIView : UIView
+{
+    [SerializeField] private BaseViewType type;
+    public BaseViewType Type => type;
+}
+
+public abstract class PopUpUIView : UIView
+{
+    [SerializeField] private PopUpViewType type;
+    public PopUpViewType Type => type;
+}
+

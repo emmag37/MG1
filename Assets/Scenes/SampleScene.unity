@@ -382,7 +382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayView
   type: 1
-  settingsButton: {fileID: 1387991153}
+  pauseButton: {fileID: 1387991153}
 --- !u!1 &97809703
 GameObject:
   m_ObjectHideFlags: 0
@@ -775,14 +775,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   hudController: {fileID: 1811068634}
-  homeView: {fileID: 569730866}
-  gamePlayView: {fileID: 96805675}
-  gameOverView: {fileID: 31870412}
-  settingsView: {fileID: 1734186019}
-  viewList:
+  baseViewList:
   - {fileID: 569730866}
   - {fileID: 96805675}
   - {fileID: 31870412}
+  popUpViewList:
   - {fileID: 1734186019}
 --- !u!4 &230092282
 Transform:
@@ -2344,7 +2341,7 @@ GameObject:
   - component: {fileID: 1387991154}
   - component: {fileID: 1387991153}
   m_Layer: 5
-  m_Name: Settings Button
+  m_Name: Pause Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2415,7 +2412,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 96805675}
         m_TargetAssemblyTypeName: PlayView, Assembly-CSharp
-        m_MethodName: OnSettingsClicked
+        m_MethodName: OnPauseClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3467,7 +3464,7 @@ GameObject:
   - component: {fileID: 1734186015}
   - component: {fileID: 1734186019}
   m_Layer: 5
-  m_Name: Settings Canvas
+  m_Name: Pause Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3568,10 +3565,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1734186014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba1dc34be6aa64234933b6a934c2a995, type: 3}
+  m_Script: {fileID: 11500000, guid: f8c03bb51989a4b3d908c985bf8046d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsView
-  type: 3
+  type: 0
   homeButton: {fileID: 1990685552}
   restartButton: {fileID: 1593412191}
   exitButton: {fileID: 211410066}

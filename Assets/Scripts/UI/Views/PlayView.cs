@@ -4,14 +4,14 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the game play scene.
 /// </summary>
-public class PlayView: UIView
+public class PlayView: BaseUIView
 {
 
 
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private Button settingsButton;
+    [SerializeField] private Button pauseButton;
 
     // ==================================================
     // Unity Lifecycle
@@ -19,7 +19,7 @@ public class PlayView: UIView
 
     void OnValidate()
     {
-        Debug.Assert(settingsButton != null, "Settings button not set in play view");
+        Debug.Assert(pauseButton != null, "Pause button not set in play view");
     }
 
 
@@ -27,8 +27,8 @@ public class PlayView: UIView
     // Button Methods
     // ==================================================
 
-    public void OnSettingsClicked()
+    public void OnPauseClicked()
     {
-        UI.PushOverlay(ViewType.Settings);
+        UI.PushOverlay(PopUpViewType.Pause);
     }
 }

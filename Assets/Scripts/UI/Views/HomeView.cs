@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the home screen.
 /// </summary>
-public class HomeView: UIView
+public class HomeView: BaseUIView
 {
     // ==================================================
     // Inspector Fields
@@ -27,6 +27,6 @@ public class HomeView: UIView
 
     public void OnPlayClicked()
     {
-        UI.ShowView(ViewType.GamePlay);
+        UI.ShowView(BaseViewType.GamePlay);
     }
 }
