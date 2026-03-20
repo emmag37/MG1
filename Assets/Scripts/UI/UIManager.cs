@@ -119,16 +119,6 @@ public class UIManager : MonoBehaviour
         hudController.UpdatePlayerPreviewSprite(color);
     }
 
-    public void GameOver(int score)
-    {
-        Debug.Assert(currentView.Type == BaseViewType.GamePlay, $"Game over called from invalid view {currentView.Type}");
-
-        ViewData data = new ViewData(score);
-        ShowView(BaseViewType.GameOver, data);
-
-        Debug.Assert(currentView != null && currentView.Type == BaseViewType.GameOver, "Game over not set");
-    }
-
     public void ShowView(BaseViewType type, ViewData data = null)
     {
         HideCurrentView(type);

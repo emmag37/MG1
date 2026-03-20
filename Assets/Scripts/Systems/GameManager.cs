@@ -11,15 +11,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GamePlay gamePlay;
     [SerializeField] private UIManager uiManager;
-    
-
 
     // ================================
     // Private Fields
     // ================================
 
     private int highScore;
-
 
     // ================================
     // Unity Lifecycle Methods
@@ -71,11 +68,8 @@ public class GameManager : MonoBehaviour
     // Game Play Events
     private void HandleGameOver(int score)
     {
-        // initiate game over ui
-        uiManager.GameOver(score);
-
-        // exit the game scene
-        HandleEndGame();
+        ViewData data = new ViewData(score);
+        uiManager.ShowView(BaseViewType.GameOver, data);    // this will initiate end game
     }
 
     private void HandleNewScore(int score)
