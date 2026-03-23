@@ -47,6 +47,6 @@ public class GameOverView: BaseView
         gameScoreText.text = $"{data.GameScore}";
         highScoreText.text = $"{data.HighScore}";
 
-        base.Show();
+        base.Show(data);
     }
 }

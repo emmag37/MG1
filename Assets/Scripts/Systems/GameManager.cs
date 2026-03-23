@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     // ================================
 
     private int highScore;
+    private string username;
 
     // ================================
     // Unity Lifecycle Methods
@@ -41,9 +42,15 @@ public class GameManager : MonoBehaviour
         uiManager.PauseGame += HandlePauseGame;
         uiManager.ResumeGame += HandleResumeGame;
 
+        uiManager.UpdateUsername += HandleUpdateUsername;
+
         // load high score
         highScore = GamePrefs.HighScore;
         uiManager.UpdateScore(0, highScore);
+
+        // load username
+        username = GamePrefs.Username;
+        uiManager.InitUsername(username);
 
         // initiate UI
         uiManager.ShowView(BaseViewType.Home);
@@ -126,4 +133,9 @@ public class GameManager : MonoBehaviour
         gamePlay.ResumeGame();
     }
 
+    private void HandleUpdateUsername(string name)
+    {
+        Debug.Log("new username: " + name);
+        GamePrefs.Username = name;
+    }
 }

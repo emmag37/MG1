@@ -13,6 +13,9 @@ public class PauseView: PopUpView
     [SerializeField] private Button restartButton;
     [SerializeField] private Button helpButton;
 
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider effectsSlider;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -24,14 +27,50 @@ public class PauseView: PopUpView
         Debug.Assert(homeButton != null, "Home button not set in pause view");
         Debug.Assert(restartButton != null, "Restart button not set in pause view");
         Debug.Assert(helpButton != null, "Help button not set in pause view");
+
+        Debug.Assert(musicSlider != null, "Music slider not set in pause view");
+        Debug.Assert(effectsSlider != null, "Effects slider not set in pause view");
     }
 
     protected override void Awake()
     {
         base.Awake();
-
+        
         homeButton.onClick.AddListener(() => UI.ShowView(BaseViewType.Home));
         restartButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
         helpButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Tutorial1));
+
+        musicSlider.onValueChanged.AddListener(UpdateMusic);
+        effectsSlider.onValueChanged.AddListener(UpdateEffects);
     }
+
+
+    // ==================================================
+    // temporary functions
+    // ==================================================
+
+    private void UpdateMusic(float value)
+    {
+        if (value == 0)
+        {
+            Debug.Log("Music turned off");
+        }
+        else
+        {
+            Debug.Log("Music turned on");
+        }
+    }
+
+    private void UpdateEffects(float value)
+    {
+        if (value == 0)
+        {
+            Debug.Log("Effects turned off");
+        }
+        else
+        {
+            Debug.Log("Effects turned on");
+        }
+    }
+
 }

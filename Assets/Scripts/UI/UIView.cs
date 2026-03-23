@@ -12,7 +12,7 @@ public abstract class UIView : MonoBehaviour
     {
         gameObject.SetActive(true);
     }
-
+    
     public virtual void Hide()
     {
         gameObject.SetActive(false);

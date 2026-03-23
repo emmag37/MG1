@@ -31,6 +31,8 @@ public class UIManager : MonoBehaviour
     public event Action PauseGame;
     public event Action ResumeGame;
 
+    public event Action<string> UpdateUsername;
+
     // ==================================================
     // Private Fields
     // ==================================================
@@ -107,6 +109,17 @@ public class UIManager : MonoBehaviour
     public void UpdatePlayerPreview(CellColor color)
     {
         hudController.UpdatePlayerPreviewSprite(color);
+    }
+
+    public void InitUsername(string name)
+    {
+        ProfileView profile = (ProfileView)GetPopUpView(PopUpViewType.Profile);
+        profile.SetUsername(name);
+    }
+
+    public void RecieveUsername(string name)
+    {
+        UpdateUsername?.Invoke(name);
     }
 
     public void ShowView(BaseViewType type, ViewData data = null)
