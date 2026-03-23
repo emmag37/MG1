@@ -8,6 +8,7 @@ public enum BaseViewType
 
 public enum PopUpViewType
 {
+    None,
     Pause,
     Profile,
     ScoreHistory,

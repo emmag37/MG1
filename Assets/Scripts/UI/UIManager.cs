@@ -12,16 +12,13 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Public Properties
     // ==================================================
-
     public static UIManager Instance { get; private set; }
 
     // ==================================================
     // Inspector Fields
     // ==================================================
     [SerializeField] private HUDController hudController;
-
-    [SerializeField] private BaseView[] baseViewList;
-    [SerializeField] private PopUpView[] popUpViewList;
+    [SerializeField] private ViewController viewController;
 
     // ==================================================
     // Events
@@ -36,12 +33,7 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private Dictionary<BaseViewType, BaseView> baseViews = new Dictionary<BaseViewType, BaseView>();
-    private Dictionary<PopUpViewType, PopUpView> popUpViews = new Dictionary<PopUpViewType, PopUpView>();
-
-    private BaseView currentView;
-    private Stack<PopUpView> overlayStack = new Stack<PopUpView>();
-
+    private bool activeGame = false;
 
     // ================================
     // Unity Lifecycle Methods
@@ -50,21 +42,10 @@ public class UIManager : MonoBehaviour
     void OnValidate()
     {
         Debug.Assert(hudController != null, "HUD controller not set");
-        Debug.Assert(baseViewList.Length > 0, "Base view list not initialized");
-        Debug.Assert(popUpViewList.Length > 0, "Pop up view list not initialized");
-
-        foreach (BaseView view in baseViewList)
-        {
-            Debug.Assert(view != null, $"View in base view list is not initialized");
-        }
-
-        foreach (PopUpView view in popUpViewList)
-        {
-            Debug.Assert(view != null, $"View in pop up view list is not initialized");
-        }
+        Debug.Assert(hudController != null, "HUD controller not set");
     }
 
-    void Awake()
+    void Awake()    // moved some
     {
         if (Instance == null)
         {
@@ -72,28 +53,6 @@ public class UIManager : MonoBehaviour
         }
         Debug.Assert(Instance == this, "Another UI manager was set as Instance first");
 
-        // initialize view dictionaries
-        foreach (BaseView view in baseViewList)
-        {
-            if (baseViews.ContainsKey(view.Type))
-            {
-                Debug.LogError($"Duplicate base view type: {view.Type}");
-                continue;
-            }
-
-            baseViews.Add(view.Type, view);
-        }
-
-        foreach (PopUpView view in popUpViewList)
-        {
-            if (popUpViews.ContainsKey(view.Type))
-            {
-                Debug.LogError($"Duplicate pop up view type: {view.Type}");
-                continue;
-            }
-
-            popUpViews.Add(view.Type, view);
-        }
     }
 
 
@@ -113,8 +72,8 @@ public class UIManager : MonoBehaviour
 
     public void InitUsername(string name)
     {
-        ProfileView profile = (ProfileView)GetPopUpView(PopUpViewType.Profile);
-        profile.SetUsername(name);
+        //ProfileView profile = (ProfileView)GetPopUpView(PopUpViewType.Profile);
+        //profile.SetUsername(name);
     }
 
     public void RecieveUsername(string name)
@@ -122,81 +81,45 @@ public class UIManager : MonoBehaviour
         UpdateUsername?.Invoke(name);
     }
 
+
+    // view controller functions
     public void ShowView(BaseViewType type, ViewData data = null)
     {
-        HideCurrentView(type);
+        if (activeGame) CloseGame();
 
-        currentView = GetBaseView(type);
-        currentView.Show(data);
+        viewController.ShowView(type, data);
 
-        ShowGameIfGamePlay(type);
-
-        Debug.Assert(currentView != null, "Current view not set");
-        Debug.Assert(currentView.Type == type, $"Show type mismatch. Expected: {type}, Found: {currentView.Type}");
-
+        if (type == BaseViewType.GamePlay) OpenGame();
     }
     
     public void PushOverlay(PopUpViewType type)
     {
-        int count = overlayStack.Count;
-        if (count > 0)
-        {
-            Debug.Assert(type != PopUpViewType.Pause && type != PopUpViewType.Profile && type != PopUpViewType.ScoreHistory,
-                $"Attempted to push type {type} to a non-empty overlay stack");
-
-            overlayStack.Peek().Hide();
-        }
-
         if (type == PopUpViewType.Pause)
         {
             PauseGame?.Invoke();
         }
 
-        PopUpView overlayView = GetPopUpView(type);
-        overlayView.Show();
-        overlayStack.Push(overlayView);
-
-        Debug.Assert(count + 1 == overlayStack.Count, "Push did not increase the overlay stack count");
+        viewController.PushOverlay(type);
     }
 
 
     public void PopOverlay()
     {
-        int count = overlayStack.Count;
-        Debug.Assert(count > 0, "Attempted to pop from empty overlay stack");
+        PopUpViewType overlay = viewController.PopOverlay();
 
-        PopUpView overlayView = overlayStack.Peek();
-
-        if (overlayView.Type == PopUpViewType.Pause)
+        if (overlay == PopUpViewType.Pause)
         {
-            Debug.Assert(overlayStack.Count == 1, "Too many views in overlay stack while paused");
-
             ResumeGame?.Invoke();
-        }
-
-        Debug.Assert(!(overlayView.Type == PopUpViewType.Profile || overlayView.Type == PopUpViewType.ScoreHistory)
-            || overlayStack.Count == 1,
-            "Too many views in overlay stack");
-
-        overlayView.Hide();
-        overlayStack.Pop();
-
-        Debug.Assert(count - 1 == overlayStack.Count, "Pop did not decrease the overlay stack count");
-
-        if (overlayStack.Count > 0)
-        {
-            overlayStack.Peek().Show();
         }
     }
 
     public void ClearOverlay()
     {
-        int count = overlayStack.Count;
-        while (overlayStack.TryPeek(out PopUpView view))
-        {
-            if (count > 1 && view.Type == PopUpViewType.Pause) return;  // don't exit pause menu from tutorial
+        PopUpViewType finalOverlay = viewController.ClearOverlay();
 
-            PopOverlay();
+        if (finalOverlay == PopUpViewType.Pause)
+        {
+            ResumeGame?.Invoke();
         }
     }
 
@@ -205,51 +128,24 @@ public class UIManager : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    private BaseView GetBaseView(BaseViewType type)
+    private void CloseGame()
     {
-        BaseView view;
-        if (!baseViews.TryGetValue(type, out view))
-        {
-            Debug.LogError($"Could not access base view for type {type}");
-        }
+        Debug.Assert(activeGame, $"Attempted exiting gameplay from inactive game state");
 
-        return view;
+        EndGame?.Invoke();
+        hudController.Hide();
+
+        activeGame = false;
     }
 
-    private PopUpView GetPopUpView(PopUpViewType type)
+    private void OpenGame()
     {
-        PopUpView view;
-        if (!popUpViews.TryGetValue(type, out view))
-        {
-            Debug.LogError($"Could not access pop up view for type {type}");
-        }
-
-        return view;
-    }
-
-    private void HideCurrentView(BaseViewType type)
-    {
-        if (currentView == null) return;
-
-        ClearOverlay();
-        Debug.Assert(overlayStack.Count == 0, "Overlay stack not empty after clearing");
-
-        if (currentView.Type == BaseViewType.GamePlay)
-        {
-            Debug.Assert(currentView.Type == BaseViewType.GamePlay, $"Attempted exiting gameplay from invalid view {currentView.Type}");
-
-            EndGame?.Invoke();
-            hudController.Hide();
-        }
-
-        currentView.Hide();
-    }
-
-    private void ShowGameIfGamePlay(BaseViewType type)
-    {
-        if (type != BaseViewType.GamePlay) return;
+        Debug.Assert(!activeGame, $"Attempted starting new gameplay from active game state");
 
         hudController.Show();
         StartGame?.Invoke();
+
+        activeGame = true;
     }
+
 }
