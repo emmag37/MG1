@@ -53,6 +53,8 @@ public abstract class BaseView<T> : BaseView
     {
         Show();
     }
+
+    public virtual void UpdateView(T data) { }
 }
 
 public abstract class PopUpView<T> : PopUpView

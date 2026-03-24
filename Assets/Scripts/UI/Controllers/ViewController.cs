@@ -160,6 +160,16 @@ public class ViewController : MonoBehaviour
         return finalType;
     }
 
+    public void RefreshView<T>(BaseViewType type, T data)
+    {
+        BaseView view = GetBaseView(type);
+
+        if (view is BaseView<T> typedView)
+        {
+            typedView.UpdateView(data);
+        }
+    }
+
     public void RefreshOverlay<T>(PopUpViewType type, T data)
     {
         PopUpView overlayView = GetPopUpView(type);

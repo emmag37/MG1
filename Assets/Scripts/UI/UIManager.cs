@@ -91,6 +91,7 @@ public class UIManager : MonoBehaviour
         data.SetAvatar((int)color);
 
         viewController.RefreshOverlay(PopUpViewType.Profile, data.Profile);
+        viewController.RefreshView(BaseViewType.Home, data.Profile);
     }
 
     public void UpdateMusicOn(int on)
@@ -120,6 +121,12 @@ public class UIManager : MonoBehaviour
                 {
                     viewController.ShowView(type, new NoData());
                     OpenGame();
+                    break;
+                }
+
+            case BaseViewType.Home:
+                {
+                    viewController.ShowView(type, data.Profile);
                     break;
                 }
 
