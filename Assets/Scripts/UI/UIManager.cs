@@ -15,14 +15,6 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     // ==================================================
-    // Events
-    // ==================================================
-    public event Action StartGame;
-    public event Action EndGame;
-    public event Action PauseGame;
-    public event Action ResumeGame;
-
-    // ==================================================
     // Inspector Fields
     // ==================================================
     [SerializeField] private HUDController hudController;
@@ -52,7 +44,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        UpdateScore();
+        hudController.UpdateScoreText(data.Profile.RecentScore, data.Profile.HighScore);
 
         ShowView(BaseViewType.Home);
 
@@ -63,22 +55,26 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        // Game Play Events
+        EventBus.Subscribe<GameOverEvent>(OnGameOver);
+        EventBus.Subscribe<UpdateScoreEvent>(OnUpdateScore);
+        EventBus.Subscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
+    }
+
+    void OnDisable()
+    {
+        // Game Play Events
+        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+        EventBus.Unsubscribe<UpdateScoreEvent>(OnUpdateScore);
+        EventBus.Unsubscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
+    }
+
 
     // ==================================================
     // Public Methods
     // ==================================================
-
-    // hud controller functions
-    public void UpdateScore()
-    {
-        if (data == null) Debug.Log("Data manager not initialized");
-        hudController.UpdateScoreText(data.Profile.RecentScore, data.Profile.HighScore);
-    }
-
-    public void UpdatePlayerPreview(CellColor color)
-    {
-        hudController.UpdatePlayerPreviewSprite(color);
-    }
 
     // view functions
     public void UpdateUsername(string name)
@@ -144,7 +140,7 @@ public class UIManager : MonoBehaviour
         {
             case PopUpViewType.Pause:
                 {
-                    PauseGame?.Invoke();
+                    EventBus.Publish(new PauseGameEvent());
                     viewController.PushOverlay(type, data.Settings);
                     break;
                 }
@@ -176,7 +172,7 @@ public class UIManager : MonoBehaviour
 
         if (overlay == PopUpViewType.Pause)
         {
-            ResumeGame?.Invoke();
+            EventBus.Publish(new ResumeGameEvent());
         }
     }
 
@@ -186,8 +182,28 @@ public class UIManager : MonoBehaviour
 
         if (finalOverlay == PopUpViewType.Pause)
         {
-            ResumeGame?.Invoke();
+            EventBus.Publish(new ResumeGameEvent());
         }
+    }
+
+
+    // ==================================================
+    // Event Handlers
+    // ==================================================
+
+    private void OnGameOver(GameOverEvent e)
+    {
+        ShowView(BaseViewType.GameOver);
+    }
+
+    private void OnUpdateScore(UpdateScoreEvent e)
+    {
+        hudController.UpdateScoreText(data.Profile.RecentScore, data.Profile.HighScore);
+    }
+
+    private void OnUpdatePlayerPreview(UpdatePlayerPreviewEvent e)
+    {
+        hudController.UpdatePlayerPreviewSprite(e.Color);
     }
 
 
@@ -199,7 +215,7 @@ public class UIManager : MonoBehaviour
     {
         Debug.Assert(activeGame, $"Attempted exiting gameplay from inactive game state");
 
-        EndGame?.Invoke();
+        EventBus.Publish(new EndGameEvent());
         hudController.Hide();
 
         activeGame = false;
@@ -209,8 +225,10 @@ public class UIManager : MonoBehaviour
     {
         Debug.Assert(!activeGame, $"Attempted starting new gameplay from active game state");
 
+        Debug.Log("Open game");
+
         hudController.Show();
-        StartGame?.Invoke();
+        EventBus.Publish(new StartGameEvent());
 
         activeGame = true;
     }

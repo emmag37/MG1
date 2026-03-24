@@ -8,29 +8,8 @@ using System;
 /// </summary>
 public class GamePlay : MonoBehaviour
 {
-
     // i want to toggle a game over for testing purposes
     public bool InitiateGameOver;
-
-
-    // ================================
-    // Events
-    // ================================
-
-    /// <summary>
-	/// Invoked when there is a game over.
-	/// </summary>
-    public event Action<int> GameOver;
-
-    /// <summary>
-	/// Invoked when the player scores points.
-	/// </summary>
-    public event Action UpdateScore;
-
-    /// <summary>
-	/// Invoked when a new player preview color is set.
-	/// </summary>
-    public event Action<CellColor> UpdatePlayerPreview;
 
     // ================================
     // Inspector Fields
@@ -82,8 +61,30 @@ public class GamePlay : MonoBehaviour
     {
         state = GameState.Fresh;
         picker = new PlayerPicker();
+    }
 
+    void OnEnable()
+    {
+        // Play events
         board.FullBoard += HandleFullBoard;
+
+        // UI events
+        EventBus.Subscribe<StartGameEvent>(OnStartGame);
+        EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
+        EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
+        EventBus.Subscribe<EndGameEvent>(OnEndGame);
+    }
+
+    void OnDisable()
+    {
+        // Play events
+        board.FullBoard -= HandleFullBoard;
+
+        // UI events
+        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
+        EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
+        EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
+        EventBus.Unsubscribe<EndGameEvent>(OnEndGame);
     }
 
     void Update()
@@ -96,41 +97,26 @@ public class GamePlay : MonoBehaviour
             
     }
 
-    void OnDestroy()
-    {
-        board.FullBoard -= HandleFullBoard;
-    }
-
 
     // ================================
-    // Public Methods
+    // UI Event Handlers
     // ================================
 
-    /// <summary>
-	/// Initializes the game values that are dependent on other assests
-	/// being ready.
-	/// </summary>
-    public void Initialize()
+    private void OnStartGame(StartGameEvent e)
     {
-        InitializePlayerBoundaries();
-    }
+        Debug.Log("start the game");
+        // prepare the game
+        gameObject.SetActive(true);
+        Initialize();
 
-    /// <summary>
-	/// Starts new game.
-	/// </summary>
-    public void StartGame()
-    {
+        // start the game
         Debug.Assert(state == GameState.Fresh, $"Start called with invalid state: {state}");
 
         state = GameState.Playing;
-
         SpawnNewPlayer();
     }
 
-    /// <summary>
-	/// Pauses the gameplay.
-	/// </summary>
-    public void PauseGame()
+    private void OnPauseGame(PauseGameEvent e)
     {
         Debug.Assert(state == GameState.Playing, $"Pause called with invalid state: {state}");
 
@@ -138,10 +124,7 @@ public class GamePlay : MonoBehaviour
         player.enabled = false;
     }
 
-    /// <summary>
-	/// Resumes the gameplay.
-	/// </summary>
-    public void ResumeGame()
+    private void OnResumeGame(ResumeGameEvent e)
     {
         Debug.Assert(state == GameState.Paused, $"Resume called with invalid state: {state}");
 
@@ -149,10 +132,7 @@ public class GamePlay : MonoBehaviour
         player.enabled = true;
     }
 
-    /// <summary>
-	/// Ends the game play and erases the scene.
-	/// </summary>
-    public void ExitGame()
+    private void OnEndGame(EndGameEvent e)
     {
         Debug.Assert(state == GameState.Paused || state == GameState.GameOver, $"Exit called with invalid state: {state}");
 
@@ -162,13 +142,13 @@ public class GamePlay : MonoBehaviour
         board.Reset();
         picker.Reset();
         score = 0;
-
         state = GameState.Fresh;
+
+        gameObject.SetActive(false);
     }
 
-
     // ================================
-    // Event Handlers
+    // Play Event Handlers
     // ================================
 
     // moves the player back to start or on the board.
@@ -193,13 +173,18 @@ public class GamePlay : MonoBehaviour
         Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}");
 
         state = GameState.GameOver;
-        GameOver?.Invoke(score);
+        EventBus.Publish(new GameOverEvent());
     }
 
 
     // ================================
     // Private Methods
     // ================================
+
+    private void Initialize()
+    {
+        InitializePlayerBoundaries();
+    }
 
     private void InitializePlayerBoundaries()
     {
@@ -219,7 +204,7 @@ public class GamePlay : MonoBehaviour
 
         var playerColors = picker.CalculateNewPlayerColors();
 
-        UpdatePlayerPreview?.Invoke(playerColors.nextColor);
+        EventBus.Publish(new UpdatePlayerPreviewEvent { Color = playerColors.nextColor });
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.Initialize(playerColors.color, playerBoundaries);
@@ -261,7 +246,7 @@ public class GamePlay : MonoBehaviour
             score += pointsScored;
             data.SetScore(score);
 
-            UpdateScore?.Invoke();
+            EventBus.Publish(new UpdateScoreEvent());
         }
     }
 }
