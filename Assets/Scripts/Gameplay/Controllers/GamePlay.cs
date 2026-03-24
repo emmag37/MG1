@@ -152,9 +152,9 @@ public class GamePlay : MonoBehaviour
 	/// </summary>
     public void ExitGame()
     {
-        Debug.Assert(state == GameState.Playing || state == GameState.GameOver, $"Exit called with invalid state: {state}");
+        Debug.Assert(state == GameState.Paused || state == GameState.GameOver, $"Exit called with invalid state: {state}");
 
-        if (state == GameState.Playing)      // user exit
+        if (state == GameState.Paused)      // user exit
             RemoveCurrentPlayer();
 
         board.Reset();

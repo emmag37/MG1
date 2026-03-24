@@ -73,12 +73,11 @@ public class ViewController : MonoBehaviour
 
     public void ShowView(BaseViewType type, ViewData data = null)
     {
-        if (currentView == null) return;
-
         ClearOverlay();
         Debug.Assert(overlayStack.Count == 0, "Overlay stack not empty after clearing");
 
-        currentView.Hide();
+        if (currentView != null)
+            currentView.Hide();
 
         currentView = GetBaseView(type);
         currentView.Show(data);

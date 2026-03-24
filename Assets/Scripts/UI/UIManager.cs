@@ -42,7 +42,7 @@ public class UIManager : MonoBehaviour
     void OnValidate()
     {
         Debug.Assert(hudController != null, "HUD controller not set");
-        Debug.Assert(hudController != null, "HUD controller not set");
+        Debug.Assert(viewController != null, "View controller not set");
     }
 
     void Awake()    // moved some
