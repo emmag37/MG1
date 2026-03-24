@@ -6,7 +6,9 @@ public class PlayerProfile
 {
     private int highScore;
     private int recentScore;
+
     private string username;
+    private int avatar;
 
     public int HighScore
     {
@@ -34,12 +36,23 @@ public class PlayerProfile
         }
     }
 
+    public int Avatar
+    {
+        get => avatar;
+        set
+        {
+            avatar = value;
+            PlayerPrefs.SetInt("Avatar", value);
+        }
+    }
+
     // Load from storage
     public void Load()
     {
         highScore = PlayerPrefs.GetInt("HighScore", 0);
         recentScore = PlayerPrefs.GetInt("RecentScore", 0);
         username = PlayerPrefs.GetString("Username", "");
+        avatar = PlayerPrefs.GetInt("Avatar", 1);
     }
 }
 

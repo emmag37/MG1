@@ -86,6 +86,13 @@ public class UIManager : MonoBehaviour
         data.SetUsername(name);
     }
 
+    public void UpdateAvatar(CellColor color)
+    {
+        data.SetAvatar((int)color);
+
+        viewController.RefreshOverlay(PopUpViewType.Profile, data.Profile);
+    }
+
     public void UpdateMusicOn(int on)
     {
         data.SetMusicOn(on);
@@ -136,6 +143,12 @@ public class UIManager : MonoBehaviour
                 }
 
             case PopUpViewType.Profile:
+                {
+                    viewController.PushOverlay(type, data.Profile);
+                    break;
+                }
+
+            case PopUpViewType.ChooseAvatar:
                 {
                     viewController.PushOverlay(type, data.Profile);
                     break;

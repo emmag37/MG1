@@ -61,4 +61,6 @@ public abstract class PopUpView<T> : PopUpView
     {
         Show();
     }
+
+    public virtual void UpdateOverlay(T data) { }
 }

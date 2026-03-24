@@ -10,6 +10,9 @@ public class ProfileView : PopUpView<PlayerProfile>
     // ==================================================
     [SerializeField] private InputField usernameInput;
 
+    [SerializeField] private Button editAvatarButton;
+    [SerializeField] private Image avatarImage;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -19,6 +22,9 @@ public class ProfileView : PopUpView<PlayerProfile>
         base.OnValidate();
 
         Debug.Assert(usernameInput != null, "Username input not set in profile view");
+
+        Debug.Assert(editAvatarButton != null, "Edit avatar button not set in profile view");
+        Debug.Assert(avatarImage != null, "Avatar image not set in profile view");
     }
 
     protected override void Awake()
@@ -26,6 +32,8 @@ public class ProfileView : PopUpView<PlayerProfile>
         base.Awake();
 
         usernameInput.onEndEdit.AddListener(UI.UpdateUsername);  // change to on submit only later
+
+        editAvatarButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.ChooseAvatar)); 
     }
 
     // ==================================================
@@ -35,8 +43,17 @@ public class ProfileView : PopUpView<PlayerProfile>
     public override void Show(PlayerProfile data)
     {
         usernameInput.text = data.Username;
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
 
         base.Show(data);
+    }
+
+    public override void UpdateOverlay(PlayerProfile data)
+    {
+        base.UpdateOverlay(data);
+
+        usernameInput.text = data.Username;
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
     }
 
 }

@@ -148,16 +148,26 @@ public class ViewController : MonoBehaviour
     public PopUpViewType ClearOverlay()
     {
         PopUpViewType finalType = PopUpViewType.None;
-        int count = overlayStack.Count;
+        int initialCount = overlayStack.Count;
         
         while (overlayStack.TryPeek(out PopUpView view))
         {
-            if (count > 1 && view.Type == PopUpViewType.Pause) return finalType;  // don't exit pause menu from tutorial
+            if (initialCount > 1 && overlayStack.Count == 1) return finalType;  // fall back to base pop-up view
 
             finalType = PopOverlay();
         }
 
         return finalType;
+    }
+
+    public void RefreshOverlay<T>(PopUpViewType type, T data)
+    {
+        PopUpView overlayView = GetPopUpView(type);
+
+        if (overlayView is PopUpView<T> typedOverlay)
+        {
+            typedOverlay.UpdateOverlay(data);
+        }
     }
 
 

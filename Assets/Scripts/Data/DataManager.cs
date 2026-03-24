@@ -48,6 +48,11 @@ public class DataManager : MonoBehaviour
         Profile.Username = name;
     }
 
+    public void SetAvatar(int avatar)
+    {
+        Profile.Avatar = avatar;
+    }
+
 
     // ================================
     // Settings Methods
