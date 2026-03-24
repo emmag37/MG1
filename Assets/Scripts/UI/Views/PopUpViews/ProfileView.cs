@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class ProfileView : PopUpView
+public class ProfileView : PopUpView<PlayerProfile>
 {
+    
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -24,9 +25,18 @@ public class ProfileView : PopUpView
     {
         base.Awake();
 
-        usernameInput.text = data.Profile.Username;
+        usernameInput.onEndEdit.AddListener(UI.UpdateUsername);  // change to on submit only later
+    }
 
-        usernameInput.onEndEdit.AddListener(data.SetUsername);  // change to on submit only later
+    // ==================================================
+    // Public Methods
+    // ==================================================
+
+    public override void Show(PlayerProfile data)
+    {
+        usernameInput.text = data.Username;
+
+        base.Show(data);
     }
 
 }

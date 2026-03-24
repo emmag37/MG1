@@ -1,5 +1,7 @@
 using UnityEngine;
 
+public struct NoData { }
+
 public class PlayerProfile
 {
     private int highScore;

@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public abstract class UIView : MonoBehaviour
 {
     protected UIManager UI => UIManager.Instance;
-    protected DataManager data => DataManager.Instance;
 
+    // show methods
     public virtual void Show()
     {
         gameObject.SetActive(true);
@@ -44,3 +44,21 @@ public abstract class PopUpView : UIView
     }
 }
 
+
+// generics
+
+public abstract class BaseView<T> : BaseView
+{
+    public virtual void Show(T data)
+    {
+        Show();
+    }
+}
+
+public abstract class PopUpView<T> : PopUpView
+{
+    public virtual void Show(T data)
+    {
+        Show();
+    }
+}

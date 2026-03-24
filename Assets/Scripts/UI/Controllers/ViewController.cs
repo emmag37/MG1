@@ -71,7 +71,7 @@ public class ViewController : MonoBehaviour
     // Public Methods
     // ==================================================
 
-    public void ShowView(BaseViewType type)
+    public void ShowView<T>(BaseViewType type, T data)
     {
         ClearOverlay();
         Debug.Assert(overlayStack.Count == 0, "Overlay stack not empty after clearing");
@@ -80,13 +80,21 @@ public class ViewController : MonoBehaviour
             currentView.Hide();
 
         currentView = GetBaseView(type);
-        currentView.Show();
+
+        if (currentView is BaseView<T> typedView)
+        {
+            typedView.Show(data);
+        }
+        else
+        {
+            currentView.Show();
+        }
 
         Debug.Assert(currentView != null, "Current view not set");
         Debug.Assert(currentView.Type == type, $"Show type mismatch. Expected: {type}, Found: {currentView.Type}");
     }
 
-    public void PushOverlay(PopUpViewType type)
+    public void PushOverlay<T>(PopUpViewType type, T data)
     {
         int count = overlayStack.Count;
         if (count > 0)
@@ -98,7 +106,16 @@ public class ViewController : MonoBehaviour
         }
 
         PopUpView overlayView = GetPopUpView(type);
-        overlayView.Show();
+
+        if (overlayView is PopUpView<T> typedOverlay)
+        {
+            typedOverlay.Show(data);
+        }
+        else
+        {
+            overlayView.Show();
+        }
+
         overlayStack.Push(overlayView);
 
         Debug.Assert(count + 1 == overlayStack.Count, "Push did not increase the overlay stack count");

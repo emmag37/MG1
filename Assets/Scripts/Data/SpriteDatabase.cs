@@ -10,6 +10,24 @@ using UnityEngine;
 public class SpriteDatabase : ScriptableObject
 {
     // ================================
+    // Public Fields
+    // ================================
+
+    /// <summary>
+	/// Singleton initialization.
+	/// </summary>
+    public static SpriteDatabase Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = Resources.Load<SpriteDatabase>("SpriteDatabase");
+
+            return instance;
+        }
+    }
+
+    // ================================
     // Inspector Fields
     // ================================
     [SerializeField] private Sprite[] sprites = new Sprite[GameConstants.NumberColors + 1]; // account for the empty sprite
@@ -37,20 +55,7 @@ public class SpriteDatabase : ScriptableObject
     // Public Methods
     // ================================
 
-    /// <summary>
-	/// Singleton initialization.
-	/// </summary>
-    public static SpriteDatabase Instance
-    {
-        get
-        {
-            if (instance == null)
-                instance = Resources.Load<SpriteDatabase>("SpriteDatabase");
-
-            return instance;
-        }
-    }
-
+    
     /// <summary>
 	/// Safe access to the sprite database.
 	/// </summary>

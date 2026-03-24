@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the settings menu.
 /// </summary>
-public class PauseView: PopUpView
+public class PauseView: PopUpView<GameSettings>
 {
     // ==================================================
     // Inspector Fields
@@ -36,15 +36,25 @@ public class PauseView: PopUpView
     {
         base.Awake();
 
-        musicSlider.value = data.Settings.MusicOn;
-        effectsSlider.value = data.Settings.EffectsOn;
-        
         homeButton.onClick.AddListener(() => UI.ShowView(BaseViewType.Home));
         restartButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
         helpButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Tutorial1));
 
-        musicSlider.onValueChanged.AddListener(value => data.SetMusicOn((int)value));
-        effectsSlider.onValueChanged.AddListener(value => data.SetEffectsOn((int)value));
+        musicSlider.onValueChanged.AddListener((value) => UI.UpdateMusicOn((int)value));
+        effectsSlider.onValueChanged.AddListener((value) => UI.UpdateEffectsOn((int)value));
+    }
+
+
+    // ==================================================
+    // Public Methods
+    // ==================================================
+
+    public override void Show(GameSettings data)
+    {
+        musicSlider.value = data.MusicOn;
+        effectsSlider.value = data.EffectsOn;
+
+        base.Show(data);
     }
 
 }

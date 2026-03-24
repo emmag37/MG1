@@ -15,18 +15,18 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance { get; private set; }
 
     // ==================================================
-    // Inspector Fields
-    // ==================================================
-    [SerializeField] private HUDController hudController;
-    [SerializeField] private ViewController viewController;
-
-    // ==================================================
     // Events
     // ==================================================
     public event Action StartGame;
     public event Action EndGame;
     public event Action PauseGame;
     public event Action ResumeGame;
+
+    // ==================================================
+    // Inspector Fields
+    // ==================================================
+    [SerializeField] private HUDController hudController;
+    [SerializeField] private ViewController viewController;
 
     // ==================================================
     // Private Fields
@@ -64,7 +64,6 @@ public class UIManager : MonoBehaviour
     }
 
 
-
     // ==================================================
     // Public Methods
     // ==================================================
@@ -81,24 +80,73 @@ public class UIManager : MonoBehaviour
         hudController.UpdatePlayerPreviewSprite(color);
     }
 
+    // view functions
+    public void UpdateUsername(string name)
+    {
+        data.SetUsername(name);
+    }
+
+    public void UpdateMusicOn(int on)
+    {
+        data.SetMusicOn(on);
+    }
+
+    public void UpdateEffectsOn(int on)
+    {
+        data.SetEffectsOn(on);
+    }
+
     // view controller functions
     public void ShowView(BaseViewType type)
     {
         if (activeGame) CloseGame();
 
-        viewController.ShowView(type);
+        switch (type)
+        {
+            case BaseViewType.GameOver:
+                {
+                    viewController.ShowView(type, data.Profile);
+                    break;
+                }
 
-        if (type == BaseViewType.GamePlay) OpenGame();
+            case BaseViewType.GamePlay:
+                {
+                    viewController.ShowView(type, new NoData());
+                    OpenGame();
+                    break;
+                }
+
+            default:
+                {
+                    viewController.ShowView(type, new NoData());
+                    break;
+                }
+        }
     }
     
     public void PushOverlay(PopUpViewType type)
     {
-        if (type == PopUpViewType.Pause)
+        switch (type)
         {
-            PauseGame?.Invoke();
-        }
+            case PopUpViewType.Pause:
+                {
+                    PauseGame?.Invoke();
+                    viewController.PushOverlay(type, data.Settings);
+                    break;
+                }
 
-        viewController.PushOverlay(type);
+            case PopUpViewType.Profile:
+                {
+                    viewController.PushOverlay(type, data.Profile);
+                    break;
+                }
+
+            default:
+                {
+                    viewController.PushOverlay(type, new NoData());
+                    break;
+                }
+        }
     }
 
 
