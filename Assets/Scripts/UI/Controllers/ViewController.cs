@@ -71,7 +71,7 @@ public class ViewController : MonoBehaviour
     // Public Methods
     // ==================================================
 
-    public void ShowView(BaseViewType type, ViewData data = null)
+    public void ShowView(BaseViewType type)
     {
         ClearOverlay();
         Debug.Assert(overlayStack.Count == 0, "Overlay stack not empty after clearing");
@@ -80,7 +80,7 @@ public class ViewController : MonoBehaviour
             currentView.Hide();
 
         currentView = GetBaseView(type);
-        currentView.Show(data);
+        currentView.Show();
 
         Debug.Assert(currentView != null, "Current view not set");
         Debug.Assert(currentView.Type == type, $"Show type mismatch. Expected: {type}, Found: {currentView.Type}");

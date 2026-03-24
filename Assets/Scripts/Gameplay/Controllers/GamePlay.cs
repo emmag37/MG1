@@ -25,7 +25,7 @@ public class GamePlay : MonoBehaviour
     /// <summary>
 	/// Invoked when the player scores points.
 	/// </summary>
-    public event Action<int> UpdateScore;
+    public event Action UpdateScore;
 
     /// <summary>
 	/// Invoked when a new player preview color is set.
@@ -55,6 +55,8 @@ public class GamePlay : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
+
+    private DataManager data => DataManager.Instance;
 
     private GameState state;
 
@@ -257,7 +259,9 @@ public class GamePlay : MonoBehaviour
         if (pointsScored > 0)
         {
             score += pointsScored;
-            UpdateScore?.Invoke(score);
+            data.SetScore(score);
+
+            UpdateScore?.Invoke();
         }
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public abstract class UIView : MonoBehaviour
 {
     protected UIManager UI => UIManager.Instance;
+    protected DataManager data => DataManager.Instance;
 
     public virtual void Show()
     {
@@ -23,11 +24,6 @@ public abstract class BaseView : UIView
 {
     [SerializeField] private BaseViewType type;
     public BaseViewType Type => type;
-
-    public virtual void Show(ViewData data)
-    {
-        Show();
-    }
 }
 
 public abstract class PopUpView : UIView

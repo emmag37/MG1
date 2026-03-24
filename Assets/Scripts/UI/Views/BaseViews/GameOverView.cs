@@ -42,11 +42,11 @@ public class GameOverView: BaseView
     // Inherited Methods
     // ==================================================
 
-    public override void Show(ViewData data)
+    public override void Show()
     {
-        gameScoreText.text = $"{data.GameScore}";
-        highScoreText.text = $"{data.HighScore}";
+        gameScoreText.text = $"{data.Profile.RecentScore}";
+        highScoreText.text = $"{data.Profile.HighScore}";
 
-        base.Show(data);
+        base.Show();
     }
 }

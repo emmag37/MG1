@@ -12,12 +12,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GamePlay gamePlay;
     [SerializeField] private UIManager uiManager;
 
-    // ================================
-    // Private Fields
-    // ================================
-
-    private int highScore;
-    private string username;
 
     // ================================
     // Unity Lifecycle Methods
@@ -41,27 +35,6 @@ public class GameManager : MonoBehaviour
         uiManager.EndGame += HandleEndGame;
         uiManager.PauseGame += HandlePauseGame;
         uiManager.ResumeGame += HandleResumeGame;
-
-        uiManager.UpdateUsername += HandleUpdateUsername;
-
-        // load high score
-        highScore = GamePrefs.HighScore;
-        uiManager.UpdateScore(0, highScore);
-
-        // load username
-        username = GamePrefs.Username;
-        uiManager.InitUsername(username);
-
-        // initiate UI
-        uiManager.ShowView(BaseViewType.Home);
-
-        if (!GamePrefs.HasLaunchedBefore)
-        {
-            uiManager.PushOverlay(PopUpViewType.Tutorial1);
-
-            GamePrefs.HasLaunchedBefore = true;
-            GamePrefs.Save();
-        }
     }
 
     void OnDestroy()
@@ -86,21 +59,12 @@ public class GameManager : MonoBehaviour
     // Game Play Events
     private void HandleGameOver(int score)
     {
-        ViewData data = new ViewData(score, highScore);
-        uiManager.ShowView(BaseViewType.GameOver, data);    // this will initiate end game
+        uiManager.ShowView(BaseViewType.GameOver);    // this will initiate end game
     }
 
-    private void HandleNewScore(int score)
+    private void HandleNewScore()
     {
-        if (score > highScore)
-        {
-            highScore = score;
-
-            GamePrefs.HighScore = score;
-            GamePrefs.Save();
-        }
-
-        uiManager.UpdateScore(score, highScore);
+        uiManager.UpdateScore();
     }
 
     private void HandleNewPlayerPreview(CellColor color)
@@ -131,11 +95,5 @@ public class GameManager : MonoBehaviour
     private void HandleResumeGame()
     {
         gamePlay.ResumeGame();
-    }
-
-    private void HandleUpdateUsername(string name)
-    {
-        Debug.Log("new username: " + name);
-        GamePrefs.Username = name;
     }
 }

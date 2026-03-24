@@ -28,11 +28,11 @@ public class UIManager : MonoBehaviour
     public event Action PauseGame;
     public event Action ResumeGame;
 
-    public event Action<string> UpdateUsername;
-
     // ==================================================
     // Private Fields
     // ==================================================
+    private DataManager data => DataManager.Instance;
+
     private bool activeGame = false;
 
     // ================================
@@ -45,24 +45,35 @@ public class UIManager : MonoBehaviour
         Debug.Assert(viewController != null, "View controller not set");
     }
 
-    void Awake()    // moved some
+    void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        Debug.Assert(Instance == this, "Another UI manager was set as Instance first");
-
+        Instance = this;
     }
+
+    void Start()
+    {
+        UpdateScore();
+
+        ShowView(BaseViewType.Home);
+
+        if (data.Settings.HasLaunched == 0)
+        {
+            PushOverlay(PopUpViewType.Tutorial1);
+            data.SetLaunched();
+        }
+    }
+
 
 
     // ==================================================
     // Public Methods
     // ==================================================
 
-    public void UpdateScore(int score, int highScore)
+    // hud controller functions
+    public void UpdateScore()
     {
-        hudController.UpdateScoreText(score, highScore);
+        if (data == null) Debug.Log("Data manager not initialized");
+        hudController.UpdateScoreText(data.Profile.RecentScore, data.Profile.HighScore);
     }
 
     public void UpdatePlayerPreview(CellColor color)
@@ -70,24 +81,12 @@ public class UIManager : MonoBehaviour
         hudController.UpdatePlayerPreviewSprite(color);
     }
 
-    public void InitUsername(string name)
-    {
-        //ProfileView profile = (ProfileView)GetPopUpView(PopUpViewType.Profile);
-        //profile.SetUsername(name);
-    }
-
-    public void RecieveUsername(string name)
-    {
-        UpdateUsername?.Invoke(name);
-    }
-
-
     // view controller functions
-    public void ShowView(BaseViewType type, ViewData data = null)
+    public void ShowView(BaseViewType type)
     {
         if (activeGame) CloseGame();
 
-        viewController.ShowView(type, data);
+        viewController.ShowView(type);
 
         if (type == BaseViewType.GamePlay) OpenGame();
     }

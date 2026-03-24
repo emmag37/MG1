@@ -24,27 +24,9 @@ public class ProfileView : PopUpView
     {
         base.Awake();
 
-        // change this to on submit only?
-        usernameInput.onEndEdit.AddListener(CheckUsername);
+        usernameInput.text = data.Profile.Username;
+
+        usernameInput.onEndEdit.AddListener(data.SetUsername);  // change to on submit only later
     }
 
-    // ==================================================
-    // Public Functions
-    // ==================================================
-
-    public void SetUsername(string name)
-    {
-        usernameInput.text = name;
-    }
-
-    // ==================================================
-    // Private Functions
-    // ==================================================
-
-    private void CheckUsername(string name)
-    {
-        usernameInput.text = name;
-
-        UI.RecieveUsername(name);
-    }
 }

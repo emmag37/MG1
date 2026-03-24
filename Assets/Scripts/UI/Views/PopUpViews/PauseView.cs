@@ -35,42 +35,16 @@ public class PauseView: PopUpView
     protected override void Awake()
     {
         base.Awake();
+
+        musicSlider.value = data.Settings.MusicOn;
+        effectsSlider.value = data.Settings.EffectsOn;
         
         homeButton.onClick.AddListener(() => UI.ShowView(BaseViewType.Home));
         restartButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
         helpButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Tutorial1));
 
-        musicSlider.onValueChanged.AddListener(UpdateMusic);
-        effectsSlider.onValueChanged.AddListener(UpdateEffects);
-    }
-
-
-    // ==================================================
-    // temporary functions
-    // ==================================================
-
-    private void UpdateMusic(float value)
-    {
-        if (value == 0)
-        {
-            Debug.Log("Music turned off");
-        }
-        else
-        {
-            Debug.Log("Music turned on");
-        }
-    }
-
-    private void UpdateEffects(float value)
-    {
-        if (value == 0)
-        {
-            Debug.Log("Effects turned off");
-        }
-        else
-        {
-            Debug.Log("Effects turned on");
-        }
+        musicSlider.onValueChanged.AddListener(value => data.SetMusicOn((int)value));
+        effectsSlider.onValueChanged.AddListener(value => data.SetEffectsOn((int)value));
     }
 
 }
