@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4055884118901066201}
   - component: {fileID: -4738901623334893058}
   - component: {fileID: 1252488783021972421}
+  - component: {fileID: 7388961558810320347}
   m_Layer: 0
   m_Name: Cell
   m_TagString: Untagged
@@ -105,7 +106,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d48585638463417da58dc58cb510e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GamePieceImage
-  spriteRenderer: {fileID: 4055884118901066201}
 --- !u!114 &1252488783021972421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,3 +119,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cell
   index: {x: 0, y: 0}
+--- !u!95 &7388961558810320347
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2181350689164714117}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: cf894287714c64b518dce6242a8f8afc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
