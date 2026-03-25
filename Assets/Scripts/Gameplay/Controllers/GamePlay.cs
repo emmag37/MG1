@@ -61,6 +61,8 @@ public class GamePlay : MonoBehaviour
     {
         state = GameState.Fresh;
         picker = new PlayerPicker();
+
+        Initialize();
     }
 
     void OnEnable()
@@ -104,9 +106,8 @@ public class GamePlay : MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
-        Debug.Log("start the game");
-        // prepare the game
-        gameObject.SetActive(true);
+        EnableGameplay();   // must enable the board first
+
         Initialize();
 
         // start the game
@@ -139,12 +140,13 @@ public class GamePlay : MonoBehaviour
         if (state == GameState.Paused)      // user exit
             RemoveCurrentPlayer();
 
+        // Reset the game
         board.Reset();
         picker.Reset();
         score = 0;
         state = GameState.Fresh;
 
-        gameObject.SetActive(false);
+        DisableGameplay();
     }
 
     // ================================
@@ -194,6 +196,20 @@ public class GamePlay : MonoBehaviour
         min.y = spawnPoint.position.y;
 
         playerBoundaries.SetMinMax(min, playerBoundaries.max);
+
+        Debug.Log("set player boundaries");
+    }
+
+    private void EnableGameplay()
+    {
+        board.gameObject.SetActive(true);
+
+        Debug.Log("enabled gameplay");
+    }
+
+    private void DisableGameplay()
+    {
+        board.gameObject.SetActive(false);
     }
 
     private void SpawnNewPlayer()
