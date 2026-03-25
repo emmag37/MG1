@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteView))]
+[RequireComponent(typeof(Animator))]
 public class Cell : MonoBehaviour
 {
     // ==================================================
@@ -23,8 +24,11 @@ public class Cell : MonoBehaviour
     // Private Fields
     // ==================================================
     private int rowSize;
+
     private SpriteView image;
     private CellColor color = CellColor.Empty;
+
+    private Animator animator;
 
     // ==================================================
     // Unity Lifecycle Methods
@@ -34,6 +38,8 @@ public class Cell : MonoBehaviour
     {
         image = GetComponent<SpriteView>();
         Radius = image.Radius;
+
+        animator = GetComponent<Animator>();
     }
 
 
@@ -50,6 +56,16 @@ public class Cell : MonoBehaviour
         SetEmpty();
     }
 
+    // ==================================================
+    // Event Handlers
+    // ==================================================
+
+    public void OnAnimationComplete()
+    {
+        Debug.Log($"completed animation on {gameObject.name}", this);
+
+        SetEmpty();
+    }
 
     // ==================================================
     // Public Methods
@@ -73,5 +89,12 @@ public class Cell : MonoBehaviour
         if (color == CellColor.Empty) return;
 
         SetColor(CellColor.Empty);
+    }
+
+    public void Pop()
+    {
+        Debug.Log("pop");
+
+        animator.SetTrigger("PopCell");
     }
 }

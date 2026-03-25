@@ -235,8 +235,6 @@ public class UIManager : MonoBehaviour
     {
         Debug.Assert(!activeGame, $"Attempted starting new gameplay from active game state");
 
-        Debug.Log("Open game");
-
         hudController.Show();
         EventBus.Publish(new StartGameEvent());
 

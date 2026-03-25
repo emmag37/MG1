@@ -192,28 +192,28 @@ public class Board : MonoBehaviour
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[row, i].SetEmpty();     // validate this in sprite database
+            grid[row, i].Pop();
         }
     }
     private void ClearColumn(int col)
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[i, col].SetEmpty();
+            grid[i, col].Pop();
         }
     }
     private void ClearRightDiagonal()
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[i, i].SetEmpty();
+            grid[i, i].Pop();
         }
     }
     private void ClearLeftDiagonal()
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[i, i].SetEmpty();
+            grid[i, i].Pop();
         }
     }
 }

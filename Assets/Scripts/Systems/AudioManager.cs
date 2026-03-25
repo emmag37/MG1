@@ -71,23 +71,17 @@ public class AudioManager : MonoBehaviour
     // game play
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
-        Debug.Log("place player sound");
-
         sfxSource.PlayOneShot(placePlayerClip);
     }
 
     private void OnWin(WinEvent e)
     {
-        Debug.Log("win sound");
-
         sfxSource.PlayOneShot(winClip);
     }
 
     // UI
     private void OnTransition(TransitionEvent e)
     {
-        Debug.Log("transition sound");
-
         sfxSource.PlayOneShot(transitionClip);
     }
 
