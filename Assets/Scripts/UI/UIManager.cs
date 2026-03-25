@@ -46,7 +46,7 @@ public class UIManager : MonoBehaviour
     {
         hudController.UpdateScoreText(data.Profile.RecentScore, data.Profile.HighScore);
 
-        ShowView(BaseViewType.Home);
+        viewController.ShowView(BaseViewType.Home, data.Profile);
 
         if (data.Settings.HasLaunched == 0)
         {
@@ -59,7 +59,7 @@ public class UIManager : MonoBehaviour
     {
         // Game Play Events
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
-        EventBus.Subscribe<UpdateScoreEvent>(OnUpdateScore);
+        EventBus.Subscribe<WinEvent>(OnUpdateScore);
         EventBus.Subscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
     }
 
@@ -67,7 +67,7 @@ public class UIManager : MonoBehaviour
     {
         // Game Play Events
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
-        EventBus.Unsubscribe<UpdateScoreEvent>(OnUpdateScore);
+        EventBus.Unsubscribe<WinEvent>(OnUpdateScore);
         EventBus.Unsubscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
     }
 
@@ -93,16 +93,20 @@ public class UIManager : MonoBehaviour
     public void UpdateMusicOn(int on)
     {
         data.SetMusicOn(on);
+        EventBus.Publish(new UpdateSettingsEvent());
     }
 
     public void UpdateEffectsOn(int on)
     {
         data.SetEffectsOn(on);
+        EventBus.Publish(new UpdateSettingsEvent());
     }
 
     // view controller functions
     public void ShowView(BaseViewType type)
     {
+        EventBus.Publish(new TransitionEvent());
+
         if (activeGame) CloseGame();
 
         switch (type)
@@ -136,6 +140,8 @@ public class UIManager : MonoBehaviour
     
     public void PushOverlay(PopUpViewType type)
     {
+        EventBus.Publish(new TransitionEvent());
+
         switch (type)
         {
             case PopUpViewType.Pause:
@@ -168,6 +174,8 @@ public class UIManager : MonoBehaviour
 
     public void PopOverlay()
     {
+        EventBus.Publish(new TransitionEvent());
+
         PopUpViewType overlay = viewController.PopOverlay();
 
         if (overlay == PopUpViewType.Pause)
@@ -178,6 +186,8 @@ public class UIManager : MonoBehaviour
 
     public void ClearOverlay()
     {
+        EventBus.Publish(new TransitionEvent());
+
         PopUpViewType finalOverlay = viewController.ClearOverlay();
 
         if (finalOverlay == PopUpViewType.Pause)
@@ -196,7 +206,7 @@ public class UIManager : MonoBehaviour
         ShowView(BaseViewType.GameOver);
     }
 
-    private void OnUpdateScore(UpdateScoreEvent e)
+    private void OnUpdateScore(WinEvent e)
     {
         hudController.UpdateScoreText(data.Profile.RecentScore, data.Profile.HighScore);
     }

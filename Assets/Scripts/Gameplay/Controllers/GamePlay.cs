@@ -162,7 +162,8 @@ public class GamePlay : MonoBehaviour
         Debug.Assert(player == playerReleased, "Player released is not the current player");
 
         Vector2Int index;
-        if (!TryPlacePlayer(player.Position, out index)) return;
+        if (!TryPlacePlayer(player.Position, out index)) return;    // player returned to start
+        EventBus.Publish(new PlacePlayerEvent());
 
         ExecuteTurn(index, player.Color);
         RemoveCurrentPlayer();
@@ -196,15 +197,11 @@ public class GamePlay : MonoBehaviour
         min.y = spawnPoint.position.y;
 
         playerBoundaries.SetMinMax(min, playerBoundaries.max);
-
-        Debug.Log("set player boundaries");
     }
 
     private void EnableGameplay()
     {
         board.gameObject.SetActive(true);
-
-        Debug.Log("enabled gameplay");
     }
 
     private void DisableGameplay()
@@ -262,7 +259,7 @@ public class GamePlay : MonoBehaviour
             score += pointsScored;
             data.SetScore(score);
 
-            EventBus.Publish(new UpdateScoreEvent());
+            EventBus.Publish(new WinEvent());
         }
     }
 }
