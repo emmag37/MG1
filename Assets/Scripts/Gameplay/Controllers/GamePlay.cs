@@ -61,8 +61,6 @@ public class GamePlay : MonoBehaviour
     {
         state = GameState.Fresh;
         picker = new PlayerPicker();
-
-        Initialize();
     }
 
     void OnEnable()
@@ -70,8 +68,8 @@ public class GamePlay : MonoBehaviour
         // Play events
         board.FullBoard += HandleFullBoard;
 
-        // UI events
-        EventBus.Subscribe<StartGameEvent>(OnStartGame);
+        // Game state events
+        EventBus.Subscribe<GameReadyEvent>(OnStartGame);
         EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
         EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
         EventBus.Subscribe<EndGameEvent>(OnEndGame);
@@ -83,7 +81,7 @@ public class GamePlay : MonoBehaviour
         board.FullBoard -= HandleFullBoard;
 
         // UI events
-        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
+        EventBus.Unsubscribe<GameReadyEvent>(OnStartGame);
         EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
         EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
         EventBus.Unsubscribe<EndGameEvent>(OnEndGame);
@@ -104,14 +102,12 @@ public class GamePlay : MonoBehaviour
     // UI Event Handlers
     // ================================
 
-    private void OnStartGame(StartGameEvent e)
+    private void OnStartGame(GameReadyEvent e)
     {
-        EnableGameplay();   // must enable the board first
-
-        Initialize();
-
-        // start the game
+        Debug.Log("Start game in game play");
         Debug.Assert(state == GameState.Fresh, $"Start called with invalid state: {state}");
+
+        InitializePlayerBoundaries(e.BoardBounds);
 
         state = GameState.Playing;
         SpawnNewPlayer();
@@ -141,12 +137,11 @@ public class GamePlay : MonoBehaviour
             RemoveCurrentPlayer();
 
         // Reset the game
-        board.Reset();
         picker.Reset();
         score = 0;
         state = GameState.Fresh;
 
-        DisableGameplay();
+        Debug.Log("ended game in game play");
     }
 
     // ================================
@@ -184,29 +179,18 @@ public class GamePlay : MonoBehaviour
     // Private Methods
     // ================================
 
-    private void Initialize()
+    private void InitializePlayerBoundaries(Bounds boardBounds)
     {
-        InitializePlayerBoundaries();
-    }
+        if (playerBoundaries.size != Vector3.zero) return;  // player bounds already initialized
 
-    private void InitializePlayerBoundaries()
-    {
-        playerBoundaries = board.BoardBounds;   // incorrect on first run
+        playerBoundaries = boardBounds;
 
         Vector3 min = playerBoundaries.min;
         min.y = spawnPoint.position.y;
 
         playerBoundaries.SetMinMax(min, playerBoundaries.max);
-    }
 
-    private void EnableGameplay()
-    {
-        board.gameObject.SetActive(true);
-    }
-
-    private void DisableGameplay()
-    {
-        board.gameObject.SetActive(false);
+        Debug.Log("set player boundaries");
     }
 
     private void SpawnNewPlayer()

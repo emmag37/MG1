@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+
 // ==================================================
 // Game Events
 // ==================================================
@@ -13,6 +15,15 @@ public struct PlacePlayerEvent { }
 public struct WinEvent { }
 public struct GameOverEvent { }
 
+
+// ==================================================
+// Board Events
+// ==================================================
+
+public struct GameReadyEvent
+{
+    public Bounds BoardBounds;
+}
 
 // ==================================================
 // UI Events

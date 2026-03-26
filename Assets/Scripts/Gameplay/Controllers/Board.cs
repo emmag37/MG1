@@ -6,7 +6,6 @@ using System;
 /// Bridges board logic and geometry with the rendered grid, handles player
 /// placement, and clears completed lines.
 /// </summary>
-[RequireComponent(typeof(SpriteRenderer))]
 public class Board : MonoBehaviour
 {
     // ================================
@@ -25,17 +24,16 @@ public class Board : MonoBehaviour
     public event Action FullBoard;
 
     // ================================
-    // Public Properties
+    // Inspector Fields
     // ================================
 
-    /// <summary>
-	/// World coordinates of the board's boundaries.
-	/// </summary>
-    public Bounds BoardBounds { get; private set; }
+    [SerializeField] private SpriteRenderer boardView;
+    [SerializeField] private GameObject cells;
 
     // ================================
     // Private Fields
     // ================================
+    private bool initialized = false;
 
     private BoardLogic logic;
     private BoardGeometry geometry;
@@ -47,23 +45,76 @@ public class Board : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
+    void OnValidate()
+    {
+        Debug.Assert(boardView != null, "Board view not set in board");
+    }
+
+
     void Awake()
     {
-        CalculateBounds();
-        Debug.Assert(BoardBounds.size != Vector3.zero, "Invalid board bounds");
-
-        InitializeGrid();
-
         logic = new BoardLogic();
-
         geometry = new BoardGeometry();
-        geometry.Initialize(grid[0, 0].Radius, BoardBounds); // validate the radius in sprite view
+    }
+
+    void OnEnable()
+    {
+        // Game State Events
+        EventBus.Subscribe<StartGameEvent>(OnStartGame);
+        EventBus.Subscribe<EndGameEvent>(OnEndGame);
+    }
+
+    void OnDisable()
+    {
+        // Game State Events
+        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
+        EventBus.Subscribe<EndGameEvent>(OnEndGame);
     }
 
 
     // ================================
     // Initializers
     // ================================
+
+    private void Initialize()
+    {
+        if (initialized) return;
+
+        InitializeGrid();
+        geometry.Initialize(grid[0, 0].Radius, boardView.bounds);
+
+        initialized = true;
+
+        Debug.Log("Finished board initialize");
+    }
+
+    // Initializes the grid cells using children in the scene view
+    private void InitializeGrid()
+    {
+        Cell[] childCells = cells.GetComponentsInChildren<Cell>();
+
+        int expected = RowSize * RowSize;
+        Debug.Assert(expected == childCells.Length, $"Expected {expected}, found {childCells.Length}");
+
+        foreach (Cell cell in childCells)
+        {
+            Vector2Int index = cell.Index;
+
+            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y <= RowSize,
+                $"Index {index} is out of bounds");
+            Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
+
+            grid[index.x, index.y] = cell;
+        }
+
+        for (int x = 0; x < RowSize; x++)
+        {
+            for (int y = 0; y < RowSize; y++)
+            {
+                Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
+            }
+        }
+    }
 
 
     // ================================
@@ -142,50 +193,37 @@ public class Board : MonoBehaviour
 
 
     // ================================
-    // Private Methods
+    // Event Handlers
     // ================================
 
-    // Deterministic bounds calculation - does not rely on Unity lifecycle
-    private void CalculateBounds()
+    private void OnStartGame(StartGameEvent e)
     {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        Sprite sprite = spriteRenderer.sprite;
-        Bounds local = sprite.bounds;
+        Debug.Log("Set the board to active");
 
-        Vector3 center = transform.TransformPoint(local.center);
-        Vector3 size = Vector3.Scale(local.size, transform.lossyScale);
+        // set active
+        boardView.gameObject.SetActive(true);
+        cells.gameObject.SetActive(true);
 
-        BoardBounds = new Bounds(center, size);
+        Initialize();
+
+        EventBus.Publish(new GameReadyEvent { BoardBounds = boardView.bounds }) ;
     }
 
-    // Initializes the grid cells using children in the scene view
-    private void InitializeGrid()
+    private void OnEndGame(EndGameEvent e)
     {
-        Cell[] cells = GetComponentsInChildren<Cell>();
+        Reset();
 
-        int expected = RowSize * RowSize;
-        Debug.Assert(expected == cells.Length, $"Expected {expected}, found {cells.Length}");
+        // set inactive
+        boardView.gameObject.SetActive(false);
+        cells.gameObject.SetActive(false);
 
-        foreach (Cell cell in cells)
-        {
-            Vector2Int index = cell.Index;
-
-            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y <= RowSize,
-                $"Index {index} is out of bounds");
-            Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
-
-            grid[index.x, index.y] = cell;
-        }
-
-        for (int x = 0; x < RowSize; x++)
-        {
-            for (int y = 0; y < RowSize; y++)
-            {
-                Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
-            }
-        }
+        Debug.Log("board set inactive");
     }
 
+
+    // ================================
+    // Private Methods
+    // ================================
 
     // Helpers to reset the grid sprites
     private void ClearRow(int row)

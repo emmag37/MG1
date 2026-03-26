@@ -46,7 +46,7 @@ public class Cell : MonoBehaviour
     // ==================================================
     // Initialization
     // ==================================================
-
+    
     /// <summary>
 	/// Initialize the cell's row count and sprite.
 	/// </summary>
