@@ -3,11 +3,13 @@ using UnityEngine;
 public enum CellColor
 {
     Empty = 0,
+    Shadow,
     Color1,
     Color2,
     Color3,
     Color4,
     Color5,
     Color6,
+    Mask,
     WildCard
 }

@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
         movement = GetComponent<Draggable>();
         startPos = transform.position;
 
+        movement.StartDrag += HandleStartDrag;
         movement.Released += HandleReleased;
     }
 
@@ -50,6 +51,12 @@ public class Player : MonoBehaviour
         // Board Events
         EventBus.Unsubscribe<PlacePlayerEvent>(HandlePlacePlayer);
         EventBus.Unsubscribe<ReturnPlayerEvent>(HandleReturnPlayer);
+    }
+
+    void OnDestroy()
+    {
+        movement.StartDrag -= HandleStartDrag;
+        movement.Released -= HandleReleased;
     }
 
     // ================================
@@ -79,6 +86,11 @@ public class Player : MonoBehaviour
     // ================================
     // Event Handlers
     // ================================
+
+    private void HandleStartDrag()
+    {
+        EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform });
+    }
 
     private void HandleReleased(Vector3 position)
     {

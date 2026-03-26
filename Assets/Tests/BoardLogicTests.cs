@@ -22,22 +22,22 @@ public class BoardLogicTests
         // test 1: In bounds
         int x = RowSize / 2;
         int y = RowSize / 2;
-        Assert.IsTrue(board.ValidCell(x, y));
+        Assert.IsTrue(board.ValidCell(x, y, CellColor.Empty));
 
         // test 2: Negative
         x = -1;
         y = -1;
-        Assert.IsFalse(board.ValidCell(x, y));
+        Assert.IsFalse(board.ValidCell(x, y, CellColor.Empty));
 
         // test 3: Out of bounds
         x = RowSize * 2;
         y = RowSize * 2;
-        Assert.IsFalse(board.ValidCell(x, y));
+        Assert.IsFalse(board.ValidCell(x, y, CellColor.Empty));
 
         // test 5: Max edge case
         x = RowSize;
         y = RowSize;
-        Assert.IsFalse(board.ValidCell(x, y));
+        Assert.IsFalse(board.ValidCell(x, y, CellColor.Empty));
     }
 
     [Test, Category("Bounds")]
@@ -62,7 +62,7 @@ public class BoardLogicTests
         TestPlacePlayer(1, 0, 0, CellColor.Color1);
 
         // test 2: Check invalid cell on top of player
-        Assert.IsFalse(board.ValidCell(0, 0));
+        Assert.IsFalse(board.ValidCell(0, 0, CellColor.Empty));
     }
 
     

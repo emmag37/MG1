@@ -12,6 +12,7 @@ public class BoardLogic
 
     private const int RowSize = GameConstants.RowSize;
     private const CellColor Empty = CellColor.Empty;
+    private const CellColor Mask = CellColor.Mask;
     private const CellColor WildCard = CellColor.WildCard;
 
     // ================================
@@ -73,12 +74,13 @@ public class BoardLogic
     /// <returns>
     /// <c>true</c> if the index is valid; otherwise <c>false</c>
     /// </returns>
-    public bool ValidCell(int row, int col)
+    public bool ValidCell(int row, int col, CellColor color)
     {
         bool valid =
             (row >= 0 && row < RowSize) &&
             (col >= 0 && col < RowSize) &&
-            gridColors[row, col] == Empty;
+            (color == Mask ||
+            gridColors[row, col] == Empty);
 
         return valid;
     }
@@ -112,7 +114,7 @@ public class BoardLogic
 	/// <returns><c>true</c> if the index and color were valid; otherwise <c>false</c>.</returns>
     public bool TryPlacePlayer(int row, int col, CellColor color, out PlayResult result)
     {
-        if (!ValidCell(row, col) || color == Empty)
+        if (!ValidCell(row, col, color) || color == Empty)
         {
             result = new PlayResult();
             return false;
@@ -149,12 +151,19 @@ public class BoardLogic
         PlayResult result = new PlayResult();
 
         // Add player to the board
+        if (gridColors[row, col] == Empty)
+        {
+            rowCounts[row]++;
+            colCounts[col]++;
+            if (row == col) rDiagCount++;
+            if (RowSize - 1 - row == col) lDiagCount++;
+        }
+        else
+        {
+            color = WildCard;   // color must be mask, mask operates like wc once on the board
+        }
         gridColors[row, col] = color;
 
-        rowCounts[row]++;
-        colCounts[col]++;
-        if (row == col) rDiagCount++;
-        if (RowSize - 1 - row == col) lDiagCount++;
 
         // Check for full and matching lines
         result.ClearRow =

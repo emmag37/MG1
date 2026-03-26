@@ -55,6 +55,7 @@ public class BoardManager: MonoBehaviour
 
         // Player Events
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDragging);
     }
 
     void OnDisable()
@@ -65,6 +66,7 @@ public class BoardManager: MonoBehaviour
 
         // Player Events
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDragging);
     }
 
 
@@ -99,7 +101,9 @@ public class BoardManager: MonoBehaviour
 
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        bool valid = TryGetPlayerPosition(e.PlayerPosition, out Vector3 newPos, out Vector2Int index);
+        // stop hovering
+
+        bool valid = TryGetPlayerPosition(e.PlayerPosition, e.Color, out Vector3 newPos, out Vector2Int index);
 
         if (valid)
         {
@@ -112,6 +116,10 @@ public class BoardManager: MonoBehaviour
         }
     }
 
+    private void OnPlayerDragging(PlayerDraggingEvent e)
+    {
+
+    }
 
     // ================================
     // Private Methods
@@ -172,11 +180,11 @@ public class BoardManager: MonoBehaviour
     /// <returns>
     /// <c>true</c> if the position maps to a valid board cell; otherwise <c>false</c>.
     /// </returns>
-    private bool TryGetPlayerPosition(Vector3 position, out Vector3 newPosition, out Vector2Int index)
+    private bool TryGetPlayerPosition(Vector3 position, CellColor color, out Vector3 newPosition, out Vector2Int index)
     {
         index = geometry.TransformToBoardIndex(position);
 
-        if (!logic.ValidCell(index.x, index.y))
+        if (!logic.ValidCell(index.x, index.y, color))
         {
             newPosition = Vector3.zero;
             return false;

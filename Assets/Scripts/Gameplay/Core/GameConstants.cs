@@ -4,5 +4,5 @@ public static class GameConstants
 {
     public const int RowSize = 5;
 
-    public const int NumberColors = 7;
+    public const int NumberColors = 8;
 }

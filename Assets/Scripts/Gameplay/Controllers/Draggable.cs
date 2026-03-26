@@ -20,6 +20,8 @@ public class Draggable : MonoBehaviour
     // Events
     // ================================
 
+    public event Action StartDrag;
+
     /// <summary>
 	/// Invoked when the user releases the player.
 	/// </summary>
@@ -112,6 +114,8 @@ public class Draggable : MonoBehaviour
                 isDragging = true;
 
                 dragOffset = transform.position - pointerWorldPos;
+
+                StartDrag?.Invoke();
             }
         }
 

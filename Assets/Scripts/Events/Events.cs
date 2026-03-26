@@ -44,6 +44,11 @@ public struct WinEvent
 // Player Events
 // ==================================================
 
+public struct PlayerDraggingEvent
+{
+    public Transform PlayerTransform;
+}
+
 public struct PlayerReleasedEvent
 {
     public Vector3 PlayerPosition;
