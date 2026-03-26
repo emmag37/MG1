@@ -39,7 +39,6 @@ public class DataManager : MonoBehaviour
         {
             Profile.HighScore = score;
         }
-
         Profile.RecentScore = score;
     }
 

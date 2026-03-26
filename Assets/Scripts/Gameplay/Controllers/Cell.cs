@@ -62,7 +62,7 @@ public class Cell : MonoBehaviour
 
     public void OnAnimationComplete()
     {
-        Debug.Log($"completed animation on {gameObject.name}", this);
+        //Debug.Log($"completed animation on {gameObject.name}", this);
 
         SetEmpty();
     }
@@ -93,8 +93,6 @@ public class Cell : MonoBehaviour
 
     public void Pop()
     {
-        Debug.Log("pop");
-
         animator.SetTrigger("PopCell");
     }
 }

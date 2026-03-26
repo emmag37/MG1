@@ -5,10 +5,11 @@ public struct NoData { }
 public class PlayerProfile
 {
     private int highScore;
-    private int recentScore;
 
     private string username;
     private int avatar;
+
+    public int RecentScore { get; set; }
 
     public int HighScore
     {
@@ -18,12 +19,6 @@ public class PlayerProfile
             highScore = value;
             PlayerPrefs.SetInt("HighScore", value);
         }
-    }
-
-    public int RecentScore
-    {
-        get => recentScore;
-        set { recentScore = value; }
     }
 
     public string Username
@@ -50,7 +45,6 @@ public class PlayerProfile
     public void Load()
     {
         highScore = PlayerPrefs.GetInt("HighScore", 0);
-        recentScore = PlayerPrefs.GetInt("RecentScore", 0);
         username = PlayerPrefs.GetString("Username", "");
         avatar = PlayerPrefs.GetInt("Avatar", 1);
     }

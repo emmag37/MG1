@@ -6,13 +6,15 @@ using UnityEngine;
 // Game Events
 // ==================================================
 
+public struct UpdateScoreEvent
+{
+    public int Score;
+}
 public struct UpdatePlayerPreviewEvent
 {
     public CellColor Color;
 }
 
-public struct PlacePlayerEvent { }
-public struct WinEvent { }
 public struct GameOverEvent { }
 
 
@@ -24,13 +26,36 @@ public struct GameReadyEvent
 {
     public Bounds BoardBounds;
 }
+public struct FullBoardEvent { }
+
+public struct PlacePlayerEvent
+{
+    public Vector3 PlayerPosition;
+}
+public struct ReturnPlayerEvent { }
+
+public struct TurnCompletedEvent { }
+public struct WinEvent
+{
+    public int Points;
+}
+
+// ==================================================
+// Player Events
+// ==================================================
+
+public struct PlayerReleasedEvent
+{
+    public Vector3 PlayerPosition;
+    public CellColor Color;
+}
 
 // ==================================================
 // UI Events
 // ==================================================
 
 public struct StartGameEvent { }
-public struct EndGameEvent { }
+public struct ExitGameEvent { }
 public struct PauseGameEvent { }
 public struct ResumeGameEvent { }
 

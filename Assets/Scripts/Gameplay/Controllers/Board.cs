@@ -6,7 +6,7 @@ using System;
 /// Bridges board logic and geometry with the rendered grid, handles player
 /// placement, and clears completed lines.
 /// </summary>
-public class Board : MonoBehaviour
+public class BoardManager: MonoBehaviour
 {
     // ================================
     // Constants
@@ -15,20 +15,11 @@ public class Board : MonoBehaviour
     private const int RowSize = GameConstants.RowSize;
 
     // ================================
-    // Events
-    // ================================
-
-    /// <summary>
-    /// Invoked when all board spots are filled with players.
-    /// </summary>
-    public event Action FullBoard;
-
-    // ================================
     // Inspector Fields
     // ================================
 
     [SerializeField] private SpriteRenderer boardView;
-    [SerializeField] private GameObject cells;
+    [SerializeField] private GridController cellGrid;
 
     // ================================
     // Private Fields
@@ -38,8 +29,6 @@ public class Board : MonoBehaviour
     private BoardLogic logic;
     private BoardGeometry geometry;
 
-    private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
-
 
     // ================================
     // Unity Lifecycle Methods
@@ -48,6 +37,7 @@ public class Board : MonoBehaviour
     void OnValidate()
     {
         Debug.Assert(boardView != null, "Board view not set in board");
+        Debug.Assert(cellGrid != null, "Cell grid not set in board");
     }
 
 
@@ -61,65 +51,81 @@ public class Board : MonoBehaviour
     {
         // Game State Events
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<EndGameEvent>(OnEndGame);
+        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
+
+        // Player Events
+        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
     }
 
     void OnDisable()
     {
         // Game State Events
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<EndGameEvent>(OnEndGame);
+        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
+
+        // Player Events
+        EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
     }
 
 
     // ================================
-    // Initializers
+    // Game State Event Handlers
+    // ================================
+
+    private void OnStartGame(StartGameEvent e)
+    {
+        // set active
+        boardView.gameObject.SetActive(true);
+        cellGrid.gameObject.SetActive(true);
+
+        Initialize();
+
+        EventBus.Publish(new GameReadyEvent { BoardBounds = boardView.bounds }) ;
+    }
+
+    private void OnExitGame(ExitGameEvent e)
+    {
+        Reset();
+
+        // set inactive
+        boardView.gameObject.SetActive(false);
+        cellGrid.gameObject.SetActive(false);
+    }
+
+
+    // ================================
+    // Player Event Handlers
+    // ================================
+
+    private void OnPlayerReleased(PlayerReleasedEvent e)
+    {
+        bool valid = TryGetPlayerPosition(e.PlayerPosition, out Vector3 newPos, out Vector2Int index);
+
+        if (valid)
+        {
+            EventBus.Publish(new PlacePlayerEvent { PlayerPosition = newPos });
+            RunPlay(index, e.Color);
+        }
+        else
+        {
+            EventBus.Publish(new ReturnPlayerEvent());
+        }
+    }
+
+
+    // ================================
+    // Private Methods
     // ================================
 
     private void Initialize()
     {
         if (initialized) return;
 
-        InitializeGrid();
-        geometry.Initialize(grid[0, 0].Radius, boardView.bounds);
+        cellGrid.Initialize();
+        geometry.Initialize(cellGrid.CellRadius, boardView.bounds);
 
         initialized = true;
-
-        Debug.Log("Finished board initialize");
     }
-
-    // Initializes the grid cells using children in the scene view
-    private void InitializeGrid()
-    {
-        Cell[] childCells = cells.GetComponentsInChildren<Cell>();
-
-        int expected = RowSize * RowSize;
-        Debug.Assert(expected == childCells.Length, $"Expected {expected}, found {childCells.Length}");
-
-        foreach (Cell cell in childCells)
-        {
-            Vector2Int index = cell.Index;
-
-            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y <= RowSize,
-                $"Index {index} is out of bounds");
-            Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
-
-            grid[index.x, index.y] = cell;
-        }
-
-        for (int x = 0; x < RowSize; x++)
-        {
-            for (int y = 0; y < RowSize; y++)
-            {
-                Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
-            }
-        }
-    }
-
-
-    // ================================
-    // Public Methods
-    // ================================
 
     /// <summary>
     /// Sets cell to the player's image and clears completed lines.
@@ -130,9 +136,10 @@ public class Board : MonoBehaviour
     /// <remarks>
     /// Invokes <see cref="FullBoard"/> if the board becomes full.
     /// </remarks>
-    public int RunPlay(Vector2Int index, CellColor color)
+    private void RunPlay(Vector2Int index, CellColor color)
     {
-        grid[index.x, index.y].SetColor(color);                       // render the player on the board
+        //grid[index.x, index.y].SetColor(color);                       // render the player on the board
+        cellGrid.SetCell(index.x, index.y, color);
 
         BoardLogic.PlayResult result;
         if (!logic.TryPlacePlayer(index.x, index.y, color, out result))     // run the board logic
@@ -140,15 +147,16 @@ public class Board : MonoBehaviour
             Debug.LogError($"Ran play with invalid index or color: {index}, {color}");
         }
 
-        if (result.FullBoard) FullBoard?.Invoke();                    // activate a game over
+        if (result.FullBoard) EventBus.Publish(new GameOverEvent());                    // activate a game over
 
         // set full rows to empty cells
-        if (result.ClearRow) ClearRow(index.x);
-        if (result.ClearCol) ClearColumn(index.y);
-        if (result.ClearRDiag) ClearRightDiagonal();
-        if (result.ClearLDiag) ClearLeftDiagonal();
+        if (result.ClearRow) cellGrid.ClearRow(index.x);
+        if (result.ClearCol) cellGrid.ClearColumn(index.y);
+        if (result.ClearRDiag) cellGrid.ClearRightDiagonal();
+        if (result.ClearLDiag) cellGrid.ClearLeftDiagonal();
 
-        return result.Points;
+        if (result.Points > 0) EventBus.Publish(new WinEvent { Points = result.Points });
+        EventBus.Publish(new TurnCompletedEvent());
     }
 
     /// <summary>
@@ -164,7 +172,7 @@ public class Board : MonoBehaviour
     /// <returns>
     /// <c>true</c> if the position maps to a valid board cell; otherwise <c>false</c>.
     /// </returns>
-    public bool TryGetPlayerPosition(Vector3 position, out Vector3 newPosition, out Vector2Int index)
+    private bool TryGetPlayerPosition(Vector3 position, out Vector3 newPosition, out Vector2Int index)
     {
         index = geometry.TransformToBoardIndex(position);
 
@@ -181,77 +189,9 @@ public class Board : MonoBehaviour
     /// <summary>
 	/// Resets the board to empty cells.
 	/// </summary>
-    public void Reset()
+    private void Reset()
     {
-        foreach (Cell cell in grid)
-        {
-            cell.SetEmpty();
-        }
-
+        cellGrid.Reset();
         logic.ResetBoard(); // validate in logic
-    }
-
-
-    // ================================
-    // Event Handlers
-    // ================================
-
-    private void OnStartGame(StartGameEvent e)
-    {
-        Debug.Log("Set the board to active");
-
-        // set active
-        boardView.gameObject.SetActive(true);
-        cells.gameObject.SetActive(true);
-
-        Initialize();
-
-        EventBus.Publish(new GameReadyEvent { BoardBounds = boardView.bounds }) ;
-    }
-
-    private void OnEndGame(EndGameEvent e)
-    {
-        Reset();
-
-        // set inactive
-        boardView.gameObject.SetActive(false);
-        cells.gameObject.SetActive(false);
-
-        Debug.Log("board set inactive");
-    }
-
-
-    // ================================
-    // Private Methods
-    // ================================
-
-    // Helpers to reset the grid sprites
-    private void ClearRow(int row)
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[row, i].Pop();
-        }
-    }
-    private void ClearColumn(int col)
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[i, col].Pop();
-        }
-    }
-    private void ClearRightDiagonal()
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[i, i].Pop();
-        }
-    }
-    private void ClearLeftDiagonal()
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[i, i].Pop();
-        }
     }
 }

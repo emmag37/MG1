@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        hudController.UpdateScoreText(data.Profile.RecentScore, data.Profile.HighScore);
+        hudController.UpdateScoreText(0, data.Profile.HighScore);
 
         viewController.ShowView(BaseViewType.Home, data.Profile);
 
@@ -55,26 +55,26 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        // Game Play Events
-        EventBus.Subscribe<GameOverEvent>(OnGameOver);
-        EventBus.Subscribe<WinEvent>(OnUpdateScore);
-        EventBus.Subscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
-    }
-
-    void OnDisable()
-    {
-        // Game Play Events
-        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
-        EventBus.Unsubscribe<WinEvent>(OnUpdateScore);
-        EventBus.Unsubscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
-    }
-
 
     // ==================================================
     // Public Methods
     // ==================================================
+
+    // game functions
+    public void ShowGameOver()
+    {
+        ShowView(BaseViewType.GameOver);
+    }
+
+    public void UpdateScore(int score)
+    {
+        hudController.UpdateScoreText(score, data.Profile.HighScore);
+    }
+
+    public void UpdatePlayerPreview(CellColor color)
+    {
+        hudController.UpdatePlayerPreviewSprite(color);
+    }
 
     // view functions
     public void UpdateUsername(string name)
@@ -107,12 +107,11 @@ public class UIManager : MonoBehaviour
     {
         EventBus.Publish(new TransitionEvent());
 
-        if (activeGame) CloseGame();
-
         switch (type)
         {
             case BaseViewType.GameOver:
                 {
+                    activeGame = false;
                     viewController.ShowView(type, data.Profile);
                     break;
                 }
@@ -126,6 +125,7 @@ public class UIManager : MonoBehaviour
 
             case BaseViewType.Home:
                 {
+                    if (activeGame) CloseGame();
                     viewController.ShowView(type, data.Profile);
                     break;
                 }
@@ -206,9 +206,10 @@ public class UIManager : MonoBehaviour
         ShowView(BaseViewType.GameOver);
     }
 
-    private void OnUpdateScore(WinEvent e)
+    private void OnUpdateScore(UpdateScoreEvent e)
     {
-        hudController.UpdateScoreText(data.Profile.RecentScore, data.Profile.HighScore);
+
+        hudController.UpdateScoreText(e.Score, data.Profile.HighScore);
     }
 
     private void OnUpdatePlayerPreview(UpdatePlayerPreviewEvent e)
@@ -225,7 +226,7 @@ public class UIManager : MonoBehaviour
     {
         Debug.Assert(activeGame, $"Attempted exiting gameplay from inactive game state");
 
-        EventBus.Publish(new EndGameEvent());
+        EventBus.Publish(new ExitGameEvent());
         hudController.Hide();
 
         activeGame = false;

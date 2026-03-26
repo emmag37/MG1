@@ -6,7 +6,7 @@ using System;
 /// Controls the game states and initiates plays.
 /// Bridges communication between player instances, the board, and UI updates.
 /// </summary>
-public class GamePlay : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     // i want to toggle a game over for testing purposes
     public bool InitiateGameOver;
@@ -17,7 +17,6 @@ public class GamePlay : MonoBehaviour
 
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Player playerPrefab;
-    [SerializeField] private Board board;
 
     // ================================
     // Private Types
@@ -27,7 +26,7 @@ public class GamePlay : MonoBehaviour
     {
         Playing,
         Paused,
-        GameOver,
+        Over,
         Fresh
     }
 
@@ -36,6 +35,7 @@ public class GamePlay : MonoBehaviour
     // ================================
 
     private DataManager data => DataManager.Instance;
+    private UIManager UI => UIManager.Instance;
 
     private GameState state;
 
@@ -54,7 +54,6 @@ public class GamePlay : MonoBehaviour
     {
         Debug.Assert(spawnPoint != null, "Spawn point not set");
         Debug.Assert(playerPrefab != null, "Player prefab not set");
-        Debug.Assert(board != null, "Board not set");
     }
 
     void Awake()
@@ -65,26 +64,30 @@ public class GamePlay : MonoBehaviour
 
     void OnEnable()
     {
-        // Play events
-        board.FullBoard += HandleFullBoard;
+        // Board events
+        EventBus.Unsubscribe<GameOverEvent>(HandleGameOver);
+        EventBus.Subscribe<TurnCompletedEvent>(HandleTurnCompleted);
+        EventBus.Subscribe<WinEvent>(HandleWin);
 
         // Game state events
         EventBus.Subscribe<GameReadyEvent>(OnStartGame);
         EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
         EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
-        EventBus.Subscribe<EndGameEvent>(OnEndGame);
+        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
     }
 
     void OnDisable()
     {
-        // Play events
-        board.FullBoard -= HandleFullBoard;
+        // Board events
+        EventBus.Unsubscribe<GameOverEvent>(HandleGameOver);
+        EventBus.Unsubscribe<TurnCompletedEvent>(HandleTurnCompleted);
+        EventBus.Unsubscribe<WinEvent>(HandleWin);
 
         // UI events
         EventBus.Unsubscribe<GameReadyEvent>(OnStartGame);
         EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
         EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
-        EventBus.Unsubscribe<EndGameEvent>(OnEndGame);
+        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
     }
 
     void Update()
@@ -92,7 +95,7 @@ public class GamePlay : MonoBehaviour
         if (InitiateGameOver)
         {
             RemoveCurrentPlayer();
-            HandleFullBoard();    // for testing only!!!
+            HandleGameOver(new GameOverEvent());    // for testing only!!!
         }
             
     }
@@ -104,7 +107,6 @@ public class GamePlay : MonoBehaviour
 
     private void OnStartGame(GameReadyEvent e)
     {
-        Debug.Log("Start game in game play");
         Debug.Assert(state == GameState.Fresh, $"Start called with invalid state: {state}");
 
         InitializePlayerBoundaries(e.BoardBounds);
@@ -129,55 +131,65 @@ public class GamePlay : MonoBehaviour
         player.enabled = true;
     }
 
-    private void OnEndGame(EndGameEvent e)
+    private void OnExitGame(ExitGameEvent e) // should only be called on user exit
     {
-        Debug.Assert(state == GameState.Paused || state == GameState.GameOver, $"Exit called with invalid state: {state}");
+        Debug.Assert(state == GameState.Paused, $"Exit called with invalid state: {state}");
 
-        if (state == GameState.Paused)      // user exit
-            RemoveCurrentPlayer();
+        state = GameState.Over;
 
-        // Reset the game
-        picker.Reset();
-        score = 0;
-        state = GameState.Fresh;
-
-        Debug.Log("ended game in game play");
+        RemoveCurrentPlayer();
+        EndGame();
     }
 
     // ================================
-    // Play Event Handlers
+    // Board Event Handlers
     // ================================
 
     // moves the player back to start or on the board.
     // if on the board, executes the player's turn.
-    private void HandlePlayerReleased(Player playerReleased)
+    private void HandleTurnCompleted(TurnCompletedEvent e)
     {
-        Debug.Assert(state == GameState.Playing, $"Player released during invalid state: {state}");
-        Debug.Assert(player != null, "Player released but no active player");
-        Debug.Assert(player == playerReleased, "Player released is not the current player");
+        Debug.Assert(state == GameState.Playing, $"Turn ran during invalid state: {state}");
+        Debug.Assert(player != null, "Player turn completed but no active player");
 
-        Vector2Int index;
-        if (!TryPlacePlayer(player.Position, out index)) return;    // player returned to start
-        EventBus.Publish(new PlacePlayerEvent());
-
-        ExecuteTurn(index, player.Color);
         RemoveCurrentPlayer();
 
         if (state == GameState.Playing) SpawnNewPlayer();
     }
 
-    private void HandleFullBoard()
+    private void HandleWin(WinEvent e)
+    {
+        score += e.Points;
+
+        data.SetScore(score);
+        UI.UpdateScore(score);
+    }
+
+
+    private void HandleGameOver(GameOverEvent e)    // called on a game over
     {
         Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}");
 
-        state = GameState.GameOver;
-        EventBus.Publish(new GameOverEvent());
+        state = GameState.Over;
+        EndGame();
+
+        UI.ShowGameOver();
     }
 
 
     // ================================
     // Private Methods
     // ================================
+
+    private void EndGame()
+    {
+        // good place to put data preparation
+
+        // Reset the game
+        picker.Reset();
+        score = 0;
+        state = GameState.Fresh;
+    }
 
     private void InitializePlayerBoundaries(Bounds boardBounds)
     {
@@ -189,61 +201,27 @@ public class GamePlay : MonoBehaviour
         min.y = spawnPoint.position.y;
 
         playerBoundaries.SetMinMax(min, playerBoundaries.max);
-
-        Debug.Log("set player boundaries");
     }
 
     private void SpawnNewPlayer()
     {
         Debug.Assert(player == null, "Player still in existence");  // player should be null on start?
 
-        if (state == GameState.GameOver) return;      // don't respawn on game over
+        if (state == GameState.Over) return;      // don't respawn on game over
 
         var playerColors = picker.CalculateNewPlayerColors();
 
-        EventBus.Publish(new UpdatePlayerPreviewEvent { Color = playerColors.nextColor });
+        UI.UpdatePlayerPreview(playerColors.nextColor);
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.Initialize(playerColors.color, playerBoundaries);
-
-        player.PlayerReleased += HandlePlayerReleased;
     }
 
     private void RemoveCurrentPlayer()
     {
         Debug.Assert(player != null, "No actve player");
-
-        player.PlayerReleased -= HandlePlayerReleased;        
+        
         Destroy(player.gameObject);
         player = null;
-    }
-
-    private bool TryPlacePlayer(Vector3 position, out Vector2Int index)
-    {
-        Vector3 newPosition;
-        bool valid = board.TryGetPlayerPosition(position, out newPosition, out index);
-
-        if (!valid)
-        {
-            player.Move(spawnPoint.position);
-        } else
-        {
-            player.Move(newPosition);                                    // render the snapping movement to the board
-        }
-
-        return valid;
-    }
-
-    private void ExecuteTurn(Vector2Int index, CellColor color)
-    {
-        int pointsScored = board.RunPlay(index, color);
-
-        if (pointsScored > 0)
-        {
-            score += pointsScored;
-            data.SetScore(score);
-
-            EventBus.Publish(new WinEvent());
-        }
     }
 }

@@ -1792,7 +1792,6 @@ MonoBehaviour:
   InitiateGameOver: 0
   spawnPoint: {fileID: 801581748}
   playerPrefab: {fileID: -7188902738792039867, guid: c9e0dae5772f042f2ab436716638954a, type: 3}
-  board: {fileID: 2022480358}
 --- !u!4 &373269582 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421657568361316366, guid: da10a7f55ddb1463da70721112e94096, type: 3}
@@ -6190,6 +6189,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1405004969}
+  - component: {fileID: 1405004970}
   m_Layer: 0
   m_Name: Cells
   m_TagString: Untagged
@@ -6237,6 +6237,19 @@ Transform:
   - {fileID: 1299418470}
   m_Father: {fileID: 2022480357}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1405004970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1405004968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5687b5945c6084e6194c71d2e1596917, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CellGridController
+  cells: {fileID: 1405004968}
 --- !u!4 &1418809463 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421657568361316366, guid: da10a7f55ddb1463da70721112e94096, type: 3}
@@ -9805,6 +9818,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Board
   boardView: {fileID: 1798150610}
   cells: {fileID: 1405004968}
+  cellGrid: {fileID: 1405004970}
 --- !u!1 &2027794459
 GameObject:
   m_ObjectHideFlags: 0

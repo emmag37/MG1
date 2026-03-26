@@ -16,34 +16,13 @@ using System;
 public class Player : MonoBehaviour
 {
     // ================================
-    // Events
-    // ================================
-
-    /// <summary>
-	/// Invoked when the player is released.
-	/// </summary>
-    public event Action<Player> PlayerReleased;
-
-    // ================================
-    // Public Properties
-    // ================================
-
-    /// <summary>
-	/// Color of the player object.
-	/// </summary>
-    public CellColor Color { get; private set; }
-
-    /// <summary>
-	/// Current position of the player.
-	/// </summary>
-    public Vector3 Position { get; private set; }
-
-
-    // ================================
     // Private Fields
     // ================================
     private SpriteView image;
     private Draggable movement;
+
+    private Vector3 startPos;
+    private CellColor color;
 
 
     // ================================
@@ -54,11 +33,24 @@ public class Player : MonoBehaviour
     {
         image = GetComponent<SpriteView>();
         movement = GetComponent<Draggable>();
-        Position = transform.position;
+        startPos = transform.position;
 
-        movement.Released += HandlePlayerReleased;
+        movement.Released += HandleReleased;
     }
 
+    void OnEnable()
+    {
+        // Board Events
+        EventBus.Subscribe<PlacePlayerEvent>(HandlePlacePlayer);
+        EventBus.Subscribe<ReturnPlayerEvent>(HandleReturnPlayer);
+    }
+
+    void OnDisable()
+    {
+        // Board Events
+        EventBus.Unsubscribe<PlacePlayerEvent>(HandlePlacePlayer);
+        EventBus.Unsubscribe<ReturnPlayerEvent>(HandleReturnPlayer);
+    }
 
     // ================================
     // Initializers
@@ -69,9 +61,9 @@ public class Player : MonoBehaviour
 	/// </summary>
 	/// <param name="color">Color id of the player.</param>
 	/// <param name="boundaries">Boundaries of the board.</param>
-    public void Initialize(CellColor color, Bounds boundaries)
+    public void Initialize(CellColor playerColor, Bounds boundaries)
     {
-        Color = color;
+        color = playerColor;
         image.SetSprite(SpriteDatabase.Instance.GetSprite(color));
 
         float radius = image.Radius;
@@ -84,29 +76,22 @@ public class Player : MonoBehaviour
         movement.Initialize(left, right, top, bottom);
     }
 
-
-    // ================================
-    // Public Methods
-    // ================================
-
-    /// <summary>
-	/// Moves the player to a position.
-	/// </summary>
-	/// <param name="position">New position for the player.</param>
-    public void Move(Vector3 position)
-    {
-        movement.Drop(position);
-        Position = position;
-    }
-
-
     // ================================
     // Event Handlers
     // ================================
 
-    private void HandlePlayerReleased(Vector3 position)
+    private void HandleReleased(Vector3 position)
     {
-        Position = position;
-        PlayerReleased?.Invoke(this);
+        EventBus.Publish(new PlayerReleasedEvent { PlayerPosition = position, Color = color });
+    }
+
+    private void HandlePlacePlayer(PlacePlayerEvent e)
+    {
+        movement.Drop(e.PlayerPosition);
+    }
+
+    private void HandleReturnPlayer(ReturnPlayerEvent e)
+    {
+        movement.Drop(startPos);
     }
 }
