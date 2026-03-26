@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 /// <summary>
 /// Manages the gameplay board and its visual representation in the scene.
@@ -28,6 +29,8 @@ public class BoardManager: MonoBehaviour
 
     private BoardLogic logic;
     private BoardGeometry geometry;
+
+    private Coroutine hoverRoutine;
 
 
     // ================================
@@ -101,7 +104,7 @@ public class BoardManager: MonoBehaviour
 
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        // stop hovering
+        StopCoroutine(hoverRoutine);
 
         bool valid = TryGetPlayerPosition(e.PlayerPosition, e.Color, out Vector3 newPos, out Vector2Int index);
 
@@ -118,7 +121,7 @@ public class BoardManager: MonoBehaviour
 
     private void OnPlayerDragging(PlayerDraggingEvent e)
     {
-
+        hoverRoutine = StartCoroutine(ShadowHover(e.PlayerTransform));
     }
 
     // ================================
@@ -134,6 +137,16 @@ public class BoardManager: MonoBehaviour
 
         initialized = true;
     }
+
+    /// <summary>
+	/// Resets the board to empty cells.
+	/// </summary>
+    private void Reset()
+    {
+        cellGrid.Reset();
+        logic.ResetBoard(); // validate in logic
+    }
+
 
     /// <summary>
     /// Sets cell to the player's image and clears completed lines.
@@ -194,12 +207,54 @@ public class BoardManager: MonoBehaviour
         return true;
     }
 
-    /// <summary>
-	/// Resets the board to empty cells.
-	/// </summary>
-    private void Reset()
+    private bool TrySetShadow(Vector3 position, ref Vector2 min, ref Vector2 max, ref Vector2Int shadow)
     {
-        cellGrid.Reset();
-        logic.ResetBoard(); // validate in logic
+        if (!TryGetPlayerPosition(position, CellColor.WildCard, out Vector3 cellPosition, out shadow)) return false;
+
+        cellGrid.SetCell(shadow.x, shadow.y, CellColor.Shadow);
+
+        // update the bounds
+        min.x = cellPosition.x - cellGrid.CellRadius;
+        max.x = cellPosition.x + cellGrid.CellRadius;
+        min.y = cellPosition.y - cellGrid.CellRadius;
+        max.y = cellPosition.y + cellGrid.CellRadius;
+
+        return true;
     }
+
+    // ================================
+    // Coroutines
+    // ================================
+
+    IEnumerator ShadowHover(Transform playerTransform)
+    {
+        Vector2 min, max;
+
+        min.x = boardView.bounds.min.x; // set default x to the board
+        max.x = boardView.bounds.max.x;
+
+        min.y = playerTransform.position.y;
+        max.y = boardView.bounds.min.y; // set default y to the bottom of the board
+
+        Vector2Int shadow = Vector2Int.zero;
+        while (true)
+        {
+            Vector3 position = playerTransform.position;
+            float x = playerTransform.position.x;
+            float y = playerTransform.position.y;
+
+            if ((x < min.x || x > max.x || y < min.y || y > max.y))  // out of bounds
+            {
+                cellGrid.SetCell(shadow.x, shadow.y, CellColor.Empty);  // reset to empty
+
+                if (!TrySetShadow(position, ref min, ref max, ref shadow))
+                {
+                    max.y = boardView.bounds.min.y; // default to retry each loop
+                }
+            }
+
+            yield return null;
+        }
+    }
+
 }
