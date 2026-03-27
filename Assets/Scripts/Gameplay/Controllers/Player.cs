@@ -89,7 +89,7 @@ public class Player : MonoBehaviour
 
     private void HandleStartDrag()
     {
-        EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform });
+        EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = color });
     }
 
     private void HandleReleased(Vector3 position)

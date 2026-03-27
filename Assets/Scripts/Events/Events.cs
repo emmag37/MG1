@@ -47,6 +47,7 @@ public struct WinEvent
 public struct PlayerDraggingEvent
 {
     public Transform PlayerTransform;
+    public CellColor Color;
 }
 
 public struct PlayerReleasedEvent

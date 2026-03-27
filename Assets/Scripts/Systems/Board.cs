@@ -30,7 +30,7 @@ public class BoardManager: MonoBehaviour
     private BoardLogic logic;
     private BoardGeometry geometry;
 
-    private Coroutine hoverRoutine;
+    private Coroutine ghostPreview;
 
 
     // ================================
@@ -104,10 +104,9 @@ public class BoardManager: MonoBehaviour
 
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        StopCoroutine(hoverRoutine);
+        StopCoroutine(ghostPreview);
 
         bool valid = TryGetPlayerPosition(e.PlayerPosition, e.Color, out Vector3 newPos, out Vector2Int index);
-
         if (valid)
         {
             EventBus.Publish(new PlacePlayerEvent { PlayerPosition = newPos });
@@ -121,7 +120,7 @@ public class BoardManager: MonoBehaviour
 
     private void OnPlayerDragging(PlayerDraggingEvent e)
     {
-        hoverRoutine = StartCoroutine(ShadowHover(e.PlayerTransform));
+        ghostPreview = StartCoroutine(GhostPreviewLoop(e.PlayerTransform, e.Color));
     }
 
     // ================================
@@ -159,7 +158,6 @@ public class BoardManager: MonoBehaviour
     /// </remarks>
     private void RunPlay(Vector2Int index, CellColor color)
     {
-        //grid[index.x, index.y].SetColor(color);                       // render the player on the board
         cellGrid.SetCell(index.x, index.y, color);
 
         BoardLogic.PlayResult result;
@@ -193,10 +191,9 @@ public class BoardManager: MonoBehaviour
     /// <returns>
     /// <c>true</c> if the position maps to a valid board cell; otherwise <c>false</c>.
     /// </returns>
-    private bool TryGetPlayerPosition(Vector3 position, CellColor color, out Vector3 newPosition, out Vector2Int index)
+    private bool TryGetPlayerPosition(Vector3 position, CellColor color, out Vector3 newPosition, out  Vector2Int index)
     {
         index = geometry.TransformToBoardIndex(position);
-
         if (!logic.ValidCell(index.x, index.y, color))
         {
             newPosition = Vector3.zero;
@@ -207,50 +204,43 @@ public class BoardManager: MonoBehaviour
         return true;
     }
 
-    private bool TrySetShadow(Vector3 position, ref Vector2 min, ref Vector2 max, ref Vector2Int shadow)
-    {
-        if (!TryGetPlayerPosition(position, CellColor.WildCard, out Vector3 cellPosition, out shadow)) return false;
-
-        cellGrid.SetCell(shadow.x, shadow.y, CellColor.Shadow);
-
-        // update the bounds
-        min.x = cellPosition.x - cellGrid.CellRadius;
-        max.x = cellPosition.x + cellGrid.CellRadius;
-        min.y = cellPosition.y - cellGrid.CellRadius;
-        max.y = cellPosition.y + cellGrid.CellRadius;
-
-        return true;
-    }
 
     // ================================
     // Coroutines
     // ================================
 
-    IEnumerator ShadowHover(Transform playerTransform)
+    IEnumerator GhostPreviewLoop(Transform playerTransform, CellColor color)
     {
-        Vector2 min, max;
+        bool ghostSet = false;
 
-        min.x = boardView.bounds.min.x; // set default x to the board
-        max.x = boardView.bounds.max.x;
+        Vector2Int index = Vector2Int.zero;
+        CellColor ghostColor = CellColor.Empty;
 
-        min.y = playerTransform.position.y;
-        max.y = boardView.bounds.min.y; // set default y to the bottom of the board
-
-        Vector2Int shadow = Vector2Int.zero;
         while (true)
         {
             Vector3 position = playerTransform.position;
-            float x = playerTransform.position.x;
-            float y = playerTransform.position.y;
 
-            if ((x < min.x || x > max.x || y < min.y || y > max.y))  // out of bounds
+            bool valid = TryGetPlayerPosition(position, color, out Vector3 cellPos, out Vector2Int newIndex);
+
+            // remove ghost preview
+            if (ghostSet && (!valid || newIndex != index))
             {
-                cellGrid.SetCell(shadow.x, shadow.y, CellColor.Empty);  // reset to empty
+                Debug.Log("remove ghost preview");
 
-                if (!TrySetShadow(position, ref min, ref max, ref shadow))
-                {
-                    max.y = boardView.bounds.min.y; // default to retry each loop
-                }
+                cellGrid.SetCell(index.x, index.y, ghostColor);
+                ghostSet = false;
+            }
+
+            // set new ghost preview
+            if (!ghostSet && valid)
+            {
+                Debug.Log("set new ghost preview");
+
+                index = newIndex;
+                ghostColor = logic.GetCellColor(index.x, index.y);
+
+                cellGrid.SetCell(index.x, index.y, CellColor.Shadow);
+                ghostSet = true;
             }
 
             yield return null;

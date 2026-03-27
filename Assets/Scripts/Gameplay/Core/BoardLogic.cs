@@ -66,6 +66,11 @@ public class BoardLogic
         ResetColors();
     }
 
+    public CellColor GetCellColor(int row, int col)
+    {
+        return gridColors[row, col];
+    }
+
     /// <summary>
     /// Checks whether the index is within bounds and open.
     /// </summary>
@@ -129,11 +134,6 @@ public class BoardLogic
     // ================================
     // Internal Methods - Testing Only
     // ================================
-
-    internal CellColor GetCellColor(int row, int col)
-    {
-        return gridColors[row, col];
-    }
 
     internal int GetSpotsFilled()
     {

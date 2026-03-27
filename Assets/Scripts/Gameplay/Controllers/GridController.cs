@@ -63,6 +63,8 @@ public class GridController : MonoBehaviour
                 Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
             }
         }
+
+        CellRadius = grid[0, 0].Radius;
     }
 
 
