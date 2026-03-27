@@ -63,7 +63,12 @@ public class UIManager : MonoBehaviour
     // game functions
     public void ShowGameOver()
     {
+        Debug.Log("show game over");
+
         ShowView(BaseViewType.GameOver);
+        hudController.Hide();
+
+        activeGame = false;
     }
 
     public void UpdateScore(int score)
@@ -102,7 +107,10 @@ public class UIManager : MonoBehaviour
         EventBus.Publish(new UpdateSettingsEvent());
     }
 
-    // view controller functions
+    // ==================================================
+    // View Management Methods
+    // ==================================================
+
     public void ShowView(BaseViewType type)
     {
         EventBus.Publish(new TransitionEvent());
@@ -111,7 +119,6 @@ public class UIManager : MonoBehaviour
         {
             case BaseViewType.GameOver:
                 {
-                    activeGame = false;
                     viewController.ShowView(type, data.Profile);
                     break;
                 }
@@ -194,27 +201,6 @@ public class UIManager : MonoBehaviour
         {
             EventBus.Publish(new ResumeGameEvent());
         }
-    }
-
-
-    // ==================================================
-    // Event Handlers
-    // ==================================================
-
-    private void OnGameOver(GameOverEvent e)
-    {
-        ShowView(BaseViewType.GameOver);
-    }
-
-    private void OnUpdateScore(UpdateScoreEvent e)
-    {
-
-        hudController.UpdateScoreText(e.Score, data.Profile.HighScore);
-    }
-
-    private void OnUpdatePlayerPreview(UpdatePlayerPreviewEvent e)
-    {
-        hudController.UpdatePlayerPreviewSprite(e.Color);
     }
 
 

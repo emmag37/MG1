@@ -8,9 +8,6 @@ using System;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    // i want to toggle a game over for testing purposes
-    public bool InitiateGameOver;
-
     // ================================
     // Inspector Fields
     // ================================
@@ -65,7 +62,7 @@ public class GameManager : MonoBehaviour
     void OnEnable()
     {
         // Board events
-        EventBus.Unsubscribe<GameOverEvent>(HandleGameOver);
+        EventBus.Subscribe<GameOverEvent>(HandleGameOver);
         EventBus.Subscribe<TurnCompletedEvent>(HandleTurnCompleted);
         EventBus.Subscribe<WinEvent>(HandleWin);
 
@@ -88,16 +85,6 @@ public class GameManager : MonoBehaviour
         EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
         EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
         EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
-    }
-
-    void Update()
-    {
-        if (InitiateGameOver)
-        {
-            RemoveCurrentPlayer();
-            HandleGameOver(new GameOverEvent());    // for testing only!!!
-        }
-            
     }
 
 

@@ -166,7 +166,14 @@ public class BoardManager: MonoBehaviour
             Debug.LogError($"Ran play with invalid index or color: {index}, {color}");
         }
 
-        if (result.FullBoard) EventBus.Publish(new GameOverEvent());                    // activate a game over
+        if (result.FullBoard)
+        {
+            EventBus.Publish(new GameOverEvent());                    // activate a game over
+            OnExitGame(new ExitGameEvent());                          // close this game
+
+            return;
+        }
+            
 
         // set full rows to empty cells
         if (result.ClearRow) cellGrid.ClearRow(index.x);

@@ -6,11 +6,15 @@ public class AudioManager : MonoBehaviour
     // Inspector Fields
     // ==================================================
     [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioSource musicSource;
 
     [SerializeField] private AudioClip placePlayerClip;
     [SerializeField] private AudioClip winClip;
-
+    [SerializeField] private AudioClip gameOverClip;
     [SerializeField] private AudioClip transitionClip;
+
+    [SerializeField] private AudioClip gameMusic;
+    [SerializeField] private AudioClip UIMusic;
 
     // ==================================================
     // Private Fields
@@ -30,12 +34,24 @@ public class AudioManager : MonoBehaviour
 
         Debug.Assert(placePlayerClip != null, "Place player clip not set in audio manager");
         Debug.Assert(winClip != null, "Win clip not set in audio manager");
+        Debug.Assert(gameOverClip != null, "Game over clip not set in audio manager");
 
         Debug.Assert(transitionClip != null, "Transition clip not set in audio manager");
     }
 
     void Start()
     {
+        // initialize the clip to ui
+        musicSource.clip = UIMusic;
+        musicSource.loop = true;     
+        musicSource.playOnAwake = false;
+
+        // need to maintain the current audio clip in case music turns on/off
+        EventBus.Subscribe<GameOverEvent>(OnGameOver);
+        EventBus.Subscribe<GameReadyEvent>(OnStartGame);
+        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
+
+        // initialize the settings
         sfxOn = (data.Settings.EffectsOn == 1);
         musicOn = (data.Settings.MusicOn == 1);
 
@@ -47,6 +63,10 @@ public class AudioManager : MonoBehaviour
 
     void OnDestroy()
     {
+        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+        EventBus.Unsubscribe<GameReadyEvent>(OnStartGame);
+        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
+
         if (sfxOn) TurnOffEffects();
         if (musicOn) TurnOffMusic();
 
@@ -65,10 +85,10 @@ public class AudioManager : MonoBehaviour
         if (sfxOn && data.Settings.EffectsOn == 0) TurnOffEffects();
 
         if (!musicOn && data.Settings.MusicOn == 1) TurnOnMusic();
-        if (musicOn && data.Settings.MusicOn == 0) TurnOnMusic();
+        if (musicOn && data.Settings.MusicOn == 0) TurnOffMusic();
     }
 
-    // game play
+    // sound effects
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
         sfxSource.PlayOneShot(placePlayerClip);
@@ -79,10 +99,42 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(winClip);
     }
 
-    // UI
     private void OnTransition(TransitionEvent e)
     {
         sfxSource.PlayOneShot(transitionClip);
+    }
+
+
+
+
+    // music
+    private void OnGameOver(GameOverEvent e)
+    {
+        musicSource.Stop();
+
+        musicSource.clip = UIMusic;
+        if (musicOn)
+        {
+            sfxSource.PlayOneShot(gameOverClip);
+
+            musicSource.Play();
+        }
+    }
+
+    private void OnStartGame(GameReadyEvent e)
+    {
+        musicSource.Stop();
+
+        musicSource.clip = gameMusic;
+        if (musicOn) musicSource.Play();
+    }
+
+    private void OnExitGame(ExitGameEvent e)
+    {
+        musicSource.Stop();
+
+        musicSource.clip = UIMusic;
+        if (musicOn) musicSource.Play();
     }
 
 
@@ -117,10 +169,14 @@ public class AudioManager : MonoBehaviour
     private void TurnOnMusic()
     {
         musicOn = true;
+
+        musicSource.Play();
     }
 
     private void TurnOffMusic()
     {
         musicOn = false;
+
+        musicSource.Stop();
     }
 }
