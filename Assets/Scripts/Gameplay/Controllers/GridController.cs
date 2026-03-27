@@ -114,7 +114,7 @@ public class GridController : MonoBehaviour
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[i, i].Pop();
+            grid[RowSize - 1 - i, i].Pop();
         }
     }
 }
