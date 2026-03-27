@@ -125,8 +125,9 @@ public class BoardLogic
             return false;
         }
 
-        AddToBoard(row, col, color);
+        if (color == Mask) color = WildCard;    // treat the mask as wild card for line clearing
 
+        AddToBoard(row, col, color);
         result = CalculateLines(row, col, color);
 
         return true;
@@ -175,8 +176,8 @@ public class BoardLogic
         if (result.ClearRDiag) ClearRDiagonal();
         if (result.ClearLDiag) ClearLDiagonal();
 
-        if (!result.ClearRow && !result.ClearCol && !result.ClearRDiag && !result.ClearLDiag) // no lines cleared
-            numSpotsFilled++;
+        if (result.ClearRow || result.ClearCol || result.ClearRDiag || result.ClearLDiag) // any line cleared
+            numSpotsFilled--;
 
         result.Points = CalculatePoints(result);
         result.FullBoard = (numSpotsFilled == NumSpots);
@@ -193,18 +194,12 @@ public class BoardLogic
             colCounts[col]++;
             if (row == col) rDiagCount++;
             if (RowSize - 1 - row == col) lDiagCount++;
+
+            numSpotsFilled++;
         }
 
         // set the color
-        if (color == Mask)
-        {
-            gridColors[row, col] = WildCard;
-        }
-        else
-        {
-            gridColors[row, col] = color;
-
-        }
+        gridColors[row, col] = color;
     }
 
     // sets grid colors to empty
