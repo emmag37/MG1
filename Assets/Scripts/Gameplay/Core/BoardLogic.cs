@@ -125,7 +125,9 @@ public class BoardLogic
             return false;
         }
 
-        result = PlacePlayer(row, col, color);
+        AddToBoard(row, col, color);
+
+        result = CalculateLines(row, col, color);
 
         return true;
     }
@@ -146,24 +148,9 @@ public class BoardLogic
     // ================================
 
     // places the player on the board and sets play result values
-    private PlayResult PlacePlayer(int row, int col, CellColor color)
+    private PlayResult CalculateLines(int row, int col, CellColor color)
     {
         PlayResult result = new PlayResult();
-
-        // Add player to the board
-        if (gridColors[row, col] == Empty)
-        {
-            rowCounts[row]++;
-            colCounts[col]++;
-            if (row == col) rDiagCount++;
-            if (RowSize - 1 - row == col) lDiagCount++;
-        }
-        else
-        {
-            color = WildCard;   // color must be mask, mask operates like wc once on the board
-        }
-        gridColors[row, col] = color;
-
 
         // Check for full and matching lines
         result.ClearRow =
@@ -195,6 +182,29 @@ public class BoardLogic
         result.FullBoard = (numSpotsFilled == NumSpots);
 
         return result;
+    }
+
+    private void AddToBoard(int row, int col, CellColor color)
+    {
+        // increase the counts
+        if (gridColors[row, col] == Empty)
+        {
+            rowCounts[row]++;
+            colCounts[col]++;
+            if (row == col) rDiagCount++;
+            if (RowSize - 1 - row == col) lDiagCount++;
+        }
+
+        // set the color
+        if (color == Mask)
+        {
+            gridColors[row, col] = WildCard;
+        }
+        else
+        {
+            gridColors[row, col] = color;
+
+        }
     }
 
     // sets grid colors to empty

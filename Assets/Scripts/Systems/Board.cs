@@ -225,8 +225,6 @@ public class BoardManager: MonoBehaviour
             // remove ghost preview
             if (ghostSet && (!valid || newIndex != index))
             {
-                Debug.Log("remove ghost preview");
-
                 cellGrid.SetCell(index.x, index.y, ghostColor);
                 ghostSet = false;
             }
@@ -234,8 +232,6 @@ public class BoardManager: MonoBehaviour
             // set new ghost preview
             if (!ghostSet && valid)
             {
-                Debug.Log("set new ghost preview");
-
                 index = newIndex;
                 ghostColor = logic.GetCellColor(index.x, index.y);
 
