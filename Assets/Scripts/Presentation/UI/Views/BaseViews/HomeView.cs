@@ -28,7 +28,7 @@ public class HomeView: BaseView<PlayerProfile>
     {
         profileButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Profile));
         scoreHistoryButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.ScoreHistory));
-        playButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
+        playButton.onClick.AddListener(UI.GameManager.StartGame);
     }
 
     // ==================================================

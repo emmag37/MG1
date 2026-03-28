@@ -7,7 +7,7 @@ using System.Collections;
 /// Bridges board logic and geometry with the rendered grid, handles player
 /// placement, and clears completed lines.
 /// </summary>
-public class BoardManager: MonoBehaviour
+public class BoardController: MonoBehaviour
 {
     // ================================
     // Constants
@@ -55,6 +55,7 @@ public class BoardManager: MonoBehaviour
         // Game State Events
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
+        EventBus.Subscribe<GameOverEvent>(OnGameOver);
 
         // Player Events
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
@@ -66,6 +67,7 @@ public class BoardManager: MonoBehaviour
         // Game State Events
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
         EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
+        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
 
         // Player Events
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
@@ -79,20 +81,26 @@ public class BoardManager: MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
+        
         // set active
         boardView.gameObject.SetActive(true);
         cellGrid.gameObject.SetActive(true);
 
-        Initialize();
-
-        EventBus.Publish(new GameReadyEvent { BoardBounds = boardView.bounds }) ;
+        if (initialized)
+            Initialize();
+        else
+            Reset();
     }
 
     private void OnExitGame(ExitGameEvent e)
     {
-        Reset();
-
         // set inactive
+        boardView.gameObject.SetActive(false);
+        cellGrid.gameObject.SetActive(false);
+    }
+
+    private void OnGameOver(GameOverEvent e)
+    {
         boardView.gameObject.SetActive(false);
         cellGrid.gameObject.SetActive(false);
     }
@@ -168,8 +176,7 @@ public class BoardManager: MonoBehaviour
 
         if (result.FullBoard)
         {
-            EventBus.Publish(new GameOverEvent());                    // activate a game over
-            OnExitGame(new ExitGameEvent());                          // close this game
+            EventBus.Publish(new FullBoardEvent());                    // activate a game over
 
             return;
         }

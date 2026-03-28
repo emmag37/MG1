@@ -10,9 +10,10 @@ using System.Collections.Generic;
 public class UIManager : MonoBehaviour
 {
     // ==================================================
-    // Public Properties
+    // Public Fields
     // ==================================================
     public static UIManager Instance { get; private set; }
+    public GameManager GameManager; // views need to access
 
     // ==================================================
     // Inspector Fields
@@ -24,8 +25,6 @@ public class UIManager : MonoBehaviour
     // Private Fields
     // ==================================================
     private DataManager data => DataManager.Instance;
-
-    private bool activeGame = false;
 
     // ================================
     // Unity Lifecycle Methods
@@ -44,8 +43,6 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        hudController.UpdateScoreText(0, data.Profile.HighScore);
-
         viewController.ShowView(BaseViewType.Home, data.Profile);
 
         if (data.Settings.HasLaunched == 0)
@@ -53,6 +50,20 @@ public class UIManager : MonoBehaviour
             PushOverlay(PopUpViewType.Tutorial1);
             data.SetLaunched();
         }
+    }
+
+    void OnEnable()
+    {
+        EventBus.Subscribe<StartGameEvent>(OnStartGame);
+        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
+        EventBus.Subscribe<GameOverEvent>(OnGameOver);
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
+        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
+        EventBus.Subscribe<GameOverEvent>(OnGameOver);
     }
 
 
@@ -67,8 +78,6 @@ public class UIManager : MonoBehaviour
 
         ShowView(BaseViewType.GameOver);
         hudController.Hide();
-
-        activeGame = false;
     }
 
     public void UpdateScore(int score)
@@ -111,28 +120,14 @@ public class UIManager : MonoBehaviour
     // View Management Methods
     // ==================================================
 
-    public void ShowView(BaseViewType type)
+    public void ShowView(BaseViewType type) // want to get rid of this wrapper
     {
-        EventBus.Publish(new TransitionEvent());
+        EventBus.Publish(new TransitionEvent()); // move this to the view controller
 
         switch (type)
         {
-            case BaseViewType.GameOver:
-                {
-                    viewController.ShowView(type, data.Profile);
-                    break;
-                }
-
-            case BaseViewType.GamePlay:
-                {
-                    viewController.ShowView(type, new NoData());
-                    OpenGame();
-                    break;
-                }
-
             case BaseViewType.Home:
                 {
-                    if (activeGame) CloseGame();
                     viewController.ShowView(type, data.Profile);
                     break;
                 }
@@ -153,7 +148,7 @@ public class UIManager : MonoBehaviour
         {
             case PopUpViewType.Pause:
                 {
-                    EventBus.Publish(new PauseGameEvent());
+                    GameManager.PauseGame();
                     viewController.PushOverlay(type, data.Settings);
                     break;
                 }
@@ -187,7 +182,7 @@ public class UIManager : MonoBehaviour
 
         if (overlay == PopUpViewType.Pause)
         {
-            EventBus.Publish(new ResumeGameEvent());
+            GameManager.ResumeGame();
         }
     }
 
@@ -199,33 +194,32 @@ public class UIManager : MonoBehaviour
 
         if (finalOverlay == PopUpViewType.Pause)
         {
-            EventBus.Publish(new ResumeGameEvent());
+            GameManager.ResumeGame();
         }
     }
 
 
     // ==================================================
-    // Private Methods
+    // Event Handlers
     // ==================================================
 
-    private void CloseGame()
+    private void OnStartGame(StartGameEvent e)
     {
-        Debug.Assert(activeGame, $"Attempted exiting gameplay from inactive game state");
+        viewController.ShowView(BaseViewType.GamePlay, new NoData());
 
-        EventBus.Publish(new ExitGameEvent());
-        hudController.Hide();
-
-        activeGame = false;
-    }
-
-    private void OpenGame()
-    {
-        Debug.Assert(!activeGame, $"Attempted starting new gameplay from active game state");
-
+        hudController.UpdateScoreText(0, data.Profile.HighScore);
         hudController.Show();
-        EventBus.Publish(new StartGameEvent());
-
-        activeGame = true;
     }
 
+    private void OnExitGame(ExitGameEvent e)
+    {
+        hudController.Hide();
+        viewController.ShowView(BaseViewType.Home, data.Profile);
+    }
+
+    private void OnGameOver(GameOverEvent e)
+    {
+        hudController.Hide();
+        viewController.ShowView(BaseViewType.GameOver, data.Profile);
+    }
 }

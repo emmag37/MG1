@@ -11,9 +11,13 @@ public class GameManager : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
+    [SerializeField] private UIManager UI;  // need to take this out
+    [SerializeField] private DataManager data;
 
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Player playerPrefab;
+    [SerializeField] private SpriteRenderer boardView;
+    [SerializeField] private BoardController board;
 
     // ================================
     // Private Types
@@ -30,9 +34,6 @@ public class GameManager : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
-
-    private DataManager data => DataManager.Instance;
-    private UIManager UI => UIManager.Instance;
 
     private GameState state;
 
@@ -51,58 +52,64 @@ public class GameManager : MonoBehaviour
     {
         Debug.Assert(spawnPoint != null, "Spawn point not set");
         Debug.Assert(playerPrefab != null, "Player prefab not set");
+        // add asserts
     }
 
     void Awake()
     {
         state = GameState.Fresh;
         picker = new PlayerPicker();
+
+        InitializePlayerBoundaries(boardView.bounds);
     }
 
     void OnEnable()
     {
         // Board events
-        EventBus.Subscribe<GameOverEvent>(HandleGameOver);
+        EventBus.Subscribe<FullBoardEvent>(HandleFullBoard);
         EventBus.Subscribe<TurnCompletedEvent>(HandleTurnCompleted);
         EventBus.Subscribe<WinEvent>(HandleWin);
-
-        // Game state events
-        EventBus.Subscribe<GameReadyEvent>(OnStartGame);
-        EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
-        EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
-        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
     }
 
     void OnDisable()
     {
         // Board events
-        EventBus.Unsubscribe<GameOverEvent>(HandleGameOver);
+        EventBus.Unsubscribe<FullBoardEvent>(HandleFullBoard);
         EventBus.Unsubscribe<TurnCompletedEvent>(HandleTurnCompleted);
         EventBus.Unsubscribe<WinEvent>(HandleWin);
-
-        // UI events
-        EventBus.Unsubscribe<GameReadyEvent>(OnStartGame);
-        EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
-        EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
-        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
     }
 
 
     // ================================
-    // UI Event Handlers
+    // UI Commands
     // ================================
 
-    private void OnStartGame(GameReadyEvent e)
+    public void StartGame()
     {
-        Debug.Assert(state == GameState.Fresh, $"Start called with invalid state: {state}");
+        if (state != GameState.Fresh)
+        {
+            PrepareGame();      // prepare fields owned by game manager
+        }
+        Debug.Assert(state == GameState.Fresh, $"Game not reset, still in: {state}");
 
-        InitializePlayerBoundaries(e.BoardBounds);
+        EventBus.Publish(new StartGameEvent());   // prepare systems not owned by the game manager
 
         state = GameState.Playing;
         SpawnNewPlayer();
     }
 
-    private void OnPauseGame(PauseGameEvent e)
+    public void ExitGame()  // User exit!
+    {
+        Debug.Assert(state == GameState.Paused, $"Exit called with invalid state: {state}");
+
+        state = GameState.Over;
+
+        // save any necessary data
+
+        EventBus.Publish(new ExitGameEvent());
+    }
+
+    public void PauseGame()
     {
         Debug.Assert(state == GameState.Playing, $"Pause called with invalid state: {state}");
 
@@ -110,7 +117,7 @@ public class GameManager : MonoBehaviour
         player.enabled = false;
     }
 
-    private void OnResumeGame(ResumeGameEvent e)
+    public void ResumeGame()
     {
         Debug.Assert(state == GameState.Paused, $"Resume called with invalid state: {state}");
 
@@ -118,15 +125,6 @@ public class GameManager : MonoBehaviour
         player.enabled = true;
     }
 
-    private void OnExitGame(ExitGameEvent e) // should only be called on user exit
-    {
-        Debug.Assert(state == GameState.Paused, $"Exit called with invalid state: {state}");
-
-        state = GameState.Over;
-
-        RemoveCurrentPlayer();
-        EndGame();
-    }
 
     // ================================
     // Board Event Handlers
@@ -153,14 +151,15 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private void HandleGameOver(GameOverEvent e)    // called on a game over
+    private void HandleFullBoard(FullBoardEvent e)    // called on a game over
     {
         Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}");
 
         state = GameState.Over;
-        EndGame();
 
-        UI.ShowGameOver();
+        // handle any data saves
+
+        EventBus.Publish(new GameOverEvent());
     }
 
 
@@ -168,20 +167,22 @@ public class GameManager : MonoBehaviour
     // Private Methods
     // ================================
 
-    private void EndGame()
+    private void PrepareGame()
     {
         // good place to put data preparation
 
         // Reset the game
+        RemoveCurrentPlayer();
         picker.Reset();
         score = 0;
         state = GameState.Fresh;
+
+        // Send an event to prepare board, ui, sound?
+        // ui already knows to start the event
     }
 
     private void InitializePlayerBoundaries(Bounds boardBounds)
     {
-        if (playerBoundaries.size != Vector3.zero) return;  // player bounds already initialized
-
         playerBoundaries = boardBounds;
 
         Vector3 min = playerBoundaries.min;

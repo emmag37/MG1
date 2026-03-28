@@ -15,6 +15,8 @@ public struct UpdatePlayerPreviewEvent
     public CellColor Color;
 }
 
+public struct StartGameEvent { }
+public struct ExitGameEvent { }
 public struct GameOverEvent { }
 
 
@@ -22,10 +24,6 @@ public struct GameOverEvent { }
 // Board Events
 // ==================================================
 
-public struct GameReadyEvent
-{
-    public Bounds BoardBounds;
-}
 public struct FullBoardEvent { }
 
 public struct PlacePlayerEvent
@@ -60,8 +58,7 @@ public struct PlayerReleasedEvent
 // UI Events
 // ==================================================
 
-public struct StartGameEvent { }
-public struct ExitGameEvent { }
+
 public struct PauseGameEvent { }
 public struct ResumeGameEvent { }
 

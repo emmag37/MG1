@@ -48,7 +48,7 @@ public class AudioManager : MonoBehaviour
 
         // need to maintain the current audio clip in case music turns on/off
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
-        EventBus.Subscribe<GameReadyEvent>(OnStartGame);
+        EventBus.Subscribe<StartGameEvent>(OnStartGame);
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
 
         // initialize the settings
@@ -64,7 +64,7 @@ public class AudioManager : MonoBehaviour
     void OnDestroy()
     {
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
-        EventBus.Unsubscribe<GameReadyEvent>(OnStartGame);
+        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
         EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
 
         if (sfxOn) TurnOffEffects();
@@ -121,7 +121,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void OnStartGame(GameReadyEvent e)
+    private void OnStartGame(StartGameEvent e)
     {
         musicSource.Stop();
 

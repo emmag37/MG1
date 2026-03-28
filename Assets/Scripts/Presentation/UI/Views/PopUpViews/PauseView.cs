@@ -36,7 +36,8 @@ public class PauseView: PopUpView<GameSettings>
     {
         base.Awake();
 
-        homeButton.onClick.AddListener(() => UI.ShowView(BaseViewType.Home));
+        homeButton.onClick.AddListener(UI.GameManager.ExitGame);
+
         restartButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
         helpButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Tutorial1));
 
