@@ -18,9 +18,7 @@ public class BoardController: MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-
-    [SerializeField] private SpriteRenderer boardView;
-    [SerializeField] private GridController cellGrid;
+    [SerializeField] private BoardView boardView;
 
     // ================================
     // Private Fields
@@ -30,7 +28,7 @@ public class BoardController: MonoBehaviour
     private BoardLogic logic;
     private BoardGeometry geometry;
 
-    private Coroutine ghostPreview;
+    //private Coroutine ghostPreview;
 
 
     // ================================
@@ -40,7 +38,6 @@ public class BoardController: MonoBehaviour
     void OnValidate()
     {
         Debug.Assert(boardView != null, "Board view not set in board");
-        Debug.Assert(cellGrid != null, "Cell grid not set in board");
     }
 
 
@@ -83,7 +80,6 @@ public class BoardController: MonoBehaviour
     {
         // set active
         boardView.gameObject.SetActive(true);
-        cellGrid.gameObject.SetActive(true);
 
         if (!initialized)
             Initialize();
@@ -95,13 +91,11 @@ public class BoardController: MonoBehaviour
     {
         // set inactive
         boardView.gameObject.SetActive(false);
-        cellGrid.gameObject.SetActive(false);
     }
 
     private void OnGameOver(GameOverEvent e)
     {
         boardView.gameObject.SetActive(false);
-        cellGrid.gameObject.SetActive(false);
     }
 
 
@@ -111,7 +105,7 @@ public class BoardController: MonoBehaviour
 
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        StopCoroutine(ghostPreview);
+        //StopCoroutine(ghostPreview);
 
         bool valid = TryGetPlayerPosition(e.PlayerPosition, e.Color, out Vector3 newPos, out Vector2Int index);
         if (valid)
@@ -127,7 +121,7 @@ public class BoardController: MonoBehaviour
 
     private void OnPlayerDragging(PlayerDraggingEvent e)
     {
-        ghostPreview = StartCoroutine(GhostPreviewLoop(e.PlayerTransform, e.Color));
+        //ghostPreview = StartCoroutine(GhostPreviewLoop(e.PlayerTransform, e.Color));
     }
 
     // ================================
@@ -138,8 +132,8 @@ public class BoardController: MonoBehaviour
     {
         if (initialized) return;
 
-        cellGrid.Initialize();
-        geometry.Initialize(cellGrid.CellRadius, boardView.bounds);
+        boardView.Initialize();
+        geometry.Initialize(boardView.CellRadius, boardView.GetBounds());
 
         initialized = true;
     }
@@ -149,7 +143,7 @@ public class BoardController: MonoBehaviour
 	/// </summary>
     private void Reset()
     {
-        cellGrid.Reset();
+        boardView.Reset();
         logic.ResetBoard();
     }
 
@@ -165,7 +159,7 @@ public class BoardController: MonoBehaviour
     /// </remarks>
     private void RunPlay(Vector2Int index, CellColor color)
     {
-        cellGrid.SetCell(index.x, index.y, color);
+        boardView.SetCell(index.x, index.y, color);
 
         BoardLogic.PlayResult result;
         if (!logic.TryPlacePlayer(index.x, index.y, color, out result))     // run the board logic
@@ -182,10 +176,10 @@ public class BoardController: MonoBehaviour
             
 
         // set full rows to empty cells
-        if (result.ClearRow) cellGrid.ClearRow(index.x);
-        if (result.ClearCol) cellGrid.ClearColumn(index.y);
-        if (result.ClearRDiag) cellGrid.ClearRightDiagonal();
-        if (result.ClearLDiag) cellGrid.ClearLeftDiagonal();
+        if (result.ClearRow) boardView.ClearRow(index.x);
+        if (result.ClearCol) boardView.ClearColumn(index.y);
+        if (result.ClearRDiag) boardView.ClearRightDiagonal();
+        if (result.ClearLDiag) boardView.ClearLeftDiagonal();
 
         if (result.Points > 0) EventBus.Publish(new WinEvent { Points = result.Points });
         EventBus.Publish(new TurnCompletedEvent());
@@ -221,7 +215,7 @@ public class BoardController: MonoBehaviour
     // ================================
     // Coroutines
     // ================================
-
+    /*
     IEnumerator GhostPreviewLoop(Transform playerTransform, CellColor color)
     {
         bool ghostSet = false;
@@ -238,7 +232,7 @@ public class BoardController: MonoBehaviour
             // remove ghost preview
             if (ghostSet && (!valid || newIndex != index))
             {
-                cellGrid.SetCell(index.x, index.y, ghostColor);
+                boardView.SetCell(index.x, index.y, ghostColor);
                 ghostSet = false;
             }
 
@@ -248,12 +242,12 @@ public class BoardController: MonoBehaviour
                 index = newIndex;
                 ghostColor = logic.GetCellColor(index.x, index.y);
 
-                cellGrid.SetCell(index.x, index.y, CellColor.Shadow);
+                boardView.SetCell(index.x, index.y, CellColor.Shadow);
                 ghostSet = true;
             }
 
             yield return null;
         }
-    }
+    }*/
 
 }

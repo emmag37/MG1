@@ -6387,6 +6387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5687b5945c6084e6194c71d2e1596917, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CellGridController
+  background: {fileID: 1798150610}
   cells: {fileID: 1405004968}
 --- !u!4 &1418809463 stripped
 Transform:
@@ -8609,7 +8610,7 @@ GameObject:
   - component: {fileID: 1798150609}
   - component: {fileID: 1798150610}
   m_Layer: 0
-  m_Name: BoardView
+  m_Name: Board Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9923,8 +9924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8abc9f8292c3f48d2bd6ac6528a6982d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Board
-  boardView: {fileID: 1798150610}
-  cellGrid: {fileID: 1405004970}
+  boardView: {fileID: 1405004970}
 --- !u!1 &2027794459
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private UIManager UI;  // need to take this out
+    [SerializeField] private UIManager UI;
     [SerializeField] private DataManager data;
 
     [SerializeField] private Transform spawnPoint;
@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviour
         score += e.Points;
 
         data.SetScore(score);
-        UI.UpdateScore(score);  // fix this
+        EventBus.Publish(new UpdateScoreEvent { Score = score, HighScore = data.Profile.HighScore });
     }
 
 
@@ -180,9 +180,6 @@ public class GameManager : MonoBehaviour
         picker.Reset();
         score = 0;
         state = GameState.Fresh;
-
-        // Send an event to prepare board, ui, sound?
-        // ui already knows to start the event
     }
 
     private void InitializePlayerBoundaries(Bounds boardBounds)
@@ -202,8 +199,7 @@ public class GameManager : MonoBehaviour
         if (state == GameState.Over) return;      // don't respawn on game over
 
         var playerColors = picker.CalculateNewPlayerColors();
-
-        UI.UpdatePlayerPreview(playerColors.nextColor); // fix this
+        EventBus.Publish(new UpdatePlayerPreviewEvent { Color = playerColors.nextColor });
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.Initialize(playerColors.color, playerBoundaries);

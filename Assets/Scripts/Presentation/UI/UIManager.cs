@@ -2,11 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// Controls the screen that is displayed.
-///
-/// Also contains all button functions.
-/// </summary>
+
 public class UIManager : MonoBehaviour
 {
     // ==================================================
@@ -59,6 +55,9 @@ public class UIManager : MonoBehaviour
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
         EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
         EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
+
+        EventBus.Subscribe<UpdateScoreEvent>(OnUpdateScore);
+        EventBus.Subscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
     }
 
     void OnDisable()
@@ -68,6 +67,9 @@ public class UIManager : MonoBehaviour
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
         EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
         EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
+
+        EventBus.Unsubscribe<UpdateScoreEvent>(OnUpdateScore);
+        EventBus.Unsubscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
     }
 
 
@@ -75,26 +77,6 @@ public class UIManager : MonoBehaviour
     // Public Methods
     // ==================================================
 
-    // game functions
-    public void ShowGameOver()
-    {
-        Debug.Log("show game over");
-
-        ShowView(BaseViewType.GameOver);
-        hudController.Hide();
-    }
-
-    public void UpdateScore(int score)
-    {
-        hudController.UpdateScoreText(score, data.Profile.HighScore);
-    }
-
-    public void UpdatePlayerPreview(CellColor color)
-    {
-        hudController.UpdatePlayerPreviewSprite(color);
-    }
-
-    // view functions
     public void UpdateUsername(string name)
     {
         data.SetUsername(name);
@@ -204,7 +186,7 @@ public class UIManager : MonoBehaviour
 
 
     // ==================================================
-    // Event Handlers
+    // Game State Event Handlers
     // ==================================================
 
     private void OnStartGame(StartGameEvent e)
@@ -235,5 +217,20 @@ public class UIManager : MonoBehaviour
     private void OnResumeGame(ResumeGameEvent e)
     {
         viewController.PopOverlay();
+    }
+
+
+    // ==================================================
+    // Game Updates Event Handlers
+    // ==================================================
+
+    private void OnUpdateScore(UpdateScoreEvent e)
+    {
+        hudController.UpdateScoreText(e.Score, e.HighScore);
+    }
+
+    private void OnUpdatePlayerPreview(UpdatePlayerPreviewEvent e)
+    {
+        hudController.UpdatePlayerPreviewSprite(e.Color);
     }
 }

@@ -9,6 +9,7 @@ using UnityEngine;
 public struct UpdateScoreEvent
 {
     public int Score;
+    public int HighScore;
 }
 public struct UpdatePlayerPreviewEvent
 {
@@ -18,7 +19,6 @@ public struct UpdatePlayerPreviewEvent
 public struct StartGameEvent { }
 public struct ExitGameEvent { }
 public struct GameOverEvent { }
-
 public struct PauseGameEvent { }
 public struct ResumeGameEvent { }
 

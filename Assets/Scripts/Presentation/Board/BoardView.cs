@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GridController : MonoBehaviour
+public class BoardView : MonoBehaviour
 {
     // ================================
     // Constants
@@ -15,6 +15,7 @@ public class GridController : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
+    [SerializeField] private SpriteRenderer background;
     [SerializeField] private GameObject cells;
 
     // ================================
@@ -29,7 +30,8 @@ public class GridController : MonoBehaviour
 
     void OnValidate()
     {
-        Debug.Assert(cells != null, "Cells not set in cell grid controller");
+        Debug.Assert(background != null, "Background not set in board view");
+        Debug.Assert(cells != null, "Cells not set in board view");
     }
 
 
@@ -71,6 +73,11 @@ public class GridController : MonoBehaviour
     // ================================
     // Public Methods
     // ================================
+
+    public Bounds GetBounds()
+    {
+        return background.bounds;
+    }
 
     public void SetCell(int row, int col, CellColor color)
     {
