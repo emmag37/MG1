@@ -115,6 +115,8 @@ public class GameManager : MonoBehaviour
 
         state = GameState.Paused;
         player.enabled = false;
+
+        EventBus.Publish(new PauseGameEvent());
     }
 
     public void ResumeGame()
@@ -123,6 +125,8 @@ public class GameManager : MonoBehaviour
 
         state = GameState.Playing;
         player.enabled = true;
+
+        EventBus.Publish(new ResumeGameEvent());
     }
 
 
@@ -147,7 +151,7 @@ public class GameManager : MonoBehaviour
         score += e.Points;
 
         data.SetScore(score);
-        UI.UpdateScore(score);
+        UI.UpdateScore(score);  // fix this
     }
 
 
@@ -199,7 +203,7 @@ public class GameManager : MonoBehaviour
 
         var playerColors = picker.CalculateNewPlayerColors();
 
-        UI.UpdatePlayerPreview(playerColors.nextColor);
+        UI.UpdatePlayerPreview(playerColors.nextColor); // fix this
 
         player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
         player.Initialize(playerColors.color, playerBoundaries);

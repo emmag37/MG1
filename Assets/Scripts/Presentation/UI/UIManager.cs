@@ -57,13 +57,17 @@ public class UIManager : MonoBehaviour
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
+        EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
+        EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
         EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
-        EventBus.Subscribe<GameOverEvent>(OnGameOver);
+        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+        EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
+        EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
     }
 
 
@@ -221,5 +225,15 @@ public class UIManager : MonoBehaviour
     {
         hudController.Hide();
         viewController.ShowView(BaseViewType.GameOver, data.Profile);
+    }
+
+    private void OnPauseGame(PauseGameEvent e)
+    {
+        viewController.PushOverlay(PopUpViewType.Pause, data.Settings);
+    }
+
+    private void OnResumeGame(ResumeGameEvent e)
+    {
+        viewController.PopOverlay();
     }
 }

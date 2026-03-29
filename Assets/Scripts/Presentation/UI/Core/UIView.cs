@@ -40,7 +40,12 @@ public abstract class PopUpView : UIView
 
     protected virtual void Awake()
     {
-        exitButton.onClick.AddListener(() => UI.ClearOverlay());
+        exitButton.onClick.AddListener(OnExitClicked);
+    }
+
+    protected virtual void OnExitClicked()
+    {
+        UI.ClearOverlay(); // default behavior
     }
 }
 

@@ -22,6 +22,6 @@ public class PlayView: BaseView
 
     void Awake()
     {
-        pauseButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Pause));
+        pauseButton.onClick.AddListener(UI.GameManager.PauseGame);
     }
 }

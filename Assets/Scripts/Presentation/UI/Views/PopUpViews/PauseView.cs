@@ -38,7 +38,7 @@ public class PauseView: PopUpView<GameSettings>
 
         homeButton.onClick.AddListener(UI.GameManager.ExitGame);
 
-        restartButton.onClick.AddListener(() => UI.ShowView(BaseViewType.GamePlay));
+        restartButton.onClick.AddListener(UI.GameManager.StartGame);
         helpButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Tutorial1));
 
         musicSlider.onValueChanged.AddListener((value) => UI.UpdateMusicOn((int)value));
@@ -56,6 +56,11 @@ public class PauseView: PopUpView<GameSettings>
         effectsSlider.value = data.EffectsOn;
 
         base.Show(data);
+    }
+
+    protected override void OnExitClicked()
+    {
+        UI.GameManager.ResumeGame();
     }
 
 }

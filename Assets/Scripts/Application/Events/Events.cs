@@ -19,6 +19,9 @@ public struct StartGameEvent { }
 public struct ExitGameEvent { }
 public struct GameOverEvent { }
 
+public struct PauseGameEvent { }
+public struct ResumeGameEvent { }
+
 
 // ==================================================
 // Board Events
@@ -57,10 +60,6 @@ public struct PlayerReleasedEvent
 // ==================================================
 // UI Events
 // ==================================================
-
-
-public struct PauseGameEvent { }
-public struct ResumeGameEvent { }
 
 public struct TransitionEvent { }
 public struct UpdateSettingsEvent { }

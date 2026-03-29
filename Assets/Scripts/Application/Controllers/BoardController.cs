@@ -81,12 +81,11 @@ public class BoardController: MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
-        
         // set active
         boardView.gameObject.SetActive(true);
         cellGrid.gameObject.SetActive(true);
 
-        if (initialized)
+        if (!initialized)
             Initialize();
         else
             Reset();
@@ -151,7 +150,7 @@ public class BoardController: MonoBehaviour
     private void Reset()
     {
         cellGrid.Reset();
-        logic.ResetBoard(); // validate in logic
+        logic.ResetBoard();
     }
 
 
