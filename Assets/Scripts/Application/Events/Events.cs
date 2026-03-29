@@ -28,17 +28,39 @@ public struct ResumeGameEvent { }
 // ==================================================
 
 public struct FullBoardEvent { }
-
-public struct PlacePlayerEvent
-{
-    public Vector3 PlayerPosition;
-}
-public struct ReturnPlayerEvent { }
-
 public struct TurnCompletedEvent { }
 public struct WinEvent
 {
     public int Points;
+}
+
+public struct PlayerOnBoardEvent
+{
+    public Vector2Int Index;
+}
+
+public struct ReturnPlayerEvent { }
+
+public struct SetCellEvent
+{
+    public Vector2Int Index;
+    public CellColor Color;
+}
+public struct ClearRowEvent
+{
+    public int Row;
+}
+public struct ClearColumnEvent
+{
+    public int Column;
+}
+public struct ClearRightDiagEvent { }
+public struct ClearLeftDiagEvent { }
+
+// this is only board view, so you need to clean up this logic
+public struct PlacePlayerEvent
+{
+    public Vector3 PlayerPosition;
 }
 
 // ==================================================
@@ -53,7 +75,7 @@ public struct PlayerDraggingEvent
 
 public struct PlayerReleasedEvent
 {
-    public Vector3 PlayerPosition;
+    public Vector3 PlayerPosition;  // turn this into index
     public CellColor Color;
 }
 

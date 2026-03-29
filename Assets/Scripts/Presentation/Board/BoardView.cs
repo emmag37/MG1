@@ -8,13 +8,10 @@ public class BoardView : MonoBehaviour
     private const int RowSize = GameConstants.RowSize;
 
     // ================================
-    // Public Fields
-    // ================================
-    public float CellRadius { get; private set; }
-
-    // ================================
     // Inspector Fields
     // ================================
+    [SerializeField] private BoardController boardController;
+
     [SerializeField] private SpriteRenderer background;
     [SerializeField] private GameObject cells;
 
@@ -22,6 +19,7 @@ public class BoardView : MonoBehaviour
     // Private Fields
     // ================================
     private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
+    private BoardGeometry geometry;
 
 
     // ================================
@@ -34,13 +32,138 @@ public class BoardView : MonoBehaviour
         Debug.Assert(cells != null, "Cells not set in board view");
     }
 
+    void OnAwake()
+    {
+        geometry = new BoardGeometry();
+
+        InitializeCells();
+        geometry.Initialize(grid[0, 0].Radius, background.bounds);
+
+    }
+
+    void OnEnable()
+    {
+        EventBus.Subscribe<StartGameEvent>(OnStartGame);
+        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
+        EventBus.Subscribe<GameOverEvent>(OnGameOver);
+
+        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        EventBus.Subscribe<PlayerOnBoardEvent>(OnPlayerOnBoard);
+
+        EventBus.Subscribe<SetCellEvent>(OnSetCell);
+        EventBus.Subscribe<ClearRowEvent>(OnClearRow);
+        EventBus.Subscribe<ClearColumnEvent>(OnClearColumn);
+        EventBus.Subscribe<ClearRightDiagEvent>(OnClearRightDiag);
+        EventBus.Subscribe<ClearLeftDiagEvent>(OnClearLeftDiag);
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
+        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
+        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+
+        EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
+
+        EventBus.Unsubscribe<SetCellEvent>(OnSetCell);
+        EventBus.Unsubscribe<ClearRowEvent>(OnClearRow);
+        EventBus.Unsubscribe<ClearColumnEvent>(OnClearColumn);
+        EventBus.Unsubscribe<ClearRightDiagEvent>(OnClearRightDiag);
+        EventBus.Unsubscribe<ClearLeftDiagEvent>(OnClearLeftDiag);
+    }
+
 
     // ================================
-    // Initializers
+    // Game State Event Handlers
+    // ================================
+
+    private void OnStartGame(StartGameEvent e)
+    {
+        ResetCells();
+
+        background.gameObject.SetActive(true);
+        cells.gameObject.SetActive(true);
+    }
+
+    private void OnExitGame(ExitGameEvent e)
+    {
+        background.gameObject.SetActive(true);
+        cells.gameObject.SetActive(true);
+    }
+
+    private void OnGameOver(GameOverEvent e)
+    {
+        background.gameObject.SetActive(true);
+        cells.gameObject.SetActive(true);
+    }
+
+
+    // ================================
+    // Player Event Handlers
+    // ================================
+
+    private void OnPlayerReleased(PlayerReleasedEvent e)
+    {
+        Vector2Int index = geometry.TransformToBoardIndex(e.PlayerPosition);
+
+        boardController.PlacePlayer(index, e.Color);
+    }
+
+
+    // ================================
+    // Board Event Handlers
+    // ================================
+
+    private void OnPlayerOnBoard(PlayerOnBoardEvent e)
+    {
+        Vector3 position = geometry.BoardIndexToTransform(e.Index);
+        EventBus.Publish(new PlacePlayerEvent { PlayerPosition = position });
+    }
+
+    private void OnSetCell(SetCellEvent e)
+    {
+        grid[e.Index.x, e.Index.y].SetColor(e.Color);
+    }
+
+    private void OnClearRow(ClearRowEvent e)
+    {
+        for (int i = 0; i < RowSize; i++)
+        {
+            grid[e.Row, i].Pop();
+        }
+    }
+
+    private void OnClearColumn(ClearColumnEvent e)
+    {
+        for (int i = 0; i < RowSize; i++)
+        {
+            grid[i, e.Column].Pop();
+        }
+    }
+
+    private void OnClearRightDiag(ClearRightDiagEvent e)
+    {
+        for (int i = 0; i < RowSize; i++)
+        {
+            grid[i, i].Pop();
+        }
+    }
+
+    private void OnClearLeftDiag(ClearLeftDiagEvent e)
+    {
+        for (int i = 0; i < RowSize; i++)
+        {
+            grid[RowSize - 1 - i, i].Pop();
+        }
+    }
+
+
+    // ================================
+    // Private Methods
     // ================================
 
     // Initializes the grid cells using children in the scene view
-    public void Initialize()
+    private void InitializeCells()
     {
         Cell[] childCells = cells.GetComponentsInChildren<Cell>();
 
@@ -65,29 +188,9 @@ public class BoardView : MonoBehaviour
                 Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
             }
         }
-
-        CellRadius = grid[0, 0].Radius;
     }
 
-
-    // ================================
-    // Public Methods
-    // ================================
-
-    public Bounds GetBounds()
-    {
-        return background.bounds;
-    }
-
-    public void SetCell(int row, int col, CellColor color)
-    {
-        grid[row, col].SetColor(color);
-    }
-
-    /// <summary>
-	/// Resets the board to empty cells.
-	/// </summary>
-    public void Reset()
+    private void ResetCells()
     {
         foreach (Cell cell in grid)
         {
@@ -95,33 +198,4 @@ public class BoardView : MonoBehaviour
         }
     }
 
-    // wins - bug for double animation in a combo
-    public void ClearRow(int row)
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[row, i].Pop();
-        }
-    }
-    public void ClearColumn(int col)
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[i, col].Pop();
-        }
-    }
-    public void ClearRightDiagonal()
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[i, i].Pop();
-        }
-    }
-    public void ClearLeftDiagonal()
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[RowSize - 1 - i, i].Pop();
-        }
-    }
 }

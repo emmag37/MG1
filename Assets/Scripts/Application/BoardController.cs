@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections;
 
+// edit: need to put back resetting the board logic
+
 /// <summary>
 /// Manages the gameplay board and its visual representation in the scene.
 /// Bridges board logic and geometry with the rendered grid, handles player
@@ -12,21 +14,13 @@ public class BoardController: MonoBehaviour
     // ================================
     // Constants
     // ================================
-
     private const int RowSize = GameConstants.RowSize;
-
-    // ================================
-    // Inspector Fields
-    // ================================
-    [SerializeField] private BoardView boardView;
 
     // ================================
     // Private Fields
     // ================================
-    private bool initialized = false;
 
     private BoardLogic logic;
-    private BoardGeometry geometry;
 
     //private Coroutine ghostPreview;
 
@@ -35,89 +29,44 @@ public class BoardController: MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
-    void OnValidate()
-    {
-        Debug.Assert(boardView != null, "Board view not set in board");
-    }
-
-
     void Awake()
     {
         logic = new BoardLogic();
-        geometry = new BoardGeometry();
+        
     }
 
     void OnEnable()
     {
-        // Game State Events
-        EventBus.Subscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
-        EventBus.Subscribe<GameOverEvent>(OnGameOver);
-
         // Player Events
-        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
         EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDragging);
     }
 
     void OnDisable()
     {
-        // Game State Events
-        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
-        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
-
         // Player Events
-        EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
         EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDragging);
     }
 
-
     // ================================
-    // Game State Event Handlers
+    // Public Methods
     // ================================
 
-    private void OnStartGame(StartGameEvent e)
+    public void PlacePlayer(Vector2Int index, CellColor color)
     {
-        // set active
-        boardView.gameObject.SetActive(true);
+        if (!logic.ValidCell(index.x, index.y, color))
+        {
+            EventBus.Publish(new ReturnPlayerEvent());
+            return;
+        }
 
-        if (!initialized)
-            Initialize();
-        else
-            Reset();
+        EventBus.Publish(new PlayerOnBoardEvent { Index = index });
+
+        RunPlay(index, color);
     }
-
-    private void OnExitGame(ExitGameEvent e)
-    {
-        // set inactive
-        boardView.gameObject.SetActive(false);
-    }
-
-    private void OnGameOver(GameOverEvent e)
-    {
-        boardView.gameObject.SetActive(false);
-    }
-
 
     // ================================
     // Player Event Handlers
     // ================================
-
-    private void OnPlayerReleased(PlayerReleasedEvent e)
-    {
-        //StopCoroutine(ghostPreview);
-
-        bool valid = TryGetPlayerPosition(e.PlayerPosition, e.Color, out Vector3 newPos, out Vector2Int index);
-        if (valid)
-        {
-            EventBus.Publish(new PlacePlayerEvent { PlayerPosition = newPos });
-            RunPlay(index, e.Color);
-        }
-        else
-        {
-            EventBus.Publish(new ReturnPlayerEvent());
-        }
-    }
 
     private void OnPlayerDragging(PlayerDraggingEvent e)
     {
@@ -128,22 +77,11 @@ public class BoardController: MonoBehaviour
     // Private Methods
     // ================================
 
-    private void Initialize()
-    {
-        if (initialized) return;
-
-        boardView.Initialize();
-        geometry.Initialize(boardView.CellRadius, boardView.GetBounds());
-
-        initialized = true;
-    }
-
     /// <summary>
 	/// Resets the board to empty cells.
 	/// </summary>
     private void Reset()
     {
-        boardView.Reset();
         logic.ResetBoard();
     }
 
@@ -159,7 +97,7 @@ public class BoardController: MonoBehaviour
     /// </remarks>
     private void RunPlay(Vector2Int index, CellColor color)
     {
-        boardView.SetCell(index.x, index.y, color);
+        EventBus.Publish(new SetCellEvent { Index = index, Color = color });
 
         BoardLogic.PlayResult result;
         if (!logic.TryPlacePlayer(index.x, index.y, color, out result))     // run the board logic
@@ -170,45 +108,17 @@ public class BoardController: MonoBehaviour
         if (result.FullBoard)
         {
             EventBus.Publish(new FullBoardEvent());                    // activate a game over
-
             return;
         }
             
-
         // set full rows to empty cells
-        if (result.ClearRow) boardView.ClearRow(index.x);
-        if (result.ClearCol) boardView.ClearColumn(index.y);
-        if (result.ClearRDiag) boardView.ClearRightDiagonal();
-        if (result.ClearLDiag) boardView.ClearLeftDiagonal();
+        if (result.ClearRow) EventBus.Publish(new ClearRowEvent { Row = index.x });
+        if (result.ClearCol) EventBus.Publish(new ClearColumnEvent { Column = index.y });
+        if (result.ClearRDiag) EventBus.Publish(new ClearRightDiagEvent());
+        if (result.ClearLDiag) EventBus.Publish(new ClearLeftDiagEvent());
 
         if (result.Points > 0) EventBus.Publish(new WinEvent { Points = result.Points });
         EventBus.Publish(new TurnCompletedEvent());
-    }
-
-    /// <summary>
-    /// Attempts to calculate the nearest valid board position for the player.
-    /// </summary>
-    /// <param name="position">World position to evaluate.</param>
-    /// <param name="newPosition">
-    /// The corresponding board-aligned world position if the location is valid.
-    /// </param>
-	/// <param name="index">
-    /// The corresponding board index if the location is valid.
-    /// </param>
-    /// <returns>
-    /// <c>true</c> if the position maps to a valid board cell; otherwise <c>false</c>.
-    /// </returns>
-    private bool TryGetPlayerPosition(Vector3 position, CellColor color, out Vector3 newPosition, out  Vector2Int index)
-    {
-        index = geometry.TransformToBoardIndex(position);
-        if (!logic.ValidCell(index.x, index.y, color))
-        {
-            newPosition = Vector3.zero;
-            return false;
-        }
-
-        newPosition = geometry.BoardIndexToTransform(index);
-        return true;
     }
 
 
