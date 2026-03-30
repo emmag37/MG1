@@ -8,6 +8,12 @@ public class BoardView : MonoBehaviour
     private const int RowSize = GameConstants.RowSize;
 
     // ================================
+    // Public Fields
+    // ================================
+
+    public Bounds BoardBounds => background.bounds;
+
+    // ================================
     // Inspector Fields
     // ================================
     [SerializeField] private BoardController boardController;
@@ -32,12 +38,12 @@ public class BoardView : MonoBehaviour
         Debug.Assert(cells != null, "Cells not set in board view");
     }
 
-    void OnAwake()
+    void Awake()
     {
         geometry = new BoardGeometry();
 
         InitializeCells();
-        geometry.Initialize(grid[0, 0].Radius, background.bounds);
+        geometry.Initialize(grid[0, 0].Radius, BoardBounds);
 
     }
 
@@ -48,7 +54,6 @@ public class BoardView : MonoBehaviour
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
-        EventBus.Subscribe<PlayerOnBoardEvent>(OnPlayerOnBoard);
 
         EventBus.Subscribe<SetCellEvent>(OnSetCell);
         EventBus.Subscribe<ClearRowEvent>(OnClearRow);
@@ -105,20 +110,15 @@ public class BoardView : MonoBehaviour
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
         Vector2Int index = geometry.TransformToBoardIndex(e.PlayerPosition);
+        Vector3 newPosition = geometry.BoardIndexToTransform(index);
 
-        boardController.PlacePlayer(index, e.Color);
+        boardController.TryPlacePlayer(index, e.Color, newPosition);
     }
 
 
     // ================================
-    // Board Event Handlers
+    // Board Controller Event Handlers
     // ================================
-
-    private void OnPlayerOnBoard(PlayerOnBoardEvent e)
-    {
-        Vector3 position = geometry.BoardIndexToTransform(e.Index);
-        EventBus.Publish(new PlacePlayerEvent { PlayerPosition = position });
-    }
 
     private void OnSetCell(SetCellEvent e)
     {

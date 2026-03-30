@@ -35,6 +35,7 @@ public class BoardController: MonoBehaviour
         
     }
 
+    /*
     void OnEnable()
     {
         // Player Events
@@ -45,13 +46,13 @@ public class BoardController: MonoBehaviour
     {
         // Player Events
         EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDragging);
-    }
+    } */
 
     // ================================
     // Public Methods
     // ================================
 
-    public void PlacePlayer(Vector2Int index, CellColor color)
+    public void TryPlacePlayer(Vector2Int index, CellColor color, Vector3 newPosition)
     {
         if (!logic.ValidCell(index.x, index.y, color))
         {
@@ -59,7 +60,7 @@ public class BoardController: MonoBehaviour
             return;
         }
 
-        EventBus.Publish(new PlayerOnBoardEvent { Index = index });
+        EventBus.Publish(new PlacePlayerEvent { PlayerPosition = newPosition });
 
         RunPlay(index, color);
     }

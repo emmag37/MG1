@@ -1,11 +1,24 @@
 using UnityEngine;
 
-
-
 // ==================================================
 // Game Events
 // ==================================================
 
+// game state
+public struct StartGameEvent { }
+public struct ExitGameEvent { }
+public struct GameOverEvent { }
+public struct PauseGameEvent { }
+public struct ResumeGameEvent { }
+
+// update players
+public struct SpawnPlayerEvent
+{
+    public CellColor Color;
+}
+public struct DestroyPlayerEvent { }
+
+// update UI
 public struct UpdateScoreEvent
 {
     public int Score;
@@ -16,17 +29,12 @@ public struct UpdatePlayerPreviewEvent
     public CellColor Color;
 }
 
-public struct StartGameEvent { }
-public struct ExitGameEvent { }
-public struct GameOverEvent { }
-public struct PauseGameEvent { }
-public struct ResumeGameEvent { }
-
 
 // ==================================================
 // Board Events
 // ==================================================
 
+// game play - should declare this in the game manager?
 public struct FullBoardEvent { }
 public struct TurnCompletedEvent { }
 public struct WinEvent
@@ -34,13 +42,14 @@ public struct WinEvent
     public int Points;
 }
 
-public struct PlayerOnBoardEvent
+// update player view
+public struct ReturnPlayerEvent { }
+public struct PlacePlayerEvent
 {
-    public Vector2Int Index;
+    public Vector3 PlayerPosition;
 }
 
-public struct ReturnPlayerEvent { }
-
+// update board view
 public struct SetCellEvent
 {
     public Vector2Int Index;
@@ -57,19 +66,18 @@ public struct ClearColumnEvent
 public struct ClearRightDiagEvent { }
 public struct ClearLeftDiagEvent { }
 
-// this is only board view, so you need to clean up this logic
-public struct PlacePlayerEvent
-{
-    public Vector3 PlayerPosition;
-}
-
 // ==================================================
 // Player Events
 // ==================================================
 
+public struct InitializePlayerEvent
+{
+    public CellColor Color;
+}
+
 public struct PlayerDraggingEvent
 {
-    public Transform PlayerTransform;
+    //public Transform PlayerTransform;
     public CellColor Color;
 }
 

@@ -14,8 +14,8 @@ public class PlayerPicker
 	/// </summary>
     public struct PlayerColors
     {
-        public CellColor color;
-        public CellColor nextColor;
+        public CellColor Color;
+        public CellColor NextColor;
     }
 
     // ================================
@@ -48,10 +48,10 @@ public class PlayerPicker
     {
         PlayerColors newColors = new PlayerColors();              // return the current, non-updated state
 
-        newColors.color = nextColor;
-        newColors.nextColor = ChooseColor();
+        newColors.Color = nextColor;
+        newColors.NextColor = ChooseColor();
 
-        nextColor = newColors.nextColor;
+        nextColor = newColors.NextColor;
 
         return newColors;
     }

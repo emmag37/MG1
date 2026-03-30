@@ -1,29 +1,19 @@
 using UnityEngine;
-using System;
 
-/// <summary>
-/// Manages the player in the game scene.
-/// Handles the player movement and visual state.
-///
-/// Can:
-/// - Move the player within specified boundaries
-/// - Maintain a sprite/color state for the image, relies on sprite database
-/// - Enabling/disabling the player only affects user dragging
-/// 
-/// </summary>
+[RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(SpriteView))]
 [RequireComponent(typeof(Draggable))]
-public class Player : MonoBehaviour
+public class PlayerView : MonoBehaviour
 {
     // ================================
     // Private Fields
     // ================================
+    private PlayerController controller;
+    
     private SpriteView image;
     private Draggable movement;
 
     private Vector3 startPos;
-    private CellColor color;
-
 
     // ================================
     // Unity Lifecycle Methods
@@ -31,8 +21,11 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
+        controller = GetComponent<PlayerController>();
+
         image = GetComponent<SpriteView>();
         movement = GetComponent<Draggable>();
+
         startPos = transform.position;
 
         movement.StartDrag += HandleStartDrag;
@@ -41,26 +34,19 @@ public class Player : MonoBehaviour
 
     void OnEnable()
     {
-        // Board Events
-        EventBus.Subscribe<PlacePlayerEvent>(HandlePlacePlayer);
-        EventBus.Subscribe<ReturnPlayerEvent>(HandleReturnPlayer);
+        EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
+        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
     }
 
     void OnDisable()
     {
-        // Board Events
-        EventBus.Unsubscribe<PlacePlayerEvent>(HandlePlacePlayer);
-        EventBus.Unsubscribe<ReturnPlayerEvent>(HandleReturnPlayer);
+        EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
+        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
     }
 
-    void OnDestroy()
-    {
-        movement.StartDrag -= HandleStartDrag;
-        movement.Released -= HandleReleased;
-    }
 
     // ================================
-    // Initializers
+    // Public Methods
     // ================================
 
     /// <summary>
@@ -70,8 +56,7 @@ public class Player : MonoBehaviour
 	/// <param name="boundaries">Boundaries of the board.</param>
     public void Initialize(CellColor playerColor, Bounds boundaries)
     {
-        color = playerColor;
-        image.SetSprite(SpriteDatabase.Instance.GetSprite(color));
+        image.SetSprite(SpriteDatabase.Instance.GetSprite(playerColor));
 
         float radius = image.Radius;
 
@@ -83,27 +68,33 @@ public class Player : MonoBehaviour
         movement.Initialize(left, right, top, bottom);
     }
 
+
     // ================================
-    // Event Handlers
+    // Event Bus Methods
     // ================================
 
-    private void HandleStartDrag()
+    private void OnReturnPlayer(ReturnPlayerEvent e)
     {
-        EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = color });
+        movement.Drop(startPos);
     }
 
-    private void HandleReleased(Vector3 position)
-    {
-        EventBus.Publish(new PlayerReleasedEvent { PlayerPosition = position, Color = color });
-    }
-
-    private void HandlePlacePlayer(PlacePlayerEvent e)
+    private void OnPlacePlayer(PlacePlayerEvent e)
     {
         movement.Drop(e.PlayerPosition);
     }
 
-    private void HandleReturnPlayer(ReturnPlayerEvent e)
+
+    // ================================
+    // Private Methods
+    // ================================
+
+    private void HandleStartDrag()
     {
-        movement.Drop(startPos);
+        controller.StartDrag();
+    }
+
+    private void HandleReleased(Vector3 position)
+    {
+        controller.Released(position);
     }
 }

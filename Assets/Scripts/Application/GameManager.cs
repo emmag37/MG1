@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 
 /// <summary>
@@ -11,13 +10,7 @@ public class GameManager : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private UIManager UI;
     [SerializeField] private DataManager data;
-
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private Player playerPrefab;
-    [SerializeField] private SpriteRenderer boardView;
-    [SerializeField] private BoardController board;
 
     // ================================
     // Private Types
@@ -36,31 +29,23 @@ public class GameManager : MonoBehaviour
     // ================================
 
     private GameState state;
-
-    private PlayerPicker picker;
-    private Player player;
-    private Bounds playerBoundaries;
+    private bool activePlayer;
 
     private int score;
-   
+
+    private PlayerPicker picker;
+
 
     // ================================
     // Unity Lifecycle Methods
     // ================================
 
-    void OnValidate()
-    {
-        Debug.Assert(spawnPoint != null, "Spawn point not set");
-        Debug.Assert(playerPrefab != null, "Player prefab not set");
-        // add asserts
-    }
-
     void Awake()
     {
         state = GameState.Fresh;
-        picker = new PlayerPicker();
+        activePlayer = false;
 
-        InitializePlayerBoundaries(boardView.bounds);
+        picker = new PlayerPicker();
     }
 
     void OnEnable()
@@ -114,8 +99,6 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Playing, $"Pause called with invalid state: {state}");
 
         state = GameState.Paused;
-        player.enabled = false;
-
         EventBus.Publish(new PauseGameEvent());
     }
 
@@ -124,8 +107,6 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Paused, $"Resume called with invalid state: {state}");
 
         state = GameState.Playing;
-        player.enabled = true;
-
         EventBus.Publish(new ResumeGameEvent());
     }
 
@@ -139,7 +120,7 @@ public class GameManager : MonoBehaviour
     private void HandleTurnCompleted(TurnCompletedEvent e)
     {
         Debug.Assert(state == GameState.Playing, $"Turn ran during invalid state: {state}");
-        Debug.Assert(player != null, "Player turn completed but no active player");
+        Debug.Assert(activePlayer, "Player turn completed but no active player");
 
         RemoveCurrentPlayer();
 
@@ -175,41 +156,33 @@ public class GameManager : MonoBehaviour
     {
         // good place to put data preparation
 
-        // Reset the game
         RemoveCurrentPlayer();
+
         picker.Reset();
         score = 0;
         state = GameState.Fresh;
     }
 
-    private void InitializePlayerBoundaries(Bounds boardBounds)
-    {
-        playerBoundaries = boardBounds;
-
-        Vector3 min = playerBoundaries.min;
-        min.y = spawnPoint.position.y;
-
-        playerBoundaries.SetMinMax(min, playerBoundaries.max);
-    }
-
     private void SpawnNewPlayer()
     {
-        Debug.Assert(player == null, "Player still in existence");  // player should be null on start?
+        Debug.Assert(!activePlayer, "Tried to spawn while player active");
 
         if (state == GameState.Over) return;      // don't respawn on game over
 
         var playerColors = picker.CalculateNewPlayerColors();
-        EventBus.Publish(new UpdatePlayerPreviewEvent { Color = playerColors.nextColor });
 
-        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        player.Initialize(playerColors.color, playerBoundaries);
+        EventBus.Publish(new UpdatePlayerPreviewEvent { Color = playerColors.NextColor });
+        EventBus.Publish(new SpawnPlayerEvent { Color = playerColors.Color });
+
+        activePlayer = true;
     }
 
     private void RemoveCurrentPlayer()
     {
-        Debug.Assert(player != null, "No actve player");
-        
-        Destroy(player.gameObject);
-        player = null;
+        Debug.Assert(activePlayer, "Tried to remove when no active player");
+
+        EventBus.Publish(new DestroyPlayerEvent());
+
+        activePlayer = false;
     }
 }
