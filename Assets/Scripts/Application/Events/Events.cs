@@ -66,6 +66,13 @@ public struct ClearColumnEvent
 public struct ClearRightDiagEvent { }
 public struct ClearLeftDiagEvent { }
 
+// update ghost preview
+public struct GhostPreviewEvent
+{
+    public Vector2Int Index;
+    public CellColor OriginalColor;
+}
+
 // ==================================================
 // Player Events
 // ==================================================
@@ -77,7 +84,7 @@ public struct InitializePlayerEvent
 
 public struct PlayerDraggingEvent
 {
-    //public Transform PlayerTransform;
+    public Transform PlayerTransform;
     public CellColor Color;
 }
 

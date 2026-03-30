@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using System.Collections;
 
 // edit: need to put back resetting the board logic
 
@@ -22,8 +21,6 @@ public class BoardController: MonoBehaviour
 
     private BoardLogic logic;
 
-    //private Coroutine ghostPreview;
-
 
     // ================================
     // Unity Lifecycle Methods
@@ -35,18 +32,6 @@ public class BoardController: MonoBehaviour
         
     }
 
-    /*
-    void OnEnable()
-    {
-        // Player Events
-        EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDragging);
-    }
-
-    void OnDisable()
-    {
-        // Player Events
-        EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDragging);
-    } */
 
     // ================================
     // Public Methods
@@ -65,27 +50,33 @@ public class BoardController: MonoBehaviour
         RunPlay(index, color);
     }
 
-    // ================================
-    // Player Event Handlers
-    // ================================
-
-    private void OnPlayerDragging(PlayerDraggingEvent e)
+    // used for the ghost preview
+    public void TryGhostPreview(Vector2Int index, CellColor color)
     {
-        //ghostPreview = StartCoroutine(GhostPreviewLoop(e.PlayerTransform, e.Color));
-    }
+        bool preview = logic.ValidCell(index.x, index.y, color);
 
-    // ================================
-    // Private Methods
-    // ================================
+        if (preview)
+        {
+            EventBus.Publish(new GhostPreviewEvent
+            {
+                Index = index,
+                OriginalColor = logic.GetCellColor(index.x, index.y)
+            });
+        }
+    }
 
     /// <summary>
 	/// Resets the board to empty cells.
 	/// </summary>
-    private void Reset()
+    public void Reset()
     {
         logic.ResetBoard();
     }
 
+
+    // ================================
+    // Private Methods
+    // ================================
 
     /// <summary>
     /// Sets cell to the player's image and clears completed lines.
@@ -121,44 +112,5 @@ public class BoardController: MonoBehaviour
         if (result.Points > 0) EventBus.Publish(new WinEvent { Points = result.Points });
         EventBus.Publish(new TurnCompletedEvent());
     }
-
-
-    // ================================
-    // Coroutines
-    // ================================
-    /*
-    IEnumerator GhostPreviewLoop(Transform playerTransform, CellColor color)
-    {
-        bool ghostSet = false;
-
-        Vector2Int index = Vector2Int.zero;
-        CellColor ghostColor = CellColor.Empty;
-
-        while (true)
-        {
-            Vector3 position = playerTransform.position;
-
-            bool valid = TryGetPlayerPosition(position, color, out Vector3 cellPos, out Vector2Int newIndex);
-
-            // remove ghost preview
-            if (ghostSet && (!valid || newIndex != index))
-            {
-                boardView.SetCell(index.x, index.y, ghostColor);
-                ghostSet = false;
-            }
-
-            // set new ghost preview
-            if (!ghostSet && valid)
-            {
-                index = newIndex;
-                ghostColor = logic.GetCellColor(index.x, index.y);
-
-                boardView.SetCell(index.x, index.y, CellColor.Shadow);
-                ghostSet = true;
-            }
-
-            yield return null;
-        }
-    }*/
 
 }

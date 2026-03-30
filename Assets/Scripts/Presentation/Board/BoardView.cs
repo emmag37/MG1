@@ -16,8 +16,6 @@ public class BoardView : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private BoardController boardController;
-
     [SerializeField] private SpriteRenderer background;
     [SerializeField] private GameObject cells;
 
@@ -26,6 +24,7 @@ public class BoardView : MonoBehaviour
     // ================================
     private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
     private BoardGeometry geometry;
+    private BoardController boardController;
 
 
     // ================================
@@ -40,6 +39,7 @@ public class BoardView : MonoBehaviour
 
     void Awake()
     {
+        boardController = GetComponent<BoardController>();
         geometry = new BoardGeometry();
 
         InitializeCells();
@@ -77,6 +77,25 @@ public class BoardView : MonoBehaviour
         EventBus.Unsubscribe<ClearLeftDiagEvent>(OnClearLeftDiag);
     }
 
+
+    // ================================
+    // Public Methods - Used by Ghost Preview
+    // ================================
+
+    public Vector2Int WorldToIndex(Vector3 position)
+    {
+        return geometry.TransformToBoardIndex(position);
+    }
+
+    public Vector3 IndexToWorld(Vector2Int index)
+    {
+        return geometry.BoardIndexToTransform(index);
+    }
+
+    public void SetCell(Vector2Int index, CellColor color)
+    {
+        grid[index.x, index.y].SetColor(color);
+    }
 
     // ================================
     // Game State Event Handlers

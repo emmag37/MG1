@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
 
     public void StartDrag()
     {
-        EventBus.Publish(new PlayerDraggingEvent { Color = color });
+        EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = color });
     }
 
     public void Released(Vector3 position)

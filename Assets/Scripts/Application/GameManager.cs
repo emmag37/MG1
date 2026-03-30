@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     // Inspector Fields
     // ================================
     [SerializeField] private DataManager data;
+    [SerializeField] private BoardController board;
 
     // ================================
     // Private Types
@@ -158,6 +159,7 @@ public class GameManager : MonoBehaviour
 
         RemoveCurrentPlayer();
 
+        board.Reset();
         picker.Reset();
         score = 0;
         state = GameState.Fresh;
