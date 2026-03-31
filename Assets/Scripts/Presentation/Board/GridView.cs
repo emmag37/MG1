@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GridView : MonoBehaviour
 {
@@ -28,16 +29,12 @@ public class GridView : MonoBehaviour
     {
         EventBus.Subscribe<PlacePlayerEvent>(OnSetPlayerCell);
         EventBus.Subscribe<GhostPreviewEvent>(OnGhostPreview);
-
-        EventBus.Subscribe<WinEvent>(OnClearLines);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<PlacePlayerEvent>(OnSetPlayerCell);
         EventBus.Unsubscribe<GhostPreviewEvent>(OnGhostPreview);
-
-        EventBus.Unsubscribe<WinEvent>(OnClearLines);
     }
 
     // ================================
@@ -93,6 +90,21 @@ public class GridView : MonoBehaviour
             cell.SetEmpty();
         }
     }
+
+    public List<Cell> GetCellsToClear(Vector2Int index, bool row, bool col, bool rDiag, bool lDiag)
+    {
+        // make sure to not add the current player twice
+        List<Cell> cells = new List<Cell>();
+
+        if (row) AddRowMinusPlayer(cells, index);
+        if (col) AddColMinusPlayer(cells, index);
+        if (rDiag) AddRDiagMinusPlayer(cells, index);
+        if (lDiag) AddLDiagMinusPlayer(cells, index);
+
+        cells.Add(grid[index.x, index.y]);
+
+        return cells;
+    }
     
 
     // ================================
@@ -109,52 +121,46 @@ public class GridView : MonoBehaviour
         grid[e.Index.x, e.Index.y].SetColor(CellColor.Shadow);
     }
 
-    private void OnClearLines(WinEvent e)
-    {
-        // make an animation function - run animation then remove the pieces
-        // leaning towards making your animation coordinator then adjusting this to best fit that
-        // could maybe create a queue of all cells to pop, or just an array
-
-        if (e.Row != -1) ClearRow(e.Row);
-        if (e.Column != -1) ClearColumn(e.Column);
-        if (e.RightDiag) ClearRightDiag();
-        if (e.LeftDiag) ClearLeftDiag();
-    }
-
-
     // ================================
     // Private Methods
     // ================================
 
-    private void ClearRow(int row)
+    private void AddRowMinusPlayer(List<Cell> cells, Vector2Int index)
     {
-        for (int i = 0; i < RowSize; i++)
+        int x = index.x;
+        for (int y = 0; y < RowSize; y++)
         {
-            grid[row, i].Pop();
+            if (y != index.y)
+                cells.Add(grid[x, y]);
         }
     }
 
-    private void ClearColumn(int col)
+    private void AddColMinusPlayer(List<Cell> cells, Vector2Int index)
     {
-        for (int i = 0; i < RowSize; i++)
+        int y = index.y;
+        for (int x = 0; x < RowSize; x++)
         {
-            grid[i, col].Pop();
+            if (x != index.x)
+                cells.Add(grid[x, y]);
         }
     }
 
-    private void ClearRightDiag()
+    private void AddRDiagMinusPlayer(List<Cell> cells, Vector2Int index)
     {
         for (int i = 0; i < RowSize; i++)
         {
-            grid[i, i].Pop();
+            if (i != index.x)
+                cells.Add(grid[i, i]);
         }
     }
 
-    private void ClearLeftDiag()
+    private void AddLDiagMinusPlayer(List<Cell> cells, Vector2Int index)
     {
+        int offset = RowSize - 1;
         for (int i = 0; i < RowSize; i++)
         {
-            grid[RowSize - 1 - i, i].Pop();
+            if (offset - i != index.x)
+                cells.Add(grid[offset - i, i]);
         }
     }
 }

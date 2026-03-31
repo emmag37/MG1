@@ -9,6 +9,7 @@ public class ScoreAnimation : MonoBehaviour
     // Private Fields
     // ==================================================
     private Text pointsText;
+    private RectTransform canvasRect;   // parent canvas
 
 
     // ==================================================
@@ -18,29 +19,36 @@ public class ScoreAnimation : MonoBehaviour
     void Awake()
     {
         pointsText = GetComponent<Text>();
-    }
-
-    void OnEnable()
-    {
-        EventBus.Subscribe<WinEvent>(OnAnimateScore);
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<WinEvent>(OnAnimateScore);
+        canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
     }
 
 
     // ==================================================
-    // Private Methods
+    // Public Methods
     // ==================================================
 
-    private void OnAnimateScore(WinEvent e)
+    public void AnimateScore(int points, Vector3 worldPos)
     {
-        pointsText.text = $"+{e.Points}";
+        pointsText.text = $"+{points}";
+
+        // update the transform: world -> screen -> UI
+        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect, 
+            screenPos,
+            null, // if overlay
+            out Vector2 uiPos
+        );
+
+        pointsText.transform.localPosition = uiPos;
 
         StartCoroutine(AnimatePointsRoutine());
     }
+
+
+    // ==================================================
+    // Coroutine
+    // ==================================================
 
     IEnumerator AnimatePointsRoutine()
     {

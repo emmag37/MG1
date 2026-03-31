@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(SpriteView))]
 [RequireComponent(typeof(Animator))]
@@ -8,6 +9,11 @@ public class Cell : MonoBehaviour
     // Constants
     // ==================================================
     private const int Empty = 0;    // potentially make global enum in sprite database
+
+    // ==================================================
+    // Local Events
+    // ==================================================
+    public event Action<Cell> PopFinished;
 
     // ==================================================
     // Inspector Fields
@@ -51,16 +57,6 @@ public class Cell : MonoBehaviour
         SetEmpty();
     }
 
-    // ==================================================
-    // Event Handlers
-    // ==================================================
-
-    public void OnAnimationComplete()
-    {
-        //Debug.Log($"completed animation on {gameObject.name}", this);
-
-        SetEmpty();
-    }
 
     // ==================================================
     // Public Methods
@@ -89,5 +85,18 @@ public class Cell : MonoBehaviour
     public void Pop()
     {
         animator.SetTrigger("PopCell");
+    }
+
+
+    // ==================================================
+    // Event Handlers
+    // ==================================================
+
+    private void OnAnimationComplete()
+    {
+        //Debug.Log($"completed animation on {gameObject.name}", this);
+
+        SetEmpty();
+        PopFinished?.Invoke(this);
     }
 }

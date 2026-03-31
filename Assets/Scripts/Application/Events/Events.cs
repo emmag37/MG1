@@ -34,13 +34,15 @@ public struct UpdatePlayerPreviewEvent
 // Board Events
 // ==================================================
 
-// game play - should declare this in the game manager?
-public struct FullBoardEvent { }
-public struct TurnCompletedEvent { }
+// game play
+public struct FullBoardEvent { }    // make local event?
+public struct TurnCompletedEvent { }    // make local event?
 public struct WinEvent
 {
-    public int Row;
-    public int Column;
+    public Vector2Int Index;
+
+    public bool Row;
+    public bool Column;
     public bool RightDiag;
     public bool LeftDiag;
 
@@ -67,12 +69,6 @@ public struct GhostPreviewEvent
 // ==================================================
 // Player Events
 // ==================================================
-/*
-public struct InitializePlayerEvent
-{
-    public CellColor Color;
-}*/
-
 
 public struct PlayerDraggingEvent
 {

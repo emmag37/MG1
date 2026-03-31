@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class BoardView : MonoBehaviour
 {
@@ -18,6 +20,8 @@ public class BoardView : MonoBehaviour
     // ================================
     [SerializeField] private SpriteRenderer background;
     [SerializeField] private GridView gridView;
+
+    [SerializeField] private ScoreAnimation scoreAnimation;
 
     // ================================
     // Private Fields
@@ -51,6 +55,7 @@ public class BoardView : MonoBehaviour
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        EventBus.Subscribe<WinEvent>(OnWin);
     }
 
     void OnDisable()
@@ -60,6 +65,7 @@ public class BoardView : MonoBehaviour
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        EventBus.Unsubscribe<WinEvent>(OnWin);
     }
 
 
@@ -109,7 +115,7 @@ public class BoardView : MonoBehaviour
 
 
     // ================================
-    // Player Event Handlers
+    // Player/Board Event Handlers
     // ================================
 
     private void OnPlayerReleased(PlayerReleasedEvent e)
@@ -118,5 +124,42 @@ public class BoardView : MonoBehaviour
         Vector3 newPosition = geometry.BoardIndexToTransform(index);
 
         boardController.TryPlacePlayer(index, e.Color, newPosition);
+    }
+
+    private void OnWin(WinEvent e)  // need to subscribe
+    {
+        List<Cell> cells = gridView.GetCellsToClear(e.Index, e.Row, e.Column, e.RightDiag, e.LeftDiag);
+        Vector3 playerPos = geometry.BoardIndexToTransform(e.Index);
+
+        StartCoroutine(WinAnimationRoutine(cells, e.Points, playerPos));
+    }
+
+    // ================================
+    // Coroutines
+    // ================================
+
+    IEnumerator WinAnimationRoutine(List<Cell> cells, int points, Vector3 playerPos)
+    {
+        int cleared = 0;
+        int total = cells.Count;
+
+        void OnCellCleared(Cell cell)
+        {
+            cleared++;
+            cell.PopFinished -= OnCellCleared;
+        }
+
+        // pop each cell
+        foreach (Cell cell in cells)
+        {
+            cell.PopFinished += OnCellCleared;
+            cell.Pop();
+        }
+
+        // wait for all cells to pop
+        yield return new WaitUntil(() => cleared >= total);
+
+        // run score animation
+        scoreAnimation.AnimateScore(points, playerPos);
     }
 }

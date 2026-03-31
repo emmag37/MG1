@@ -10060,7 +10060,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoardView
   background: {fileID: 1798150610}
   gridView: {fileID: 1405004970}
-  cells: {fileID: 1405004968}
+  scoreAnimation: {fileID: 456301254}
 --- !u!114 &2022480359
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -110,8 +110,10 @@ public class BoardController: MonoBehaviour
         {
             EventBus.Publish(new WinEvent
             {
-                Row = result.ClearRow ? index.x : -1,
-                Column = result.ClearCol ? index.y : -1,
+                Index = index,
+
+                Row = result.ClearRow,
+                Column = result.ClearCol,
                 RightDiag = result.ClearRDiag,
                 LeftDiag = result.ClearLDiag,
 
