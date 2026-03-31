@@ -24,6 +24,8 @@ public class PlayerView : MonoBehaviour
         controller = GetComponent<PlayerController>();
 
         image = GetComponent<SpriteView>();
+        image.Initialize();
+
         movement = GetComponent<Draggable>();
 
         startPos = transform.position;

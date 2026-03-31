@@ -14,8 +14,8 @@ public class SpriteView : MonoBehaviour
     // ================================
 
     /// <summary>
-	/// Radius of the game object.
-	/// </summary>
+    /// Radius of the game object.
+    /// </summary>
     public float Radius { get; private set; }
 
     // ================================
@@ -26,20 +26,15 @@ public class SpriteView : MonoBehaviour
 
 
     // ================================
-    // Unity Lifecycle Methods
-    // ================================
-
-    void Awake()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        
-        UpdateRadius();
-    }
-
-
-    // ================================
     // Public Methods
     // ================================
+
+    public void Initialize()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        Radius = spriteRenderer.bounds.extents.x;
+
+    }
 
     /// <summary>
 	/// Sets the objects sprite to the given color.
@@ -51,18 +46,6 @@ public class SpriteView : MonoBehaviour
         Debug.Assert(sprite != null, "Attempted to set sprite to null");
 
         spriteRenderer.sprite = sprite;
-        UpdateRadius();
-    }
-
-
-    // ================================
-    // Private Methods
-    // ================================
-
-    private void UpdateRadius()
-    {
-        Debug.Assert(spriteRenderer.sprite != null, "Sprite not set");
-
         Radius = spriteRenderer.bounds.extents.x;
     }
 }

@@ -30,18 +30,6 @@ public class Cell : MonoBehaviour
 
     private Animator animator;
 
-    // ==================================================
-    // Unity Lifecycle Methods
-    // ==================================================
-
-    void Awake()
-    {
-        image = GetComponent<SpriteView>();
-        Radius = image.Radius;
-
-        animator = GetComponent<Animator>();
-    }
-
 
     // ==================================================
     // Initialization
@@ -49,10 +37,17 @@ public class Cell : MonoBehaviour
     
     /// <summary>
 	/// Initialize the cell's row count and sprite.
+	/// Deterministic.
 	/// </summary>
 	/// <param name="rows">Number of rows in the grid.</param>
     public void Initialize()    // leave this function for future additions, ie animations, sound effects
     {
+        image = GetComponent<SpriteView>();
+        image.Initialize();
+        Radius = image.Radius;
+
+        animator = GetComponent<Animator>();
+
         SetEmpty();
     }
 

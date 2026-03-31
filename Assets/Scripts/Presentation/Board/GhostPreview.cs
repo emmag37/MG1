@@ -60,6 +60,8 @@ public class GhostPreview : MonoBehaviour
         // stop the ghost preview
         StopCoroutine(preview);
 
+        previewSet = false;
+
         EventBus.Unsubscribe<GhostPreviewEvent>(OnPreview);
     }
 

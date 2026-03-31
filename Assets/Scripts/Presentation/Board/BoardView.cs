@@ -42,9 +42,8 @@ public class BoardView : MonoBehaviour
         boardController = GetComponent<BoardController>();
         geometry = new BoardGeometry();
 
-        InitializeCells();
+        InitializeGrid();
         geometry.Initialize(grid[0, 0].Radius, BoardBounds);
-
     }
 
     void OnEnable()
@@ -182,7 +181,7 @@ public class BoardView : MonoBehaviour
     // ================================
 
     // Initializes the grid cells using children in the scene view
-    private void InitializeCells()
+    private void InitializeGrid()
     {
         Cell[] childCells = cells.GetComponentsInChildren<Cell>();
 
@@ -193,11 +192,12 @@ public class BoardView : MonoBehaviour
         {
             Vector2Int index = cell.Index;
 
-            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y <= RowSize,
+            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y < RowSize,
                 $"Index {index} is out of bounds");
             Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
 
             grid[index.x, index.y] = cell;
+            grid[index.x, index.y].Initialize();
         }
 
         for (int x = 0; x < RowSize; x++)
