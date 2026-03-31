@@ -71,8 +71,6 @@ public class GhostPreview : MonoBehaviour
 
         originalColor = e.OriginalColor;
         previewIndex = e.Index;
-
-        boardView.SetCell(e.Index, CellColor.Shadow);
     }
 
 
@@ -110,7 +108,8 @@ public class GhostPreview : MonoBehaviour
     private void ClearPreview()
     {
         previewSet = false;
-        boardView.SetCell(previewIndex, originalColor);
+
+        boardView.SetCellColor(previewIndex, originalColor);
     }
 
 }

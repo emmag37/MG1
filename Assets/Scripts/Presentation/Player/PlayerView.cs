@@ -19,7 +19,44 @@ public class PlayerView : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
-    void Awake()
+    void OnEnable()
+    {
+        EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
+        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
+        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
+    }
+
+    // ================================
+    // Initializers
+    // ================================
+
+    /// <summary>
+    /// Initializes a player to be moved around the board and sets its color.
+    /// </summary>
+    /// <param name="color">Color id of the player.</param>
+    /// <param name="boundaries">Boundaries of the board.</param>
+    public void Initialize(CellColor playerColor, Bounds boundaries)
+    {
+        InitializeComponents();
+
+        image.SetSprite(SpriteDatabase.Instance.GetSprite(playerColor));
+
+        float radius = image.Radius;
+
+        float left = boundaries.min.x + radius;     // adjust the board boundaries to the player size
+        float right = boundaries.max.x - radius;
+        float top = boundaries.max.y - radius;
+        float bottom = boundaries.min.y;
+
+        movement.Initialize(left, right, top, bottom);
+    }
+
+    private void InitializeComponents()
     {
         controller = GetComponent<PlayerController>();
 
@@ -33,43 +70,6 @@ public class PlayerView : MonoBehaviour
         movement.StartDrag += HandleStartDrag;
         movement.Released += HandleReleased;
     }
-
-    void OnEnable()
-    {
-        EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
-        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
-        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
-    }
-
-
-    // ================================
-    // Public Methods
-    // ================================
-
-    /// <summary>
-	/// Initializes a player to be moved around the board and sets its color.
-	/// </summary>
-	/// <param name="color">Color id of the player.</param>
-	/// <param name="boundaries">Boundaries of the board.</param>
-    public void Initialize(CellColor playerColor, Bounds boundaries)
-    {
-        image.SetSprite(SpriteDatabase.Instance.GetSprite(playerColor));
-
-        float radius = image.Radius;
-
-        float left = boundaries.min.x + radius;     // adjust the board boundaries to the player size
-        float right = boundaries.max.x - radius;
-        float top = boundaries.max.y - radius;
-        float bottom = boundaries.min.y;
-
-        movement.Initialize(left, right, top, bottom);
-    }
-
 
     // ================================
     // Event Bus Methods

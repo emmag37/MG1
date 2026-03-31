@@ -45,7 +45,12 @@ public class BoardController: MonoBehaviour
             return;
         }
 
-        EventBus.Publish(new PlacePlayerEvent { PlayerPosition = newPosition });
+        EventBus.Publish(new PlacePlayerEvent
+        {
+            PlayerPosition = newPosition,
+            Index = index,
+            Color = color
+        });
 
         RunPlay(index, color);
     }
@@ -89,8 +94,6 @@ public class BoardController: MonoBehaviour
     /// </remarks>
     private void RunPlay(Vector2Int index, CellColor color)
     {
-        EventBus.Publish(new SetCellEvent { Index = index, Color = color });
-
         BoardLogic.PlayResult result;
         if (!logic.TryPlacePlayer(index.x, index.y, color, out result))     // run the board logic
         {
@@ -102,14 +105,20 @@ public class BoardController: MonoBehaviour
             EventBus.Publish(new FullBoardEvent());                    // activate a game over
             return;
         }
-            
-        // set full rows to empty cells
-        if (result.ClearRow) EventBus.Publish(new ClearRowEvent { Row = index.x });
-        if (result.ClearCol) EventBus.Publish(new ClearColumnEvent { Column = index.y });
-        if (result.ClearRDiag) EventBus.Publish(new ClearRightDiagEvent());
-        if (result.ClearLDiag) EventBus.Publish(new ClearLeftDiagEvent());
 
-        if (result.Points > 0) EventBus.Publish(new WinEvent { Points = result.Points });
+        if (result.Points > 0)
+        {
+            EventBus.Publish(new WinEvent
+            {
+                Row = result.ClearRow ? index.x : -1,
+                Column = result.ClearCol ? index.y : -1,
+                RightDiag = result.ClearRDiag,
+                LeftDiag = result.ClearLDiag,
+
+                Points = result.Points
+            });
+        }
+
         EventBus.Publish(new TurnCompletedEvent());
     }
 

@@ -39,6 +39,11 @@ public struct FullBoardEvent { }
 public struct TurnCompletedEvent { }
 public struct WinEvent
 {
+    public int Row;
+    public int Column;
+    public bool RightDiag;
+    public bool LeftDiag;
+
     public int Points;
 }
 
@@ -47,24 +52,10 @@ public struct ReturnPlayerEvent { }
 public struct PlacePlayerEvent
 {
     public Vector3 PlayerPosition;
-}
 
-// update board view
-public struct SetCellEvent
-{
     public Vector2Int Index;
     public CellColor Color;
 }
-public struct ClearRowEvent
-{
-    public int Row;
-}
-public struct ClearColumnEvent
-{
-    public int Column;
-}
-public struct ClearRightDiagEvent { }
-public struct ClearLeftDiagEvent { }
 
 // update ghost preview
 public struct GhostPreviewEvent
@@ -76,11 +67,12 @@ public struct GhostPreviewEvent
 // ==================================================
 // Player Events
 // ==================================================
-
+/*
 public struct InitializePlayerEvent
 {
     public CellColor Color;
-}
+}*/
+
 
 public struct PlayerDraggingEvent
 {
@@ -95,7 +87,7 @@ public struct PlayerReleasedEvent
 }
 
 // ==================================================
-// UI Events
+// Presentation Events
 // ==================================================
 
 public struct TransitionEvent { }

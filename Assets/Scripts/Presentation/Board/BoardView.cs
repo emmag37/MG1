@@ -17,12 +17,11 @@ public class BoardView : MonoBehaviour
     // Inspector Fields
     // ================================
     [SerializeField] private SpriteRenderer background;
-    [SerializeField] private GameObject cells;
+    [SerializeField] private GridView gridView;
 
     // ================================
     // Private Fields
     // ================================
-    private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
     private BoardGeometry geometry;
     private BoardController boardController;
 
@@ -34,7 +33,6 @@ public class BoardView : MonoBehaviour
     void OnValidate()
     {
         Debug.Assert(background != null, "Background not set in board view");
-        Debug.Assert(cells != null, "Cells not set in board view");
     }
 
     void Awake()
@@ -42,8 +40,8 @@ public class BoardView : MonoBehaviour
         boardController = GetComponent<BoardController>();
         geometry = new BoardGeometry();
 
-        InitializeGrid();
-        geometry.Initialize(grid[0, 0].Radius, BoardBounds);
+        gridView.Initialize();
+        geometry.Initialize(gridView.CellRadius, BoardBounds);
     }
 
     void OnEnable()
@@ -53,12 +51,6 @@ public class BoardView : MonoBehaviour
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
-
-        EventBus.Subscribe<SetCellEvent>(OnSetCell);
-        EventBus.Subscribe<ClearRowEvent>(OnClearRow);
-        EventBus.Subscribe<ClearColumnEvent>(OnClearColumn);
-        EventBus.Subscribe<ClearRightDiagEvent>(OnClearRightDiag);
-        EventBus.Subscribe<ClearLeftDiagEvent>(OnClearLeftDiag);
     }
 
     void OnDisable()
@@ -68,18 +60,13 @@ public class BoardView : MonoBehaviour
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
-
-        EventBus.Unsubscribe<SetCellEvent>(OnSetCell);
-        EventBus.Unsubscribe<ClearRowEvent>(OnClearRow);
-        EventBus.Unsubscribe<ClearColumnEvent>(OnClearColumn);
-        EventBus.Unsubscribe<ClearRightDiagEvent>(OnClearRightDiag);
-        EventBus.Unsubscribe<ClearLeftDiagEvent>(OnClearLeftDiag);
     }
 
 
     // ================================
-    // Public Methods - Used by Ghost Preview
+    // Public Methods
     // ================================
+    // used by ghost preview
 
     public Vector2Int WorldToIndex(Vector3 position)
     {
@@ -91,9 +78,9 @@ public class BoardView : MonoBehaviour
         return geometry.BoardIndexToTransform(index);
     }
 
-    public void SetCell(Vector2Int index, CellColor color)
+    public void SetCellColor(Vector2Int index, CellColor color)
     {
-        grid[index.x, index.y].SetColor(color);
+        gridView.SetCell(index, color);
     }
 
     // ================================
@@ -102,22 +89,22 @@ public class BoardView : MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
-        ResetCells();
+        gridView.ResetCells();
 
         background.gameObject.SetActive(true);
-        cells.gameObject.SetActive(true);
+        gridView.gameObject.SetActive(true);
     }
 
     private void OnExitGame(ExitGameEvent e)
     {
         background.gameObject.SetActive(true);
-        cells.gameObject.SetActive(true);
+        gridView.gameObject.SetActive(true);
     }
 
     private void OnGameOver(GameOverEvent e)
     {
         background.gameObject.SetActive(true);
-        cells.gameObject.SetActive(true);
+        gridView.gameObject.SetActive(true);
     }
 
 
@@ -132,89 +119,4 @@ public class BoardView : MonoBehaviour
 
         boardController.TryPlacePlayer(index, e.Color, newPosition);
     }
-
-
-    // ================================
-    // Board Controller Event Handlers
-    // ================================
-
-    private void OnSetCell(SetCellEvent e)
-    {
-        grid[e.Index.x, e.Index.y].SetColor(e.Color);
-    }
-
-    private void OnClearRow(ClearRowEvent e)
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[e.Row, i].Pop();
-        }
-    }
-
-    private void OnClearColumn(ClearColumnEvent e)
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[i, e.Column].Pop();
-        }
-    }
-
-    private void OnClearRightDiag(ClearRightDiagEvent e)
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[i, i].Pop();
-        }
-    }
-
-    private void OnClearLeftDiag(ClearLeftDiagEvent e)
-    {
-        for (int i = 0; i < RowSize; i++)
-        {
-            grid[RowSize - 1 - i, i].Pop();
-        }
-    }
-
-
-    // ================================
-    // Private Methods
-    // ================================
-
-    // Initializes the grid cells using children in the scene view
-    private void InitializeGrid()
-    {
-        Cell[] childCells = cells.GetComponentsInChildren<Cell>();
-
-        int expected = RowSize * RowSize;
-        Debug.Assert(expected == childCells.Length, $"Expected {expected}, found {childCells.Length}");
-
-        foreach (Cell cell in childCells)
-        {
-            Vector2Int index = cell.Index;
-
-            Debug.Assert(index.x >= 0 && index.x < RowSize && index.y >= 0 && index.y < RowSize,
-                $"Index {index} is out of bounds");
-            Debug.Assert(grid[index.x, index.y] == null, $"Duplicate cell at {index}");
-
-            grid[index.x, index.y] = cell;
-            grid[index.x, index.y].Initialize();
-        }
-
-        for (int x = 0; x < RowSize; x++)
-        {
-            for (int y = 0; y < RowSize; y++)
-            {
-                Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
-            }
-        }
-    }
-
-    private void ResetCells()
-    {
-        foreach (Cell cell in grid)
-        {
-            cell.SetEmpty();
-        }
-    }
-
 }
