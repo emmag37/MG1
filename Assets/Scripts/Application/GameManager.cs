@@ -8,8 +8,16 @@ using System;
 public class GameManager : MonoBehaviour
 {
     // ================================
+    // Local Events
+    // ================================
+
+    public Action<int, int> UpdateScore;
+    public Action<CellColor> UpdatePlayerPreview;
+
+    // ================================
     // Inspector Fields
     // ================================
+
     [SerializeField] private DataManager data;
     [SerializeField] private BoardController board;
 
@@ -52,16 +60,16 @@ public class GameManager : MonoBehaviour
     void OnEnable()
     {
         // Board events
-        EventBus.Subscribe<FullBoardEvent>(HandleFullBoard);
-        EventBus.Subscribe<TurnCompletedEvent>(HandleTurnCompleted);
+        board.FullBoard += HandleFullBoard;
+        board.TurnCompleted += HandleTurnCompleted;
         EventBus.Subscribe<WinEvent>(HandleWin);
     }
 
     void OnDisable()
     {
         // Board events
-        EventBus.Unsubscribe<FullBoardEvent>(HandleFullBoard);
-        EventBus.Unsubscribe<TurnCompletedEvent>(HandleTurnCompleted);
+        board.FullBoard -= HandleFullBoard;
+        board.TurnCompleted -= HandleTurnCompleted;
         EventBus.Unsubscribe<WinEvent>(HandleWin);
     }
 
@@ -118,7 +126,7 @@ public class GameManager : MonoBehaviour
 
     // moves the player back to start or on the board.
     // if on the board, executes the player's turn.
-    private void HandleTurnCompleted(TurnCompletedEvent e)
+    private void HandleTurnCompleted()  // turn this into a local event
     {
         Debug.Assert(state == GameState.Playing, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
@@ -128,16 +136,7 @@ public class GameManager : MonoBehaviour
         if (state == GameState.Playing) SpawnNewPlayer();
     }
 
-    private void HandleWin(WinEvent e)
-    {
-        score += e.Points;
-
-        data.SetScore(score);
-        EventBus.Publish(new UpdateScoreEvent { Score = score, HighScore = data.Profile.HighScore });
-    }
-
-
-    private void HandleFullBoard(FullBoardEvent e)    // called on a game over
+    private void HandleFullBoard()    // called on a game over  - turn this into a local event
     {
         Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}");
 
@@ -148,6 +147,13 @@ public class GameManager : MonoBehaviour
         EventBus.Publish(new GameOverEvent());
     }
 
+    private void HandleWin(WinEvent e)
+    {
+        score += e.Points;
+
+        data.SetScore(score);
+        UpdateScore?.Invoke(score, data.Profile.HighScore);
+    }
 
     // ================================
     // Private Methods
@@ -173,7 +179,7 @@ public class GameManager : MonoBehaviour
 
         var playerColors = picker.CalculateNewPlayerColors();
 
-        EventBus.Publish(new UpdatePlayerPreviewEvent { Color = playerColors.NextColor });
+        UpdatePlayerPreview?.Invoke(playerColors.NextColor);
         EventBus.Publish(new SpawnPlayerEvent { Color = playerColors.Color });
 
         activePlayer = true;

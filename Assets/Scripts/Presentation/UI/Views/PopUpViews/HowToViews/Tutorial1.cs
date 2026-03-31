@@ -16,6 +16,6 @@ public class Tutorial1 : PopUpView
     {
         base.Awake();
 
-        nextButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Tutorial2));
+        nextButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.Tutorial2, new NoData()));
     }
 }

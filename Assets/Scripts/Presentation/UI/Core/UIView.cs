@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// </summary>
 public abstract class UIView : MonoBehaviour
 {
-    protected UIManager UI => UIManager.Instance;
+    protected ViewController Controller => ViewController.Instance;
 
     // show methods
     public virtual void Show()
@@ -40,12 +40,7 @@ public abstract class PopUpView : UIView
 
     protected virtual void Awake()
     {
-        exitButton.onClick.AddListener(OnExitClicked);
-    }
-
-    protected virtual void OnExitClicked()
-    {
-        UI.ClearOverlay(); // default behavior
+        exitButton.onClick.AddListener(() => Controller.ClearOverlay());
     }
 }
 

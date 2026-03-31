@@ -36,13 +36,13 @@ public class PauseView: PopUpView<GameSettings>
     {
         base.Awake();
 
-        homeButton.onClick.AddListener(UI.GameManager.ExitGame);
+        homeButton.onClick.AddListener(() => Controller.ShowView(BaseViewType.Home, new PlayerProfile()));
+        restartButton.onClick.AddListener(() => Controller.ShowView(BaseViewType.GamePlay, new NoData()));
 
-        restartButton.onClick.AddListener(UI.GameManager.StartGame);
-        helpButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Tutorial1));
+        helpButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.Tutorial1, new NoData()));
 
-        musicSlider.onValueChanged.AddListener((value) => UI.UpdateMusicOn((int)value));
-        effectsSlider.onValueChanged.AddListener((value) => UI.UpdateEffectsOn((int)value));
+        //musicSlider.onValueChanged.AddListener((value) => UI.UpdateMusicOn((int)value)); - add back data input
+        //effectsSlider.onValueChanged.AddListener((value) => UI.UpdateEffectsOn((int)value)); - add back data input
     }
 
 
@@ -57,10 +57,4 @@ public class PauseView: PopUpView<GameSettings>
 
         base.Show(data);
     }
-
-    protected override void OnExitClicked()
-    {
-        UI.GameManager.ResumeGame();
-    }
-
 }

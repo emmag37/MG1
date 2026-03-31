@@ -26,9 +26,10 @@ public class HomeView: BaseView<PlayerProfile>
 
     void Awake()
     {
-        profileButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.Profile));
-        scoreHistoryButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.ScoreHistory));
-        playButton.onClick.AddListener(UI.GameManager.StartGame);
+        profileButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.Profile, new NoData()));
+        scoreHistoryButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.ScoreHistory, new NoData()));
+
+        playButton.onClick.AddListener(() => Controller.ShowView(BaseViewType.GamePlay, new NoData()));
     }
 
     // ==================================================

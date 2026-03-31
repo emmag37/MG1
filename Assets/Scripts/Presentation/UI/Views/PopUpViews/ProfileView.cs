@@ -31,9 +31,9 @@ public class ProfileView : PopUpView<PlayerProfile>
     {
         base.Awake();
 
-        usernameInput.onEndEdit.AddListener(UI.UpdateUsername);  // change to on submit only later
+        //usernameInput.onEndEdit.AddListener(UI.UpdateUsername);  fix data entry
 
-        editAvatarButton.onClick.AddListener(() => UI.PushOverlay(PopUpViewType.ChooseAvatar)); 
+        editAvatarButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.ChooseAvatar, new NoData())); 
     }
 
     // ==================================================

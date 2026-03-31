@@ -2,14 +2,18 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+// to-do:
+    // need to reconfigure passing data to the views
+    // add back data entry for profile view, choose avatar view, pause view
 
+// point of connection with the game manager and data manager
 public class UIManager : MonoBehaviour
 {
     // ==================================================
     // Public Fields
     // ==================================================
     public static UIManager Instance { get; private set; }
-    public GameManager GameManager; // views need to access
+    
 
     // ==================================================
     // Inspector Fields
@@ -21,6 +25,7 @@ public class UIManager : MonoBehaviour
     // Private Fields
     // ==================================================
     private DataManager data => DataManager.Instance;
+    private GameManager gameManager; 
 
     // ================================
     // Unity Lifecycle Methods
@@ -43,33 +48,37 @@ public class UIManager : MonoBehaviour
 
         if (data.Settings.HasLaunched == 0)
         {
-            PushOverlay(PopUpViewType.Tutorial1);
+            viewController.PushOverlay(PopUpViewType.Tutorial1, new NoData());
             data.SetLaunched();
         }
     }
 
     void OnEnable()
     {
-        EventBus.Subscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
-        EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
-        EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
 
-        EventBus.Subscribe<UpdateScoreEvent>(OnUpdateScore);
-        EventBus.Subscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
+        gameManager.UpdateScore += OnUpdateScore;
+        gameManager.UpdatePlayerPreview += OnUpdatePlayerPreview;
+
+        // subscribe to view controller events
+        viewController.StartPressed += HandleStartPressed;
+        viewController.ExitGamePressed += HandleExitGamePressed;
+        viewController.PausePressed += HandlePausePressed;
+        viewController.ResumePressed += HandleResumePressed;
     }
 
     void OnDisable()
     {
-        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
-        EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
-        EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
 
-        EventBus.Unsubscribe<UpdateScoreEvent>(OnUpdateScore);
-        EventBus.Unsubscribe<UpdatePlayerPreviewEvent>(OnUpdatePlayerPreview);
+        gameManager.UpdateScore -= OnUpdateScore;
+        gameManager.UpdatePlayerPreview -= OnUpdatePlayerPreview;
+
+        // subscribe to view controller events
+        viewController.StartPressed -= HandleStartPressed;
+        viewController.ExitGamePressed -= HandleExitGamePressed;
+        viewController.PausePressed -= HandlePausePressed;
+        viewController.ResumePressed -= HandleResumePressed;
     }
 
 
@@ -103,105 +112,37 @@ public class UIManager : MonoBehaviour
     }
 
     // ==================================================
-    // View Management Methods
+    // View Controller Handlers
     // ==================================================
 
-    public void ShowView(BaseViewType type) // want to get rid of this wrapper
+    private void HandleStartPressed()
     {
-        EventBus.Publish(new TransitionEvent()); // move this to the view controller
+        hudController.UpdateScoreText(0, data.Profile.HighScore);
+        hudController.Show();
 
-        switch (type)
-        {
-            case BaseViewType.Home:
-                {
-                    viewController.ShowView(type, data.Profile);
-                    break;
-                }
-
-            default:
-                {
-                    viewController.ShowView(type, new NoData());
-                    break;
-                }
-        }
-    }
-    
-    public void PushOverlay(PopUpViewType type)
-    {
-        EventBus.Publish(new TransitionEvent());
-
-        switch (type)
-        {
-            case PopUpViewType.Pause:
-                {
-                    GameManager.PauseGame();
-                    viewController.PushOverlay(type, data.Settings);
-                    break;
-                }
-
-            case PopUpViewType.Profile:
-                {
-                    viewController.PushOverlay(type, data.Profile);
-                    break;
-                }
-
-            case PopUpViewType.ChooseAvatar:
-                {
-                    viewController.PushOverlay(type, data.Profile);
-                    break;
-                }
-
-            default:
-                {
-                    viewController.PushOverlay(type, new NoData());
-                    break;
-                }
-        }
+        gameManager.StartGame();
     }
 
-
-    public void PopOverlay()
+    private void HandleExitGamePressed()
     {
-        EventBus.Publish(new TransitionEvent());
+        hudController.Hide();
 
-        PopUpViewType overlay = viewController.PopOverlay();
-
-        if (overlay == PopUpViewType.Pause)
-        {
-            GameManager.ResumeGame();
-        }
+        gameManager.ExitGame();
     }
 
-    public void ClearOverlay()
+    private void HandlePausePressed()
     {
-        EventBus.Publish(new TransitionEvent());
-
-        PopUpViewType finalOverlay = viewController.ClearOverlay();
-
-        if (finalOverlay == PopUpViewType.Pause)
-        {
-            GameManager.ResumeGame();
-        }
+        gameManager.PauseGame();
     }
 
+    private void HandleResumePressed()
+    {
+        gameManager.ResumeGame();
+    }
 
     // ==================================================
     // Game State Event Handlers
     // ==================================================
-
-    private void OnStartGame(StartGameEvent e)
-    {
-        viewController.ShowView(BaseViewType.GamePlay, new NoData());
-
-        hudController.UpdateScoreText(0, data.Profile.HighScore);
-        hudController.Show();
-    }
-
-    private void OnExitGame(ExitGameEvent e)
-    {
-        hudController.Hide();
-        viewController.ShowView(BaseViewType.Home, data.Profile);
-    }
 
     private void OnGameOver(GameOverEvent e)
     {
@@ -209,28 +150,18 @@ public class UIManager : MonoBehaviour
         viewController.ShowView(BaseViewType.GameOver, data.Profile);
     }
 
-    private void OnPauseGame(PauseGameEvent e)
-    {
-        viewController.PushOverlay(PopUpViewType.Pause, data.Settings);
-    }
-
-    private void OnResumeGame(ResumeGameEvent e)
-    {
-        viewController.PopOverlay();
-    }
-
 
     // ==================================================
     // Game Updates Event Handlers
     // ==================================================
 
-    private void OnUpdateScore(UpdateScoreEvent e)
+    private void OnUpdateScore(int score, int highScore)
     {
-        hudController.UpdateScoreText(e.Score, e.HighScore);
+        hudController.UpdateScoreText(score, highScore);
     }
 
-    private void OnUpdatePlayerPreview(UpdatePlayerPreviewEvent e)
+    private void OnUpdatePlayerPreview(CellColor color)
     {
-        hudController.UpdatePlayerPreviewSprite(e.Color);
+        hudController.UpdatePlayerPreviewSprite(color);
     }
 }

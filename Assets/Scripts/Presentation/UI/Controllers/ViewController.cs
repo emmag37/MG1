@@ -4,6 +4,17 @@ using System.Collections.Generic;
 
 public class ViewController : MonoBehaviour
 {
+    public static ViewController Instance { get; private set; }
+
+    // ==================================================
+    // Local Events
+    // ==================================================
+
+    public event Action StartPressed;
+    public event Action ExitGamePressed;
+    public event Action PausePressed;
+    public event Action ResumePressed;
+
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -42,6 +53,8 @@ public class ViewController : MonoBehaviour
 
     void Awake()
     {
+        Instance = this;
+
         // initialize view dictionaries
         foreach (BaseView view in baseViewList)
         {
@@ -73,7 +86,17 @@ public class ViewController : MonoBehaviour
 
     public void ShowView<T>(BaseViewType type, T data)
     {
-        ClearOverlay();
+        // check type for events
+        if (type == BaseViewType.GamePlay)
+        {
+            StartPressed?.Invoke();
+        }
+        else if (type == BaseViewType.Home && currentView.Type == BaseViewType.GamePlay)
+        {
+            ExitGamePressed?.Invoke();
+        }
+
+            ClearOverlay();
         Debug.Assert(overlayStack.Count == 0, "Overlay stack not empty after clearing");
 
         if (currentView != null)
@@ -96,6 +119,12 @@ public class ViewController : MonoBehaviour
 
     public void PushOverlay<T>(PopUpViewType type, T data)
     {
+        // you can put the event checking in its own function too
+        if (type == PopUpViewType.Pause)
+        {
+            PausePressed?.Invoke();
+        }
+
         int count = overlayStack.Count;
         if (count > 0)
         {
@@ -131,6 +160,11 @@ public class ViewController : MonoBehaviour
         Debug.Assert(!(overlayView.Type == PopUpViewType.Pause || overlayView.Type == PopUpViewType.Profile
             || overlayView.Type == PopUpViewType.ScoreHistory) || overlayStack.Count == 1,
             "Too many views in overlay stack");
+
+        if (overlayView.Type == PopUpViewType.Pause)
+        {
+            ResumePressed?.Invoke();
+        }
 
         overlayView.Hide();
         overlayStack.Pop();

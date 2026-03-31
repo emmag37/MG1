@@ -21,6 +21,12 @@ public class BoardController: MonoBehaviour
 
     private BoardLogic logic;
 
+    // ================================
+    // Local Events
+    // ================================
+
+    public event Action TurnCompleted;
+    public event Action FullBoard;
 
     // ================================
     // Unity Lifecycle Methods
@@ -102,7 +108,7 @@ public class BoardController: MonoBehaviour
 
         if (result.FullBoard)
         {
-            EventBus.Publish(new FullBoardEvent());                    // activate a game over
+            FullBoard?.Invoke();                    // activate a game over
             return;
         }
 
@@ -121,7 +127,7 @@ public class BoardController: MonoBehaviour
             });
         }
 
-        EventBus.Publish(new TurnCompletedEvent());
+        TurnCompleted?.Invoke();
     }
 
 }

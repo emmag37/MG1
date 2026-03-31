@@ -11,23 +11,12 @@ public struct GameOverEvent { }
 public struct PauseGameEvent { }
 public struct ResumeGameEvent { }
 
-// update players
+// update players - make this local whenever you update game initialization
 public struct SpawnPlayerEvent
 {
     public CellColor Color;
 }
 public struct DestroyPlayerEvent { }
-
-// update UI
-public struct UpdateScoreEvent
-{
-    public int Score;
-    public int HighScore;
-}
-public struct UpdatePlayerPreviewEvent
-{
-    public CellColor Color;
-}
 
 
 // ==================================================
@@ -35,8 +24,6 @@ public struct UpdatePlayerPreviewEvent
 // ==================================================
 
 // game play
-public struct FullBoardEvent { }    // make local event?
-public struct TurnCompletedEvent { }    // make local event?
 public struct WinEvent
 {
     public Vector2Int Index;
@@ -86,5 +73,6 @@ public struct PlayerReleasedEvent
 // Presentation Events
 // ==================================================
 
+// potentially make these local as well - i don't think any of these should be global
 public struct TransitionEvent { }
 public struct UpdateSettingsEvent { }

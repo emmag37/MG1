@@ -16,11 +16,6 @@ public class Tutorial3 : PopUpView
     {
         base.Awake();
 
-        backButton.onClick.AddListener(() => UI.PopOverlay());
-    }
-
-    public void OnBackClicked()
-    {
-        UI.PopOverlay();
+        backButton.onClick.AddListener(() => Controller.PopOverlay());
     }
 }
