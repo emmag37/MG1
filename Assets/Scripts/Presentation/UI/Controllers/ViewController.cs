@@ -4,20 +4,16 @@ using System.Collections.Generic;
 
 public class ViewController : MonoBehaviour
 {
+    // ==================================================
+    // Public Fields
+    // ==================================================
     public static ViewController Instance { get; private set; }
-
-    // ==================================================
-    // Local Events
-    // ==================================================
-
-    public event Action StartPressed;
-    public event Action ExitGamePressed;
-    public event Action PausePressed;
-    public event Action ResumePressed;
 
     // ==================================================
     // Inspector Fields
     // ==================================================
+    [SerializeField] private UIManager uiManager;
+
     [SerializeField] private BaseView[] baseViewList;
     [SerializeField] private PopUpView[] popUpViewList;
 
@@ -79,6 +75,22 @@ public class ViewController : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        EventBus.Subscribe<GameOverEvent>(OnShowGameOver);
+
+        uiManager.ShowHome += HandleShowHome;
+        uiManager.ShowTutorial += HandleShowTutorial;
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<GameOverEvent>(OnShowGameOver);
+
+        uiManager.ShowHome -= HandleShowHome;
+        uiManager.ShowTutorial -= HandleShowTutorial;
+    }
+
 
     // ==================================================
     // Public Methods
@@ -89,14 +101,14 @@ public class ViewController : MonoBehaviour
         // check type for events
         if (type == BaseViewType.GamePlay)
         {
-            StartPressed?.Invoke();
+            uiManager.HandleStartPressed();
         }
         else if (type == BaseViewType.Home && currentView.Type == BaseViewType.GamePlay)
         {
-            ExitGamePressed?.Invoke();
+            uiManager.HandleExitGamePressed();
         }
 
-            ClearOverlay();
+        ClearOverlay();
         Debug.Assert(overlayStack.Count == 0, "Overlay stack not empty after clearing");
 
         if (currentView != null)
@@ -122,7 +134,7 @@ public class ViewController : MonoBehaviour
         // you can put the event checking in its own function too
         if (type == PopUpViewType.Pause)
         {
-            PausePressed?.Invoke();
+            uiManager.HandlePausePressed();
         }
 
         int count = overlayStack.Count;
@@ -163,7 +175,7 @@ public class ViewController : MonoBehaviour
 
         if (overlayView.Type == PopUpViewType.Pause)
         {
-            ResumePressed?.Invoke();
+            uiManager.HandleResumePressed();
         }
 
         overlayView.Hide();
@@ -212,6 +224,32 @@ public class ViewController : MonoBehaviour
         {
             typedOverlay.UpdateOverlay(data);
         }
+    }
+
+
+    // ==================================================
+    // Event Handlers
+    // ==================================================
+
+    private void OnShowGameOver(GameOverEvent e)
+    {
+        // this is only to compile, you need to update the ui views to better pass this data
+        // also illustrates the usage of the event so view stays "dumb"
+        PlayerProfile profile = new PlayerProfile();
+        profile.RecentScore = e.Score;
+        profile.HighScore = e.HighScore;
+
+        ShowView(BaseViewType.GameOver, profile);
+    }
+
+    private void HandleShowHome(PlayerProfile profile)
+    {
+        ShowView(BaseViewType.Home, profile);
+    }
+
+    private void HandleShowTutorial()
+    {
+        PushOverlay(PopUpViewType.Tutorial1, new NoData());
     }
 
 

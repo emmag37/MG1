@@ -5,11 +5,18 @@ using UnityEngine;
 // ==================================================
 
 // game state
-public struct StartGameEvent { }
-public struct ExitGameEvent { }
-public struct GameOverEvent { }
+public struct StartGameEvent
+{
+    public int HighScore;
+}
+public struct ExitGameEvent { } 
 public struct PauseGameEvent { }
 public struct ResumeGameEvent { }
+public struct GameOverEvent
+{
+    public int Score;
+    public int HighScore;
+}
 
 // update players - make this local whenever you update game initialization
 public struct SpawnPlayerEvent

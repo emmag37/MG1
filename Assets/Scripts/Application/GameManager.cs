@@ -8,7 +8,7 @@ using System;
 public class GameManager : MonoBehaviour
 {
     // ================================
-    // Local Events
+    // Events
     // ================================
 
     public Action<int, int> UpdateScore;
@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
         }
         Debug.Assert(state == GameState.Fresh, $"Game not reset, still in: {state}");
 
-        EventBus.Publish(new StartGameEvent());   // prepare systems not owned by the game manager
+        EventBus.Publish(new StartGameEvent { HighScore = data.Profile.HighScore });   // prepare systems not owned by the game manager
 
         state = GameState.Playing;
         SpawnNewPlayer();
@@ -144,7 +144,7 @@ public class GameManager : MonoBehaviour
 
         // handle any data saves
 
-        EventBus.Publish(new GameOverEvent());
+        EventBus.Publish(new GameOverEvent { Score = score, HighScore = data.Profile.HighScore });
     }
 
     private void HandleWin(WinEvent e)

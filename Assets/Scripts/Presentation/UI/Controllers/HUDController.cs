@@ -3,13 +3,15 @@ using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour
 {
-    // ==================================================
+    // ================================
     // Inspector Fields
-    // ==================================================
+    // ================================
+
+    // to remove this reference, bind the action in your composition root
+    [SerializeField] private GameManager gameManager;   // to remove
 
     [SerializeField] private Text scoreText;
     [SerializeField] private Text highScoreText;
-
     [SerializeField] private Image playerPreview;
 
 
@@ -25,29 +27,71 @@ public class HUDController : MonoBehaviour
         Debug.Assert(playerPreview != null, "Player preview not set");
     }
 
-
-    // ================================
-    // Public Methods
-    // ================================
-
-    public void Show()
+    void OnEnable()
     {
-        gameObject.SetActive(true);
+        EventBus.Subscribe<StartGameEvent>(OnStartGame);
+        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
+        EventBus.Subscribe<GameOverEvent>(OnGameOver);
+
+        gameManager.UpdateScore += HandleScoreUpdate;
+        gameManager.UpdatePlayerPreview += HandlePlayerPreviewUpdate;
     }
 
-    public void Hide()
+    void OnDisable()
     {
-        gameObject.SetActive(false);
+        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
+        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
+        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+
+        gameManager.UpdateScore -= HandleScoreUpdate;
+        gameManager.UpdatePlayerPreview -= HandlePlayerPreviewUpdate;
     }
 
-    public void UpdateScoreText(int score, int highScore)
+
+    // ================================
+    // Event Handlers
+    // ================================
+
+    private void OnStartGame(StartGameEvent e)
+    {
+        HandleScoreUpdate(0, e.HighScore);
+
+        // show all elements
+        scoreText.gameObject.SetActive(true);
+        highScoreText.gameObject.SetActive(true);
+        playerPreview.gameObject.SetActive(true);
+    }
+
+    private void OnExitGame(ExitGameEvent e)
+    {
+        HideElements();
+    }
+
+    private void OnGameOver(GameOverEvent e)
+    {
+        HideElements();
+    }
+
+    private void HandleScoreUpdate(int score, int highScore)
     {
         scoreText.text = $"{score}";
         highScoreText.text = $"{highScore}";
     }
 
-    public void UpdatePlayerPreviewSprite(CellColor color)
+    private void HandlePlayerPreviewUpdate(CellColor color)
     {
         playerPreview.sprite = SpriteDatabase.Instance.GetSprite(color);
+    }
+
+
+    // ================================
+    // Private Methods
+    // ================================
+
+    public void HideElements()
+    {
+        scoreText.gameObject.SetActive(false);
+        highScoreText.gameObject.SetActive(false);
+        playerPreview.gameObject.SetActive(false);
     }
 }
