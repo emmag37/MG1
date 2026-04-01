@@ -56,13 +56,7 @@ public class BaseViewController : MonoBehaviour
 
     private void OnShowGameOver(GameOverEvent e)
     {
-        // this is only to compile, you need to update the ui views to better pass this data
-        // also illustrates the usage of the event so view stays "dumb"
-        PlayerProfile profile = new PlayerProfile();
-        profile.RecentScore = e.Score;
-        profile.HighScore = e.HighScore;
-
-        ShowView(BaseViewType.GameOver, profile);
+        ShowView(BaseViewType.GameOver, e.ScoreData);
     }
 
     private void HandleShowView(BaseViewType type, object data)

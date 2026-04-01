@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the settings menu.
 /// </summary>
-public class PauseView: PopUpView<GameSettings>
+public class PauseView: PopUpView<UserSettings>
 {
     // ==================================================
     // Inspector Fields
@@ -50,7 +50,7 @@ public class PauseView: PopUpView<GameSettings>
     // Public Methods
     // ==================================================
 
-    public override void Show(GameSettings data)
+    public override void Show(UserSettings data)
     {
         musicSlider.value = data.MusicOn;
         effectsSlider.value = data.EffectsOn;

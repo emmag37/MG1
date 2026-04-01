@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the game over screen.
 /// </summary>
-public class GameOverView: BaseView<PlayerProfile>
+public class GameOverView : BaseView<UserScore>
 {
     // ==================================================
     // Inspector Fields
@@ -43,9 +43,9 @@ public class GameOverView: BaseView<PlayerProfile>
     // Inherited Methods
     // ==================================================
 
-    public override void Show(PlayerProfile data)
+    public override void Show(UserScore data)
     {
-        gameScoreText.text = $"{data.RecentScore}";
+        gameScoreText.text = $"{data.Score}";
         highScoreText.text = $"{data.HighScore}";
 
         base.Show(data);

@@ -14,8 +14,7 @@ public struct PauseGameEvent { }
 public struct ResumeGameEvent { }
 public struct GameOverEvent
 {
-    public int Score;
-    public int HighScore;
+    public UserScore ScoreData;
 }
 
 // update players - make this local whenever you update game initialization

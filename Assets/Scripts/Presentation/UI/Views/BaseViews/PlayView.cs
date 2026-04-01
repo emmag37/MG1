@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the game play scene.
 /// </summary>
-public class PlayView: BaseView
+public class PlayView : BaseView
 {
     // ==================================================
     // Inspector Fields

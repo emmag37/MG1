@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class ChooseAvatarView : PopUpView<PlayerProfile>
+public class ChooseAvatarView : PopUpView<UserSettings>
 {
     // ==================================================
     // Inspector Fields
@@ -49,7 +49,7 @@ public class ChooseAvatarView : PopUpView<PlayerProfile>
     // Public Methods
     // ==================================================
 
-    public override void Show(PlayerProfile data)
+    public override void Show(UserSettings data)
     {
         currentColor = (CellColor)data.Avatar;
         SetAvatarSprite();

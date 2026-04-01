@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     // Inspector Fields
     // ================================
 
-    [SerializeField] private DataManager data;
     [SerializeField] private BoardController board;
 
     // ================================
@@ -86,7 +85,8 @@ public class GameManager : MonoBehaviour
         }
         Debug.Assert(state == GameState.Fresh, $"Game not reset, still in: {state}");
 
-        EventBus.Publish(new StartGameEvent { HighScore = data.Profile.HighScore });   // prepare systems not owned by the game manager
+        // update high score with new data system
+        EventBus.Publish(new StartGameEvent { HighScore = 0 });   // prepare systems not owned by the game manager
 
         state = GameState.Playing;
         SpawnNewPlayer();
@@ -144,15 +144,17 @@ public class GameManager : MonoBehaviour
 
         // handle any data saves
 
-        EventBus.Publish(new GameOverEvent { Score = score, HighScore = data.Profile.HighScore });
+        // update high score with new data system
+        
+        EventBus.Publish(new GameOverEvent { ScoreData = new UserScore { Score = score, HighScore = 0 } });
     }
 
     private void HandleWin(WinEvent e)
     {
         score += e.Points;
 
-        data.SetScore(score);
-        UpdateScore?.Invoke(score, data.Profile.HighScore);
+        // set score in data
+        UpdateScore?.Invoke(score, 0);  // update high score with new data system
     }
 
     // ================================

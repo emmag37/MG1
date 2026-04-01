@@ -21,7 +21,7 @@ public class UIManager : MonoBehaviour
     public event Action<TutorialViewType> SwitchTutorialView;
     public event Action CloseTutorialView;
 
-    // ==================================================s
+    // ==================================================
     // Inspector Fields
     // ==================================================
     [SerializeField] private GameManager gameManager;
@@ -29,8 +29,6 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private DataManager data => DataManager.Instance;
-
     private BaseViewType baseState;
     private Stack<PopUpViewType> popUpStack = new Stack<PopUpViewType>();
 
@@ -46,14 +44,15 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        ShowBaseView?.Invoke(BaseViewType.Home, data.Profile);
+        ShowBaseView?.Invoke(BaseViewType.Home, new NoData());
         baseState = BaseViewType.Home;
 
+        /* replace with new system
         if (data.Settings.HasLaunched == 0)
         {
             PushOverlayView(PopUpViewType.Tutorial, new NoData());
             data.SetLaunched();
-        }
+        }*/
     }
 
 
@@ -63,25 +62,25 @@ public class UIManager : MonoBehaviour
 
     public void UpdateUsername(string name)
     {
-        data.SetUsername(name);
+        // set username in data
     }
 
     public void UpdateAvatar(CellColor color)
     {
-        data.SetAvatar((int)color);
+        // set avatar in data
         // refresh views
     }
 
     public void UpdateMusicOn(int on)
     {
-        data.SetMusicOn(on);
-        EventBus.Publish(new UpdateSettingsEvent());
+        // set music in data
+        EventBus.Publish(new UpdateSettingsEvent());    // keep/delete?
     }
 
     public void UpdateEffectsOn(int on)
     {
-        data.SetEffectsOn(on);
-        EventBus.Publish(new UpdateSettingsEvent());
+        // set effects in data
+        EventBus.Publish(new UpdateSettingsEvent());    // keep/delete?
     }
 
 
@@ -107,10 +106,10 @@ public class UIManager : MonoBehaviour
             popUpStack.Pop();
         }
 
-        // prepare data for the view
+        // prepare data for the view - always user settings
 
         baseState = type;
-        ShowBaseView?.Invoke(type, new NoData());
+        ShowBaseView?.Invoke(type, new UserSettings());
     }
 
     // pop up views
@@ -124,7 +123,7 @@ public class UIManager : MonoBehaviour
         // prepare data
 
         popUpStack.Push(type);
-        PushOverlayView?.Invoke(type, new NoData());
+        PushOverlayView?.Invoke(type, new UserSettings());
     }
 
     public void PopOverlay()

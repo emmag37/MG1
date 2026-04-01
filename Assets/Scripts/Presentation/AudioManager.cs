@@ -19,8 +19,6 @@ public class AudioManager : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private DataManager data => DataManager.Instance;
-
     private bool sfxOn;
     private bool musicOn;
 
@@ -52,8 +50,8 @@ public class AudioManager : MonoBehaviour
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
 
         // initialize the settings
-        sfxOn = (data.Settings.EffectsOn == 1);
-        musicOn = (data.Settings.MusicOn == 1);
+        //sfxOn = (data.Settings.EffectsOn == 1);
+        //musicOn = (data.Settings.MusicOn == 1);
 
         if (sfxOn) TurnOnEffects();
         if (musicOn) TurnOnMusic();
@@ -81,11 +79,13 @@ public class AudioManager : MonoBehaviour
     // settings
     private void OnUpdateSettings(UpdateSettingsEvent e)
     {
+        /*
         if (!sfxOn && data.Settings.EffectsOn == 1) TurnOnEffects();
         if (sfxOn && data.Settings.EffectsOn == 0) TurnOffEffects();
 
         if (!musicOn && data.Settings.MusicOn == 1) TurnOnMusic();
         if (musicOn && data.Settings.MusicOn == 0) TurnOffMusic();
+        */
     }
 
     // sound effects
