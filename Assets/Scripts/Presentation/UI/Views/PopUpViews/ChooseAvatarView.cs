@@ -42,7 +42,7 @@ public class ChooseAvatarView : PopUpView<PlayerProfile>
         leftButton.onClick.AddListener(PreviousAvatar);
         rightButton.onClick.AddListener(NextAvatar);
 
-        //chooseButton.onClick.AddListener(() => UI.UpdateAvatar(currentColor)); fix data entry
+        chooseButton.onClick.AddListener(() => Manager.UpdateAvatar(currentColor));
     }
 
     // ==================================================

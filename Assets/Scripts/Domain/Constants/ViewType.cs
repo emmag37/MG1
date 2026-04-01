@@ -13,6 +13,11 @@ public enum PopUpViewType
     Profile,
     ScoreHistory,
     ChooseAvatar,
+    Tutorial
+}
+
+public enum TutorialViewType
+{
     Tutorial1,
     Tutorial2,
     Tutorial3

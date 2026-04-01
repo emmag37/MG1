@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// </summary>
 public abstract class UIView : MonoBehaviour
 {
-    protected ViewController Controller => ViewController.Instance;
+    protected UIManager Manager => UIManager.Instance;
 
     // show methods
     public virtual void Show()
@@ -40,8 +40,14 @@ public abstract class PopUpView : UIView
 
     protected virtual void Awake()
     {
-        exitButton.onClick.AddListener(() => Controller.ClearOverlay());
+        exitButton.onClick.AddListener(Manager.PopOverlay);
     }
+}
+
+public abstract class TutorialView : UIView
+{
+    [SerializeField] private TutorialViewType type;
+    public TutorialViewType Type => type;
 }
 
 

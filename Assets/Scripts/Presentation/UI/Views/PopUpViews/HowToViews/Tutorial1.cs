@@ -1,21 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Tutorial1 : PopUpView
+public class Tutorial1 : TutorialView
 {
     [SerializeField] private Button nextButton;
 
-    protected override void OnValidate()
+    void OnValidate()
     {
-        base.OnValidate();
-
         Debug.Assert(nextButton != null, "Next button not set in how to view 1");
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
-
-        nextButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.Tutorial2, new NoData()));
+        nextButton.onClick.AddListener(() => Manager.SwitchTutorial(TutorialViewType.Tutorial2));
     }
 }

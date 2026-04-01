@@ -1,21 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Tutorial3 : PopUpView
+public class Tutorial3 : TutorialView
 {
     [SerializeField] private Button backButton;
 
-    protected override void OnValidate()
+    void OnValidate()
     {
-        base.OnValidate();
-
         Debug.Assert(backButton != null, "Back button not set in how to view 3");
     }
 
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
-
-        backButton.onClick.AddListener(() => Controller.PopOverlay());
+        backButton.onClick.AddListener(() => Manager.SwitchTutorial(TutorialViewType.Tutorial2));
     }
 }

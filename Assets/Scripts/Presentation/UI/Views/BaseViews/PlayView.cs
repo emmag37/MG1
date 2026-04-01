@@ -23,6 +23,6 @@ public class PlayView: BaseView
     void Awake()
     {
         // need to give this the actual settings data
-        pauseButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.Pause, new GameSettings()));
+        pauseButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Pause));
     }
 }

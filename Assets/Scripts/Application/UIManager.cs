@@ -6,36 +6,52 @@ using System.Collections.Generic;
 public class UIManager : MonoBehaviour
 {
     // ==================================================
+    // Public Fields
+    // ==================================================
+    public static UIManager Instance { get; private set; }
+
+    // ==================================================
     // Events
     // ==================================================
+    public event Action<BaseViewType, object> ShowBaseView;
 
-    public event Action ShowTutorial;
-    public event Action<PlayerProfile> ShowHome;
+    public event Action<PopUpViewType, object> PushOverlayView;
+    public event Action PopOverlayView;
 
-    // ==================================================
+    public event Action<TutorialViewType> SwitchTutorialView;
+    public event Action CloseTutorialView;
+
+    // ==================================================s
     // Inspector Fields
     // ==================================================
-
     [SerializeField] private GameManager gameManager;
 
     // ==================================================
     // Private Fields
     // ==================================================
-
     private DataManager data => DataManager.Instance;
-    
+
+    private BaseViewType baseState;
+    private Stack<PopUpViewType> popUpStack = new Stack<PopUpViewType>();
+
 
     // ================================
-    // Unity Lifecycle Methods
+    // Unity Lifecycle Methods - move this to game initializer
     // ================================
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
-        ShowHome?.Invoke(data.Profile);
+        ShowBaseView?.Invoke(BaseViewType.Home, data.Profile);
+        baseState = BaseViewType.Home;
 
         if (data.Settings.HasLaunched == 0)
         {
-            ShowTutorial?.Invoke();
+            PushOverlayView(PopUpViewType.Tutorial, new NoData());
             data.SetLaunched();
         }
     }
@@ -73,23 +89,62 @@ public class UIManager : MonoBehaviour
     // View Controller Methods
     // ==================================================
 
-    public void HandleStartPressed()
+    // base views
+    public void ShowView(BaseViewType type)
     {
-        gameManager.StartGame();
+        if (type == BaseViewType.GamePlay)
+        {
+            gameManager.StartGame();
+        }
+        else if (type == BaseViewType.Home && baseState == BaseViewType.GamePlay)
+        {
+            gameManager.ExitGame();
+        }
+
+        if (popUpStack.Count > 0)
+        {
+            PopOverlayView?.Invoke();
+            popUpStack.Pop();
+        }
+
+        // prepare data for the view
+
+        baseState = type;
+        ShowBaseView?.Invoke(type, new NoData());
     }
 
-    public void HandleExitGamePressed()
+    // pop up views
+    public void PushOverlay(PopUpViewType type)
     {
-        gameManager.ExitGame();
+        if (type == PopUpViewType.Pause)
+        {
+            gameManager.PauseGame();
+        }
+        
+        // prepare data
+
+        popUpStack.Push(type);
+        PushOverlayView?.Invoke(type, new NoData());
     }
 
-    public void HandlePausePressed()
+    public void PopOverlay()
     {
-        gameManager.PauseGame();
+        if (popUpStack.Peek() == PopUpViewType.Pause)
+        {
+            gameManager.ResumeGame();
+        }
+        if (popUpStack.Peek() == PopUpViewType.Tutorial)
+        {
+            CloseTutorialView?.Invoke();
+        }
+
+        PopOverlayView?.Invoke();
+        popUpStack.Pop();
     }
 
-    public void HandleResumePressed()
+    // tutorial views
+    public void SwitchTutorial(TutorialViewType type)
     {
-        gameManager.ResumeGame();
+        SwitchTutorialView?.Invoke(type);
     }
 }

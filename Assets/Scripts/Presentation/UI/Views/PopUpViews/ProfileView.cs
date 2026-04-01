@@ -31,9 +31,9 @@ public class ProfileView : PopUpView<PlayerProfile>
     {
         base.Awake();
 
-        //usernameInput.onEndEdit.AddListener(UI.UpdateUsername);  fix data entry
+        usernameInput.onEndEdit.AddListener(Manager.UpdateUsername);
 
-        editAvatarButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.ChooseAvatar, new NoData())); 
+        editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar)); 
     }
 
     // ==================================================

@@ -36,13 +36,13 @@ public class PauseView: PopUpView<GameSettings>
     {
         base.Awake();
 
-        homeButton.onClick.AddListener(() => Controller.ShowView(BaseViewType.Home, new PlayerProfile()));
-        restartButton.onClick.AddListener(() => Controller.ShowView(BaseViewType.GamePlay, new NoData()));
+        homeButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Home));
+        restartButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
 
-        helpButton.onClick.AddListener(() => Controller.PushOverlay(PopUpViewType.Tutorial1, new NoData()));
+        helpButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Tutorial));
 
-        //musicSlider.onValueChanged.AddListener((value) => UI.UpdateMusicOn((int)value)); - add back data input
-        //effectsSlider.onValueChanged.AddListener((value) => UI.UpdateEffectsOn((int)value)); - add back data input
+        musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
+        effectsSlider.onValueChanged.AddListener((value) => Manager.UpdateEffectsOn((int)value));
     }
 
 
