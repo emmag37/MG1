@@ -7,9 +7,6 @@ public class BaseViewController : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private UIManager uiManager;
-    [SerializeField] private SettingsService settingsService;
-
     [SerializeField] private BaseView[] baseViewList;
 
     // ==================================================
@@ -23,7 +20,22 @@ public class BaseViewController : MonoBehaviour
     // Unity Lifecycle Methods
     // ==================================================
 
-    void Awake()
+    void OnEnable()
+    {
+        EventBus.Subscribe<GameOverEvent>(OnShowGameOver);
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<GameOverEvent>(OnShowGameOver);
+    }
+
+
+    // ==================================================
+    // Initializer
+    // ==================================================
+
+    public void Initialize()
     {
         foreach (BaseView view in baseViewList)
         {
@@ -37,23 +49,6 @@ public class BaseViewController : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        EventBus.Subscribe<GameOverEvent>(OnShowGameOver);
-
-        uiManager.ShowBaseView += HandleShowView;
-        settingsService.ProfileUpdate += HandleProfileUpdate;
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<GameOverEvent>(OnShowGameOver);
-
-        uiManager.ShowBaseView -= HandleShowView;
-        settingsService.ProfileUpdate -= HandleProfileUpdate;
-    }
-
-
     // ==================================================
     // Event Handlers
     // ==================================================
@@ -63,12 +58,12 @@ public class BaseViewController : MonoBehaviour
         ShowView(BaseViewType.GameOver, e.ScoreData);
     }
 
-    private void HandleShowView(BaseViewType type, object data)
+    public void HandleShowView(BaseViewType type, object data)
     {
         ShowView(type, data);
     }
 
-    private void HandleProfileUpdate(IUserSettings userSettings)
+    public void HandleProfileUpdate(IUserSettings userSettings)
     {
         RefreshView(BaseViewType.Home, userSettings);
     }

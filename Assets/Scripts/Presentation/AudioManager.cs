@@ -5,8 +5,6 @@ public class AudioManager : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private SettingsService settingsService;
-
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource musicSource;
 
@@ -39,39 +37,42 @@ public class AudioManager : MonoBehaviour
         Debug.Assert(transitionClip != null, "Transition clip not set in audio manager");
     }
 
-    void Start()
+    void OnEnable()
     {
-        // initialize the clip to ui
-        musicSource.clip = UIMusic;
-        musicSource.loop = true;     
-        musicSource.playOnAwake = false;
-
-        // need to maintain the current audio clip in case music turns on/off
+        // game state events
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
 
-        // initialize the settings
-        IUserSettings userSettings = settingsService.GetSettings();
-        musicOn = userSettings.MusicOn;
-        sfxOn = userSettings.SFXOn;
-
-        if (sfxOn) TurnOnEffects();
-        if (musicOn) TurnOnMusic();
-
-        settingsService.AudioUpdate += HandleAudioUpdate;
+        // game play events
+        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
+        EventBus.Subscribe<WinEvent>(OnWin);
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
+        // game state events
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
         EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
 
-        if (sfxOn) TurnOffEffects();
-        if (musicOn) TurnOffMusic();
+        // game play events
+        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
+        EventBus.Unsubscribe<WinEvent>(OnWin);
+    }
 
-        settingsService.AudioUpdate -= HandleAudioUpdate;
+    // ==================================================
+    // Initializers
+    // ==================================================
+
+    public void Initialize(bool musicOn, bool sfxOn)
+    {
+        this.musicOn = musicOn;
+        this.sfxOn = sfxOn;
+
+        musicSource.clip = UIMusic;
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
     }
 
 
@@ -80,35 +81,40 @@ public class AudioManager : MonoBehaviour
     // ================================
 
     // settings
-    private void HandleAudioUpdate(IUserSettings userSettings)
+	public void HandleMusicUpdate(bool on)
     {
-        if (!sfxOn && userSettings.SFXOn) TurnOnEffects();
-        if (sfxOn && !userSettings.SFXOn) TurnOffEffects();
+        musicOn = on;
 
-        if (!musicOn && userSettings.MusicOn) TurnOnMusic();
-        if (musicOn && !userSettings.MusicOn) TurnOffMusic();
+        if (musicOn)
+            musicSource.Play();
+        else
+            musicSource.Stop();
+    }
+
+    public void HandleSFXUpdate(bool on)
+    {
+        sfxOn = on;
     }
 
     // sound effects
+    public void HandleButtonPressed()
+    {
+        if (sfxOn)
+            sfxSource.PlayOneShot(transitionClip);
+    }
+
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
-        sfxSource.PlayOneShot(placePlayerClip);
+        if (sfxOn)
+            sfxSource.PlayOneShot(placePlayerClip);
     }
 
     private void OnWin(WinEvent e)
     {
-        sfxSource.PlayOneShot(winClip);
+        if (sfxOn)
+            sfxSource.PlayOneShot(winClip);
     }
-
-    /*
-    private void OnTransition(TransitionEvent e)
-    {
-        sfxSource.PlayOneShot(transitionClip);
-    } */
-
-
-
-
+    
     // music
     private void OnGameOver(GameOverEvent e)
     {
@@ -137,48 +143,5 @@ public class AudioManager : MonoBehaviour
 
         musicSource.clip = UIMusic;
         if (musicOn) musicSource.Play();
-    }
-
-
-    // ================================
-    // Private Methods
-    // ================================
-
-    private void TurnOnEffects()
-    {
-        sfxOn = true;
-
-        // game play events
-        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
-        EventBus.Subscribe<WinEvent>(OnWin);
-
-        // UI events
-        // add back the transition sound
-    }
-
-    private void TurnOffEffects()
-    {
-        sfxOn = false;
-
-        // game play events
-        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
-        EventBus.Unsubscribe<WinEvent>(OnWin);
-
-        // UI events
-        // add back the transition sound
-    }
-
-    private void TurnOnMusic()
-    {
-        musicOn = true;
-
-        musicSource.Play();
-    }
-
-    private void TurnOffMusic()
-    {
-        musicOn = false;
-
-        musicSource.Stop();
     }
 }

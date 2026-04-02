@@ -7,11 +7,7 @@ public class PopUpViewController : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private UIManager uiManager;
-    [SerializeField] private SettingsService settingsService;
-
-    [SerializeField] private PopUpView[] popUpViewList;
-
+	[SerializeField] private PopUpView[] popUpViewList;
 
     // ==================================================
     // Private Fields
@@ -21,11 +17,10 @@ public class PopUpViewController : MonoBehaviour
 
 
     // ==================================================
-    // Unity Lifecycle Methods
+    // Initialize
     // ==================================================
 
-    // note: set tutorial as tutorial1 so it always launches to the first
-    void Awake()
+    public void Initialize()
     {
         foreach (PopUpView view in popUpViewList)
         {
@@ -39,38 +34,22 @@ public class PopUpViewController : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        uiManager.PushOverlayView += HandlePush;
-        uiManager.PopOverlayView += HandlePop;
-
-        settingsService.ProfileUpdate += HandleProfileUpdate;
-    }
-
-    void OnDisable()
-    {
-        uiManager.PushOverlayView -= HandlePush;
-        uiManager.PopOverlayView += HandlePop;
-
-        settingsService.ProfileUpdate -= HandleProfileUpdate;
-    }
-
 
     // ==================================================
     // Event Handlers
     // ==================================================
 
-    private void HandlePush(PopUpViewType type, object data)
+    public void HandlePush(PopUpViewType type, object data)
     {
         PushOverlay(type, data);
     }
 
-    private void HandlePop()
+    public void HandlePop()
     {
         PopOverlay();
     }
 
-    private void HandleProfileUpdate(IUserSettings userSettings)
+    public void HandleProfileUpdate(IUserSettings userSettings)
     {
         RefreshOverlay(PopUpViewType.Profile, userSettings);
     }

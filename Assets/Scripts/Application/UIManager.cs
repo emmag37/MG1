@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Public Fields
     // ==================================================
-    public static UIManager Instance { get; private set; }  // change this to an interface?
+    public static UIManager Instance { get; private set; }  // change this to an interface? need for my views
 
     // ==================================================
     // Events
@@ -21,21 +21,20 @@ public class UIManager : MonoBehaviour
     public event Action<TutorialViewType> SwitchTutorialView;
     public event Action CloseTutorialView;
 
-    // ==================================================
-    // Inspector Fields
-    // ==================================================
-    [SerializeField] private GameManager gameManager;
-    [SerializeField] private SettingsService settingsService;
+    public event Action ButtonPressed;  // eventually move to event bus?
 
     // ==================================================
     // Private Fields
     // ==================================================
+    private SettingsService settingsService;
+    private GameManager gameManager;
+
     private BaseViewType baseState;
     private Stack<PopUpViewType> popUpStack = new Stack<PopUpViewType>();
 
 
     // ==================================================
-    // Unity Lifecycle Methods - move this to game initializer
+    // Unity Lifecycle Methods
     // ==================================================
 
     void Awake()
@@ -43,19 +42,17 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
-    void Start()
+
+    // ==================================================
+    // Initialize
+    // ==================================================
+
+    public void Initialize(SettingsService settingsService, GameManager gameManager, bool hasLaunched)
     {
-        IUserSettings userSettings = settingsService.GetSettings();
-
-        ShowBaseView?.Invoke(BaseViewType.Home, userSettings);
-        baseState = BaseViewType.Home;
-
-        if (!userSettings.HasLaunched)
-        {
-            PushOverlayView?.Invoke(PopUpViewType.Tutorial, new NoData());
-            settingsService.SetLaunched(true);
-        }
+        this.settingsService = settingsService;
+        this.gameManager = gameManager;
     }
+
 
     // ==================================================
     // Update Settings Methods
@@ -88,6 +85,8 @@ public class UIManager : MonoBehaviour
     // base views
     public void ShowView(BaseViewType type)
     {
+        ButtonPressed?.Invoke();
+
         if (type == BaseViewType.GamePlay)
         {
             gameManager.StartGame();
@@ -112,9 +111,15 @@ public class UIManager : MonoBehaviour
     // pop up views
     public void PushOverlay(PopUpViewType type)
     {
+        ButtonPressed?.Invoke();
+
         if (type == PopUpViewType.Pause)
         {
             gameManager.PauseGame();
+        }
+        else if (type == PopUpViewType.Tutorial)
+        {
+            SwitchTutorialView?.Invoke(TutorialViewType.Tutorial1);
         }
 
         IUserSettings userSettings = settingsService.GetSettings();
@@ -125,6 +130,8 @@ public class UIManager : MonoBehaviour
 
     public void PopOverlay()
     {
+        ButtonPressed?.Invoke();
+
         if (popUpStack.Peek() == PopUpViewType.Pause)
         {
             gameManager.ResumeGame();
@@ -141,6 +148,7 @@ public class UIManager : MonoBehaviour
     // tutorial views
     public void SwitchTutorial(TutorialViewType type)
     {
+        ButtonPressed?.Invoke();
         SwitchTutorialView?.Invoke(type);
     }
 }

@@ -48,28 +48,38 @@ public class GameManager : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
-    void Awake()
-    {
-        state = GameState.Fresh;
-        activePlayer = false;
-
-        picker = new PlayerPicker();
-    }
-
     void OnEnable()
     {
         // Board events
-        board.FullBoard += HandleFullBoard;
-        board.TurnCompleted += HandleTurnCompleted;
         EventBus.Subscribe<WinEvent>(HandleWin);
     }
 
     void OnDisable()
     {
         // Board events
+        EventBus.Unsubscribe<WinEvent>(HandleWin);
+    }
+
+    void OnDestroy()
+    {
         board.FullBoard -= HandleFullBoard;
         board.TurnCompleted -= HandleTurnCompleted;
-        EventBus.Unsubscribe<WinEvent>(HandleWin);
+    }
+
+
+    // ================================
+    // Initialize
+    // ================================
+
+    public void Initialize()
+    {
+        state = GameState.Fresh;
+        activePlayer = false;
+
+        picker = new PlayerPicker();
+
+        board.FullBoard += HandleFullBoard;
+        board.TurnCompleted += HandleTurnCompleted;
     }
 
 

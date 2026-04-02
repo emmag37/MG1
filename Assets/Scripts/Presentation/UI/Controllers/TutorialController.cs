@@ -7,7 +7,6 @@ public class TutorialController : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private UIManager uiManager;
     [SerializeField] private TutorialView[] tutorialViewList;
 
     // ==================================================
@@ -18,11 +17,10 @@ public class TutorialController : MonoBehaviour
 
 
     // ==================================================
-    // Unity Lifecycle Methods
+    // Initialize
     // ==================================================
 
-    // note: set tutorial as tutorial1 so it always launches to the first
-    void Awake()
+    public void Initialize()
     {
         foreach (TutorialView view in tutorialViewList)
         {
@@ -36,29 +34,17 @@ public class TutorialController : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        uiManager.SwitchTutorialView += HandleSwitchView;
-        uiManager.CloseTutorialView += HandleClose;
-    }
-
-    void OnDisable()
-    {
-        uiManager.SwitchTutorialView -= HandleSwitchView;
-        uiManager.CloseTutorialView -= HandleClose;
-    }
-
 
     // ==================================================
     // Event Handlers
     // ==================================================
 
-    private void HandleSwitchView(TutorialViewType type)
+    public void HandleSwitchView(TutorialViewType type)
     {
         SwitchView(type);
     }
 
-    private void HandleClose()
+    public void HandleClose()
     {
         currentView.Hide(); // null reference
         currentView = null;

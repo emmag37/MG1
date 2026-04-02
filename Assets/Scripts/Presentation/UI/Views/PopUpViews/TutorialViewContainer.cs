@@ -2,10 +2,5 @@ using UnityEngine;
 
 public class TutorialViewContainer : PopUpView
 {
-    public override void Show()
-    {
-        base.Show();
-
-        Manager.SwitchTutorial(TutorialViewType.Tutorial1);
-    }
+    // needs to maintain the exit button
 }

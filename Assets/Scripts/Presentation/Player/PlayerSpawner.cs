@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CompositionRoot : MonoBehaviour
+public class PlayerSpawner : MonoBehaviour
 {
     // ================================
     // Inspector Fields

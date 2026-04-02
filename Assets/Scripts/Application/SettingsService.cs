@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class SettingsService : MonoBehaviour
+public class SettingsService
 {
     // ==================================================
     // Public Fields
@@ -11,7 +11,9 @@ public class SettingsService : MonoBehaviour
     // ==================================================
     // Events
     // ==================================================
-    public event Action<IUserSettings> AudioUpdate;
+    public event Action<bool> MusicUpdate;
+    public event Action<bool> SFXUpdate;
+
     public event Action<IUserSettings> ProfileUpdate;
 
     // ==================================================
@@ -21,15 +23,15 @@ public class SettingsService : MonoBehaviour
 
 
     // ==================================================
-    // Unity Lifecycle - change to initializer
+    // Constructor/Initializer
     // ==================================================
 
-    void Awake()
+    public SettingsService()
     {
-        // load - make persistent
+        // load values once you add persistence
+
         settings = new UserSettings(true, true, true, "default-name", CellColor.Color1);
     }
-
 
     // ==================================================
     // Public Methods
@@ -43,13 +45,13 @@ public class SettingsService : MonoBehaviour
     public void SetMusicOn(bool on)
     {
         settings.MusicOn = on;
-        AudioUpdate?.Invoke(GetSettings());
+        MusicUpdate?.Invoke(on);
     }
 
     public void SetSFXOn(bool on)
     {
         settings.SFXOn = on;
-        AudioUpdate?.Invoke(GetSettings());
+        SFXUpdate?.Invoke(on);
     }
 
     public void SetUsername(string name)
