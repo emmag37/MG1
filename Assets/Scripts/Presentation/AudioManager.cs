@@ -5,6 +5,8 @@ public class AudioManager : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
+    [SerializeField] private SettingsService settingsService;
+
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource musicSource;
 
@@ -50,13 +52,14 @@ public class AudioManager : MonoBehaviour
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
 
         // initialize the settings
-        //sfxOn = (data.Settings.EffectsOn == 1);
-        //musicOn = (data.Settings.MusicOn == 1);
+        IUserSettings userSettings = settingsService.GetSettings();
+        musicOn = userSettings.MusicOn;
+        sfxOn = userSettings.SFXOn;
 
         if (sfxOn) TurnOnEffects();
         if (musicOn) TurnOnMusic();
 
-        EventBus.Subscribe<UpdateSettingsEvent>(OnUpdateSettings);
+        settingsService.AudioUpdate += HandleAudioUpdate;
     }
 
     void OnDestroy()
@@ -68,7 +71,7 @@ public class AudioManager : MonoBehaviour
         if (sfxOn) TurnOffEffects();
         if (musicOn) TurnOffMusic();
 
-        EventBus.Unsubscribe<UpdateSettingsEvent>(OnUpdateSettings);
+        settingsService.AudioUpdate -= HandleAudioUpdate;
     }
 
 
@@ -77,15 +80,13 @@ public class AudioManager : MonoBehaviour
     // ================================
 
     // settings
-    private void OnUpdateSettings(UpdateSettingsEvent e)
+    private void HandleAudioUpdate(IUserSettings userSettings)
     {
-        /*
-        if (!sfxOn && data.Settings.EffectsOn == 1) TurnOnEffects();
-        if (sfxOn && data.Settings.EffectsOn == 0) TurnOffEffects();
+        if (!sfxOn && userSettings.SFXOn) TurnOnEffects();
+        if (sfxOn && !userSettings.SFXOn) TurnOffEffects();
 
-        if (!musicOn && data.Settings.MusicOn == 1) TurnOnMusic();
-        if (musicOn && data.Settings.MusicOn == 0) TurnOffMusic();
-        */
+        if (!musicOn && userSettings.MusicOn) TurnOnMusic();
+        if (musicOn && !userSettings.MusicOn) TurnOffMusic();
     }
 
     // sound effects
@@ -99,10 +100,11 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(winClip);
     }
 
+    /*
     private void OnTransition(TransitionEvent e)
     {
         sfxSource.PlayOneShot(transitionClip);
-    }
+    } */
 
 
 
@@ -151,7 +153,7 @@ public class AudioManager : MonoBehaviour
         EventBus.Subscribe<WinEvent>(OnWin);
 
         // UI events
-        EventBus.Subscribe<TransitionEvent>(OnTransition);
+        // add back the transition sound
     }
 
     private void TurnOffEffects()
@@ -163,7 +165,7 @@ public class AudioManager : MonoBehaviour
         EventBus.Unsubscribe<WinEvent>(OnWin);
 
         // UI events
-        EventBus.Unsubscribe<TransitionEvent>(OnTransition);
+        // add back the transition sound
     }
 
     private void TurnOnMusic()

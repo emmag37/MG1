@@ -8,6 +8,8 @@ public class PopUpViewController : MonoBehaviour
     // Inspector Fields
     // ==================================================
     [SerializeField] private UIManager uiManager;
+    [SerializeField] private SettingsService settingsService;
+
     [SerializeField] private PopUpView[] popUpViewList;
 
 
@@ -41,12 +43,16 @@ public class PopUpViewController : MonoBehaviour
     {
         uiManager.PushOverlayView += HandlePush;
         uiManager.PopOverlayView += HandlePop;
+
+        settingsService.ProfileUpdate += HandleProfileUpdate;
     }
 
     void OnDisable()
     {
         uiManager.PushOverlayView -= HandlePush;
         uiManager.PopOverlayView += HandlePop;
+
+        settingsService.ProfileUpdate -= HandleProfileUpdate;
     }
 
 
@@ -62,6 +68,11 @@ public class PopUpViewController : MonoBehaviour
     private void HandlePop()
     {
         PopOverlay();
+    }
+
+    private void HandleProfileUpdate(IUserSettings userSettings)
+    {
+        RefreshOverlay(PopUpViewType.Profile, userSettings);
     }
 
 

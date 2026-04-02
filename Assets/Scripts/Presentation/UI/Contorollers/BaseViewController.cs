@@ -8,6 +8,8 @@ public class BaseViewController : MonoBehaviour
     // Inspector Fields
     // ==================================================
     [SerializeField] private UIManager uiManager;
+    [SerializeField] private SettingsService settingsService;
+
     [SerializeField] private BaseView[] baseViewList;
 
     // ==================================================
@@ -40,6 +42,7 @@ public class BaseViewController : MonoBehaviour
         EventBus.Subscribe<GameOverEvent>(OnShowGameOver);
 
         uiManager.ShowBaseView += HandleShowView;
+        settingsService.ProfileUpdate += HandleProfileUpdate;
     }
 
     void OnDisable()
@@ -47,6 +50,7 @@ public class BaseViewController : MonoBehaviour
         EventBus.Unsubscribe<GameOverEvent>(OnShowGameOver);
 
         uiManager.ShowBaseView -= HandleShowView;
+        settingsService.ProfileUpdate -= HandleProfileUpdate;
     }
 
 
@@ -62,6 +66,11 @@ public class BaseViewController : MonoBehaviour
     private void HandleShowView(BaseViewType type, object data)
     {
         ShowView(type, data);
+    }
+
+    private void HandleProfileUpdate(IUserSettings userSettings)
+    {
+        RefreshView(BaseViewType.Home, userSettings);
     }
 
 

@@ -11,10 +11,8 @@ public class SettingsService : MonoBehaviour
     // ==================================================
     // Events
     // ==================================================
-    public event Action<bool> UpdatedMusicOn;
-    public event Action<bool> UpdatedSFXOn;
-    public event Action<string> UpdatedUsername;
-    public event Action<CellColor> UpdatedAvatar;
+    public event Action<IUserSettings> AudioUpdate;
+    public event Action<IUserSettings> ProfileUpdate;
 
     // ==================================================
     // Private Fields
@@ -45,25 +43,24 @@ public class SettingsService : MonoBehaviour
     public void SetMusicOn(bool on)
     {
         settings.MusicOn = on;
-        UpdatedMusicOn?.Invoke(on);
+        AudioUpdate?.Invoke(GetSettings());
     }
 
     public void SetSFXOn(bool on)
     {
         settings.SFXOn = on;
-        UpdatedSFXOn?.Invoke(on);
+        AudioUpdate?.Invoke(GetSettings());
     }
 
     public void SetUsername(string name)
     {
         settings.Username = name;
-        UpdatedUsername?.Invoke(name);
     }
 
     public void SetAvatar(CellColor color)
     {
         settings.Avatar = color;
-        UpdatedAvatar?.Invoke(color);
+        ProfileUpdate?.Invoke(GetSettings());
     }
 
 }

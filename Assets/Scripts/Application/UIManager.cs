@@ -56,7 +56,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-
     // ==================================================
     // Update Settings Methods
     // ==================================================

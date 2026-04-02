@@ -74,11 +74,3 @@ public struct PlayerReleasedEvent
     public Vector3 PlayerPosition;  // turn this into index
     public CellColor Color;
 }
-
-// ==================================================
-// Presentation Events
-// ==================================================
-
-// potentially make these local as well - i don't think any of these should be global
-public struct TransitionEvent { }
-public struct UpdateSettingsEvent { }
