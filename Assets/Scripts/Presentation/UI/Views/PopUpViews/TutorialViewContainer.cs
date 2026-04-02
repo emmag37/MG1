@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class TutorialViewContainer : PopUpView
 {
-    protected override void Awake()
+    public override void Show()
     {
-        base.Awake();
+        base.Show();
 
         Manager.SwitchTutorial(TutorialViewType.Tutorial1);
     }

@@ -57,9 +57,10 @@ public class HUDController : MonoBehaviour
         HandleScoreUpdate(0, e.HighScore);
 
         // show all elements
-        scoreText.gameObject.SetActive(true);
-        highScoreText.gameObject.SetActive(true);
-        playerPreview.gameObject.SetActive(true);
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(true);
+        }
     }
 
     private void OnExitGame(ExitGameEvent e)
@@ -88,10 +89,11 @@ public class HUDController : MonoBehaviour
     // Private Methods
     // ================================
 
-    public void HideElements()
+    private void HideElements()
     {
-        scoreText.gameObject.SetActive(false);
-        highScoreText.gameObject.SetActive(false);
-        playerPreview.gameObject.SetActive(false);
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(false);
+        }
     }
 }

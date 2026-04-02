@@ -85,14 +85,7 @@ public class BaseViewController : MonoBehaviour
 
         currentView = GetBaseView(type);
 
-        if (currentView is BaseView<T> typedView)
-        {
-            typedView.Show(data);
-        }
-        else
-        {
-            currentView.Show();
-        }
+        currentView.Show(data);
 
         Debug.Assert(currentView != null, "Current view not set");
         Debug.Assert(currentView.Type == type, $"Show type mismatch. Expected: {type}, Found: {currentView.Type}");

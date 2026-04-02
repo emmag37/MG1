@@ -15,6 +15,6 @@ public class Tutorial2 : TutorialView
     void Awake()
     {
         nextButton.onClick.AddListener(() => Manager.SwitchTutorial(TutorialViewType.Tutorial3));
-        backButton.onClick.AddListener(() => Manager.SwitchTutorial(TutorialViewType.Tutorial2));
+        backButton.onClick.AddListener(() => Manager.SwitchTutorial(TutorialViewType.Tutorial1));
     }
 }

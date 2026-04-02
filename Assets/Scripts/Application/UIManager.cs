@@ -45,10 +45,11 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        ShowBaseView?.Invoke(BaseViewType.Home, new NoData());
+        IUserSettings userSettings = settingsService.GetSettings();
+
+        ShowBaseView?.Invoke(BaseViewType.Home, userSettings);
         baseState = BaseViewType.Home;
 
-        IUserSettings userSettings = settingsService.GetSettings();
         if (!userSettings.HasLaunched)
         {
             PushOverlayView?.Invoke(PopUpViewType.Tutorial, new NoData());

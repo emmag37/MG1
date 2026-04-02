@@ -13,7 +13,12 @@ public abstract class UIView : MonoBehaviour
     {
         gameObject.SetActive(true);
     }
-    
+
+    public virtual void Show(object data)
+    {
+        Show(); // fallback for non-data views
+    }
+
     public virtual void Hide()
     {
         gameObject.SetActive(false);
@@ -60,6 +65,18 @@ public abstract class BaseView<T> : BaseView
         Show();
     }
 
+    public override void Show(object data)
+    {
+        if (data is T typedData)
+        {
+            Show(typedData);
+        }
+        else
+        {
+            Show(); // fallback if wrong type
+        }
+    }
+
     public virtual void UpdateView(T data) { }
 }
 
@@ -68,6 +85,18 @@ public abstract class PopUpView<T> : PopUpView
     public virtual void Show(T data)
     {
         Show();
+    }
+
+    public override void Show(object data)
+    {
+        if (data is T typedData)
+        {
+            Show(typedData);
+        }
+        else
+        {
+            Show(); // fallback if wrong type
+        }
     }
 
     public virtual void UpdateOverlay(T data) { }

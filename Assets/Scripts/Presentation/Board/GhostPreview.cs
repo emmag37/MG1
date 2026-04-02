@@ -82,7 +82,10 @@ public class GhostPreview : MonoBehaviour
     {
         while (true)
         {
-            Vector3 position = player.position;
+            if (player == null)
+                yield break;
+
+            Vector3 position = player.position;     // ERROR - event passing?
             Vector2Int index = boardView.WorldToIndex(position);
 
             // try a new preview only when the index changes

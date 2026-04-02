@@ -60,7 +60,7 @@ public class TutorialController : MonoBehaviour
 
     private void HandleClose()
     {
-        currentView.Hide();
+        currentView.Hide(); // null reference
         currentView = null;
     }
 

@@ -93,15 +93,7 @@ public class PopUpViewController : MonoBehaviour
 
         PopUpView overlayView = GetPopUpView(type);
 
-        if (overlayView is PopUpView<T> typedOverlay)
-        {
-            typedOverlay.Show(data);
-        }
-        else
-        {
-            overlayView.Show();
-        }
-
+        overlayView.Show(data);
         overlayStack.Push(overlayView);
 
         Debug.Assert(count + 1 == overlayStack.Count, "Push did not increase the overlay stack count");
