@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class ProfileView : PopUpView<UserSettings>
+public class ProfileView : PopUpView<IUserSettings>
 {
     
     // ==================================================
@@ -40,7 +40,7 @@ public class ProfileView : PopUpView<UserSettings>
     // Public Methods
     // ==================================================
 
-    public override void Show(UserSettings data)
+    public override void Show(IUserSettings data)
     {
         usernameInput.text = data.Username;
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
@@ -48,7 +48,7 @@ public class ProfileView : PopUpView<UserSettings>
         base.Show(data);
     }
 
-    public override void UpdateOverlay(UserSettings data)
+    public override void UpdateOverlay(IUserSettings data)
     {
         base.UpdateOverlay(data);
 

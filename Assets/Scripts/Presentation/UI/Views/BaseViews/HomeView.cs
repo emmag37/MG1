@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the home screen.
 /// </summary>
-public class HomeView : BaseView<UserSettings>
+public class HomeView : BaseView<IUserSettings>
 {
     // ==================================================
     // Inspector Fields
@@ -36,14 +36,14 @@ public class HomeView : BaseView<UserSettings>
     // Public Methods
     // ==================================================
 
-    public override void Show(UserSettings data)
+    public override void Show(IUserSettings data)
     {
         profileButton.image.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
 
         base.Show(data);
     }
 
-    public override void UpdateView(UserSettings data)
+    public override void UpdateView(IUserSettings data)
     {
         profileButton.image.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
 

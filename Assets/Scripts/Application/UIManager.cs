@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Public Fields
     // ==================================================
-    public static UIManager Instance { get; private set; }
+    public static UIManager Instance { get; private set; }  // change this to an interface?
 
     // ==================================================
     // Events
@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     // Inspector Fields
     // ==================================================
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private SettingsService settingsService;
 
     // ==================================================
     // Private Fields
@@ -33,9 +34,9 @@ public class UIManager : MonoBehaviour
     private Stack<PopUpViewType> popUpStack = new Stack<PopUpViewType>();
 
 
-    // ================================
+    // ==================================================
     // Unity Lifecycle Methods - move this to game initializer
-    // ================================
+    // ==================================================
 
     void Awake()
     {
@@ -47,42 +48,38 @@ public class UIManager : MonoBehaviour
         ShowBaseView?.Invoke(BaseViewType.Home, new NoData());
         baseState = BaseViewType.Home;
 
-        /* replace with new system
-        if (data.Settings.HasLaunched == 0)
+        IUserSettings userSettings = settingsService.GetSettings();
+        if (!userSettings.HasLaunched)
         {
-            PushOverlayView(PopUpViewType.Tutorial, new NoData());
-            data.SetLaunched();
-        }*/
+            PushOverlayView?.Invoke(PopUpViewType.Tutorial, new NoData());
+            settingsService.SetLaunched(true);
+        }
     }
 
 
     // ==================================================
-    // Public Methods
+    // Update Settings Methods
     // ==================================================
+
+    public void UpdateMusicOn(int on)
+    {
+        settingsService.SetMusicOn(on == 1? true : false);
+    }
+
+    public void UpdateSFXOn(int on)
+    {
+        settingsService.SetSFXOn(on == 1 ? true : false);
+    }
 
     public void UpdateUsername(string name)
     {
-        // set username in data
+        settingsService.SetUsername(name);
     }
 
     public void UpdateAvatar(CellColor color)
     {
-        // set avatar in data
-        // refresh views
+        settingsService.SetAvatar(color);
     }
-
-    public void UpdateMusicOn(int on)
-    {
-        // set music in data
-        EventBus.Publish(new UpdateSettingsEvent());    // keep/delete?
-    }
-
-    public void UpdateEffectsOn(int on)
-    {
-        // set effects in data
-        EventBus.Publish(new UpdateSettingsEvent());    // keep/delete?
-    }
-
 
     // ==================================================
     // View Controller Methods
@@ -106,10 +103,10 @@ public class UIManager : MonoBehaviour
             popUpStack.Pop();
         }
 
-        // prepare data for the view - always user settings
+        IUserSettings userSettings = settingsService.GetSettings();
+        ShowBaseView?.Invoke(type, userSettings);
 
         baseState = type;
-        ShowBaseView?.Invoke(type, new UserSettings());
     }
 
     // pop up views
@@ -119,11 +116,11 @@ public class UIManager : MonoBehaviour
         {
             gameManager.PauseGame();
         }
-        
-        // prepare data
+
+        IUserSettings userSettings = settingsService.GetSettings();
+        PushOverlayView?.Invoke(type, userSettings);
 
         popUpStack.Push(type);
-        PushOverlayView?.Invoke(type, new UserSettings());
     }
 
     public void PopOverlay()

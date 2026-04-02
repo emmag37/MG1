@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the settings menu.
 /// </summary>
-public class PauseView: PopUpView<UserSettings>
+public class PauseView: PopUpView<IUserSettings>
 {
     // ==================================================
     // Inspector Fields
@@ -14,7 +14,7 @@ public class PauseView: PopUpView<UserSettings>
     [SerializeField] private Button helpButton;
 
     [SerializeField] private Slider musicSlider;
-    [SerializeField] private Slider effectsSlider;
+    [SerializeField] private Slider sfxSlider;
 
     // ==================================================
     // Unity Lifecycle
@@ -29,7 +29,7 @@ public class PauseView: PopUpView<UserSettings>
         Debug.Assert(helpButton != null, "Help button not set in pause view");
 
         Debug.Assert(musicSlider != null, "Music slider not set in pause view");
-        Debug.Assert(effectsSlider != null, "Effects slider not set in pause view");
+        Debug.Assert(sfxSlider != null, "Effects slider not set in pause view");
     }
 
     protected override void Awake()
@@ -42,7 +42,7 @@ public class PauseView: PopUpView<UserSettings>
         helpButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Tutorial));
 
         musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
-        effectsSlider.onValueChanged.AddListener((value) => Manager.UpdateEffectsOn((int)value));
+        sfxSlider.onValueChanged.AddListener((value) => Manager.UpdateSFXOn((int)value));
     }
 
 
@@ -50,10 +50,10 @@ public class PauseView: PopUpView<UserSettings>
     // Public Methods
     // ==================================================
 
-    public override void Show(UserSettings data)
+    public override void Show(IUserSettings data)
     {
-        musicSlider.value = data.MusicOn;
-        effectsSlider.value = data.EffectsOn;
+        musicSlider.value = data.MusicOn ? 1 : 0;
+        sfxSlider.value = data.SFXOn ? 1 : 0;
 
         base.Show(data);
     }

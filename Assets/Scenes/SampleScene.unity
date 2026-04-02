@@ -1329,6 +1329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   gameManager: {fileID: 354018344}
+  settingsService: {fileID: 0}
 --- !u!4 &230092282
 Transform:
   m_ObjectHideFlags: 0
@@ -1701,7 +1702,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78ac11d5991004d8da5b5a6b5c61ab82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  data: {fileID: 1463169997}
   board: {fileID: 2022480360}
 --- !u!4 &373269582 stripped
 Transform:
@@ -8138,7 +8138,7 @@ MonoBehaviour:
   restartButton: {fileID: 1593412191}
   helpButton: {fileID: 22860736}
   musicSlider: {fileID: 1551031436}
-  effectsSlider: {fileID: 881377644}
+  sfxSlider: {fileID: 881377644}
 --- !u!4 &1746567687 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421657568361316366, guid: da10a7f55ddb1463da70721112e94096, type: 3}
