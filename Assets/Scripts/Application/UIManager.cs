@@ -109,9 +109,10 @@ public class UIManager : MonoBehaviour
     }
 
     // pop up views
-    public void PushOverlay(PopUpViewType type)
+    public void PushOverlay(PopUpViewType type, bool playSound = true)
     {
-        ButtonPressed?.Invoke();
+        if (playSound)
+            ButtonPressed?.Invoke();
 
         if (type == PopUpViewType.Pause)
         {

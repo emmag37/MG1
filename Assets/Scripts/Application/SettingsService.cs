@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 
+// this class manages its own saves in player prefs for now.
 public class SettingsService
 {
     // ==================================================
@@ -19,6 +20,7 @@ public class SettingsService
     // ==================================================
     // Private Fields
     // ==================================================
+    private PlayerPrefsStorage storage;
     private UserSettings settings;
 
 
@@ -26,11 +28,11 @@ public class SettingsService
     // Constructor/Initializer
     // ==================================================
 
-    public SettingsService()
+    public SettingsService(PlayerPrefsStorage storage)
     {
-        // load values once you add persistence
+        this.storage = storage;
 
-        settings = new UserSettings(true, true, true, "default-name", CellColor.Color1);
+        settings = Load();
     }
 
     // ==================================================
@@ -40,29 +42,55 @@ public class SettingsService
     public void SetLaunched(bool launched)
     {
         settings.HasLaunched = launched;
+        storage.SetBool(SettingsKeys.Launched, true);
     }
 
     public void SetMusicOn(bool on)
     {
         settings.MusicOn = on;
+        storage.SetBool(SettingsKeys.Music, on);
+
         MusicUpdate?.Invoke(on);
     }
 
     public void SetSFXOn(bool on)
     {
         settings.SFXOn = on;
+        storage.SetBool(SettingsKeys.SFX, on);
+
         SFXUpdate?.Invoke(on);
     }
 
     public void SetUsername(string name)
     {
         settings.Username = name;
+        storage.SetString(SettingsKeys.Username, name);
     }
 
     public void SetAvatar(CellColor color)
     {
         settings.Avatar = color;
+        storage.SetInt(SettingsKeys.Avatar, (int)color);
+
         ProfileUpdate?.Invoke(GetSettings());
+    }
+
+
+    // ==================================================
+    // Private Methods
+    // ==================================================
+
+    private UserSettings Load()
+    {
+        UserSettings newSettings = new UserSettings(
+            launched: storage.GetBool(SettingsKeys.Launched, false),
+            musicOn: storage.GetBool(SettingsKeys.Music, true),
+            sfxOn: storage.GetBool(SettingsKeys.SFX, true),
+            username: storage.GetString(SettingsKeys.Username, "default-name"),
+            avatar: (CellColor)storage.GetInt(SettingsKeys.Avatar, (int)CellColor.Color1)
+        );
+
+        return newSettings;
     }
 
 }

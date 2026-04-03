@@ -27,13 +27,13 @@ public class UserSettings : IUserSettings
     public string Username { get; set; }
     public CellColor Avatar { get; set; }
 
-    public UserSettings(bool launched, bool musicOn, bool sfxOn, string username, CellColor color)
+    public UserSettings(bool launched, bool musicOn, bool sfxOn, string username, CellColor avatar)
     {
         HasLaunched = launched;
         MusicOn = musicOn;
         SFXOn = sfxOn;
         Username = username;
-        Avatar = color;
+        Avatar = avatar;
     }
 }
 

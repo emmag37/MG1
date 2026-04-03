@@ -16,6 +16,7 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
+    private PlayerPrefsStorage storage;
     private SettingsService settingsService;
 
     // ==================================================
@@ -25,10 +26,12 @@ public class GameBootstrap : MonoBehaviour
     void Awake()
     {
         // create services
-        settingsService = new SettingsService();
-        IUserSettings userSettings = settingsService.GetSettings();
+        storage = new PlayerPrefsStorage();
+        settingsService = new SettingsService(storage);
 
         // initialize systems
+        IUserSettings userSettings = settingsService.GetSettings();
+
         uiManager.Initialize(settingsService, gameManager, userSettings.HasLaunched);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
         gameManager.Initialize();
@@ -49,7 +52,7 @@ public class GameBootstrap : MonoBehaviour
         IUserSettings userSettings = settingsService.GetSettings();
         if (!userSettings.HasLaunched)
         {
-            uiManager.PushOverlay(PopUpViewType.Tutorial);
+            uiManager.PushOverlay(PopUpViewType.Tutorial, false);
             settingsService.SetLaunched(true);
         }
 
