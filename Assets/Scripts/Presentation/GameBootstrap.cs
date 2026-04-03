@@ -16,7 +16,9 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private PlayerPrefsStorage storage;
+    private PlayerPrefsStorage playerPrefs;
+    private DiscStorage disc;
+
     private SettingsService settingsService;
     private GameDataService gameDataService;
 
@@ -27,9 +29,11 @@ public class GameBootstrap : MonoBehaviour
     void Awake()
     {
         // create services
-        storage = new PlayerPrefsStorage();
-        settingsService = new SettingsService(storage);
-        gameDataService = new GameDataService(storage);
+        playerPrefs = new PlayerPrefsStorage();
+        disc = new DiscStorage();
+
+        settingsService = new SettingsService(playerPrefs);
+        gameDataService = new GameDataService(disc, playerPrefs);
 
         // initialize systems
         IUserSettings userSettings = settingsService.GetSettings();

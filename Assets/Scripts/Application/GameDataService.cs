@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class GameDataService
 {
@@ -11,7 +12,9 @@ public class GameDataService
     // ==================================================
     // Private Fields
     // ==================================================
-    private PlayerPrefsStorage storage;
+    private DiscStorage disc;
+    private PlayerPrefsStorage playerPrefs;
+
     private GameData data;
 
 
@@ -19,9 +22,10 @@ public class GameDataService
     // Constructor/Initializer
     // ==================================================
 
-    public GameDataService(PlayerPrefsStorage storage)
+    public GameDataService(DiscStorage disc, PlayerPrefsStorage playerPrefs)
     {
-        this.storage = storage;
+        this.disc = disc;
+        this.playerPrefs = playerPrefs;
 
         data = Load();
     }
@@ -30,19 +34,31 @@ public class GameDataService
     // Public Methods
     // ==================================================
 
-    // called on game over only
-    public void SetScore(int score)
-    {
-        data.Score = score;
-
-        // run data save protocol for score history
-    }
-
-    // also save this in score history, don't want users to be able to change this easily
     public void SetHighScore(int highScore)
     {
         data.HighScore = highScore;
-        storage.SetInt(GameDataKeys.HighScore, highScore);
+        playerPrefs.SetInt(GameDataKeys.HighScore, highScore);
+    }
+
+    public void AddScore(int score)
+    {
+        data.Score = score;
+
+        // load the list
+        ScoreHistory history = disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory);
+
+        // modify
+        history.Scores.Add(score);
+
+        // save the list
+        disc.Save<ScoreHistory>(GameDataFiles.ScoreHistory, history);
+    }
+
+    public IReadOnlyList<int> GetScoreHistory()
+    {
+        ScoreHistory history = disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory);
+
+        return history.ROScores;
     }
 
     // ==================================================
@@ -53,7 +69,7 @@ public class GameDataService
     {
         GameData newData = new GameData(
             score: 0,
-            highScore: storage.GetInt(GameDataKeys.HighScore, 0)
+            highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0)
         );
 
         return newData;

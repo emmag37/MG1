@@ -153,9 +153,9 @@ public class GameManager : MonoBehaviour
 
         state = GameState.Over;
 
-        dataService.SetScore(score);
         if (score == highScore)
             dataService.SetHighScore(highScore);
+        dataService.AddScore(score);
 
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
     }
