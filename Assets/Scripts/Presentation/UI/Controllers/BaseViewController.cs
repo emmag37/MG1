@@ -17,21 +17,6 @@ public class BaseViewController : MonoBehaviour
 
 
     // ==================================================
-    // Unity Lifecycle Methods
-    // ==================================================
-
-    void OnEnable()
-    {
-        EventBus.Subscribe<GameOverEvent>(OnShowGameOver);
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<GameOverEvent>(OnShowGameOver);
-    }
-
-
-    // ==================================================
     // Initializer
     // ==================================================
 
@@ -52,11 +37,6 @@ public class BaseViewController : MonoBehaviour
     // ==================================================
     // Event Handlers
     // ==================================================
-
-    private void OnShowGameOver(GameOverEvent e)
-    {
-        ShowView(BaseViewType.GameOver, e.ScoreData);
-    }
 
     public void HandleShowView(BaseViewType type, object data)
     {

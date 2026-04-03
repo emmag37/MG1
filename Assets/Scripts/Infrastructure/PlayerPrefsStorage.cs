@@ -9,6 +9,11 @@ public static class SettingsKeys
     public const string Avatar = "profile.avatar";
 }
 
+public static class GameDataKeys
+{
+    public const string HighScore = "game.highScore";
+}
+
 public class PlayerPrefsStorage
 {
     // get/set bool - needs to be stored as an int

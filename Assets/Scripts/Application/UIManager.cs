@@ -41,6 +41,15 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
+    void OnEnable()
+    {
+        EventBus.Subscribe<GameOverEvent>(OnGameOver);
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+    }
 
     // ==================================================
     // Initialize
@@ -151,5 +160,15 @@ public class UIManager : MonoBehaviour
     {
         ButtonPressed?.Invoke();
         SwitchTutorialView?.Invoke(type);
+    }
+
+
+    // ==================================================
+    // Event Handlers
+    // ==================================================
+
+    private void OnGameOver(GameOverEvent e)
+    {
+        ShowBaseView?.Invoke(BaseViewType.GameOver, e.Data);
     }
 }

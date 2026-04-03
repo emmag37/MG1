@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
+    private GameDataService dataService;
 
     private GameState state;
     private bool activePlayer;
@@ -71,8 +72,10 @@ public class GameManager : MonoBehaviour
     // Initialize
     // ================================
 
-    public void Initialize()
+    public void Initialize(GameDataService dataService)
     {
+        this.dataService = dataService;
+
         state = GameState.Fresh;
         activePlayer = false;
 
@@ -156,8 +159,8 @@ public class GameManager : MonoBehaviour
         // handle any data saves
 
         // update high score with new data system
-        
-        EventBus.Publish(new GameOverEvent { ScoreData = new UserScore { Score = score, HighScore = 0 } });
+        IGameData data = dataService.GetGameData();
+        EventBus.Publish(new GameOverEvent { Data = data });
     }
 
     private void HandleWin(WinEvent e)

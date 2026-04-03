@@ -2,13 +2,27 @@ using UnityEngine;
 
 public struct NoData { }
 
-public struct UserScore
+// read only
+public interface IGameData
 {
-    public int Score;
-    public int HighScore;
+    int Score { get; }  // edit this to be final score maybe? idk this needs to compile
+    int HighScore { get; }
 }
 
-// for all presentation layer
+// read and write
+public class GameData : IGameData
+{
+    public int Score { get; set; }
+    public int HighScore { get; set; }
+
+    public GameData(int score, int highScore)
+    {
+        Score = score;
+        HighScore = highScore;
+    }
+}
+
+// read only
 public interface IUserSettings
 {
     bool HasLaunched { get; }
@@ -18,7 +32,7 @@ public interface IUserSettings
     CellColor Avatar { get; }
 }
 
-// for my settings service
+// read and write
 public class UserSettings : IUserSettings
 {
     public bool HasLaunched { get; set; }

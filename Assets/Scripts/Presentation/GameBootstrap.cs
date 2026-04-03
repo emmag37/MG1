@@ -18,6 +18,7 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     private PlayerPrefsStorage storage;
     private SettingsService settingsService;
+    private GameDataService gameDataService;
 
     // ==================================================
     // Unity Lifecycle
@@ -28,13 +29,14 @@ public class GameBootstrap : MonoBehaviour
         // create services
         storage = new PlayerPrefsStorage();
         settingsService = new SettingsService(storage);
+        gameDataService = new GameDataService(storage);
 
         // initialize systems
         IUserSettings userSettings = settingsService.GetSettings();
 
         uiManager.Initialize(settingsService, gameManager, userSettings.HasLaunched);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
-        gameManager.Initialize();
+        gameManager.Initialize(gameDataService);
 
         baseViewController.Initialize();
         popUpViewController.Initialize();

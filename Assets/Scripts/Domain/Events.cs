@@ -14,7 +14,7 @@ public struct PauseGameEvent { }
 public struct ResumeGameEvent { }
 public struct GameOverEvent
 {
-    public UserScore ScoreData; // change this to score/high score
+    public IGameData Data;
 }
 
 public struct SpawnPlayerEvent
