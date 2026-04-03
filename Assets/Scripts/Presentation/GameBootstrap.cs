@@ -13,8 +13,6 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private PopUpViewController popUpViewController;
     [SerializeField] private TutorialController tutorialController;
 
-    [SerializeField] private HUDController hUDController;
-
     // ==================================================
     // Private Fields
     // ==================================================
@@ -46,7 +44,6 @@ public class GameBootstrap : MonoBehaviour
 
         // wire dependencies
         WireSettings();
-        WireGameData();
         WireUI();
     }
 
@@ -67,7 +64,6 @@ public class GameBootstrap : MonoBehaviour
     void OnDestroy()
     {
         UnwireSettings();
-        UnwireGameData();
         UnwireUI();
     }
 
@@ -92,16 +88,6 @@ public class GameBootstrap : MonoBehaviour
 
         settingsService.ProfileUpdate -= baseViewController.HandleProfileUpdate;
         settingsService.ProfileUpdate -= popUpViewController.HandleProfileUpdate;
-    }
-
-    private void WireGameData()
-    {
-        gameDataService.NewScore += hUDController.HandleScoreUpdate;
-    }
-
-    private void UnwireGameData()
-    {
-        gameDataService.NewScore -= hUDController.HandleScoreUpdate;
     }
 
     private void WireUI()

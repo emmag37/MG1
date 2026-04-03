@@ -9,11 +9,6 @@ public class GameDataService
     public IGameData GetGameData() => data;
 
     // ==================================================
-    // Events
-    // ==================================================
-    public event Action<int, int> NewScore;
-
-    // ==================================================
     // Private Fields
     // ==================================================
     private PlayerPrefsStorage storage;
@@ -35,17 +30,19 @@ public class GameDataService
     // Public Methods
     // ==================================================
 
+    // called on game over only
     public void SetScore(int score)
     {
         data.Score = score;
 
-        if (score > data.HighScore)
-        {
-            data.HighScore = score;
-            storage.SetInt(GameDataKeys.HighScore, score);
-        }
+        // run data save protocol for score history
+    }
 
-        NewScore?.Invoke(data.Score, data.HighScore);
+    // also save this in score history, don't want users to be able to change this easily
+    public void SetHighScore(int highScore)
+    {
+        data.HighScore = highScore;
+        storage.SetInt(GameDataKeys.HighScore, highScore);
     }
 
     // ==================================================

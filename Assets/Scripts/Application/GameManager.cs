@@ -33,13 +33,13 @@ public class GameManager : MonoBehaviour
     // Private Fields
     // ================================
     private GameDataService dataService;
+    private PlayerPicker picker;
 
     private GameState state;
     private bool activePlayer;
 
     private int score;
-
-    private PlayerPicker picker;
+    private int highScore;
 
 
     // ================================
@@ -73,11 +73,14 @@ public class GameManager : MonoBehaviour
     {
         this.dataService = dataService;
 
+        picker = new PlayerPicker();
+        board.Initialize();
+
         state = GameState.Fresh;
         activePlayer = false;
 
-        picker = new PlayerPicker();
-        board.Initialize();
+        score = 0;
+        highScore = dataService.GetGameData().HighScore;
 
         board.FullBoard += HandleFullBoard;
         board.TurnCompleted += HandleTurnCompleted;
@@ -91,9 +94,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         if (state != GameState.Fresh)
-        {
-            PrepareGame();      // prepare fields owned by game manager
-        }
+            ResetGame();
         Debug.Assert(state == GameState.Fresh, $"Game not reset, still in: {state}");
 
         EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });   // prepare systems not owned by the game manager
@@ -108,7 +109,7 @@ public class GameManager : MonoBehaviour
 
         state = GameState.Over;
 
-        // save any necessary data
+        Debug.Log("all data will be lost");
 
         EventBus.Publish(new ExitGameEvent());
     }
@@ -151,6 +152,11 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}");
 
         state = GameState.Over;
+
+        dataService.SetScore(score);
+        if (score == highScore)
+            dataService.SetHighScore(highScore);
+
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
     }
 
@@ -159,20 +165,28 @@ public class GameManager : MonoBehaviour
         if (e.Points == 0) return;
 
         score += e.Points;
-        dataService.SetScore(score);
+        if (score > highScore)
+        {
+            highScore = score;
+        }
+
+        EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
     }
 
     // ================================
     // Private Methods
     // ================================
 
-    private void PrepareGame()
+    private void ResetGame()
     {
         RemoveCurrentPlayer();
 
         board.Reset();
         picker.Reset();
+
         score = 0;
+        highScore = dataService.GetGameData().HighScore;
+
         state = GameState.Fresh;
     }
 
