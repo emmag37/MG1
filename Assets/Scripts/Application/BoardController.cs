@@ -29,10 +29,10 @@ public class BoardController: MonoBehaviour
     public event Action FullBoard;
 
     // ================================
-    // Unity Lifecycle Methods
+    // Initializer
     // ================================
 
-    void Awake()
+    public void Initialize()
     {
         logic = new BoardLogic();
         

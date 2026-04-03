@@ -14,15 +14,21 @@ public struct PauseGameEvent { }
 public struct ResumeGameEvent { }
 public struct GameOverEvent
 {
-    public UserScore ScoreData;
+    public UserScore ScoreData; // change this to score/high score
 }
 
-// update players - make this local whenever you update game initialization
 public struct SpawnPlayerEvent
 {
     public CellColor Color;
+    public CellColor NextColor;
 }
 public struct DestroyPlayerEvent { }
+
+public struct ScoreUpdateEvent
+{
+    public int Score;
+    public int HighScore;
+}
 
 
 // ==================================================

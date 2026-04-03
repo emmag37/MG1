@@ -32,6 +32,9 @@ public class HUDController : MonoBehaviour
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
+
+        EventBus.Subscribe<ScoreUpdateEvent>(OnScoreUpdate);
+        EventBus.Subscribe<SpawnPlayerEvent>(OnPlayerPreviewUpdate);
     }
 
     void OnDisable()
@@ -39,6 +42,9 @@ public class HUDController : MonoBehaviour
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
         EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+
+        EventBus.Subscribe<ScoreUpdateEvent>(OnScoreUpdate);
+        EventBus.Subscribe<SpawnPlayerEvent>(OnPlayerPreviewUpdate);
     }
 
 
@@ -48,7 +54,7 @@ public class HUDController : MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
-        HandleScoreUpdate(0, e.HighScore);
+        UpdateScore(0, e.HighScore);
 
         // show all elements
         foreach (Transform child in transform)
@@ -67,15 +73,14 @@ public class HUDController : MonoBehaviour
         HideElements();
     }
 
-    public void HandleScoreUpdate(int score, int highScore)
+    public void OnScoreUpdate(ScoreUpdateEvent e)
     {
-        scoreText.text = $"{score}";
-        highScoreText.text = $"{highScore}";
+        UpdateScore(e.Score, e.HighScore);
     }
 
-    public void HandlePlayerPreviewUpdate(CellColor color)
+    public void OnPlayerPreviewUpdate(SpawnPlayerEvent e)
     {
-        playerPreview.sprite = SpriteDatabase.Instance.GetSprite(color);
+        playerPreview.sprite = SpriteDatabase.Instance.GetSprite(e.NextColor);
     }
 
 
@@ -89,5 +94,11 @@ public class HUDController : MonoBehaviour
         {
             child.gameObject.SetActive(false);
         }
+    }
+
+    private void UpdateScore(int score, int highScore)
+    {
+        scoreText.text = $"{score}";
+        highScoreText.text = $"{highScore}";
     }
 }

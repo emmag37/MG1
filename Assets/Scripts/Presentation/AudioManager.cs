@@ -75,6 +75,11 @@ public class AudioManager : MonoBehaviour
         musicSource.playOnAwake = false;
     }
 
+    public void Play()
+    {
+        if (musicOn) musicSource.Play();
+    }
+
 
     // ================================
     // Event Handlers

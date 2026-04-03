@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-
 public class UIManager : MonoBehaviour
 {
     // ==================================================
@@ -83,9 +82,10 @@ public class UIManager : MonoBehaviour
     // ==================================================
 
     // base views
-    public void ShowView(BaseViewType type)
+    public void ShowView(BaseViewType type, bool playSound = true)
     {
-        ButtonPressed?.Invoke();
+        if (playSound)
+            ButtonPressed?.Invoke();
 
         if (type == BaseViewType.GamePlay)
         {

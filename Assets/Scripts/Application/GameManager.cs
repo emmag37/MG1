@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
         activePlayer = false;
 
         picker = new PlayerPicker();
+        board.Initialize();
 
         board.FullBoard += HandleFullBoard;
         board.TurnCompleted += HandleTurnCompleted;
@@ -161,10 +162,12 @@ public class GameManager : MonoBehaviour
 
     private void HandleWin(WinEvent e)
     {
+        if (e.Points == 0) return;
+
         score += e.Points;
 
         // set score in data
-        UpdateScore?.Invoke(score, 0);  // update high score with new data system
+        EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = 0 }); // don't forget to add back high score
     }
 
     // ================================
@@ -190,9 +193,7 @@ public class GameManager : MonoBehaviour
         if (state == GameState.Over) return;      // don't respawn on game over
 
         var playerColors = picker.CalculateNewPlayerColors();
-
-        UpdatePlayerPreview?.Invoke(playerColors.NextColor);
-        EventBus.Publish(new SpawnPlayerEvent { Color = playerColors.Color });
+        EventBus.Publish(new SpawnPlayerEvent { Color = playerColors.Color, NextColor = playerColors.NextColor });
 
         activePlayer = true;
     }

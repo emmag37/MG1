@@ -12,7 +12,6 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private BaseViewController baseViewController;
     [SerializeField] private PopUpViewController popUpViewController;
     [SerializeField] private TutorialController tutorialController;
-    [SerializeField] private HUDController hudController;
 
     // ==================================================
     // Private Fields
@@ -41,17 +40,26 @@ public class GameBootstrap : MonoBehaviour
         // wire dependencies
         WireSettings();
         WireUI();
-        WireGamePlay();
+    }
 
-        // kick off first state
-        Start();
+    void Start()
+    {
+        uiManager.ShowView(BaseViewType.Home, false);
+
+        IUserSettings userSettings = settingsService.GetSettings();
+        if (!userSettings.HasLaunched)
+        {
+            uiManager.PushOverlay(PopUpViewType.Tutorial);
+            settingsService.SetLaunched(true);
+        }
+
+        audioManager.Play();
     }
 
     void OnDestroy()
     {
         UnwireSettings();
         UnwireUI();
-        UnwireGamePlay();
     }
 
 
@@ -97,36 +105,7 @@ public class GameBootstrap : MonoBehaviour
         uiManager.PushOverlayView -= popUpViewController.HandlePush;
         uiManager.PopOverlayView -= popUpViewController.HandlePop;
 
-        uiManager.SwitchTutorialView += tutorialController.HandleSwitchView;
-        uiManager.CloseTutorialView += tutorialController.HandleClose;
-    }
-
-    private void WireGamePlay()
-    {
-        gameManager.UpdateScore += hudController.HandleScoreUpdate;
-        gameManager.UpdatePlayerPreview += hudController.HandlePlayerPreviewUpdate;
-    }
-
-    private void UnwireGamePlay()
-    {
-        gameManager.UpdateScore -= hudController.HandleScoreUpdate;
-        gameManager.UpdatePlayerPreview -= hudController.HandlePlayerPreviewUpdate;
-    }
-
-
-    // ==================================================
-    // Start
-    // ==================================================
-
-    private void Start()
-    {
-        uiManager.ShowView(BaseViewType.Home);
-
-        IUserSettings userSettings = settingsService.GetSettings();
-        if (!userSettings.HasLaunched)
-        {
-            uiManager.PushOverlay(PopUpViewType.Tutorial);
-            settingsService.SetLaunched(true);
-        }
+        uiManager.SwitchTutorialView -= tutorialController.HandleSwitchView;
+        uiManager.CloseTutorialView -= tutorialController.HandleClose;
     }
 }
