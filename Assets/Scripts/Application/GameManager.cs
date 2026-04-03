@@ -10,20 +10,17 @@ public class GameManager : MonoBehaviour
     // ================================
     // Events
     // ================================
-
     public Action<int, int> UpdateScore;
     public Action<CellColor> UpdatePlayerPreview;
 
     // ================================
     // Inspector Fields
     // ================================
-
     [SerializeField] private BoardController board;
 
     // ================================
     // Private Types
     // ================================
-
     private enum GameState
     {
         Playing,
@@ -99,8 +96,7 @@ public class GameManager : MonoBehaviour
         }
         Debug.Assert(state == GameState.Fresh, $"Game not reset, still in: {state}");
 
-        // update high score with new data system
-        EventBus.Publish(new StartGameEvent { HighScore = 0 });   // prepare systems not owned by the game manager
+        EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });   // prepare systems not owned by the game manager
 
         state = GameState.Playing;
         SpawnNewPlayer();
@@ -155,12 +151,7 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}");
 
         state = GameState.Over;
-
-        // handle any data saves
-
-        // update high score with new data system
-        IGameData data = dataService.GetGameData();
-        EventBus.Publish(new GameOverEvent { Data = data });
+        EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
     }
 
     private void HandleWin(WinEvent e)
@@ -168,9 +159,7 @@ public class GameManager : MonoBehaviour
         if (e.Points == 0) return;
 
         score += e.Points;
-
-        // set score in data
-        EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = 0 }); // don't forget to add back high score
+        dataService.SetScore(score);
     }
 
     // ================================
@@ -179,8 +168,6 @@ public class GameManager : MonoBehaviour
 
     private void PrepareGame()
     {
-        // good place to put data preparation
-
         RemoveCurrentPlayer();
 
         board.Reset();

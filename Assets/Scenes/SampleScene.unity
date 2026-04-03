@@ -3351,7 +3351,7 @@ MonoBehaviour:
   baseViewController: {fileID: 300198981}
   popUpViewController: {fileID: 1764461906}
   tutorialController: {fileID: 1413417920}
-  hudController: {fileID: 1811068634}
+  hUDController: {fileID: 1811068634}
 --- !u!4 &779006562
 Transform:
   m_ObjectHideFlags: 0

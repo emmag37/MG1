@@ -109,8 +109,8 @@ public class BoardView : MonoBehaviour
 
     private void OnGameOver(GameOverEvent e)
     {
-        background.gameObject.SetActive(true);
-        gridView.gameObject.SetActive(true);
+        background.gameObject.SetActive(false);
+        gridView.gameObject.SetActive(false);
     }
 
 

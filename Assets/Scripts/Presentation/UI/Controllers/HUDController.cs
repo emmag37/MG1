@@ -33,7 +33,6 @@ public class HUDController : MonoBehaviour
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
 
-        EventBus.Subscribe<ScoreUpdateEvent>(OnScoreUpdate);
         EventBus.Subscribe<SpawnPlayerEvent>(OnPlayerPreviewUpdate);
     }
 
@@ -43,7 +42,6 @@ public class HUDController : MonoBehaviour
         EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
 
-        EventBus.Subscribe<ScoreUpdateEvent>(OnScoreUpdate);
         EventBus.Subscribe<SpawnPlayerEvent>(OnPlayerPreviewUpdate);
     }
 
@@ -54,7 +52,7 @@ public class HUDController : MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
-        UpdateScore(0, e.HighScore);
+        UpdateScore(0, e.Data.HighScore);
 
         // show all elements
         foreach (Transform child in transform)
@@ -73,14 +71,14 @@ public class HUDController : MonoBehaviour
         HideElements();
     }
 
-    public void OnScoreUpdate(ScoreUpdateEvent e)
-    {
-        UpdateScore(e.Score, e.HighScore);
-    }
-
     public void OnPlayerPreviewUpdate(SpawnPlayerEvent e)
     {
         playerPreview.sprite = SpriteDatabase.Instance.GetSprite(e.NextColor);
+    }
+
+    public void HandleScoreUpdate(int score, int highScore)
+    {
+        UpdateScore(score, highScore);
     }
 
 

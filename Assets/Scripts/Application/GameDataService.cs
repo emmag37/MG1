@@ -11,7 +11,7 @@ public class GameDataService
     // ==================================================
     // Events
     // ==================================================
-    public event Action<int> NewHighScore;
+    public event Action<int, int> NewScore;
 
     // ==================================================
     // Private Fields
@@ -35,12 +35,17 @@ public class GameDataService
     // Public Methods
     // ==================================================
 
-    public void SetHighScore(int highScore)
+    public void SetScore(int score)
     {
-        data.HighScore = highScore;
-        storage.SetInt(GameDataKeys.HighScore, highScore);
+        data.Score = score;
 
-        NewHighScore?.Invoke(highScore);
+        if (score > data.HighScore)
+        {
+            data.HighScore = score;
+            storage.SetInt(GameDataKeys.HighScore, score);
+        }
+
+        NewScore?.Invoke(data.Score, data.HighScore);
     }
 
     // ==================================================

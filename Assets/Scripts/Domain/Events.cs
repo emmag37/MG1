@@ -7,7 +7,7 @@ using UnityEngine;
 // game state
 public struct StartGameEvent
 {
-    public int HighScore;
+    public IGameData Data;
 }
 public struct ExitGameEvent { } 
 public struct PauseGameEvent { }
