@@ -3,7 +3,7 @@ using System.IO;
 
 public static class GameDataFiles
 {
-    public const string ScoreHistory = "/scoreHistory.json";
+    public const string ScoreHistory = "scoreHistory.json";
 }
 
 public class DiscStorage

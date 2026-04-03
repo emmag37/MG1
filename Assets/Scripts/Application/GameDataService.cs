@@ -44,22 +44,13 @@ public class GameDataService
     {
         data.Score = score;
 
-        // load the list
         ScoreHistory history = disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory);
-
-        // modify
         history.Scores.Add(score);
-
-        // save the list
         disc.Save<ScoreHistory>(GameDataFiles.ScoreHistory, history);
+
+        data.ScoreHistory = history.ROScores;
     }
 
-    public IReadOnlyList<int> GetScoreHistory()
-    {
-        ScoreHistory history = disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory);
-
-        return history.ROScores;
-    }
 
     // ==================================================
     // Private Methods
@@ -69,7 +60,8 @@ public class GameDataService
     {
         GameData newData = new GameData(
             score: 0,
-            highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0)
+            highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
+            scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROScores
         );
 
         return newData;

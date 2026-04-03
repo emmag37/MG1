@@ -26,6 +26,8 @@ public class UIManager : MonoBehaviour
     // Private Fields
     // ==================================================
     private SettingsService settingsService;
+    private GameDataService gameDataService;
+
     private GameManager gameManager;
 
     private BaseViewType baseState;
@@ -55,9 +57,10 @@ public class UIManager : MonoBehaviour
     // Initialize
     // ==================================================
 
-    public void Initialize(SettingsService settingsService, GameManager gameManager, bool hasLaunched)
+    public void Initialize(SettingsService settingsService, GameDataService gameDataService, GameManager gameManager)
     {
         this.settingsService = settingsService;
+        this.gameDataService = gameDataService;
         this.gameManager = gameManager;
     }
 
@@ -123,6 +126,8 @@ public class UIManager : MonoBehaviour
         if (playSound)
             ButtonPressed?.Invoke();
 
+        IRuntimeData data = settingsService.GetSettings();
+
         if (type == PopUpViewType.Pause)
         {
             gameManager.PauseGame();
@@ -131,10 +136,12 @@ public class UIManager : MonoBehaviour
         {
             SwitchTutorialView?.Invoke(TutorialViewType.Tutorial1);
         }
+        else if (type == PopUpViewType.ScoreHistory)
+        {
+            data = gameDataService.GetGameData();
+        }
 
-        IUserSettings userSettings = settingsService.GetSettings();
-        PushOverlayView?.Invoke(type, userSettings);
-
+        PushOverlayView?.Invoke(type, data);
         popUpStack.Push(type);
     }
 
@@ -169,6 +176,6 @@ public class UIManager : MonoBehaviour
 
     private void OnGameOver(GameOverEvent e)
     {
-        ShowBaseView?.Invoke(BaseViewType.GameOver, e.Data);
+        ShowBaseView?.Invoke(BaseViewType.GameOver, gameDataService.GetGameData());
     }
 }

@@ -1,29 +1,24 @@
 using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 public struct NoData { }
 
-// read only
-public interface IGameData
+// ==================================================
+// Interfaces
+// ==================================================
+
+public interface IRuntimeData { }
+
+public interface IGameData : IRuntimeData
 {
-    int Score { get; }  // edit this to be final score maybe? idk this needs to compile
+    int Score { get; }
     int HighScore { get; }
+
+    IReadOnlyList<int> ScoreHistory { get; }    // might put this in its own runtime data type, keep for now
 }
 
-// read and write
-public class GameData : IGameData
-{
-    public int Score { get; set; }
-    public int HighScore { get; set; }
-
-    public GameData(int score, int highScore)
-    {
-        Score = score;
-        HighScore = highScore;
-    }
-}
-
-// read only
-public interface IUserSettings
+public interface IUserSettings : IRuntimeData
 {
     bool HasLaunched { get; }
     bool MusicOn { get; }
@@ -32,7 +27,24 @@ public interface IUserSettings
     CellColor Avatar { get; }
 }
 
-// read and write
+// ==================================================
+// Classes
+// ==================================================
+
+public class GameData : IGameData
+{
+    public int Score { get; set; }
+    public int HighScore { get; set; }
+    public IReadOnlyList<int> ScoreHistory { get; set; }
+
+    public GameData(int score, int highScore, IReadOnlyList<int> scoreHistory)
+    {
+        Score = score;
+        HighScore = highScore;
+        ScoreHistory = scoreHistory;
+    }
+}
+
 public class UserSettings : IUserSettings
 {
     public bool HasLaunched { get; set; }

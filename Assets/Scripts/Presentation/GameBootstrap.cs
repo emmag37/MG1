@@ -38,7 +38,7 @@ public class GameBootstrap : MonoBehaviour
         // initialize systems
         IUserSettings userSettings = settingsService.GetSettings();
 
-        uiManager.Initialize(settingsService, gameManager, userSettings.HasLaunched);
+        uiManager.Initialize(settingsService, gameDataService, gameManager);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
         gameManager.Initialize(gameDataService);
 
