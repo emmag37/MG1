@@ -125,8 +125,6 @@ public class BoardLogic
             return false;
         }
 
-        if (color == Mask) color = WildCard;    // treat the mask as wild card for line clearing
-
         AddToBoard(row, col, color);
         result = CalculateLines(row, col, color);
 
@@ -230,10 +228,14 @@ public class BoardLogic
     // returns whether the line indicated by indexSelector is all color, assumes that the line is full
     private bool LineColorsMatch(Func<int, (int r, int c)> indexSelector, CellColor color)
     {
+        if (color == Mask) color = WildCard;    // cast to wild card
+
         for (int i = 0; i < RowSize; i++)
         {
             var (r, c) = indexSelector(i);
             CellColor cellColor = gridColors[r, c];
+
+            if (cellColor == Mask) cellColor = WildCard;    // cast to wc if mask
 
             if (color == WildCard) color = cellColor;   // pick color to compare to if color is WildCard
 
