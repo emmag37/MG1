@@ -71,7 +71,7 @@ public class BoardController: MonoBehaviour
             EventBus.Publish(new GhostPreviewEvent
             {
                 Index = index,
-                OriginalColor = logic.GetCellColor(index.x, index.y)
+                OriginalColor = logic.GetCellColor(index.x, index.y)    // if mask, get set to wc -> returns this
             });
         }
     }

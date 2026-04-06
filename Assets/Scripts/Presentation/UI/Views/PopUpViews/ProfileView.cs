@@ -4,7 +4,6 @@ using System;
 
 public class ProfileView : PopUpView<IUserSettings>
 {
-    
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -12,6 +11,13 @@ public class ProfileView : PopUpView<IUserSettings>
 
     [SerializeField] private Button editAvatarButton;
     [SerializeField] private Image avatarImage;
+
+    [SerializeField] private Button scoreHistoryButton;
+
+    // ==================================================
+    // Private Fields
+    // ==================================================
+    private string currentUsername;
 
     // ==================================================
     // Unity Lifecycle
@@ -31,9 +37,17 @@ public class ProfileView : PopUpView<IUserSettings>
     {
         base.Awake();
 
-        usernameInput.onEndEdit.AddListener(Manager.UpdateUsername);
+        // update input text
+        usernameInput.onSubmit.AddListener(Manager.UpdateUsername);
+        // bring this back when you remove the legacy components
+        /*
+        usernameInput.onDeselect.AddListener(() =>
+        {
+            usernameInput.text = currentUsername;
+        }); */ 
 
-        editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar)); 
+        editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar));
+        scoreHistoryButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ScoreHistory));
     }
 
     // ==================================================
@@ -45,6 +59,8 @@ public class ProfileView : PopUpView<IUserSettings>
         usernameInput.text = data.Username;
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
 
+        currentUsername = data.Username;
+
         base.Show(data);
     }
 
@@ -54,6 +70,7 @@ public class ProfileView : PopUpView<IUserSettings>
 
         usernameInput.text = data.Username;
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
-    }
 
+        currentUsername = data.Username;
+    }
 }

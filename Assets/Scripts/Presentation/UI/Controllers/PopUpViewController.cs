@@ -64,7 +64,7 @@ public class PopUpViewController : MonoBehaviour
         int count = overlayStack.Count;
         if (count > 0)
         {
-            Debug.Assert(type != PopUpViewType.Pause && type != PopUpViewType.Profile && type != PopUpViewType.ScoreHistory,
+            Debug.Assert(type != PopUpViewType.Pause && type != PopUpViewType.Profile,
                 $"Attempted to push type {type} to a non-empty overlay stack");
 
             overlayStack.Peek().Hide();
@@ -85,8 +85,8 @@ public class PopUpViewController : MonoBehaviour
 
         PopUpView overlayView = overlayStack.Peek();
 
-        Debug.Assert(!(overlayView.Type == PopUpViewType.Pause || overlayView.Type == PopUpViewType.Profile
-            || overlayView.Type == PopUpViewType.ScoreHistory) || overlayStack.Count == 1,
+        Debug.Assert(!(overlayView.Type == PopUpViewType.Pause || overlayView.Type == PopUpViewType.Profile)
+            || overlayStack.Count == 1,
             "Too many views in overlay stack");
 
         overlayView.Hide();
