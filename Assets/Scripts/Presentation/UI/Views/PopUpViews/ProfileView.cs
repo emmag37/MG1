@@ -40,11 +40,7 @@ public class ProfileView : PopUpView<IUserSettings>
 
         // update input text
 
-        usernameInput.onSubmit.AddListener(value =>
-        {
-            Manager.UpdateUsername(value);
-            currentUsername = value;
-        });
+        usernameInput.onSubmit.AddListener(TryUpdateUsername);
         usernameInput.onDeselect.AddListener(_ =>
         {
             usernameInput.text = currentUsername;
@@ -76,5 +72,26 @@ public class ProfileView : PopUpView<IUserSettings>
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
 
         currentUsername = data.Username;
+    }
+
+    // ==================================================
+    // Private Methods
+    // ==================================================
+
+    private void TryUpdateUsername(string name)
+    {
+        if (Manager.TryUpdateUsername(name))
+        {
+            currentUsername = name;
+        }
+        else
+        {
+            usernameInput.text = currentUsername;
+
+            Debug.Log("invalid input");
+
+            // shake the text
+            // display reason why invalid
+        }
     }
 }

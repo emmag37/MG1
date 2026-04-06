@@ -22,6 +22,7 @@ public class SettingsService
     // ==================================================
     private PlayerPrefsStorage storage;
     private UserSettings settings;
+    private UsernameValidator usernameValidator;
 
 
     // ==================================================
@@ -31,6 +32,8 @@ public class SettingsService
     public SettingsService(PlayerPrefsStorage storage)
     {
         this.storage = storage;
+
+        usernameValidator = new UsernameValidator();
 
         settings = Load();
     }
@@ -61,10 +64,19 @@ public class SettingsService
         SFXUpdate?.Invoke(on);
     }
 
-    public void SetUsername(string name)
+    public bool TrySetUsername(string name)
     {
-        settings.Username = name;
-        storage.SetString(SettingsKeys.Username, name);
+        if (usernameValidator.ValidUsername(name))
+        {
+            settings.Username = name;
+            storage.SetString(SettingsKeys.Username, name);
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void SetAvatar(CellColor color)
@@ -92,5 +104,4 @@ public class SettingsService
 
         return newSettings;
     }
-
 }
