@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class ProfileView : PopUpView<IUserSettings>
 {
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private InputField usernameInput;
+    [SerializeField] private TMP_InputField usernameInput;
 
     [SerializeField] private Button editAvatarButton;
     [SerializeField] private Image avatarImage;
@@ -38,13 +39,16 @@ public class ProfileView : PopUpView<IUserSettings>
         base.Awake();
 
         // update input text
-        usernameInput.onSubmit.AddListener(Manager.UpdateUsername);
-        // bring this back when you remove the legacy components
-        /*
-        usernameInput.onDeselect.AddListener(() =>
+
+        usernameInput.onSubmit.AddListener(value =>
+        {
+            Manager.UpdateUsername(value);
+            currentUsername = value;
+        });
+        usernameInput.onDeselect.AddListener(_ =>
         {
             usernameInput.text = currentUsername;
-        }); */ 
+        });
 
         editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar));
         scoreHistoryButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ScoreHistory));
