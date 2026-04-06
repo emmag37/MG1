@@ -1,3 +1,16 @@
 {
-	"name": "NewAssembly"
+    "name": "NewAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c0d285876afc94154862f91428759057"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

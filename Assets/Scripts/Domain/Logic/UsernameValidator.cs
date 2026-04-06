@@ -11,10 +11,20 @@ public class UsernameValidator
 
     private const string Chars = @"^\w+$";
 
+    // ==================================================
+    // Private Fields
+    // ==================================================
+    private ProfanityService profanityDetector;
 
     // ==================================================
     // Public Methods
     // ==================================================
+
+    public UsernameValidator()
+    {
+        profanityDetector = new ProfanityService();
+    }
+
     public bool ValidUsername(string name)
     {
         // correct length
@@ -24,7 +34,7 @@ public class UsernameValidator
         if (!Regex.IsMatch(name, Chars)) return false;
 
         // no profanity
-        
+        if (profanityDetector.ContainsProfanity(name)) return false;
 
         return true;
     }
