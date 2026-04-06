@@ -64,19 +64,17 @@ public class SettingsService
         SFXUpdate?.Invoke(on);
     }
 
-    public bool TrySetUsername(string name)
+    public bool TrySetUsername(string name, out InvalidInputType error)
     {
-        if (usernameValidator.ValidUsername(name))
+        error = usernameValidator.ValidUsername(name);
+        if (error == InvalidInputType.None)
         {
             settings.Username = name;
             storage.SetString(SettingsKeys.Username, name);
-
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public void SetAvatar(CellColor color)

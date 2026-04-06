@@ -1,6 +1,14 @@
 using UnityEngine;
 using System.Text.RegularExpressions;
 
+public enum InvalidInputType
+{
+    None,
+    Short,
+    SpecialChars,
+    Profanity
+}
+
 public class UsernameValidator
 {
     // ==================================================
@@ -25,19 +33,20 @@ public class UsernameValidator
         profanityDetector = new ProfanityService();
     }
 
-    public bool ValidUsername(string name)
+    public InvalidInputType ValidUsername(string name)
     {
         // correct length
-        if (name.Length < LowerBound || name.Length > UpperBound) return false;
+        if (name.Length < LowerBound)
+            return InvalidInputType.Short;
 
         // no special chars
-        if (!Regex.IsMatch(name, Chars)) return false;
+        if (!Regex.IsMatch(name, Chars))
+            return InvalidInputType.SpecialChars;
 
         // no profanity
-        if (profanityDetector.ContainsProfanity(name)) return false;
+        if (profanityDetector.ContainsProfanity(name))
+            return InvalidInputType.Profanity;
 
-        return true;
+        return InvalidInputType.None;
     }
-
-    // write a function to check for profanity
 }

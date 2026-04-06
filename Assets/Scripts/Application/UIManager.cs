@@ -79,9 +79,9 @@ public class UIManager : MonoBehaviour
         settingsService.SetSFXOn(on == 1 ? true : false);
     }
 
-    public bool TryUpdateUsername(string name)
+    public bool TryUpdateUsername(string name, out InvalidInputType error)
     {
-        return settingsService.TrySetUsername(name);
+        return settingsService.TrySetUsername(name, out error);
     }
 
     public void UpdateAvatar(CellColor color)

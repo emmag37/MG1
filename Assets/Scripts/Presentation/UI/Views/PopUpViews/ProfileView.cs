@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 using TMPro;
 
 public class ProfileView : PopUpView<IUserSettings>
@@ -9,6 +10,7 @@ public class ProfileView : PopUpView<IUserSettings>
     // Inspector Fields
     // ==================================================
     [SerializeField] private TMP_InputField usernameInput;
+    [SerializeField] private Text invalidInput;
 
     [SerializeField] private Button editAvatarButton;
     [SerializeField] private Image avatarImage;
@@ -19,6 +21,12 @@ public class ProfileView : PopUpView<IUserSettings>
     // Private Fields
     // ==================================================
     private string currentUsername;
+    Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
+    {
+        { InvalidInputType.Short, "Username must be at least 3 characters" },
+        { InvalidInputType.SpecialChars, "Only letters, numbers, and underscores allowed" },
+        { InvalidInputType.Profanity, "That username isn’t allowed" }
+    };
 
     // ==================================================
     // Unity Lifecycle
@@ -39,11 +47,16 @@ public class ProfileView : PopUpView<IUserSettings>
         base.Awake();
 
         // update input text
-
-        usernameInput.onSubmit.AddListener(TryUpdateUsername);
+        // can i have max number of characters here?
+        
+        usernameInput.onSubmit.AddListener(value =>
+        {
+            TryUpdateUsername(value);
+        });
         usernameInput.onDeselect.AddListener(_ =>
         {
             usernameInput.text = currentUsername;
+            invalidInput.gameObject.SetActive(false);
         });
 
         editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar));
@@ -64,6 +77,13 @@ public class ProfileView : PopUpView<IUserSettings>
         base.Show(data);
     }
 
+    public override void Hide()
+    {
+        base.Hide();
+
+        invalidInput.gameObject.SetActive(false);
+    }
+
     public override void UpdateOverlay(IUserSettings data)
     {
         base.UpdateOverlay(data);
@@ -74,24 +94,30 @@ public class ProfileView : PopUpView<IUserSettings>
         currentUsername = data.Username;
     }
 
+    
+
     // ==================================================
     // Private Methods
     // ==================================================
 
     private void TryUpdateUsername(string name)
     {
-        if (Manager.TryUpdateUsername(name))
+        if (Manager.TryUpdateUsername(name, out InvalidInputType error))
         {
             currentUsername = name;
+            invalidInput.gameObject.SetActive(false);
         }
         else
         {
+            Debug.Log($"invalid input: {error}");
+
             usernameInput.text = currentUsername;
 
-            Debug.Log("invalid input");
-
             // shake the text
+
             // display reason why invalid
+            invalidInput.text = errorMessages[error];
+            invalidInput.gameObject.SetActive(true);
         }
     }
 }
