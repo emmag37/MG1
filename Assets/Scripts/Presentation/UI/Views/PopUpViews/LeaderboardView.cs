@@ -1,22 +1,22 @@
 using UnityEngine;
 
-public class ScoreHistoryView : PopUpView<IGameData>
+public class LeaderboardView : PopUpView<IRuntimeData>
 {
     // ==================================================
     // Private Fields
     // ==================================================
-    private IntScrollList listView;
+    //private VerticalScrollList listView;
 
 
     // ==================================================
     // Public Methods
     // ==================================================
 
-    public override void Show(IGameData data)
+    public override void Show(IRuntimeData data)
     {
-        if (listView == null) listView = GetComponent<IntScrollList>();   // not actually getting initialized
+        //if (listView == null) listView = GetComponent<VerticalScrollList>();
 
-        listView.Populate(data.ScoreHistory);   // throwing null expception
+        // populate the list view
 
         base.Show(data);
     }

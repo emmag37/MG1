@@ -11,6 +11,7 @@ public enum PopUpViewType
     None,
     Pause,
     Profile,
+    Leaderboard,
     ScoreHistory,
     ChooseAvatar,
     Tutorial

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// clean-up: probably can remove un typed ui views, most require data
+
 /// <summary>
 /// Base class for all UI views.
 /// </summary>

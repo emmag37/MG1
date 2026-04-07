@@ -1,13 +1,14 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class VerticalScrollList : MonoBehaviour
+// type this to the data type of list
+// type the list item classes to the data type of list as well?
+public class VerticalScrollList<T> : MonoBehaviour
 {
     [SerializeField] private Transform content;
     [SerializeField] private GameObject listItem;   // prefab
     
-    public void Populate(IReadOnlyList<int> list)
+    public void Populate(IReadOnlyList<T> list)
     {
         // clear existing list
         foreach (Transform child in content)
@@ -15,16 +16,14 @@ public class VerticalScrollList : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (int data in list)
+        foreach (T data in list)
         {
             Debug.Log($"add item: {data}");
 
             // create the list item
-            GameObject item = Instantiate(listItem, content);
-
-            // set the text 
-            Text text = item.GetComponent<Text>();
-            text.text = $"{data}";
+            ItemView<T> item = Instantiate(listItem, content).GetComponent<ItemView<T>>();
+            item.Set(data);
         }
     }
 }
+
