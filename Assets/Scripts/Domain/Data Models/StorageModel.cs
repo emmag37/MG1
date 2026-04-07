@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public abstract class CappedRankedList<T> where T : IComparable<T>
 {
     // properties
-    protected readonly int max;
+    protected readonly int max = 100;
     private static readonly IComparer<T> DescComparer =
         Comparer<T>.Create((a, b) => b.CompareTo(a));
 
@@ -16,11 +16,14 @@ public abstract class CappedRankedList<T> where T : IComparable<T>
     // serialized fields
     [SerializeField] protected List<T> list = new List<T>();
 
+    // constructor
     protected CappedRankedList(int max)
     {
         this.max = max;
     }
 
+    // public functions
+    // returns index of inserted value, -1 if not inserted.
     public virtual bool TryAddValue(T value)
     {
         if (list.Count == max && value.CompareTo(list[max - 1]) <= 0)   // less than or equal : -n means less than, 0 means equal
@@ -33,7 +36,8 @@ public abstract class CappedRankedList<T> where T : IComparable<T>
         return true;
     }
 
-    private void InsertValue(T value)
+    // private functions
+    private int InsertValue(T value)
     {
         // use built-in binary search with descending comparer
         int index = list.BinarySearch(value, DescComparer);
@@ -43,15 +47,21 @@ public abstract class CappedRankedList<T> where T : IComparable<T>
             index = ~index;
 
         list.Insert(index, value);
+        return index;
     }
 }
 
 
-// Capped Ranked list of size 10
-
 [Serializable]
 public class ScoreHistory : CappedRankedList<int>
 {
+    // only hold top 10 scores in score history
     public ScoreHistory() : base(10) { }
 }
 
+[Serializable]
+public class LeaderboardRanking : CappedRankedList<LeaderboardData>
+{
+    // hold the top 50 scores
+    public LeaderboardRanking() : base(50) { }
+}

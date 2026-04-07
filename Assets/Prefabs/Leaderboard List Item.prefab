@@ -164,6 +164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4332283088522827252}
   - component: {fileID: 251664199772676806}
+  - component: {fileID: 3397268242261134542}
   m_Layer: 5
   m_Name: Leaderboard List Item
   m_TagString: Untagged
@@ -202,6 +203,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6292988861838853260}
   m_CullTransparentMesh: 1
+--- !u!114 &3397268242261134542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6292988861838853260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e93d0d9e70294e22a1160636750c8ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeaderboardItemView
+  rankText: {fileID: 224625188703900399}
+  avatarImage: {fileID: 6780543296360118069}
+  usernameText: {fileID: 4415793545886994464}
+  scoreText: {fileID: 6693857405483598113}
 --- !u!1 &7301141279171018907
 GameObject:
   m_ObjectHideFlags: 0

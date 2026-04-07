@@ -3,24 +3,34 @@ using System.Collections.Generic;
 
 // type this to the data type of list
 // type the list item classes to the data type of list as well?
-public class VerticalScrollList<T> : MonoBehaviour
+public abstract class VerticalScrollList<T> : MonoBehaviour
 {
     [SerializeField] private Transform content;
     [SerializeField] private GameObject listItem;   // prefab
-    
+
     public void Populate(IReadOnlyList<T> list)
     {
-        // clear existing list
+        Clear();
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            CreateItem(list[i], i);
+        }
+    }
+
+    private void Clear()
+    {
         foreach (Transform child in content)
         {
             Destroy(child.gameObject);
         }
+    }
 
-        foreach (T data in list)
-        {
-            // create the list item
-            ItemView<T> item = Instantiate(listItem, content).GetComponent<ItemView<T>>();
-            item.Set(data);
-        }
+    protected virtual ItemView<T> CreateItem(T data, int index)
+    {
+        ItemView<T> item = Instantiate(listItem, content).GetComponent<ItemView<T>>();
+        item.Set(data);
+
+        return item;
     }
 }

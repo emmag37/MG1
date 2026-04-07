@@ -1995,7 +1995,7 @@ GameObject:
   - component: {fileID: 305109431}
   - component: {fileID: 305109430}
   - component: {fileID: 305109433}
-  - component: {fileID: 305109428}
+  - component: {fileID: 305109434}
   m_Layer: 5
   m_Name: Leaderboard View
   m_TagString: Untagged
@@ -2026,18 +2026,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &305109428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 305109426}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07fc46060646b40b3856763b31fb5834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VerticalScrollList
 --- !u!114 &305109430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2115,6 +2103,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardView
   type: 3
   exitButton: {fileID: 1353513427}
+--- !u!114 &305109434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305109426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccce96eabc0e04d1186c85a84e79596e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeaderboardScrollList
+  content: {fileID: 1479952829}
+  listItem: {fileID: 6292988861838853260, guid: 8eef3d4c0223943baa57ef2ff5c0f395, type: 3}
 --- !u!1 &338253964
 GameObject:
   m_ObjectHideFlags: 0
