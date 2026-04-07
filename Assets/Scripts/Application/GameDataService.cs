@@ -45,9 +45,9 @@ public class GameDataService
         data.Score = score;
 
         ScoreHistory history = disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory);
-        history.Scores.Add(score);
-        disc.Save<ScoreHistory>(GameDataFiles.ScoreHistory, history);
+        history.AddScore(score);
 
+        disc.Save<ScoreHistory>(GameDataFiles.ScoreHistory, history);
         data.ScoreHistory = history.ROScores;
     }
 

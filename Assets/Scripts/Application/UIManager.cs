@@ -176,6 +176,7 @@ public class UIManager : MonoBehaviour
 
     private void OnGameOver(GameOverEvent e)
     {
+        baseState = BaseViewType.GameOver;
         ShowBaseView?.Invoke(BaseViewType.GameOver, gameDataService.GetGameData());
     }
 }

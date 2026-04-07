@@ -17,6 +17,8 @@ public class VerticalScrollList : MonoBehaviour
 
         foreach (int data in list)
         {
+            Debug.Log($"add item: {data}");
+
             // create the list item
             GameObject item = Instantiate(listItem, content);
 
