@@ -2,73 +2,56 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-[Serializable]
-public class ScoreHistory
+// need to define <, > , == for my leaderboard item
+
+public abstract class CappedRankedList<T> where T : IComparable<T>
 {
     // properties
-    private const int Max = 10;
-    public IReadOnlyList<int> ROScores => scores;
+    protected readonly int max;
+    private static readonly IComparer<T> DescComparer =
+        Comparer<T>.Create((a, b) => b.CompareTo(a));
+
+    public IReadOnlyList<T> ROList => list;
 
     // serialized fields
-    private List<int> scores = new List<int>();
+    [SerializeField] protected List<T> list = new List<T>();
 
-    // functions
-    public bool AddScore(int score)
+    protected CappedRankedList(int max)
     {
-        if (scores.Count < Max)
-        {
-            InsertScore(score);
-
-            return true;
-        }
-        else if (score > scores[Max - 1])
-        {
-            // remove the bottom score
-            scores.RemoveAt(Max - 1);
-
-            InsertScore(score);
-        }
-
-        return false;
+        this.max = max;
     }
 
-    // uses a modified binary search algorithm to maintain sorted property, O(logn)
-    private void InsertScore(int score)
+    public virtual bool TryAddValue(T value)
     {
-        int index = 0;  // default for empty list
+        if (list.Count == max && value.CompareTo(list[max - 1]) <= 0)   // less than or equal : -n means less than, 0 means equal
+            return false;
 
-        int a = 0;
-        int b = scores.Count - 1;
-        while (a <= b)
-        {
-            int m = (b - a) / 2;
+        if (list.Count == max)
+            list.RemoveAt(max - 1);
 
-            // check if found
-                // need to add edge cases
-            if (score == m || (score < m && (m == 0 || score > m - 1))) // m - 1 must exist
-            {
-                index = m;
-                break;
-            }
-            else if (score > m && (m == scores.Count - 1 || score < m + 1)) // m + 1 must exist
-            {
-                index = m + 1;
-                break;
-            }
+        InsertValue(value);
+        return true;
+    }
 
-            // update a and b
-            if (score < m)
-            {
-                b = m - 1;
-            }
-            else
-            {
-                a = m + 1;
-            }
-        }
+    private void InsertValue(T value)
+    {
+        // use built-in binary search with descending comparer
+        int index = list.BinarySearch(value, DescComparer);
 
-        scores.Insert(index, score);
+        // BinarySearch returns bitwise complement of insertion index to keep the list sorted
+        if (index < 0)
+            index = ~index;
+
+        list.Insert(index, value);
     }
 }
 
+
+// Capped Ranked list of size 10
+
+[Serializable]
+public class ScoreHistory : CappedRankedList<int>
+{
+    public ScoreHistory() : base(10) { }
+}
 

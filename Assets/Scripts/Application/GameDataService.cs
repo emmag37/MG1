@@ -45,10 +45,13 @@ public class GameDataService
         data.Score = score;
 
         ScoreHistory history = disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory);
-        history.AddScore(score);
+        bool added = history.TryAddValue(score);
+        disc.Save(GameDataFiles.ScoreHistory, history);
 
-        disc.Save<ScoreHistory>(GameDataFiles.ScoreHistory, history);
-        data.ScoreHistory = history.ROScores;
+        if (added)
+        {
+            data.ScoreHistory = history.ROList;
+        }
     }
 
 
@@ -61,7 +64,7 @@ public class GameDataService
         GameData newData = new GameData(
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
-            scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROScores
+            scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList
         );
 
         return newData;

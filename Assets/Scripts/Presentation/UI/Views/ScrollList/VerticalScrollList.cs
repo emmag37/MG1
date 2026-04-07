@@ -18,12 +18,9 @@ public class VerticalScrollList<T> : MonoBehaviour
 
         foreach (T data in list)
         {
-            Debug.Log($"add item: {data}");
-
             // create the list item
             ItemView<T> item = Instantiate(listItem, content).GetComponent<ItemView<T>>();
             item.Set(data);
         }
     }
 }
-

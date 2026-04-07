@@ -2038,8 +2038,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07fc46060646b40b3856763b31fb5834, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VerticalScrollList
-  content: {fileID: 1479952829}
-  listItem: {fileID: 6292988861838853260, guid: 8eef3d4c0223943baa57ef2ff5c0f395, type: 3}
 --- !u!114 &305109430
 MonoBehaviour:
   m_ObjectHideFlags: 0

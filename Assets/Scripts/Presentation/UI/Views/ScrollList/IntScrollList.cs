@@ -1,6 +1,3 @@
 using UnityEngine;
 
-public class IntScrollList : VerticalScrollList<int>
-{
-    
-}
+public class IntScrollList : VerticalScrollList<int> { }
