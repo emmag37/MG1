@@ -16,6 +16,7 @@ public interface IGameData : IRuntimeData
     int HighScore { get; }
 
     IReadOnlyList<int> ScoreHistory { get; }    // might put this in its own runtime data type, keep for now
+    IReadOnlyList<LeaderboardData> LeaderboardRanking { get; }
 }
 
 public interface IUserSettings : IRuntimeData
@@ -36,12 +37,14 @@ public class GameData : IGameData
     public int Score { get; set; }
     public int HighScore { get; set; }
     public IReadOnlyList<int> ScoreHistory { get; set; }
+    public IReadOnlyList<LeaderboardData> LeaderboardRanking { get; set; }
 
-    public GameData(int score, int highScore, IReadOnlyList<int> scoreHistory)
+    public GameData(int score, int highScore, IReadOnlyList<int> scoreHistory, IReadOnlyList<LeaderboardData> leaderboardRanking)
     {
         Score = score;
         HighScore = highScore;
         ScoreHistory = scoreHistory;
+        LeaderboardRanking = leaderboardRanking;
     }
 }
 

@@ -64,7 +64,8 @@ public class GameDataService
         GameData newData = new GameData(
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
-            scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList
+            scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList,
+            leaderboardRanking: (new LeaderboardRanking()).ROList    // need to load from the cloud, empty list for now
         );
 
         return newData;
