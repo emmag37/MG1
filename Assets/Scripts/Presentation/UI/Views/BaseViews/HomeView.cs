@@ -10,8 +10,9 @@ public class HomeView : BaseView<IUserSettings>
     // Inspector Fields
     // ==================================================
     [SerializeField] private Button profileButton;
-    [SerializeField] private Button settingsButton;
+    [SerializeField] private Image avatarImage;
 
+    [SerializeField] private Button settingsButton;
     [SerializeField] private Button playButton;
 
     // ==================================================
@@ -39,14 +40,14 @@ public class HomeView : BaseView<IUserSettings>
 
     public override void Show(IUserSettings data)
     {
-        profileButton.image.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
 
         base.Show(data);
     }
 
     public override void UpdateView(IUserSettings data)
     {
-        profileButton.image.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
 
         base.UpdateView(data);
     }
