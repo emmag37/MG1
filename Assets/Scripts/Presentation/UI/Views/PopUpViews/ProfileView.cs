@@ -4,18 +4,24 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 
-public class ProfileView : PopUpView<IUserSettings>
+// not sure how I want to implement the username input field yet:
+    // edit only on button?
+    // or edit both on button and tapping the field?
+
+// write a new script for the input field
+public class ProfileView : PopUpView<IAllData>
 {
     // ==================================================
     // Inspector Fields
     // ==================================================
+    [SerializeField] private Button editUsernameButton;
     [SerializeField] private TMP_InputField usernameInput;
     [SerializeField] private Text invalidInput;
 
     [SerializeField] private Button editAvatarButton;
     [SerializeField] private Image avatarImage;
 
-    [SerializeField] private Button scoreHistoryButton;
+    [SerializeField] private ScoreHistoryScrollList listView;
 
     // ==================================================
     // Private Fields
@@ -60,20 +66,17 @@ public class ProfileView : PopUpView<IUserSettings>
         });
 
         editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar));
-        scoreHistoryButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ScoreHistory));
     }
 
     // ==================================================
     // Public Methods
     // ==================================================
 
-    public override void Show(IUserSettings data)
+    public override void Show(IAllData data)
     {
-        usernameInput.text = data.Username;
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
-
-        currentUsername = data.Username;
-
+        SetUserProfile(data.UserSettings);
+        SetScoreHistory(data.GameData);
+        
         base.Show(data);
     }
 
@@ -84,14 +87,12 @@ public class ProfileView : PopUpView<IUserSettings>
         invalidInput.gameObject.SetActive(false);
     }
 
-    public override void UpdateOverlay(IUserSettings data)
+    public override void UpdateOverlay(IAllData data)
     {
         base.UpdateOverlay(data);
 
-        usernameInput.text = data.Username;
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
-
-        currentUsername = data.Username;
+        SetUserProfile(data.UserSettings);
+        SetScoreHistory(data.GameData);
     }
 
     
@@ -119,5 +120,20 @@ public class ProfileView : PopUpView<IUserSettings>
             invalidInput.text = errorMessages[error];
             invalidInput.gameObject.SetActive(true);
         }
+    }
+
+    private void SetUserProfile(IUserSettings userSettings)
+    {
+        usernameInput.text = userSettings.Username;
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)userSettings.Avatar);
+
+        currentUsername = userSettings.Username;
+    }
+
+    private void SetScoreHistory(IGameData gameData)
+    {
+        if (listView == null) listView = GetComponent<ScoreHistoryScrollList>();
+
+        listView.Populate(gameData.ScoreHistory);   // error - null reference
     }
 }

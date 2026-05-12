@@ -29,7 +29,7 @@ public abstract class VerticalScrollList<T> : MonoBehaviour
     protected virtual ItemView<T> CreateItem(T data, int index)
     {
         ItemView<T> item = Instantiate(listItem, content).GetComponent<ItemView<T>>();
-        item.Set(data);
+        item.Set(data, index);
 
         return item;
     }

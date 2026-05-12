@@ -1,24 +1,8 @@
 using UnityEngine;
 
+// delete this file
+
 public class ScoreHistoryView : PopUpView<IGameData>
 {
-    // ==================================================
-    // Private Fields
-    // ==================================================
-    private IntScrollList listView;
-
-
-    // ==================================================
-    // Public Methods
-    // ==================================================
-
-    public override void Show(IGameData data)
-    {
-        if (listView == null) listView = GetComponent<IntScrollList>();   // not actually getting initialized
-
-        listView.Populate(data.ScoreHistory);   // throwing null expception
-
-        base.Show(data);
-    }
 
 }

@@ -10,15 +10,12 @@ public class LeaderboardItemView : ItemView<LeaderboardData>
     [SerializeField] private Text scoreText;
 
     // functions
-    public override void Set(LeaderboardData data)
+    public override void Set(LeaderboardData data, int index)
     {
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
         usernameText.text = data.Username;
         scoreText.text = $"{data.Score}";
-    }
 
-    public void SetRank(int rank)
-    {
-        rankText.text = $"{rank}";
+        rankText.text = $"{index + 1}";
     }
 }

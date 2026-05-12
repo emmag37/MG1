@@ -607,9 +607,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverView
   type: 2
+  settingsButton: {fileID: 69040891}
   homeButton: {fileID: 2118693160}
   replayButton: {fileID: 1138544388}
-  leaderboardButton: {fileID: 1493105484}
   gameScoreText: {fileID: 1975400343}
   highScoreText: {fileID: 630153951}
 --- !u!1 &33819258
@@ -1691,6 +1691,7 @@ GameObject:
   - component: {fileID: 193603939}
   - component: {fileID: 193603938}
   - component: {fileID: 193603937}
+  - component: {fileID: 193603940}
   m_Layer: 5
   m_Name: Score History Scroll View
   m_TagString: Untagged
@@ -1714,10 +1715,10 @@ RectTransform:
   - {fileID: 744786370}
   m_Father: {fileID: 1193429059}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0.37639582}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -252}
-  m_SizeDelta: {x: 780, y: 744}
+  m_AnchoredPosition: {x: 0, y: -133.5}
+  m_SizeDelta: {x: 780, y: 507}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &193603937
 MonoBehaviour:
@@ -1787,6 +1788,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 193603935}
   m_CullTransparentMesh: 1
+--- !u!114 &193603940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193603935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e412ad0cce934768b3c3f018d7e0750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreHistoryScrollList
+  content: {fileID: 653725493}
+  listItem: {fileID: 6292988861838853260, guid: e3e857e5c860b44468b426f39a345881, type: 3}
 --- !u!1 &211410064
 GameObject:
   m_ObjectHideFlags: 0
@@ -2077,7 +2092,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 1
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2813,7 +2828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb6c70f3e8d240b1a1178b3d322155f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardView
-  type: 3
+  type: 4
   exitButton: {fileID: 1353513427}
 --- !u!114 &305109434
 MonoBehaviour:
@@ -3694,7 +3709,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &456301251
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3914,7 +3929,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 1
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4609,7 +4624,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 1
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4736,7 +4751,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HomeView
   type: 0
   profileButton: {fileID: 2085384309}
-  leaderboardButton: {fileID: 929938135}
+  settingsButton: {fileID: 1138610323}
   playButton: {fileID: 1389166396}
 --- !u!1 &579538587
 GameObject:
@@ -5336,6 +5351,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 653725493}
+  - component: {fileID: 653725494}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -5360,8 +5376,34 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 300}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
+--- !u!114 &653725494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653725492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1001 &674178039
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6198,7 +6240,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 1
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6442,7 +6484,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 1
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8526,7 +8568,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1193429056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8628,13 +8670,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d36618d9d4d10439db13fd52955d502e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProfileView
-  type: 2
+  type: 3
   exitButton: {fileID: 1612251944}
+  editUsernameButton: {fileID: 1780269026}
   usernameInput: {fileID: 1947712370}
   invalidInput: {fileID: 971892067}
   editAvatarButton: {fileID: 2027794461}
   avatarImage: {fileID: 1568932600}
-  scoreHistoryButton: {fileID: 0}
+  listView: {fileID: 193603940}
 --- !u!1 &1199987105
 GameObject:
   m_ObjectHideFlags: 0
@@ -9160,9 +9203,9 @@ RectTransform:
   m_Father: {fileID: 193603936}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -27, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1277048707
 MonoBehaviour:
@@ -9790,7 +9833,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 1
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -11977,7 +12020,7 @@ GameObject:
   - component: {fileID: 1689814903}
   - component: {fileID: 1689814902}
   - component: {fileID: 1689814901}
-  - component: {fileID: 1689814900}
+  - component: {fileID: 1689814904}
   m_Layer: 5
   m_Name: Settings View
   m_TagString: Untagged
@@ -12013,25 +12056,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1689814900
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1689814898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8c03bb51989a4b3d908c985bf8046d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SettingsView
-  type: 1
-  exitButton: {fileID: 4949339}
-  homeButton: {fileID: 1428946750}
-  restartButton: {fileID: 0}
-  helpButton: {fileID: 1759788635}
-  musicSlider: {fileID: 231332652}
-  sfxSlider: {fileID: 477296501}
 --- !u!114 &1689814901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12095,6 +12119,24 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1689814904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1689814898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 132ce192968ea469692ad0816474b447, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsView
+  type: 2
+  exitButton: {fileID: 4949339}
+  termCondButton: {fileID: 1759788635}
+  privacyPolButton: {fileID: 1428946750}
+  musicSlider: {fileID: 231332652}
+  sfxSlider: {fileID: 477296501}
 --- !u!1 &1693497444
 GameObject:
   m_ObjectHideFlags: 0
@@ -12775,7 +12817,7 @@ RectTransform:
   m_Father: {fileID: 806887921}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 137.5}
   m_SizeDelta: {x: 14, y: -261}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -12948,10 +12990,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PopUpViewController
   popUpViewList:
   - {fileID: 1734186019}
+  - {fileID: 1689814904}
   - {fileID: 1193429060}
-  - {fileID: 305109433}
   - {fileID: 2066625115}
-  - {fileID: 0}
   - {fileID: 1413417919}
 --- !u!1 &1780269024
 GameObject:
@@ -13382,7 +13423,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1811068633
 RectTransform:
   m_ObjectHideFlags: 0

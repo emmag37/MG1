@@ -136,9 +136,12 @@ public class UIManager : MonoBehaviour
         {
             SwitchTutorialView?.Invoke(TutorialViewType.Tutorial1);
         }
-        else if (type == PopUpViewType.ScoreHistory)
+        else if (type == PopUpViewType.Profile)
         {
-            data = gameDataService.GetGameData();
+            IUserSettings settingsData = (IUserSettings)data;
+            IGameData gameData = gameDataService.GetGameData();
+
+            data = new AllData(gameData, settingsData);
         }
 
         PushOverlayView?.Invoke(type, data);

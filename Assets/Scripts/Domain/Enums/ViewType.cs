@@ -10,9 +10,9 @@ public enum PopUpViewType
 {
     None,
     Pause,
+    Settings,
     Profile,
     Leaderboard,
-    ScoreHistory,
     ChooseAvatar,
     Tutorial
 }

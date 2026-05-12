@@ -9,9 +9,10 @@ public class GameOverView : BaseView<IGameData>
     // ==================================================
     // Inspector Fields
     // ==================================================
+    [SerializeField] private Button settingsButton;
+
     [SerializeField] private Button homeButton;
     [SerializeField] private Button replayButton;
-    [SerializeField] private Button leaderboardButton;
 
     [SerializeField] private Text gameScoreText;
     [SerializeField] private Text highScoreText;
@@ -25,7 +26,7 @@ public class GameOverView : BaseView<IGameData>
     {
         Debug.Assert(homeButton != null, "Home button not set in game over view");
         Debug.Assert(replayButton != null, "Replay button not set in game over view");
-        Debug.Assert(leaderboardButton != null, "Leaderboard button not set in game over view");
+        Debug.Assert(settingsButton != null, "Settings button not set in game over view");
 
         Debug.Assert(gameScoreText != null, "Game score text not set in game over view");
         Debug.Assert(highScoreText != null, "High score text not set in game over view");
@@ -36,7 +37,7 @@ public class GameOverView : BaseView<IGameData>
         homeButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Home));
         replayButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
 
-        leaderboardButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Leaderboard));
+        settingsButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Settings));
     }
 
     // ==================================================

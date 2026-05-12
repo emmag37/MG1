@@ -10,7 +10,8 @@ public class HomeView : BaseView<IUserSettings>
     // Inspector Fields
     // ==================================================
     [SerializeField] private Button profileButton;
-    [SerializeField] private Button leaderboardButton;
+    [SerializeField] private Button settingsButton;
+
     [SerializeField] private Button playButton;
 
     // ==================================================
@@ -20,14 +21,14 @@ public class HomeView : BaseView<IUserSettings>
     void OnValidate()
     {
         Debug.Assert(profileButton != null, "Profile button not set in home view");
-        Debug.Assert(leaderboardButton != null, "Score history button not set in home view");
+        Debug.Assert(settingsButton != null, "Settings button not set in home view");
         Debug.Assert(playButton != null, "Play button not set in home view");
     }
 
     void Awake()
     {
         profileButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Profile));
-        leaderboardButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Leaderboard));
+        settingsButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Settings));
 
         playButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
     }

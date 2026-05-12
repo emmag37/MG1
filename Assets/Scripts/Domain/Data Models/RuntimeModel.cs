@@ -28,6 +28,12 @@ public interface IUserSettings : IRuntimeData
     CellColor Avatar { get; }
 }
 
+public interface IAllData : IRuntimeData
+{
+    IGameData GameData { get; }
+    IUserSettings UserSettings { get; }
+}
+
 // ==================================================
 // Classes
 // ==================================================
@@ -63,6 +69,18 @@ public class UserSettings : IUserSettings
         SFXOn = sfxOn;
         Username = username;
         Avatar = avatar;
+    }
+}
+
+public class AllData : IAllData
+{
+    public IGameData GameData { get; set; }
+    public IUserSettings UserSettings { get; set; }
+
+    public AllData(IGameData gameData, IUserSettings userSettings)
+    {
+        GameData = gameData;
+        UserSettings = userSettings;
     }
 }
 
