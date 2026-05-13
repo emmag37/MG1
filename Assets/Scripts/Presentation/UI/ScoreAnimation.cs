@@ -2,14 +2,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-[RequireComponent(typeof(Text))]
+[RequireComponent(typeof(Image))]
 public class ScoreAnimation : MonoBehaviour
 {
     // ==================================================
+    // Inspector Fields
+    // ==================================================
+    [SerializeField] private Text pointsText;
+
+    // ==================================================
     // Private Fields
     // ==================================================
-    private Text pointsText;
     private RectTransform canvasRect;   // parent canvas
+    private Image animationImage;
 
 
     // ==================================================
@@ -18,7 +23,7 @@ public class ScoreAnimation : MonoBehaviour
 
     void Awake()
     {
-        pointsText = GetComponent<Text>();
+        animationImage = GetComponent<Image>();
         canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
     }
 
@@ -40,7 +45,7 @@ public class ScoreAnimation : MonoBehaviour
             out Vector2 uiPos
         );
 
-        pointsText.transform.localPosition = uiPos;
+        transform.localPosition = uiPos;
 
         StartCoroutine(AnimatePointsRoutine());
     }
@@ -52,10 +57,12 @@ public class ScoreAnimation : MonoBehaviour
 
     IEnumerator AnimatePointsRoutine()
     {
+        animationImage.enabled = true;
         pointsText.enabled = true;
 
         yield return new WaitForSeconds(0.5f);
 
+        animationImage.enabled = false;
         pointsText.enabled = false;
     }
 }
