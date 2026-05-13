@@ -13,7 +13,6 @@ public class GhostPreview : MonoBehaviour
 
     private bool previewSet;
     private Vector2Int previewIndex;
-    private CellColor originalColor;
 
     
     // ================================
@@ -69,7 +68,6 @@ public class GhostPreview : MonoBehaviour
     {
         previewSet = true;
 
-        originalColor = e.OriginalColor;
         previewIndex = e.Index;
     }
 
@@ -85,7 +83,7 @@ public class GhostPreview : MonoBehaviour
             if (player == null)
                 yield break;
 
-            Vector3 position = player.position;     // ERROR - event passing?
+            Vector3 position = player.position;
             Vector2Int index = boardView.WorldToIndex(position);
 
             // try a new preview only when the index changes
@@ -112,7 +110,7 @@ public class GhostPreview : MonoBehaviour
     {
         previewSet = false;
 
-        boardView.SetCellColor(previewIndex, originalColor);
+        boardController.TryGhostPreview(previewIndex, CellColor.Empty, false);
     }
 
 }

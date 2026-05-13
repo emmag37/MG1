@@ -62,17 +62,13 @@ public class BoardController: MonoBehaviour
     }
 
     // used for the ghost preview
-    public void TryGhostPreview(Vector2Int index, CellColor color)
+    public void TryGhostPreview(Vector2Int index, CellColor color, bool on = true)
     {
         bool preview = logic.ValidCell(index.x, index.y, color);
 
-        if (preview)
+        if (!on || preview)
         {
-            EventBus.Publish(new GhostPreviewEvent
-            {
-                Index = index,
-                OriginalColor = logic.GetCellColor(index.x, index.y)    // if mask, get set to wc -> returns this
-            });
+            EventBus.Publish(new GhostPreviewEvent { Index = index, On = on });
         }
     }
 

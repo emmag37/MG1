@@ -118,7 +118,14 @@ public class GridView : MonoBehaviour
 
     private void OnGhostPreview(GhostPreviewEvent e)
     {
-        grid[e.Index.x, e.Index.y].SetColor(CellColor.Shadow);
+        if (e.On)
+        {
+            grid[e.Index.x, e.Index.y].SetShadow();
+        }
+        else
+        {
+            grid[e.Index.x, e.Index.y].ResetShadow();
+        }
     }
 
     // ================================

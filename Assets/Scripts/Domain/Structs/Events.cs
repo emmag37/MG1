@@ -62,7 +62,7 @@ public struct PlacePlayerEvent
 public struct GhostPreviewEvent
 {
     public Vector2Int Index;
-    public CellColor OriginalColor;
+    public bool On;
 }
 
 // ==================================================

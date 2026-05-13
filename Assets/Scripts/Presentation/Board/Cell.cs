@@ -72,6 +72,16 @@ public class Cell : MonoBehaviour
         color = newColor;
     }
 
+    public void SetShadow()
+    {
+        image.SetSprite(SpriteDatabase.Instance.GetShadow(color));
+    }
+
+    public void ResetShadow()
+    {
+        image.SetSprite(SpriteDatabase.Instance.GetSprite(color));
+    }
+
     /// <summary>
 	/// Sets the cell sprite to the empty color.
 	/// </summary>
