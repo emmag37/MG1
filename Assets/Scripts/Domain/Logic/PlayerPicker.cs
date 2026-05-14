@@ -74,6 +74,6 @@ public class PlayerPicker
         // - when you improve it, put it in its own script
     private CellColor ChooseColor()
     {
-        return (CellColor)Random.Range(2, GameConstants.NumberColors + 1);  // 0 reserved, colors start at 1
+        return (CellColor)Random.Range(1, GameConstants.NumberColors + 1);  // 0 reserved, colors start at 1
     }
 }
