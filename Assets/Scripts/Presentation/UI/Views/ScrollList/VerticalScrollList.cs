@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public abstract class VerticalScrollList<T> : MonoBehaviour
 {
     [SerializeField] private Transform content;
-    [SerializeField] private GameObject listItem;   // prefab
+    [SerializeField] protected GameObject listItem;   // prefab
 
     public void Populate(IReadOnlyList<T> list)
     {
@@ -26,10 +26,17 @@ public abstract class VerticalScrollList<T> : MonoBehaviour
         }
     }
 
+    protected ItemView<T> InstantiateItem(GameObject template, T data, int index)
+    {
+        ItemView<T> item = Instantiate(template, content).GetComponent<ItemView<T>>();
+        item.Set(data, index);
+
+        return item;
+    }
+
     protected virtual ItemView<T> CreateItem(T data, int index)
     {
-        ItemView<T> item = Instantiate(listItem, content).GetComponent<ItemView<T>>();
-        item.Set(data, index);
+        ItemView<T> item = InstantiateItem(listItem, data, index);
 
         return item;
     }

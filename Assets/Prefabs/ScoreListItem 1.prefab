@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8784314, g: 0.4745098, b: 0.5647059, a: 1}
+  m_Color: {r: 0.80784315, g: 0.5294118, b: 0.11372549, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 3801074389803813444}
   - component: {fileID: 494231826160556697}
   m_Layer: 5
-  m_Name: ScoreListItem
+  m_Name: ScoreListItem 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -240,7 +240,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -7920833527310048974, guid: 1a28230f71f76417bbcdda5d75d44a0c, type: 3}
+  m_Sprite: {fileID: 6869647196738086647, guid: afa2e49187a7e4570b4e150c465784de, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
