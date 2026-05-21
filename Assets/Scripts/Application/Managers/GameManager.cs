@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     // Inspector Fields
     // ================================
     [SerializeField] private BoardController board;
+    [SerializeField] private TutorialController tutorial;
 
     // ================================
     // Private Types
@@ -76,6 +77,8 @@ public class GameManager : MonoBehaviour
         picker = new PlayerPicker();
         board.Initialize();
 
+        tutorial.Initialize(board);
+
         state = GameState.Fresh;
         activePlayer = false;
 
@@ -132,7 +135,7 @@ public class GameManager : MonoBehaviour
 
     public void RunTutorial()
     {
-        // spawn and enable specific pieces/board spots
+        tutorial.StartTutorial();
     }
 
 

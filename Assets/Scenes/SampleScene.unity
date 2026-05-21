@@ -3043,6 +3043,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   board: {fileID: 2022480360}
+  tutorial: {fileID: 1413417920}
 --- !u!1 &372002863
 GameObject:
   m_ObjectHideFlags: 0
