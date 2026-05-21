@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// move this to application?
 public class GameBootstrap : MonoBehaviour
 {
     // ==================================================
@@ -11,7 +12,7 @@ public class GameBootstrap : MonoBehaviour
 
     [SerializeField] private BaseViewController baseViewController;
     [SerializeField] private PopUpViewController popUpViewController;
-    [SerializeField] private TutorialController tutorialController;
+    //[SerializeField] private TutorialController tutorialController;
 
     // ==================================================
     // Private Fields
@@ -44,7 +45,6 @@ public class GameBootstrap : MonoBehaviour
 
         baseViewController.Initialize();
         popUpViewController.Initialize();
-        tutorialController.Initialize();
 
         // wire dependencies
         WireSettings();
@@ -54,14 +54,6 @@ public class GameBootstrap : MonoBehaviour
     void Start()
     {
         uiManager.ShowView(BaseViewType.Home, false);
-
-        IUserSettings userSettings = settingsService.GetSettings();
-        if (!userSettings.HasLaunched)
-        {
-            uiManager.PushOverlay(PopUpViewType.Tutorial, false);
-            settingsService.SetLaunched(true);
-        }
-
         audioManager.Play();
     }
 
@@ -101,9 +93,6 @@ public class GameBootstrap : MonoBehaviour
         uiManager.ShowBaseView += baseViewController.HandleShowView;
         uiManager.PushOverlayView += popUpViewController.HandlePush;
         uiManager.PopOverlayView += popUpViewController.HandlePop;
-
-        uiManager.SwitchTutorialView += tutorialController.HandleSwitchView;
-        uiManager.CloseTutorialView += tutorialController.HandleClose;
     }
 
     private void UnwireUI()
@@ -113,8 +102,5 @@ public class GameBootstrap : MonoBehaviour
         uiManager.ShowBaseView -= baseViewController.HandleShowView;
         uiManager.PushOverlayView -= popUpViewController.HandlePush;
         uiManager.PopOverlayView -= popUpViewController.HandlePop;
-
-        uiManager.SwitchTutorialView -= tutorialController.HandleSwitchView;
-        uiManager.CloseTutorialView -= tutorialController.HandleClose;
     }
 }

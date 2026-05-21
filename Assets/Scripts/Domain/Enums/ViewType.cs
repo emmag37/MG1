@@ -3,7 +3,8 @@ public enum BaseViewType
 {
     Home,
     GamePlay,
-    GameOver
+    GameOver,
+    Tutorial
 }
 
 public enum PopUpViewType
@@ -13,8 +14,7 @@ public enum PopUpViewType
     Settings,
     Profile,
     Leaderboard,
-    ChooseAvatar,
-    Tutorial
+    ChooseAvatar
 }
 
 public enum TutorialViewType

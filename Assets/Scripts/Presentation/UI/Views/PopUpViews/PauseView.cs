@@ -39,7 +39,8 @@ public class PauseView: PopUpView<IUserSettings>
         homeButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Home));
         restartButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
 
-        helpButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Tutorial));
+        // add the listener back once you design the new help view
+        //helpButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Tutorial));
 
         musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
         sfxSlider.onValueChanged.AddListener((value) => Manager.UpdateSFXOn((int)value));

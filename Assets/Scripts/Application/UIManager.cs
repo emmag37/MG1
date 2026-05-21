@@ -17,9 +17,6 @@ public class UIManager : MonoBehaviour
     public event Action<PopUpViewType, object> PushOverlayView;
     public event Action PopOverlayView;
 
-    public event Action<TutorialViewType> SwitchTutorialView;
-    public event Action CloseTutorialView;
-
     public event Action ButtonPressed;  // eventually move to event bus?
 
     // ==================================================
@@ -99,7 +96,14 @@ public class UIManager : MonoBehaviour
         if (playSound)
             ButtonPressed?.Invoke();
 
-        if (type == BaseViewType.GamePlay)
+        IUserSettings userSettings = settingsService.GetSettings();
+
+        if (type == BaseViewType.GamePlay && !userSettings.HasLaunched)
+        {
+            type = BaseViewType.Tutorial;   // switch to the tutorial sequence
+            gameManager.RunTutorial();
+        }
+        else if (type == BaseViewType.GamePlay)
         {
             gameManager.StartGame();
         }
@@ -114,9 +118,7 @@ public class UIManager : MonoBehaviour
             popUpStack.Pop();
         }
 
-        IUserSettings userSettings = settingsService.GetSettings();
         ShowBaseView?.Invoke(type, userSettings);
-
         baseState = type;
     }
 
@@ -131,10 +133,6 @@ public class UIManager : MonoBehaviour
         if (type == PopUpViewType.Pause)
         {
             gameManager.PauseGame();
-        }
-        else if (type == PopUpViewType.Tutorial)
-        {
-            SwitchTutorialView?.Invoke(TutorialViewType.Tutorial1);
         }
         else if (type == PopUpViewType.Profile)
         {
@@ -156,22 +154,10 @@ public class UIManager : MonoBehaviour
         {
             gameManager.ResumeGame();
         }
-        if (popUpStack.Peek() == PopUpViewType.Tutorial)
-        {
-            CloseTutorialView?.Invoke();
-        }
 
         PopOverlayView?.Invoke();
         popUpStack.Pop();
     }
-
-    // tutorial views
-    public void SwitchTutorial(TutorialViewType type)
-    {
-        ButtonPressed?.Invoke();
-        SwitchTutorialView?.Invoke(type);
-    }
-
 
     // ==================================================
     // Event Handlers

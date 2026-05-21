@@ -130,6 +130,11 @@ public class GameManager : MonoBehaviour
         EventBus.Publish(new ResumeGameEvent());
     }
 
+    public void RunTutorial()
+    {
+        // spawn and enable specific pieces/board spots
+    }
+
 
     // ================================
     // Board Event Handlers

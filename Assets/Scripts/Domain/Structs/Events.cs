@@ -65,6 +65,12 @@ public struct GhostPreviewEvent
     public bool On;
 }
 
+// continue tutorial
+public struct TutorialStepCompleteEvent
+{
+    public int StepCompleted;   // indexed to 0
+}
+
 // ==================================================
 // Player Events
 // ==================================================
