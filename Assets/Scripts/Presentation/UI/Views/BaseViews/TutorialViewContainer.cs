@@ -8,8 +8,7 @@ public class TutorialViewContainer : BaseView
     // ==================================================
 
     [SerializeField] private Button skipButton;
-
-    [SerializeField] private RectTransform[] scenes;
+    [SerializeField] private Button startPlayingButton;
 
     // ==================================================
     // Unity Lifecycle
@@ -17,11 +16,6 @@ public class TutorialViewContainer : BaseView
 
     void Awake()
     {
-        
+        // add listener for skip button
     }
-
-
-    // ==================================================
-    // Public Methods
-    // ==================================================
 }

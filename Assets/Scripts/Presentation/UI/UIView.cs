@@ -51,13 +51,6 @@ public abstract class PopUpView : UIView
     }
 }
 
-public abstract class TutorialView : UIView
-{
-    [SerializeField] private TutorialViewType type;
-    public TutorialViewType Type => type;
-}
-
-
 // generics
 
 public abstract class BaseView<T> : BaseView

@@ -5155,7 +5155,6 @@ MonoBehaviour:
   gameManager: {fileID: 354018344}
   baseViewController: {fileID: 300198981}
   popUpViewController: {fileID: 1764461906}
-  tutorialController: {fileID: 0}
 --- !u!4 &779006562
 Transform:
   m_ObjectHideFlags: 0
@@ -9658,6 +9657,8 @@ GameObject:
   - component: {fileID: 1413417916}
   - component: {fileID: 1413417915}
   - component: {fileID: 1413417919}
+  - component: {fileID: 1413417921}
+  - component: {fileID: 1413417920}
   m_Layer: 5
   m_Name: Tutorial Container View
   m_TagString: Untagged
@@ -9777,8 +9778,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialViewContainer
   type: 3
-  skipButton: {fileID: 0}
-  scenes: []
+  skipButton: {fileID: 934248314}
+  startPlayingButton: {fileID: 1302226673}
+--- !u!114 &1413417920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413417911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 562edce8541e149488bc61641897b3a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialController
+--- !u!114 &1413417921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413417911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c1d683a15f3141b48fef3dc4711e23b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialViewController
+  scenes:
+  - {fileID: 1167536212}
+  - {fileID: 2121240230}
+  - {fileID: 67008803}
+  - {fileID: 1634547015}
+  - {fileID: 1742734054}
+  - {fileID: 1739384992}
+  - {fileID: 1308369573}
 --- !u!4 &1418809463 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421657568361316366, guid: da10a7f55ddb1463da70721112e94096, type: 3}
