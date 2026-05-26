@@ -131,8 +131,7 @@ public class GameManager : MonoBehaviour
 
     public void RunTutorial()
     {
-        state = GameState.Tutorial;
-        activePlayer = true; // make sure that this resets once the tutorial is over
+        state = GameState.Tutorial; // turn off active player checking
 
         tutorial.StartTutorial();
     }
@@ -144,9 +143,11 @@ public class GameManager : MonoBehaviour
 
     // moves the player back to start or on the board.
     // if on the board, executes the player's turn.
-    private void HandleTurnCompleted()  // turn this into a local event
+    private void HandleTurnCompleted(int points)  // turn this into a local event
     {
-        Debug.Assert(state == GameState.Playing || state == GameState.Tutorial, $"Turn ran during invalid state: {state}");
+        if (state == GameState.Tutorial) return;
+
+        Debug.Assert(state == GameState.Playing, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
 
         RemoveCurrentPlayer();

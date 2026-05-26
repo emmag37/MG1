@@ -25,7 +25,7 @@ public class BoardController: MonoBehaviour
     // Local Events
     // ================================
 
-    public event Action TurnCompleted;
+    public event Action<int> TurnCompleted;
     public event Action FullBoard;
 
     // ================================
@@ -64,7 +64,7 @@ public class BoardController: MonoBehaviour
     // used for the ghost preview
     public void TryGhostPreview(Vector2Int index, CellColor color, bool on = true)
     {
-        bool preview = logic.ValidCell(index.x, index.y, color); // most likely here
+        bool preview = logic.ValidCell(index.x, index.y, color);
 
         if (!on || preview)
         {
@@ -129,7 +129,7 @@ public class BoardController: MonoBehaviour
             });
         }
 
-        TurnCompleted?.Invoke();
+        TurnCompleted?.Invoke(result.Points);
     }
 
 }

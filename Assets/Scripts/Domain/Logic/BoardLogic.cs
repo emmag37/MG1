@@ -309,11 +309,12 @@ public class BoardLogic
     // for the live zone - tutorial use only
     private bool IsLivePos((int, int) index)
     {
+        if (liveZone == null) return true;
+
         foreach ((int, int) pos in liveZone)
         {
             if (index == pos) return true;
         }
-
         return false;
     }
 

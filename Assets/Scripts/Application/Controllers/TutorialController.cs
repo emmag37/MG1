@@ -21,14 +21,9 @@ public class TutorialController : MonoBehaviour
     // Unity Lifecycle
     // ==================================================
 
-    void OnEnable()
+    void OnDestroy()
     {
-        EventBus.Subscribe<TutorialStepCompleteEvent>(OnStepComplete);
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<TutorialStepCompleteEvent>(OnStepComplete);
+        board.TurnCompleted -= HandleTurnCompleted;
     }
 
 
@@ -39,6 +34,8 @@ public class TutorialController : MonoBehaviour
     public void Initialize(BoardController board)
     {
         this.board = board;
+
+        board.TurnCompleted += HandleTurnCompleted;
     }
 
     // ==================================================
@@ -60,18 +57,21 @@ public class TutorialController : MonoBehaviour
     // Event Handlers
     // ==================================================
 
-    private void OnStepComplete(TutorialStepCompleteEvent e)
+    // need to subscribe
+    private void HandleTurnCompleted(int points)
     {
-        Debug.Assert(currentStep == e.StepCompleted, "Tutorial controller completed step mismatch");
+        EventBus.Publish(new DestroyPlayerEvent());
 
-        // for each case, start the logic for the next step in tutorial
-        switch (e.StepCompleted)
+        switch (currentStep)
         {
             case 0:
-                // run step one
+                StepOne();
                 break;
             case 1:
-                // run step two
+                if (points > 0)
+                    StepTwo();
+                else
+                    EventBus.Publish(new SpawnPlayerEvent { Color = Color1, NextColor = None });
                 break;
             case 2:
                 // run step three
@@ -90,4 +90,48 @@ public class TutorialController : MonoBehaviour
                 break;
         }
     }
+
+
+    // ==================================================
+    // Private Functions
+    // ==================================================
+
+    private void StepOne()
+    {
+        Debug.Assert(currentStep == 0);
+
+        EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
+        currentStep++;
+
+        (int, int)[] zone = new (int, int)[] { (2, 0), (2, 1), (2, 3), (2, 4) };
+        board.SetLiveZone(zone);
+
+        EventBus.Publish(new SpawnPlayerEvent { Color = Color1, NextColor = None });
+    }
+
+    private void StepTwo()
+    {
+        Debug.Assert(currentStep == 1);
+
+        EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
+        currentStep++;
+
+        Debug.Log("populate the scene");
+        for (int i = 0; i < GameConstants.RowSize; i++)
+        {
+            if (i == 2) continue;
+
+            // figure out which function to use
+            //EventBus.Publish(new PlayerReleasedEvent { Color = Color1, Index = { i, i }, PlayerPosition = Vector3.zero });
+
+           // (i, i)
+           // (i, 2)
+           // (GameConstants.RowSize - i, i)
+        }
+
+        board.SetLiveZone(new (int, int)[] { (2, 2) });
+
+        EventBus.Publish(new SpawnPlayerEvent { Color = Color1, NextColor = None });
+    }
+
 }
