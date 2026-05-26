@@ -8,15 +8,10 @@ using System;
 public class GameManager : MonoBehaviour
 {
     // ================================
-    // Events
-    // ================================
-    public Action<int, int> UpdateScore;
-    public Action<CellColor> UpdatePlayerPreview;
-
-    // ================================
     // Inspector Fields
     // ================================
     [SerializeField] private BoardController board;
+
     [SerializeField] private TutorialController tutorial;
 
     // ================================
@@ -27,7 +22,8 @@ public class GameManager : MonoBehaviour
         Playing,
         Paused,
         Over,
-        Fresh
+        Fresh,
+        Tutorial
     }
 
     // ================================
@@ -135,6 +131,9 @@ public class GameManager : MonoBehaviour
 
     public void RunTutorial()
     {
+        state = GameState.Tutorial;
+        activePlayer = true; // make sure that this resets once the tutorial is over
+
         tutorial.StartTutorial();
     }
 
@@ -147,7 +146,7 @@ public class GameManager : MonoBehaviour
     // if on the board, executes the player's turn.
     private void HandleTurnCompleted()  // turn this into a local event
     {
-        Debug.Assert(state == GameState.Playing, $"Turn ran during invalid state: {state}");
+        Debug.Assert(state == GameState.Playing || state == GameState.Tutorial, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
 
         RemoveCurrentPlayer();
@@ -168,6 +167,8 @@ public class GameManager : MonoBehaviour
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
     }
 
+    // move this logic to turn completed, the local event should pass a bool
+    // the score update should then be the win
     private void HandleWin(WinEvent e)
     {
         if (e.Points == 0) return;
@@ -203,7 +204,7 @@ public class GameManager : MonoBehaviour
         Debug.Assert(!activePlayer, "Tried to spawn while player active");
 
         if (state == GameState.Over) return;      // don't respawn on game over
-
+        
         var playerColors = picker.CalculateNewPlayerColors();
         EventBus.Publish(new SpawnPlayerEvent { Color = playerColors.Color, NextColor = playerColors.NextColor });
 

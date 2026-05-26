@@ -1,14 +1,20 @@
 using UnityEngine;
 
+// bug with ghost preview - turns on once but then not again?
 public class TutorialController : MonoBehaviour
 {
+    // ==================================================
+    // Constants
+    // ==================================================
+
+    private const CellColor Color1 = CellColor.Color1;
+    private const CellColor None = CellColor.Empty;
+
     // ==================================================
     // Private Fields
     // ==================================================
 
     private BoardController board;
-    // private PlayerSpawner spawner;
-
     private int currentStep;
 
     // ==================================================
@@ -30,12 +36,9 @@ public class TutorialController : MonoBehaviour
     // Initializer
     // ==================================================
 
-    public void Initialize(BoardController board/*, PlayerSpawner spawner*/)
+    public void Initialize(BoardController board)
     {
         this.board = board;
-        // this.spawner = spawner;
-
-        currentStep = 0;
     }
 
     // ==================================================
@@ -44,7 +47,12 @@ public class TutorialController : MonoBehaviour
 
     public void StartTutorial()
     {
-        // run the first tutorial logic
+        Debug.Log("running the tutorial");
+
+        // step 0:
+        currentStep = 0;
+        EventBus.Publish(new SpawnPlayerEvent { Color = Color1, NextColor = None });
+        board.SetLiveZone(new (int, int)[] { (2, 2) });
     }
 
 
@@ -60,18 +68,25 @@ public class TutorialController : MonoBehaviour
         switch (e.StepCompleted)
         {
             case 0:
+                // run step one
                 break;
             case 1:
+                // run step two
                 break;
             case 2:
+                // run step three
                 break;
             case 3:
+                // run step four
                 break;
             case 4:
+                // run step five
                 break;
             case 5:
+                // run step six
                 break;
             default:
+                // set the live zone back to the entire board
                 break;
         }
     }

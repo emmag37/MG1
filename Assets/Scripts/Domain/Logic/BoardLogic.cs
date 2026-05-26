@@ -10,7 +10,9 @@ public class BoardLogic
     // Constants
     // ================================
 
+    private const int NumSpots = RowSize * RowSize;
     private const int RowSize = GameConstants.RowSize;
+
     private const CellColor Empty = CellColor.Empty;
     private const CellColor Mask = CellColor.Mask;
     private const CellColor WildCard = CellColor.WildCard;
@@ -37,11 +39,6 @@ public class BoardLogic
     }
 
     // ================================
-    // Constants
-    // ================================
-    private const int NumSpots = RowSize * RowSize;
-
-    // ================================
     // Private Fields
     // ================================
 
@@ -52,6 +49,8 @@ public class BoardLogic
 
     private int numSpotsFilled = 0;
     private CellColor[,] gridColors = new CellColor[RowSize, RowSize];
+
+    private (int, int)[] liveZone;
 
 
     // ================================
@@ -82,6 +81,7 @@ public class BoardLogic
     public bool ValidCell(int row, int col, CellColor color)
     {
         bool valid =
+            IsLivePos((row, col)) &&
             (row >= 0 && row < RowSize) &&
             (col >= 0 && col < RowSize) &&
             (color == Mask ||
@@ -129,6 +129,11 @@ public class BoardLogic
         result = CalculateLines(row, col, color);
 
         return true;
+    }
+
+    public void AddLiveZone((int, int)[] indices)
+    {
+        liveZone = indices;
     }
    
 
@@ -300,4 +305,16 @@ public class BoardLogic
 
         numSpotsFilled -= 4;
     }
+
+    // for the live zone - tutorial use only
+    private bool IsLivePos((int, int) index)
+    {
+        foreach ((int, int) pos in liveZone)
+        {
+            if (index == pos) return true;
+        }
+
+        return false;
+    }
+
 }

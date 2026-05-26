@@ -49,9 +49,9 @@ public class GhostPreview : MonoBehaviour
     private void OnPlayerDragging(PlayerDraggingEvent e)
     {
         // start the ghost preview
-        preview = StartCoroutine(PreviewLoop(e.PlayerTransform, e.Color));
-
         EventBus.Subscribe<GhostPreviewEvent>(OnPreview);
+
+        preview = StartCoroutine(PreviewLoop(e.PlayerTransform, e.Color));
     }
 
     private void OnPlayerRelease(PlayerReleasedEvent e)
@@ -66,8 +66,9 @@ public class GhostPreview : MonoBehaviour
 
     private void OnPreview(GhostPreviewEvent e)
     {
-        previewSet = true;
+        if (!e.On) return;
 
+        previewSet = true;
         previewIndex = e.Index;
     }
 
@@ -109,7 +110,6 @@ public class GhostPreview : MonoBehaviour
     private void ClearPreview()
     {
         previewSet = false;
-
         boardController.TryGhostPreview(previewIndex, CellColor.Empty, false);
     }
 

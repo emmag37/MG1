@@ -17,5 +17,7 @@ public class TutorialViewContainer : BaseView
     void Awake()
     {
         // add listener for skip button
+
+        // add listener for start playing button
     }
 }

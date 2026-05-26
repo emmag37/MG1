@@ -64,20 +64,26 @@ public class BoardController: MonoBehaviour
     // used for the ghost preview
     public void TryGhostPreview(Vector2Int index, CellColor color, bool on = true)
     {
-        bool preview = logic.ValidCell(index.x, index.y, color);
+        bool preview = logic.ValidCell(index.x, index.y, color); // most likely here
 
         if (!on || preview)
         {
             EventBus.Publish(new GhostPreviewEvent { Index = index, On = on });
         }
     }
-
+    
     /// <summary>
 	/// Resets the board to empty cells.
 	/// </summary>
     public void Reset()
     {
         logic.ResetBoard();
+    }
+
+    // used by the tutorial to make sure specific positions are live for players
+    public void SetLiveZone((int, int)[] indices)
+    {
+        logic.AddLiveZone(indices);
     }
 
 
