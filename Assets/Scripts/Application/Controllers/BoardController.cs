@@ -93,7 +93,7 @@ public class BoardController: MonoBehaviour
         // add image to grid - no players to listen to this
         EventBus.Publish(new PlacePlayerEvent
         {
-            PlayerPosition = Vector3.zero,
+            PlayerPosition = Vector3.positiveInfinity,
             Index = index,
             Color = color
         });

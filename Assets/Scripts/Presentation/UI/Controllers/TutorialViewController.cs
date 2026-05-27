@@ -7,7 +7,7 @@ public class TutorialViewController : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private RectTransform[] scenes;
+    [SerializeField] private SceneView[] scenes;
 
     // ==================================================
     // Private Fields
@@ -22,6 +22,7 @@ public class TutorialViewController : MonoBehaviour
     void OnEnable()
     {
         EventBus.Subscribe<TutorialStepCompleteEvent>(OnStepComplete);
+        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
 
         currentScene = 0;
     }
@@ -29,6 +30,7 @@ public class TutorialViewController : MonoBehaviour
     void OnDisable()
     {
         EventBus.Unsubscribe<TutorialStepCompleteEvent>(OnStepComplete);
+        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
     }
 
 
@@ -45,6 +47,15 @@ public class TutorialViewController : MonoBehaviour
 
         currentScene++;
         scenes[currentScene].gameObject.SetActive(true);
+    }
+
+    // add function to remove arrow when the player is placed
+    public void OnPlacePlayer(PlacePlayerEvent e)
+    {
+        if (e.PlayerPosition == Vector3.positiveInfinity) return;
+
+        // remove the arrow associated with the index that was just placed
+        scenes[currentScene].RemoveArrow(e.Index);
     }
 
 }

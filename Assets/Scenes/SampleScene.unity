@@ -889,6 +889,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 67008803}
+  - component: {fileID: 67008804}
   m_Layer: 5
   m_Name: Tutorial Scene 3
   m_TagString: Untagged
@@ -917,6 +918,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &67008804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67008802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4faec30cc972b4e289a990defdf19c0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneView
+  arrows:
+  - {fileID: 1680519912}
 --- !u!1 &69040889
 GameObject:
   m_ObjectHideFlags: 0
@@ -2045,6 +2060,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2121240230}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2139,6 +2162,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
   m_PrefabInstance: {fileID: 199064725}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &199064727 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 199064725}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1 &211410064
 GameObject:
   m_ObjectHideFlags: 0
@@ -3379,6 +3413,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2121240230}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.y
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3473,6 +3515,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
   m_PrefabInstance: {fileID: 449258588}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &449258590 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 449258588}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1 &456301250
 GameObject:
   m_ObjectHideFlags: 0
@@ -4758,6 +4811,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1742734054}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4852,6 +4913,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
   m_PrefabInstance: {fileID: 703558190}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &703558192 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 703558190}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1 &726492029
 GameObject:
   m_ObjectHideFlags: 0
@@ -5341,6 +5413,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1739384992}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5435,6 +5515,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
   m_PrefabInstance: {fileID: 802826534}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &802826536 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 802826534}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1 &806887920
 GameObject:
   m_ObjectHideFlags: 0
@@ -5585,6 +5676,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1634547015}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.y
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5679,6 +5778,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
   m_PrefabInstance: {fileID: 862851963}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &862851965 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 862851963}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1 &886279473
 GameObject:
   m_ObjectHideFlags: 0
@@ -6506,6 +6616,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2121240230}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6600,6 +6714,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
   m_PrefabInstance: {fileID: 986792586}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &986792588 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 986792586}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1 &1013720841
 GameObject:
   m_ObjectHideFlags: 0
@@ -7618,13 +7743,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1167536212}
+  - component: {fileID: 1167536213}
   m_Layer: 5
   m_Name: Tutorial Scene 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1167536212
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7646,6 +7772,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1167536213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167536211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4faec30cc972b4e289a990defdf19c0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneView
+  arrows:
+  - {fileID: 6830477689232684960}
 --- !u!1 &1179456027
 GameObject:
   m_ObjectHideFlags: 0
@@ -7977,6 +8117,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2121240230}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -8071,6 +8219,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
   m_PrefabInstance: {fileID: 1214991144}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1214991146 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 1214991144}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1 &1258888918
 GameObject:
   m_ObjectHideFlags: 0
@@ -8599,6 +8758,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1308369573}
+  - component: {fileID: 1308369574}
   m_Layer: 5
   m_Name: Tutorial Scene 7
   m_TagString: Untagged
@@ -8627,6 +8787,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1308369574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308369572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4faec30cc972b4e289a990defdf19c0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneView
+  arrows: []
 --- !u!1 &1336044900
 GameObject:
   m_ObjectHideFlags: 0
@@ -9409,7 +9582,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1413417912
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9549,13 +9722,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialViewController
   scenes:
-  - {fileID: 1167536212}
-  - {fileID: 2121240230}
-  - {fileID: 67008803}
-  - {fileID: 1634547015}
-  - {fileID: 1742734054}
-  - {fileID: 1739384992}
-  - {fileID: 1308369573}
+  - {fileID: 1167536213}
+  - {fileID: 2121240231}
+  - {fileID: 67008804}
+  - {fileID: 1634547016}
+  - {fileID: 1742734055}
+  - {fileID: 1739384993}
+  - {fileID: 1308369574}
 --- !u!4 &1418809463 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421657568361316366, guid: da10a7f55ddb1463da70721112e94096, type: 3}
@@ -10697,6 +10870,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1634547015}
+  - component: {fileID: 1634547016}
   m_Layer: 5
   m_Name: Tutorial Scene 4
   m_TagString: Untagged
@@ -10725,6 +10899,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1634547016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634547014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4faec30cc972b4e289a990defdf19c0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneView
+  arrows:
+  - {fileID: 862851965}
 --- !u!1 &1644158443
 GameObject:
   m_ObjectHideFlags: 0
@@ -11021,6 +11209,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 67008803}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.y
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -11115,6 +11311,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
   m_PrefabInstance: {fileID: 1680519910}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1680519912 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 1680519910}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1 &1689814898
 GameObject:
   m_ObjectHideFlags: 0
@@ -11698,13 +11905,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1739384992}
+  - component: {fileID: 1739384993}
   m_Layer: 5
   m_Name: Tutorial Scene 6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1739384992
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11726,6 +11934,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1739384993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739384991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4faec30cc972b4e289a990defdf19c0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneView
+  arrows:
+  - {fileID: 802826536}
 --- !u!1 &1742734053
 GameObject:
   m_ObjectHideFlags: 0
@@ -11735,6 +11957,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1742734054}
+  - component: {fileID: 1742734055}
   m_Layer: 5
   m_Name: Tutorial Scene 5
   m_TagString: Untagged
@@ -11763,6 +11986,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1742734055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742734053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4faec30cc972b4e289a990defdf19c0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneView
+  arrows:
+  - {fileID: 703558192}
 --- !u!4 &1746567687 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 421657568361316366, guid: da10a7f55ddb1463da70721112e94096, type: 3}
@@ -15230,6 +15467,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2121240230}
+  - component: {fileID: 2121240231}
   m_Layer: 5
   m_Name: Tutorial Scene 2
   m_TagString: Untagged
@@ -15261,6 +15499,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2121240231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121240229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4faec30cc972b4e289a990defdf19c0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneView
+  arrows:
+  - {fileID: 986792588}
+  - {fileID: 199064727}
+  - {fileID: 1214991146}
+  - {fileID: 449258590}
 --- !u!1 &2125347626
 GameObject:
   m_ObjectHideFlags: 0
@@ -15453,6 +15708,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1167536212}
     m_Modifications:
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+      propertyPath: Index.y
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4639197635846858551, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -15542,6 +15805,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+--- !u!114 &6830477689232684960 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4633316660555030438, guid: bb88af5e6284d439aa533360c9fdb537, type: 3}
+  m_PrefabInstance: {fileID: 6830477689232684959}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Arrow
 --- !u!1001 &8313960465642365869
 PrefabInstance:
   m_ObjectHideFlags: 0
