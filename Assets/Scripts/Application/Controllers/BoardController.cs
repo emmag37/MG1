@@ -86,6 +86,7 @@ public class BoardController: MonoBehaviour
         logic.AddLiveZone(indices);
     }
 
+    // used by the tutorial
     // note - assumes that there are no players in existence
     public void AddNonPlayer(Vector2Int index, CellColor color)
     {
