@@ -92,6 +92,9 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        if (state == GameState.Tutorial)
+            state = GameState.Fresh;
+
         if (state != GameState.Fresh)
             ResetGame();
         Debug.Assert(state == GameState.Fresh, $"Game not reset, still in: {state}");

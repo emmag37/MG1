@@ -102,13 +102,13 @@ public class UIManager : MonoBehaviour
 
         if (type == BaseViewType.GamePlay && !userSettings.HasLaunched)
         {
+            settingsService.SetLaunched();
+
             type = BaseViewType.Tutorial;   // switch to the tutorial sequence
             gameManager.RunTutorial();
         }
-        else if (type == BaseViewType.Tutorial)
+        else if (type == BaseViewType.Tutorial) // shortcut for skip - only called when tut is active
         {
-            // shortcut to skip to the end of the tutorial
-            // need to remove elements from the game scene
             SkipTutorial?.Invoke();
             gameManager.SkipTutorial();
             return;

@@ -42,9 +42,9 @@ public class SettingsService
     // Public Methods
     // ==================================================
 
-    public void SetLaunched(bool launched)
+    public void SetLaunched()
     {
-        settings.HasLaunched = launched;
+        settings.HasLaunched = true;
         storage.SetBool(SettingsKeys.Launched, true);
     }
 

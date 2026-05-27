@@ -40,10 +40,7 @@ public class TutorialViewController : MonoBehaviour
 
     public void HandleSkipTutorial()
     {
-        Debug.Log("skip tutorial");
-
         scenes[currentScene].gameObject.SetActive(false);
-
         scenes[scenes.Length - 1].gameObject.SetActive(true);
     }
 

@@ -54,8 +54,6 @@ public class TutorialController : MonoBehaviour
 
     public void StartTutorial()
     {
-        Debug.Log("running the tutorial");
-
         // step 0:
         currentStep = 0;
         EventBus.Publish(new SpawnPlayerEvent { Color = Color1, NextColor = None });
@@ -104,7 +102,6 @@ public class TutorialController : MonoBehaviour
     // win sequence completed
     private void OnAnimationComplete(ScoreAnimationEvent e)
     {
-        Debug.Log("animation complete");
         switch (currentStep)
         {
             case 1:
@@ -213,7 +210,7 @@ public class TutorialController : MonoBehaviour
         board.SetLiveZone(null);
     }
 
-    // helper
+    // helpers
     private void IncrementStep()
     {
         EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
