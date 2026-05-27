@@ -8,6 +8,8 @@ public class TutorialViewContainer : BaseView
     // ==================================================
 
     [SerializeField] private Button skipButton;
+    [SerializeField] private Button exitButton;
+
     [SerializeField] private Button startPlayingButton;
 
     // ==================================================
@@ -16,8 +18,9 @@ public class TutorialViewContainer : BaseView
 
     void Awake()
     {
-        // would potentially like to switch the skip button go to the end of the tutorial
         skipButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Tutorial));
+        exitButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Home));
+
         startPlayingButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
     }
 }

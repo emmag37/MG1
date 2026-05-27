@@ -78,6 +78,7 @@ public class BoardController: MonoBehaviour
     public void Reset()
     {
         logic.ResetBoard();
+        SetLiveZone(null);
 
         EventBus.Publish(new ResetEvent());
     }

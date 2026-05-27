@@ -65,10 +65,6 @@ public class TutorialController : MonoBehaviour
         // clear all game pieces
         EventBus.Publish(new DestroyPlayerEvent());
         board.Reset();
-
-        // set board to final scene state
-        board.SetLiveZone(null);
-        PopulateUnclearedPieces();
     }
 
 
@@ -114,7 +110,7 @@ public class TutorialController : MonoBehaviour
                 StepFive();
                 break;
             case 5:
-                CompleteTutorial();
+                StepSeven();
                 break;
             default:
                 // error with case 0 or 3, should never be called
@@ -202,12 +198,12 @@ public class TutorialController : MonoBehaviour
         EventBus.Publish(new SpawnPlayerEvent { Color = CellColor.Mask, NextColor = None });
     }
 
-    private void CompleteTutorial()
+    private void StepSeven()
     {
         Debug.Assert(currentStep == 5);
         IncrementStep();
 
-        board.SetLiveZone(null);
+        board.Reset();
     }
 
     // helpers
