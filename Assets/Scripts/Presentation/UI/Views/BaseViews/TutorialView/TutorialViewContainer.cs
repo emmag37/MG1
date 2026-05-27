@@ -16,8 +16,8 @@ public class TutorialViewContainer : BaseView
 
     void Awake()
     {
-        // add listener for skip button
-
-        // add listener for start playing button
+        // would potentially like to switch the skip button go to the end of the tutorial
+        skipButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Tutorial));
+        startPlayingButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
     }
 }

@@ -5163,6 +5163,7 @@ MonoBehaviour:
   gameManager: {fileID: 354018344}
   baseViewController: {fileID: 300198981}
   popUpViewController: {fileID: 1764461906}
+  tutorialViewController: {fileID: 1413417921}
 --- !u!4 &779006562
 Transform:
   m_ObjectHideFlags: 0

@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
     public event Action<PopUpViewType, object> PushOverlayView;
     public event Action PopOverlayView;
 
+    public event Action SkipTutorial;
+
     public event Action ButtonPressed;  // eventually move to event bus?
 
     // ==================================================
@@ -102,6 +104,14 @@ public class UIManager : MonoBehaviour
         {
             type = BaseViewType.Tutorial;   // switch to the tutorial sequence
             gameManager.RunTutorial();
+        }
+        else if (type == BaseViewType.Tutorial)
+        {
+            // shortcut to skip to the end of the tutorial
+            // need to remove elements from the game scene
+            SkipTutorial?.Invoke();
+            gameManager.SkipTutorial();
+            return;
         }
         else if (type == BaseViewType.GamePlay)
         {

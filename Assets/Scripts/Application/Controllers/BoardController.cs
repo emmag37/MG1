@@ -78,6 +78,8 @@ public class BoardController: MonoBehaviour
     public void Reset()
     {
         logic.ResetBoard();
+
+        EventBus.Publish(new ResetEvent());
     }
 
     // used by the tutorial to make sure specific positions are live for players

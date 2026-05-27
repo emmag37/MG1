@@ -12,7 +12,7 @@ public class GameBootstrap : MonoBehaviour
 
     [SerializeField] private BaseViewController baseViewController;
     [SerializeField] private PopUpViewController popUpViewController;
-    //[SerializeField] private TutorialController tutorialController;
+    [SerializeField] private TutorialViewController tutorialViewController;
 
     // ==================================================
     // Private Fields
@@ -93,6 +93,8 @@ public class GameBootstrap : MonoBehaviour
         uiManager.ShowBaseView += baseViewController.HandleShowView;
         uiManager.PushOverlayView += popUpViewController.HandlePush;
         uiManager.PopOverlayView += popUpViewController.HandlePop;
+
+        uiManager.SkipTutorial += tutorialViewController.HandleSkipTutorial;
     }
 
     private void UnwireUI()
@@ -102,5 +104,7 @@ public class GameBootstrap : MonoBehaviour
         uiManager.ShowBaseView -= baseViewController.HandleShowView;
         uiManager.PushOverlayView -= popUpViewController.HandlePush;
         uiManager.PopOverlayView -= popUpViewController.HandlePop;
+
+        uiManager.SkipTutorial -= tutorialViewController.HandleSkipTutorial;
     }
 }

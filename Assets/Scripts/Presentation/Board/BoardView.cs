@@ -56,6 +56,7 @@ public class BoardView : MonoBehaviour
 
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
         EventBus.Subscribe<WinEvent>(OnWin);
+        EventBus.Subscribe<ResetEvent>(OnBoardReset);
     }
 
     void OnDisable()
@@ -66,6 +67,7 @@ public class BoardView : MonoBehaviour
 
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
         EventBus.Unsubscribe<WinEvent>(OnWin);
+        EventBus.Unsubscribe<ResetEvent>(OnBoardReset);
     }
 
 
@@ -132,6 +134,11 @@ public class BoardView : MonoBehaviour
         Vector3 playerPos = geometry.BoardIndexToTransform(e.Index);
 
         StartCoroutine(WinAnimationRoutine(cells, e.Points, playerPos));
+    }
+
+    private void OnBoardReset(ResetEvent e)
+    {
+        gridView.ResetCells();
     }
 
     // ================================

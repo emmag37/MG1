@@ -35,6 +35,8 @@ public struct ScoreUpdateEvent
 // Board Events
 // ==================================================
 
+public struct ResetEvent { }
+
 // game play
 public struct WinEvent
 {

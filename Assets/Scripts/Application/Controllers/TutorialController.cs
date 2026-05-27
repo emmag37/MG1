@@ -62,6 +62,17 @@ public class TutorialController : MonoBehaviour
         board.SetLiveZone(new (int, int)[] { (2, 2) });
     }
 
+    public void SkipTutorial()
+    {
+        // clear all game pieces
+        EventBus.Publish(new DestroyPlayerEvent());
+        board.Reset();
+
+        // set board to final scene state
+        board.SetLiveZone(null);
+        PopulateUnclearedPieces();
+    }
+
 
     // ==================================================
     // Event Handlers
@@ -159,10 +170,7 @@ public class TutorialController : MonoBehaviour
         // populate the scene - did not populate correctly
         board.SetLiveZone(null);
 
-        board.AddNonPlayer(new Vector2Int(0, 2), CellColor.Color2);
-        board.AddNonPlayer(new Vector2Int(1, 2), CellColor.Color3);
-        board.AddNonPlayer(new Vector2Int(2, 2), CellColor.Color4);
-
+        PopulateUnclearedPieces();
         for (int i = 0; i < GameConstants.RowSize; i++)
         {
             if (i == 3)
@@ -210,6 +218,13 @@ public class TutorialController : MonoBehaviour
     {
         EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
         currentStep++;
+    }
+
+    private void PopulateUnclearedPieces()
+    {
+        board.AddNonPlayer(new Vector2Int(0, 2), CellColor.Color2);
+        board.AddNonPlayer(new Vector2Int(1, 2), CellColor.Color3);
+        board.AddNonPlayer(new Vector2Int(2, 2), CellColor.Color4);
     }
 
 }

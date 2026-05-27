@@ -38,7 +38,16 @@ public class TutorialViewController : MonoBehaviour
     // Event Handlers
     // ==================================================
 
-    public void OnStepComplete(TutorialStepCompleteEvent e)
+    public void HandleSkipTutorial()
+    {
+        Debug.Log("skip tutorial");
+
+        scenes[currentScene].gameObject.SetActive(false);
+
+        scenes[scenes.Length - 1].gameObject.SetActive(true);
+    }
+
+    private void OnStepComplete(TutorialStepCompleteEvent e)
     {
         Debug.Assert(e.StepCompleted == currentScene, "Tutorial step mismatch");
 
@@ -50,12 +59,14 @@ public class TutorialViewController : MonoBehaviour
     }
 
     // add function to remove arrow when the player is placed
-    public void OnPlacePlayer(PlacePlayerEvent e)
+    private void OnPlacePlayer(PlacePlayerEvent e)
     {
         if (e.PlayerPosition == Vector3.positiveInfinity) return;
 
         // remove the arrow associated with the index that was just placed
         scenes[currentScene].RemoveArrow(e.Index);
     }
+
+    
 
 }

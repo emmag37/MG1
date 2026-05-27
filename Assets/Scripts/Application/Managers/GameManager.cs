@@ -136,6 +136,11 @@ public class GameManager : MonoBehaviour
         tutorial.StartTutorial();
     }
 
+    public void SkipTutorial()
+    {
+        tutorial.SkipTutorial();
+    }
+
 
     // ================================
     // Board Event Handlers
