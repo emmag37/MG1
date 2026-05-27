@@ -86,3 +86,5 @@ public struct PlayerReleasedEvent
     public Vector3 PlayerPosition;  // turn this into index
     public CellColor Color;
 }
+
+public struct ScoreAnimationEvent { }

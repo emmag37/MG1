@@ -21,6 +21,16 @@ public class TutorialController : MonoBehaviour
     // Unity Lifecycle
     // ==================================================
 
+    void OnEnable()
+    {
+        EventBus.Subscribe<ScoreAnimationEvent>(OnAnimationComplete);
+    }
+
+    void OnDisable()
+    {
+        EventBus.Unsubscribe<ScoreAnimationEvent>(OnAnimationComplete);
+    }
+
     void OnDestroy()
     {
         board.TurnCompleted -= HandleTurnCompleted;
@@ -57,7 +67,7 @@ public class TutorialController : MonoBehaviour
     // Event Handlers
     // ==================================================
 
-    // need to subscribe
+    // player placed on board
     private void HandleTurnCompleted(int points)
     {
         EventBus.Publish(new DestroyPlayerEvent());
@@ -68,25 +78,38 @@ public class TutorialController : MonoBehaviour
                 StepOne();
                 break;
             case 1:
-                if (points > 0)
-                    StepTwo();
-                else
+                if (points == 0)
                     EventBus.Publish(new SpawnPlayerEvent { Color = Color1, NextColor = None });
                 break;
-            case 2:
-                // run step three
-                break;
             case 3:
-                // run step four
-                break;
-            case 4:
-                // run step five
-                break;
-            case 5:
-                // run step six
+                StepFour();
                 break;
             default:
-                // set the live zone back to the entire board
+                // called when the players for case 2, 4, 5 are placed
+                break;
+        }
+    }
+
+    // win sequence completed
+    private void OnAnimationComplete(ScoreAnimationEvent e)
+    {
+        Debug.Log("animation complete");
+        switch (currentStep)
+        {
+            case 1:
+                StepTwo();
+                break;
+            case 2:
+                StepThree();
+                break;
+            case 4:
+                StepFive();
+                break;
+            case 5:
+                CompleteTutorial();
+                break;
+            default:
+                // error with case 0 or 3, should never be called
                 break;
         }
     }
@@ -99,9 +122,7 @@ public class TutorialController : MonoBehaviour
     private void StepOne()
     {
         Debug.Assert(currentStep == 0);
-
-        EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
-        currentStep++;
+        IncrementStep();
 
         (int, int)[] zone = new (int, int)[] { (2, 0), (2, 1), (2, 3), (2, 4) };
         board.SetLiveZone(zone);
@@ -112,26 +133,83 @@ public class TutorialController : MonoBehaviour
     private void StepTwo()
     {
         Debug.Assert(currentStep == 1);
+        IncrementStep();
 
-        EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
-        currentStep++;
+        // populate the scene
+        board.SetLiveZone(null);
 
-        Debug.Log("populate the scene");
         for (int i = 0; i < GameConstants.RowSize; i++)
         {
             if (i == 2) continue;
 
-            // figure out which function to use
-            //EventBus.Publish(new PlayerReleasedEvent { Color = Color1, Index = { i, i }, PlayerPosition = Vector3.zero });
-
-           // (i, i)
-           // (i, 2)
-           // (GameConstants.RowSize - i, i)
+            board.AddNonPlayer(new Vector2Int(i, i), Color1); // no player, so hopefully no bug
+            board.AddNonPlayer(new Vector2Int(i, 2), Color1);
+            board.AddNonPlayer(new Vector2Int(GameConstants.RowSize - 1 - i, i), Color1);
         }
 
         board.SetLiveZone(new (int, int)[] { (2, 2) });
-
         EventBus.Publish(new SpawnPlayerEvent { Color = Color1, NextColor = None });
+    }
+
+    private void StepThree()
+    {
+        Debug.Assert(currentStep == 2);
+        IncrementStep();
+
+        // populate the scene - did not populate correctly
+        board.SetLiveZone(null);
+
+        board.AddNonPlayer(new Vector2Int(0, 2), CellColor.Color2);
+        board.AddNonPlayer(new Vector2Int(1, 2), CellColor.Color3);
+        board.AddNonPlayer(new Vector2Int(2, 2), CellColor.Color4);
+
+        for (int i = 0; i < GameConstants.RowSize; i++)
+        {
+            if (i == 3)
+            {
+                board.AddNonPlayer(new Vector2Int(3, i), CellColor.Color5); // this is not being added
+                continue;
+            }
+
+            board.AddNonPlayer(new Vector2Int(4, i), CellColor.Color6);
+            if (i != 2) board.AddNonPlayer(new Vector2Int(3, i), Color1);
+        }
+
+        board.SetLiveZone(new (int, int)[] { (3, 2) });
+        EventBus.Publish(new SpawnPlayerEvent { Color = Color1, NextColor = None });
+    }
+
+    private void StepFour()
+    {
+        Debug.Assert(currentStep == 3);
+        IncrementStep();
+
+        board.SetLiveZone(new (int, int)[] { (4, 3) });
+        EventBus.Publish(new SpawnPlayerEvent { Color = CellColor.WildCard, NextColor = None });
+    }
+
+    private void StepFive()
+    {
+        Debug.Assert(currentStep == 4);
+        IncrementStep();
+
+        board.SetLiveZone(new (int, int)[] { (3, 3) });
+        EventBus.Publish(new SpawnPlayerEvent { Color = CellColor.Mask, NextColor = None });
+    }
+
+    private void CompleteTutorial()
+    {
+        Debug.Assert(currentStep == 5);
+        IncrementStep();
+
+        board.SetLiveZone(null);
+    }
+
+    // helper
+    private void IncrementStep()
+    {
+        EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
+        currentStep++;
     }
 
 }

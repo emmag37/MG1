@@ -113,7 +113,8 @@ public class GridView : MonoBehaviour
 
     private void OnSetPlayerCell(PlacePlayerEvent e)
     {
-        grid[e.Index.x, e.Index.y].SetColor(e.Color);
+        Debug.Log("set cell");
+        SetCell(e.Index, e.Color);
     }
 
     private void OnGhostPreview(GhostPreviewEvent e)

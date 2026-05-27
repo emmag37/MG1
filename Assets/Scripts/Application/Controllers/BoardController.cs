@@ -86,6 +86,26 @@ public class BoardController: MonoBehaviour
         logic.AddLiveZone(indices);
     }
 
+    // note - assumes that there are no players in existence
+    public void AddNonPlayer(Vector2Int index, CellColor color)
+    {
+        // add image to grid - no players to listen to this
+        EventBus.Publish(new PlacePlayerEvent
+        {
+            PlayerPosition = Vector3.zero,
+            Index = index,
+            Color = color
+        });
+
+        // fill the spot on the board in logic
+        if (!logic.TryPlacePlayer(index.x, index.y, color, out BoardLogic.PlayResult result))     // run the board logic
+        {
+            Debug.LogError($"Ran play with invalid index or color: {index}, {color}");
+        }
+
+        // do nothing else
+    }
+
 
     // ================================
     // Private Methods

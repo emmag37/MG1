@@ -44,7 +44,6 @@ public class ScoreAnimation : MonoBehaviour
             null, // if overlay
             out Vector2 uiPos
         );
-
         transform.localPosition = uiPos;
 
         StartCoroutine(AnimatePointsRoutine());
@@ -64,5 +63,7 @@ public class ScoreAnimation : MonoBehaviour
 
         animationImage.enabled = false;
         pointsText.enabled = false;
+
+        EventBus.Publish(new ScoreAnimationEvent());
     }
 }
