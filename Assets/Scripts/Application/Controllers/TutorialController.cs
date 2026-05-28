@@ -31,7 +31,6 @@ public class TutorialController : MonoBehaviour
 
     void OnDisable()
     {
-        Debug.Log("tutorial is disabled");
         EventBus.Unsubscribe<ScoreAnimationEvent>(OnAnimationComplete);
     }
 

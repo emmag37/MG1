@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour
 
         state = GameState.Paused;
         EventBus.Publish(new PauseGameEvent());
+        // player needs to stop moving
     }
 
     public void ResumeGame()
@@ -134,9 +135,6 @@ public class GameManager : MonoBehaviour
     {
         state = GameState.Tutorial; // turn off active player checking
 
-        // figure out which states to manage - if any
-        // board
-        // player
         tutorial.Initialize(board);
         tutorial.StartTutorial();
     }
@@ -212,8 +210,6 @@ public class GameManager : MonoBehaviour
 
     private void ResetTutorial()
     {
-        // turn off tutorial
-
         state = GameState.Fresh;
     }
 

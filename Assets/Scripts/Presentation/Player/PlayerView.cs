@@ -23,12 +23,18 @@ public class PlayerView : MonoBehaviour
     {
         EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
         EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
+
+        EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
+        EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
         EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
+
+        EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
+        EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
     }
 
     // ================================
@@ -83,6 +89,16 @@ public class PlayerView : MonoBehaviour
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
         movement.Drop(e.PlayerPosition);
+    }
+
+    private void OnPauseGame(PauseGameEvent e)
+    {
+        movement.enabled = false;
+    }
+
+    private void OnResumeGame(ResumeGameEvent e)
+    {
+        movement.enabled = true;
     }
 
 
