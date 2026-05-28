@@ -73,8 +73,6 @@ public class GameManager : MonoBehaviour
         picker = new PlayerPicker();
         board.Initialize();
 
-        tutorial.Initialize(board);
-
         state = GameState.Fresh;
         activePlayer = false;
 
@@ -93,7 +91,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         if (state == GameState.Tutorial)
-            state = GameState.Fresh;
+            ResetTutorial();
 
         if (state != GameState.Fresh)
             ResetGame();
@@ -136,12 +134,16 @@ public class GameManager : MonoBehaviour
     {
         state = GameState.Tutorial; // turn off active player checking
 
+        // figure out which states to manage - if any
+        // board
+        // player
+        tutorial.Initialize(board);
         tutorial.StartTutorial();
     }
 
     public void SkipTutorial()
     {
-        tutorial.SkipTutorial();
+        tutorial.CompleteTutorial();
     }
 
 
@@ -204,6 +206,13 @@ public class GameManager : MonoBehaviour
 
         score = 0;
         highScore = dataService.GetGameData().HighScore;
+
+        state = GameState.Fresh;
+    }
+
+    private void ResetTutorial()
+    {
+        // turn off tutorial
 
         state = GameState.Fresh;
     }

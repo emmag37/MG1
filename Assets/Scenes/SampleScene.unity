@@ -7871,7 +7871,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1167536212
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8886,7 +8886,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1308369573
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9704,7 +9704,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1413417912
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9818,6 +9818,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialViewContainer
   type: 3
   skipButton: {fileID: 934248314}
+  exitButton: {fileID: 772730468}
   startPlayingButton: {fileID: 1302226673}
 --- !u!114 &1413417920
 MonoBehaviour:

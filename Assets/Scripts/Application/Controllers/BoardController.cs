@@ -78,9 +78,14 @@ public class BoardController: MonoBehaviour
     public void Reset()
     {
         logic.ResetBoard();
-        SetLiveZone(null);
+    }
 
-        EventBus.Publish(new ResetEvent());
+    // tutorial method
+    public void ClearPieces()
+    {
+        Reset();
+
+        EventBus.Publish(new ResetEvent()); // alerts the grid to clear pieces
     }
 
     // used by the tutorial to make sure specific positions are live for players
