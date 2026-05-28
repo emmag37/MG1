@@ -2,13 +2,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 
-// not sure how I want to implement the username input field yet:
-    // edit only on button?
-    // or edit both on button and tapping the field?
-
-// write a new script for the input field
+// need to decide what to do with the profanity filter
+// unity has some built in content checkers for alphanum, etc
 public class ProfileView : PopUpView<IAllData>
 {
     // ==================================================
@@ -52,20 +50,22 @@ public class ProfileView : PopUpView<IAllData>
     {
         base.Awake();
 
-        // update input text
-        // can i have max number of characters here?
-        
+        editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar));
+        editUsernameButton.onClick.AddListener(usernameInput.ActivateInputField);
+
         usernameInput.onSubmit.AddListener(value =>
         {
             TryUpdateUsername(value);
         });
         usernameInput.onDeselect.AddListener(_ =>
         {
-            usernameInput.text = currentUsername;
+            if (!gameObject.activeInHierarchy) return;  // keeps incorrect text on screen on exit
+            usernameInput.SetTextWithoutNotify(currentUsername);
+        });
+        usernameInput.onValueChanged.AddListener(_ =>
+        {
             invalidInput.gameObject.SetActive(false);
         });
-
-        editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar));
     }
 
     // ==================================================
@@ -96,7 +96,6 @@ public class ProfileView : PopUpView<IAllData>
     }
 
     
-
     // ==================================================
     // Private Methods
     // ==================================================
@@ -112,13 +111,10 @@ public class ProfileView : PopUpView<IAllData>
         {
             Debug.Log($"invalid input: {error}");
 
-            usernameInput.text = currentUsername;
-
-            // shake the text
-
-            // display reason why invalid
             invalidInput.text = errorMessages[error];
             invalidInput.gameObject.SetActive(true);
+
+            StartCoroutine(ShakeTextRoutine());
         }
     }
 
@@ -136,4 +132,27 @@ public class ProfileView : PopUpView<IAllData>
 
         listView.Populate(gameData.ScoreHistory);   // error - null reference
     }
+
+
+    // ==================================================
+    // Coroutines
+    // ==================================================
+
+    IEnumerator ShakeTextRoutine(float duration = 0.3f, float magnitude = 8f)
+    {
+        Vector3 originalPos = usernameInput.textComponent.transform.localPosition;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float x = originalPos.x + UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            usernameInput.textComponent.transform.localPosition = new Vector3(x, originalPos.y, originalPos.z);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        usernameInput.textComponent.transform.localPosition = originalPos;
+    }
+
 }
