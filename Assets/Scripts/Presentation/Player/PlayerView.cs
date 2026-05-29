@@ -19,7 +19,7 @@ public class PlayerView : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
-    void OnEnable()
+    void Awake()
     {
         EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
         EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
@@ -28,7 +28,7 @@ public class PlayerView : MonoBehaviour
         EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
     }
 
-    void OnDisable()
+    void OnDestroy()
     {
         EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
         EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
@@ -98,6 +98,7 @@ public class PlayerView : MonoBehaviour
 
     private void OnResumeGame(ResumeGameEvent e)
     {
+        Debug.Log("resume movement");
         movement.enabled = true;
     }
 

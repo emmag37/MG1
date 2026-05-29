@@ -160,8 +160,10 @@ public class UIManager : MonoBehaviour
     {
         ButtonPressed?.Invoke();
 
+        Debug.Log("pop overlay");
         if (popUpStack.Peek() == PopUpViewType.Pause)
         {
+            Debug.Log("pop pause");
             gameManager.ResumeGame();
         }
 

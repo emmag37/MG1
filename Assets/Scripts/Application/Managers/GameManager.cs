@@ -120,12 +120,13 @@ public class GameManager : MonoBehaviour
 
         state = GameState.Paused;
         EventBus.Publish(new PauseGameEvent());
-        // player needs to stop moving
     }
 
     public void ResumeGame()
     {
         Debug.Assert(state == GameState.Paused, $"Resume called with invalid state: {state}");
+
+        Debug.Log("resuming game");
 
         state = GameState.Playing;
         EventBus.Publish(new ResumeGameEvent());

@@ -11,7 +11,6 @@ public class PauseView: PopUpView<IUserSettings>
     // ==================================================
     [SerializeField] private Button homeButton;
     [SerializeField] private Button restartButton;
-    [SerializeField] private Button helpButton;
 
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
@@ -26,7 +25,6 @@ public class PauseView: PopUpView<IUserSettings>
 
         Debug.Assert(homeButton != null, "Home button not set in pause view");
         Debug.Assert(restartButton != null, "Restart button not set in pause view");
-        Debug.Assert(helpButton != null, "Help button not set in pause view");
 
         Debug.Assert(musicSlider != null, "Music slider not set in pause view");
         Debug.Assert(sfxSlider != null, "Effects slider not set in pause view");
@@ -37,10 +35,7 @@ public class PauseView: PopUpView<IUserSettings>
         base.Awake();
 
         homeButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Home));
-        restartButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
-
-        // might remove this all together
-        //helpButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Tutorial));
+        restartButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.RestartGame));
 
         musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
         sfxSlider.onValueChanged.AddListener((value) => Manager.UpdateSFXOn((int)value));

@@ -14,5 +14,7 @@ public enum PopUpViewType
     Settings,
     Profile,
     Leaderboard,
-    ChooseAvatar
+    ChooseAvatar,
+    RestartGame,
+    SkipTutorial
 }
