@@ -9,8 +9,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
 
     [SerializeField] private AudioClip placePlayerClip;
+    [SerializeField] private AudioClip pickupPlayerClip;
+
     [SerializeField] private AudioClip winClip;
     [SerializeField] private AudioClip gameOverClip;
+
+    [SerializeField] private AudioClip buttonClip;
     [SerializeField] private AudioClip transitionClip;
 
     [SerializeField] private AudioClip gameMusic;
@@ -34,7 +38,7 @@ public class AudioManager : MonoBehaviour
         Debug.Assert(winClip != null, "Win clip not set in audio manager");
         Debug.Assert(gameOverClip != null, "Game over clip not set in audio manager");
 
-        Debug.Assert(transitionClip != null, "Transition clip not set in audio manager");
+        Debug.Assert(buttonClip != null, "Transition clip not set in audio manager");
     }
 
     void OnEnable()
@@ -45,6 +49,7 @@ public class AudioManager : MonoBehaviour
         EventBus.Subscribe<ExitGameEvent>(OnExitGame);
 
         // game play events
+        EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDrag);
         EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Subscribe<WinEvent>(OnWin);
     }
@@ -57,6 +62,7 @@ public class AudioManager : MonoBehaviour
         EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
 
         // game play events
+        EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDrag);
         EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Unsubscribe<WinEvent>(OnWin);
     }
@@ -105,7 +111,19 @@ public class AudioManager : MonoBehaviour
     public void HandleButtonPressed()
     {
         if (sfxOn)
+            sfxSource.PlayOneShot(buttonClip);
+    }
+
+    public void HandleTransition()
+    {
+        if (sfxOn)
             sfxSource.PlayOneShot(transitionClip);
+    }
+
+    private void OnPlayerDrag(PlayerDraggingEvent e)
+    {
+        if (sfxOn)
+            sfxSource.PlayOneShot(pickupPlayerClip);
     }
 
     private void OnPlacePlayer(PlacePlayerEvent e)

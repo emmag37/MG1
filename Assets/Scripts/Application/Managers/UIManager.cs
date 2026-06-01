@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
     public event Action SkipTutorial;
 
     public event Action ButtonPressed;  // eventually move to event bus?
+    public event Action Transition;
 
     // ==================================================
     // Private Fields
@@ -97,7 +98,10 @@ public class UIManager : MonoBehaviour
     public void ShowView(BaseViewType type, bool playSound = true)
     {
         if (playSound)
+        {
             ButtonPressed?.Invoke();
+            Transition?.Invoke();
+        }
 
         if (popUpStack.Count > 0)
         {

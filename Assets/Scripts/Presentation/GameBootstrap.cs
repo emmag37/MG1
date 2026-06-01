@@ -89,6 +89,7 @@ public class GameBootstrap : MonoBehaviour
     private void WireUI()
     {
         uiManager.ButtonPressed += audioManager.HandleButtonPressed;
+        uiManager.Transition += audioManager.HandleTransition;
 
         uiManager.ShowBaseView += baseViewController.HandleShowView;
         uiManager.PushOverlayView += popUpViewController.HandlePush;
@@ -101,6 +102,7 @@ public class GameBootstrap : MonoBehaviour
     private void UnwireUI()
     {
         uiManager.ButtonPressed -= audioManager.HandleButtonPressed;
+        uiManager.Transition -= audioManager.HandleTransition;
 
         uiManager.ShowBaseView -= baseViewController.HandleShowView;
         uiManager.PushOverlayView -= popUpViewController.HandlePush;

@@ -7830,12 +7830,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   sfxSource: {fileID: 1882221852}
   musicSource: {fileID: 649134239}
-  placePlayerClip: {fileID: 8300000, guid: 9482f935c8e3c4a939d7617542b75f97, type: 3}
+  placePlayerClip: {fileID: 8300000, guid: 5a7d766f8335f49a79da290a9b70b785, type: 3}
+  pickupPlayerClip: {fileID: 8300000, guid: 21175bd645fda487eadc7c35bcdc93ef, type: 3}
   winClip: {fileID: 8300000, guid: d52fe88ccc7c44ab486c3fdd4f338bf8, type: 3}
-  gameOverClip: {fileID: 8300000, guid: 72be0af397d054d9494f86fe4b9e31b2, type: 3}
-  transitionClip: {fileID: 8300000, guid: efbb3552991cf4a9693bd30afabe9733, type: 3}
-  gameMusic: {fileID: 8300000, guid: 1ec3b5a9e24954970a64d27ba7b39707, type: 3}
-  UIMusic: {fileID: 8300000, guid: b645afb1b25574bea970e14e936ac714, type: 3}
+  gameOverClip: {fileID: 8300000, guid: 65fed5d87627f4c58885b61970b5d0b0, type: 3}
+  buttonClip: {fileID: 8300000, guid: efbb3552991cf4a9693bd30afabe9733, type: 3}
+  transitionClip: {fileID: 8300000, guid: a3bfc866fe07f4d958ac0255a0978ae8, type: 3}
+  gameMusic: {fileID: 8300000, guid: c362ca400d3bb4547af41fa1e0c1f02f, type: 3}
+  UIMusic: {fileID: 8300000, guid: 029f67a95ac194c12b65bbeb2e881771, type: 3}
 --- !u!4 &1013720843
 Transform:
   m_ObjectHideFlags: 0
@@ -15023,7 +15025,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
