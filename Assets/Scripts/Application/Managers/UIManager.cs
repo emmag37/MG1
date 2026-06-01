@@ -99,8 +99,13 @@ public class UIManager : MonoBehaviour
         if (playSound)
             ButtonPressed?.Invoke();
 
-        IUserSettings userSettings = settingsService.GetSettings();
+        if (popUpStack.Count > 0)
+        {
+            ClearOverlayView?.Invoke();
+            popUpStack.Clear();
+        }
 
+        IUserSettings userSettings = settingsService.GetSettings();
         if (type == BaseViewType.GamePlay && !userSettings.HasLaunched)
         {
             settingsService.SetLaunched();
@@ -122,13 +127,7 @@ public class UIManager : MonoBehaviour
         {
             gameManager.ExitGame();
         }
-
-        if (popUpStack.Count > 0)
-        {
-            ClearOverlayView?.Invoke();
-            popUpStack.Clear();
-        }
-
+        
         ShowBaseView?.Invoke(type, userSettings);
         baseState = type;
     }

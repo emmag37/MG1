@@ -18,7 +18,7 @@ public class TutorialViewContainer : BaseView
 
     void Awake()
     {
-        skipButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Tutorial));
+        skipButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.SkipTutorial));
         exitButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Home));
 
         startPlayingButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
