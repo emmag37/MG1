@@ -93,6 +93,7 @@ public class GameBootstrap : MonoBehaviour
         uiManager.ShowBaseView += baseViewController.HandleShowView;
         uiManager.PushOverlayView += popUpViewController.HandlePush;
         uiManager.PopOverlayView += popUpViewController.HandlePop;
+        uiManager.ClearOverlayView += popUpViewController.HandleClear;
 
         uiManager.SkipTutorial += tutorialViewController.HandleSkipTutorial;
     }
@@ -104,6 +105,7 @@ public class GameBootstrap : MonoBehaviour
         uiManager.ShowBaseView -= baseViewController.HandleShowView;
         uiManager.PushOverlayView -= popUpViewController.HandlePush;
         uiManager.PopOverlayView -= popUpViewController.HandlePop;
+        uiManager.ClearOverlayView -= popUpViewController.HandleClear;
 
         uiManager.SkipTutorial -= tutorialViewController.HandleSkipTutorial;
     }

@@ -49,6 +49,11 @@ public class PopUpViewController : MonoBehaviour
         PopOverlay();
     }
 
+    public void HandleClear()
+    {
+        ClearOverlay();
+    }
+
     public void HandleProfileUpdate(IUserSettings userSettings)
     {
         RefreshOverlay(PopUpViewType.Profile, userSettings);
@@ -62,13 +67,14 @@ public class PopUpViewController : MonoBehaviour
     private void PushOverlay<T>(PopUpViewType type, T data)
     {
         int count = overlayStack.Count;
+        /* remove this behavior
         if (count > 0)
         {
             Debug.Assert(type != PopUpViewType.Pause && type != PopUpViewType.Profile,
                 $"Attempted to push type {type} to a non-empty overlay stack");
 
             overlayStack.Peek().Hide();
-        }
+        } */
 
         PopUpView overlayView = GetPopUpView(type);
 
@@ -85,18 +91,30 @@ public class PopUpViewController : MonoBehaviour
 
         PopUpView overlayView = overlayStack.Peek();
 
+        /* remove this - want to make this class generic for future projects
         Debug.Assert(!(overlayView.Type == PopUpViewType.Pause || overlayView.Type == PopUpViewType.Profile)
             || overlayStack.Count == 1,
             "Too many views in overlay stack");
+        */
 
         overlayView.Hide();
         overlayStack.Pop();
 
         Debug.Assert(count - 1 == overlayStack.Count, "Pop did not decrease the overlay stack count");
 
+        /* remove this behavior
         if (overlayStack.Count > 0)
         {
             overlayStack.Peek().Show();
+        }
+        */
+    }
+
+    private void ClearOverlay()
+    {
+        while (overlayStack.Count > 0)
+        {
+            PopOverlay();
         }
     }
 

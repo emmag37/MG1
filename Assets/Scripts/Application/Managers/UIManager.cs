@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
 
     public event Action<PopUpViewType, object> PushOverlayView;
     public event Action PopOverlayView;
+    public event Action ClearOverlayView;
 
     public event Action SkipTutorial;
 
@@ -115,7 +116,7 @@ public class UIManager : MonoBehaviour
         }
         else if (type == BaseViewType.GamePlay)
         {
-            gameManager.StartGame();
+            gameManager.StartGame();    // should reset the game state automatically
         }
         else if (type == BaseViewType.Home && baseState == BaseViewType.GamePlay)
         {
@@ -124,8 +125,8 @@ public class UIManager : MonoBehaviour
 
         if (popUpStack.Count > 0)
         {
-            PopOverlayView?.Invoke();
-            popUpStack.Pop();
+            ClearOverlayView?.Invoke();
+            popUpStack.Clear();
         }
 
         ShowBaseView?.Invoke(type, userSettings);
