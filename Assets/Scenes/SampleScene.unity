@@ -4893,13 +4893,14 @@ GameObject:
   - component: {fileID: 569730863}
   - component: {fileID: 569730862}
   - component: {fileID: 569730866}
+  - component: {fileID: 569730867}
   m_Layer: 5
   m_Name: Home View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &569730862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5005,6 +5006,18 @@ MonoBehaviour:
   avatarImage: {fileID: 2081577123}
   settingsButton: {fileID: 1138610323}
   playButton: {fileID: 1389166396}
+--- !u!114 &569730867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 569730861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dad431187358d4e7c9f9a354a5b0e9c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SafeAreaPanel
 --- !u!1001 &588990787
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7830,8 +7843,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   sfxSource: {fileID: 1882221852}
   musicSource: {fileID: 649134239}
-  placePlayerClip: {fileID: 8300000, guid: 5a7d766f8335f49a79da290a9b70b785, type: 3}
-  pickupPlayerClip: {fileID: 8300000, guid: 21175bd645fda487eadc7c35bcdc93ef, type: 3}
+  placePlayerClip: {fileID: 8300000, guid: 6b47c80e8d2fd4f94a7f63af9881d52e, type: 3}
+  pickupPlayerClip: {fileID: 8300000, guid: accf749f066444b278d4377fca4b3d1e, type: 3}
   winClip: {fileID: 8300000, guid: d52fe88ccc7c44ab486c3fdd4f338bf8, type: 3}
   gameOverClip: {fileID: 8300000, guid: 65fed5d87627f4c58885b61970b5d0b0, type: 3}
   buttonClip: {fileID: 8300000, guid: efbb3552991cf4a9693bd30afabe9733, type: 3}
@@ -8648,11 +8661,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 569730865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 450, y: 870}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -34, y: -34}
   m_SizeDelta: {x: 112, y: 112}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &1138610323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10481,11 +10494,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 569730865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -675}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 114}
   m_SizeDelta: {x: 412, y: 342}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1389166396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16574,11 +16587,11 @@ RectTransform:
   - {fileID: 2081577122}
   m_Father: {fileID: 569730865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -450, y: 870}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 34, y: -34}
   m_SizeDelta: {x: 112, y: 112}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &2085384309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16741,6 +16754,7 @@ GameObject:
   - component: {fileID: 2109330958}
   - component: {fileID: 2109330960}
   - component: {fileID: 2109330959}
+  - component: {fileID: 2109330961}
   m_Layer: 5
   m_Name: Title Image
   m_TagString: Untagged
@@ -16762,10 +16776,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 569730865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -50}
-  m_SizeDelta: {x: 1031, y: 717}
+  m_SizeDelta: {x: -49, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2109330959
 MonoBehaviour:
@@ -16805,6 +16819,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2109330957}
   m_CullTransparentMesh: 1
+--- !u!114 &2109330961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109330957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
+  m_AspectMode: 1
+  m_AspectRatio: 1.4379358
 --- !u!1 &2115315119
 GameObject:
   m_ObjectHideFlags: 0
