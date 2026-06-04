@@ -10,6 +10,7 @@ public class HUDController : MonoBehaviour
     // to remove this reference, bind the action in your composition root
     [SerializeField] private GameManager gameManager;   // to remove
 
+    [SerializeField] private Image HUDPanel;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text highScoreText;
     [SerializeField] private Image playerPreview;
@@ -56,21 +57,17 @@ public class HUDController : MonoBehaviour
     {
         UpdateScore(0, e.Data.HighScore);
 
-        // show all elements
-        foreach (Transform child in transform)
-        {
-            child.gameObject.SetActive(true);
-        }
+        HUDPanel.gameObject.SetActive(true);
     }
 
     private void OnExitGame(ExitGameEvent e)
     {
-        HideElements();
+        HUDPanel.gameObject.SetActive(false);
     }
 
     private void OnGameOver(GameOverEvent e)
     {
-        HideElements();
+        HUDPanel.gameObject.SetActive(false);
     }
 
     public void OnPlayerPreviewUpdate(SpawnPlayerEvent e)
@@ -87,14 +84,6 @@ public class HUDController : MonoBehaviour
     // ================================
     // Private Methods
     // ================================
-
-    private void HideElements()
-    {
-        foreach (Transform child in transform)
-        {
-            child.gameObject.SetActive(false);
-        }
-    }
 
     private void UpdateScore(int score, int highScore)
     {
