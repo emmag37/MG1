@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c4a1aaa298fda4d86990f37bcc8c8a0c
+guid: 7e137aa765a3d4da0a353543fcdcf425
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8387791934560371171
-    second: game-over-background_0
+      213: 4649713819320442138
+    second: Game Over Background_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: game-over-background_0
+      name: Game Over Background_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1096
-        height: 1936
+        width: 1080
+        height: 1920
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3e18b55f25c676470800000000000000
-      internalID: 8387791934560371171
+      spriteID: a1dd1db551a178040800000000000000
+      internalID: 4649713819320442138
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      game-over-background_0: 8387791934560371171
+      Game Over Background_0: 4649713819320442138
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
