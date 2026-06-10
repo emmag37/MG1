@@ -2,12 +2,26 @@ using UnityEngine;
 
 public class BackgroundScaler : MonoBehaviour
 {
-    private void Start() => ApplyScale();
+    private const float RefOrtho = 9.6f;
+
+    private CameraWidthLock cameraWidthLock;
+
+    private void Start()
+    {
+        cameraWidthLock = Camera.main.GetComponent<CameraWidthLock>();
+        ApplyScale();
+    }
 
     private void ApplyScale()
     {
         // scale = new_height / old_height
-        float scale = Screen.height / 1920f;
+        // have to match this to the camera ortho
+
+        if (cameraWidthLock.OrthoSize == 0) cameraWidthLock.ApplyOrthographicSize();
+
+        Debug.Log($"{cameraWidthLock.OrthoSize} / {RefOrtho} = {cameraWidthLock.OrthoSize / RefOrtho}");
+
+        float scale = cameraWidthLock.OrthoSize / RefOrtho; 
 
         transform.localScale = new Vector3(
             scale,
