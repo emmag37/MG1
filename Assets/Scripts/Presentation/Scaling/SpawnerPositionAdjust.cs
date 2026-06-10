@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BackgroundScaler : MonoBehaviour
+public class SpawnerPositionAdjust : MonoBehaviour
 {
     private const float RefOrtho = 9.6f;
 
@@ -19,11 +19,9 @@ public class BackgroundScaler : MonoBehaviour
 
         if (cameraWidthLock.OrthoSize == 0) cameraWidthLock.ApplyOrthographicSize();
 
-        float scale = cameraWidthLock.OrthoSize / RefOrtho; 
-        transform.localScale = new Vector3(
-            scale,
-            scale,
-            1f
-        );
+        float scale = cameraWidthLock.OrthoSize / RefOrtho;
+        var pos = transform.position;
+        pos.y *= (scale + 1) / 2;   // split the difference
+        transform.position = pos;
     }
 }

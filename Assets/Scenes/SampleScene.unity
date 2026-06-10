@@ -6528,6 +6528,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 801581748}
+  - component: {fileID: 801581749}
   m_Layer: 0
   m_Name: Spawn Point
   m_TagString: Untagged
@@ -6550,6 +6551,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2022480357}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &801581749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801581747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dae91673d83c148a78085404f5bb745c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnerPositionAdjust
 --- !u!1001 &802826534
 PrefabInstance:
   m_ObjectHideFlags: 0

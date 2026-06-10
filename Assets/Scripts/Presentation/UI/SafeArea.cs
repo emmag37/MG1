@@ -23,7 +23,7 @@ public class SafeAreaPanel : MonoBehaviour
 
         if (hasNotch)
         {
-            float topExpansion = 40f;      // increase top inset
+            float topExpansion = 20f;      // increase top inset
             float bottomExpansion = 20f;   // increase bottom inset
             float sideExpansion = 0f;      // increase side insets if needed
 

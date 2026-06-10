@@ -41,6 +41,8 @@ public class BoardView : MonoBehaviour
 
     void Awake()
     {
+        // put the scaling for the board here? 
+
         boardController = GetComponent<BoardController>();
         geometry = new BoardGeometry();
 
