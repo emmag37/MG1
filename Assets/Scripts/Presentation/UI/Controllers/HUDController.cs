@@ -15,6 +15,10 @@ public class HUDController : MonoBehaviour
     [SerializeField] private Text highScoreText;
     [SerializeField] private Image playerPreview;
 
+    [SerializeField] private Button pauseButton;
+
+    // private fields
+    private UIManager Manager => UIManager.Instance;
 
     // ================================
     // Unity Lifecycle Methods
@@ -26,6 +30,11 @@ public class HUDController : MonoBehaviour
         Debug.Assert(highScoreText != null, "High score text not set");
 
         Debug.Assert(playerPreview != null, "Player preview not set");
+    }
+
+    void Awake()
+    {
+        pauseButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Pause));
     }
 
     void OnEnable()

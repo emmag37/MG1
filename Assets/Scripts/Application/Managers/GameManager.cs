@@ -8,6 +8,12 @@ using System;
 public class GameManager : MonoBehaviour
 {
     // ================================
+    // Public Fields
+    // ================================
+
+    public bool ActiveGame => (state == GameState.Playing || state == GameState.Paused);
+
+    // ================================
     // Inspector Fields
     // ================================
     [SerializeField] private BoardController board;
@@ -103,7 +109,7 @@ public class GameManager : MonoBehaviour
         SpawnNewPlayer();
     }
 
-    public void ExitGame()  // User exit!
+    public void ExitGame()  // User exit! - need to adjust this so it only happens on restart
     {
         Debug.Assert(state == GameState.Paused, $"Exit called with invalid state: {state}");
 

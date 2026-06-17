@@ -123,13 +123,11 @@ public class UIManager : MonoBehaviour
             gameManager.SkipTutorial();
             return;
         }
-        else if (type == BaseViewType.GamePlay)
-        {
-            gameManager.StartGame();    // should reset the game state automatically
-        }
-        else if (type == BaseViewType.Home && baseState == BaseViewType.GamePlay)
-        {
-            gameManager.ExitGame();
+        else if (type == BaseViewType.GamePlay) {
+            if (baseState == BaseViewType.Home && gameManager.ActiveGame)
+                gameManager.ResumeGame();   // this is getting run when you want to restart
+            else 
+                gameManager.StartGame();    // should reset the game state automatically
         }
         
         ShowBaseView?.Invoke(type, userSettings);
