@@ -715,7 +715,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddfbbb9df60ed47ada363ec0333bade6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverView
-  type: 2
+  type: 3
   settingsButton: {fileID: 69040891}
   homeButton: {fileID: 2118693160}
   replayButton: {fileID: 1138544388}
@@ -1642,7 +1642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d53b4203fcc445cda8bd124f670159d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayView
-  type: 1
+  type: 2
 --- !u!114 &96805676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5204,7 +5204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b420653d0aa8343b6ac6a62863b8d652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HomeView
-  type: 0
+  type: 1
   profileButton: {fileID: 2085384309}
   avatarImage: {fileID: 2081577123}
   settingsButton: {fileID: 1138610323}
@@ -11126,7 +11126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c776d73082778409bb43a75c6a1df787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialViewContainer
-  type: 3
+  type: 4
   skipButton: {fileID: 934248314}
   exitButton: {fileID: 772730468}
   startPlayingButton: {fileID: 1302226673}
