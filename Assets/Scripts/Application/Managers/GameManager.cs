@@ -8,12 +8,6 @@ using System;
 public class GameManager : MonoBehaviour
 {
     // ================================
-    // Public Fields
-    // ================================
-
-    public bool ActiveGame => (state == GameState.Playing || state == GameState.Paused);    // remove - put in data service
-
-    // ================================
     // Inspector Fields
     // ================================
     [SerializeField] private BoardController board;
@@ -87,8 +81,6 @@ public class GameManager : MonoBehaviour
     // results in active game state with play enabled
     public void Play()
     {
-        Debug.Assert(state != GameState.Active || !playEnabled, "Play called from active and enabled state"); // eventually going to be continue
-
         if (state == GameState.Inactive && !playEnabled)                                        // restart
         {
             Reset();
@@ -102,7 +94,7 @@ public class GameManager : MonoBehaviour
         {
             RunTutorial();
         }
-        else
+        else if (state == GameState.Active && !playEnabled)
         {
             EventBus.Publish(new ResumeGameEvent());                                            // resume gameplay
         }
@@ -145,7 +137,7 @@ public class GameManager : MonoBehaviour
     {
         if (state == GameState.Tutorial) return;
 
-        Debug.Assert(state == GameState.Playing, $"Turn ran during invalid state: {state}");
+        Debug.Assert(state == GameState.Active, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
 
         if (points > 0)
@@ -160,17 +152,18 @@ public class GameManager : MonoBehaviour
         }
 
         RemoveCurrentPlayer();
-        if (state == GameState.Playing) SpawnNewPlayer();
+        if (state == GameState.Active) SpawnNewPlayer();
 
-        // save the turn
+        // TODO: save the turn to your game
     }
 
     private void HandleFullBoard()    // called on a game over  - turn this into a local event
     {
         Debug.Assert(state == GameState.Active && playEnabled, $"Initiate game over from invalid state: {state}, {playEnabled}");
-
-        dataService.AddScore(score);
+        
+        state = GameState.Inactive;
         dataService.SetState(GameState.Inactive);
+        dataService.AddScore(score);
 
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
         Reset();
@@ -201,6 +194,8 @@ public class GameManager : MonoBehaviour
 
         score = 0;
         highScore = dataService.GetGameData().HighScore;
+
+        // TODO: prepare a fresh game to save
     }
 
     private void NewGame()
@@ -228,7 +223,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Assert(!activePlayer, "Tried to spawn while player active");
 
-        if (state == GameState.Over) return;      // don't respawn on game over
+        if (state == GameState.Inactive) return;      // don't respawn on game over
         
         var playerColors = picker.CalculateNewPlayerColors();
         EventBus.Publish(new SpawnPlayerEvent { Color = playerColors.Color, NextColor = playerColors.NextColor });

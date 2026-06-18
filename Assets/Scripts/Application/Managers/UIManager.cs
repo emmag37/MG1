@@ -134,6 +134,8 @@ public class UIManager : MonoBehaviour
         
         ShowBaseView?.Invoke(type, userSettings);
         baseState = type;
+
+        Debug.Log($"{baseState}");
     }
 
     // pop up views
