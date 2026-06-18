@@ -34,6 +34,12 @@ public class GameDataService
     // Public Methods
     // ==================================================
 
+    public void SetState(GameState state)
+    {
+        data.State = state;
+        playerPrefs.SetInt(GameDataKeys.State, state);
+    }
+
     public void SetHighScore(int highScore)
     {
         data.HighScore = highScore;
@@ -62,6 +68,7 @@ public class GameDataService
     private GameData Load()
     {
         GameData newData = new GameData(
+            state: (GameState)playerPrefs.GetInt(GameDataKeys.State, (int)GameState.Inactive),
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
             scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList,

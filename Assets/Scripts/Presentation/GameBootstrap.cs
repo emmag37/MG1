@@ -53,7 +53,11 @@ public class GameBootstrap : MonoBehaviour
 
     void Start()
     {
+        IGameData gameData = gameDataService.GetGameData();
+        // if gameData.activeGame -> ShowView(Play, false)
+
         uiManager.ShowView(BaseViewType.Home, false);
+
         audioManager.Play();
     }
 

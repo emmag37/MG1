@@ -12,6 +12,7 @@ public interface IRuntimeData { }
 
 public interface IGameData : IRuntimeData
 {
+    GameState State { get; }
     int Score { get; }
     int HighScore { get; }
 
@@ -40,13 +41,15 @@ public interface IAllData : IRuntimeData
 
 public class GameData : IGameData
 {
+    public GameState State { get; set; }
     public int Score { get; set; }
     public int HighScore { get; set; }
     public IReadOnlyList<int> ScoreHistory { get; set; }
     public IReadOnlyList<LeaderboardData> LeaderboardRanking { get; set; }
 
-    public GameData(int score, int highScore, IReadOnlyList<int> scoreHistory, IReadOnlyList<LeaderboardData> leaderboardRanking)
+    public GameData(GameState state, int score, int highScore, IReadOnlyList<int> scoreHistory, IReadOnlyList<LeaderboardData> leaderboardRanking)
     {
+        State = state;
         Score = score;
         HighScore = highScore;
         ScoreHistory = scoreHistory;

@@ -31,7 +31,7 @@ public class UIManager : MonoBehaviour
 
     private GameManager gameManager;
 
-    private BaseViewType baseState;
+    private BaseViewType baseState = BaseViewType.None;
     private Stack<PopUpViewType> popUpStack = new Stack<PopUpViewType>();
 
 
@@ -125,9 +125,9 @@ public class UIManager : MonoBehaviour
         }
         else if (type == BaseViewType.GamePlay) {
             if (baseState == BaseViewType.Home && gameManager.ActiveGame)
-                gameManager.ResumeGame();   // this is getting run when you want to restart
+                gameManager.ResumeGame();
             else 
-                gameManager.StartGame();    // should reset the game state automatically
+                gameManager.StartGame();
         }
         
         ShowBaseView?.Invoke(type, userSettings);

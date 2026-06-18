@@ -11,26 +11,29 @@ public class GameManager : MonoBehaviour
     // Public Fields
     // ================================
 
-    public bool ActiveGame => (state == GameState.Playing || state == GameState.Paused);
+    public bool ActiveGame => (state == GameState.Playing || state == GameState.Paused);    // remove - put in data service
 
     // ================================
     // Inspector Fields
     // ================================
     [SerializeField] private BoardController board;
-
     [SerializeField] private TutorialController tutorial;
 
     // ================================
     // Private Types
     // ================================
-    private enum GameState
+    /*public enum GameState
     {
         Playing,
         Paused,
         Over,
         Fresh,
-        Tutorial
-    }
+        Continue,
+
+        Tutorial,
+        Active,
+        Inactive
+    }*/
 
     // ================================
     // Private Fields
@@ -39,6 +42,8 @@ public class GameManager : MonoBehaviour
     private PlayerPicker picker;
 
     private GameState state;
+    private bool playEnabled;
+
     private bool activePlayer;
 
     private int score;
@@ -79,6 +84,8 @@ public class GameManager : MonoBehaviour
         picker = new PlayerPicker();
         board.Initialize();
 
+        // if dataService.activeGame -> state = GameState.Continue
+
         state = GameState.Fresh;
         activePlayer = false;
 
@@ -96,13 +103,20 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        if (state == GameState.Continue)
+        {
+            // load in the old game scene
+
+            return;
+        }
+
         if (state == GameState.Tutorial)
             ResetTutorial();
 
         if (state != GameState.Fresh)
             ResetGame();
         Debug.Assert(state == GameState.Fresh, $"Game not reset, still in: {state}");
-
+        
         EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });   // prepare systems not owned by the game manager
 
         state = GameState.Playing;
@@ -168,6 +182,8 @@ public class GameManager : MonoBehaviour
         RemoveCurrentPlayer();
 
         if (state == GameState.Playing) SpawnNewPlayer();
+
+        // save the turn
     }
 
     private void HandleFullBoard()    // called on a game over  - turn this into a local event
