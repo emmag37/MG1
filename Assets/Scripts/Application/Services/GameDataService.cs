@@ -37,18 +37,17 @@ public class GameDataService
     public void SetState(GameState state)
     {
         data.State = state;
-        playerPrefs.SetInt(GameDataKeys.State, state);
-    }
-
-    public void SetHighScore(int highScore)
-    {
-        data.HighScore = highScore;
-        playerPrefs.SetInt(GameDataKeys.HighScore, highScore);
+        playerPrefs.SetInt(GameDataKeys.State, (int)state);
     }
 
     public void AddScore(int score)
     {
         data.Score = score;
+        if (score > data.HighScore)
+        {
+            data.HighScore = score;
+            playerPrefs.SetInt(GameDataKeys.HighScore, score);
+        }
 
         ScoreHistory history = disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory);
         bool added = history.TryAddValue(score);
@@ -68,7 +67,7 @@ public class GameDataService
     private GameData Load()
     {
         GameData newData = new GameData(
-            state: (GameState)playerPrefs.GetInt(GameDataKeys.State, (int)GameState.Inactive),
+            state: (GameState)playerPrefs.GetInt(GameDataKeys.State, (int)GameState.Tutorial),  // always run tutorial for the first use
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
             scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList,

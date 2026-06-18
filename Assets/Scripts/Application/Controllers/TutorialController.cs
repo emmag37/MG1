@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 // bug with ghost preview - turns on once but then not again?
 public class TutorialController : MonoBehaviour
@@ -9,6 +10,12 @@ public class TutorialController : MonoBehaviour
 
     private const CellColor Color1 = CellColor.Color1;
     private const CellColor None = CellColor.Empty;
+
+    // ==================================================
+    // Events
+    // ==================================================
+
+    public event Action TutorialComplete;
 
     // ==================================================
     // Private Fields
@@ -61,9 +68,9 @@ public class TutorialController : MonoBehaviour
     {
         if (activePlayer) DestroyPlayer();
         if (activeZone) ResetZone();
-
-        board.ClearPieces(); // clear the non-player pieces from the board
         board.TurnCompleted -= HandleTurnCompleted;
+
+        TutorialComplete?.Invoke();
 
         Debug.Assert(!activePlayer && !activeZone, "Tutorial not properly reset");
     }

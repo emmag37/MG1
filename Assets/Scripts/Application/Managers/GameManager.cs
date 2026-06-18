@@ -20,22 +20,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TutorialController tutorial;
 
     // ================================
-    // Private Types
-    // ================================
-    /*public enum GameState
-    {
-        Playing,
-        Paused,
-        Over,
-        Fresh,
-        Continue,
-
-        Tutorial,
-        Active,
-        Inactive
-    }*/
-
-    // ================================
     // Private Fields
     // ================================
     private GameDataService dataService;
@@ -43,7 +27,6 @@ public class GameManager : MonoBehaviour
 
     private GameState state;
     private bool playEnabled;
-
     private bool activePlayer;
 
     private int score;
@@ -54,22 +37,11 @@ public class GameManager : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
-    void OnEnable()
-    {
-        // Board events
-        EventBus.Subscribe<WinEvent>(HandleWin);
-    }
-
-    void OnDisable()
-    {
-        // Board events
-        EventBus.Unsubscribe<WinEvent>(HandleWin);
-    }
-
     void OnDestroy()
     {
         board.FullBoard -= HandleFullBoard;
         board.TurnCompleted -= HandleTurnCompleted;
+        tutorial.TutorialComplete -= HandleTutorialComplete;
     }
 
 
@@ -84,16 +56,26 @@ public class GameManager : MonoBehaviour
         picker = new PlayerPicker();
         board.Initialize();
 
-        // if dataService.activeGame -> state = GameState.Continue
-
-        state = GameState.Fresh;
-        activePlayer = false;
-
-        score = 0;
-        highScore = dataService.GetGameData().HighScore;
-
         board.FullBoard += HandleFullBoard;
         board.TurnCompleted += HandleTurnCompleted;
+        tutorial.TutorialComplete += HandleTutorialComplete;
+
+        highScore = dataService.GetGameData().HighScore;
+        state = dataService.GetGameData().State;
+
+        playEnabled = true;
+        if (state == GameState.Active)
+        {
+            // TODO: Load in previous game values
+            activePlayer = true;
+        }
+        else
+        {
+            // initialize fresh values
+            score = 0;
+            activePlayer = false;
+        }
+
     }
 
 
@@ -101,73 +83,60 @@ public class GameManager : MonoBehaviour
     // UI Commands
     // ================================
 
-    public void StartGame()
+    // should tutorial be in first or second branch?
+    // results in active game state with play enabled
+    public void Play()
     {
-        if (state == GameState.Continue)
-        {
-            // load in the old game scene
+        Debug.Assert(state != GameState.Active || !playEnabled, "Play called from active and enabled state"); // eventually going to be continue
 
-            return;
+        if (state == GameState.Inactive && !playEnabled)                                        // restart
+        {
+            Reset();
+            NewGame();
+        }
+        else if (state == GameState.Inactive && playEnabled)   // fresh from home, game over
+        {
+            NewGame(); // can assume all game elements are reset
+        }
+        else if (state == GameState.Tutorial && playEnabled)
+        {
+            RunTutorial();
+        }
+        else
+        {
+            EventBus.Publish(new ResumeGameEvent());                                            // resume gameplay
         }
 
-        if (state == GameState.Tutorial)
-            ResetTutorial();
-
-        if (state != GameState.Fresh)
-            ResetGame();
-        Debug.Assert(state == GameState.Fresh, $"Game not reset, still in: {state}");
-        
-        EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });   // prepare systems not owned by the game manager
-
-        state = GameState.Playing;
-        SpawnNewPlayer();
+        playEnabled = true;
     }
 
-    public void ExitGame()  // User exit! - need to adjust this so it only happens on restart
+    public void Pause()
     {
-        Debug.Assert(state == GameState.Paused, $"Exit called with invalid state: {state}");
+        Debug.Assert(state == GameState.Active, $"Pause called with non-active state, state = {state}");
 
-        state = GameState.Over;
-
-        Debug.Log("all data will be lost");
-
-        EventBus.Publish(new ExitGameEvent());
-    }
-
-    public void PauseGame()
-    {
-        Debug.Assert(state == GameState.Playing, $"Pause called with invalid state: {state}");
-
-        state = GameState.Paused;
+        playEnabled = false;
         EventBus.Publish(new PauseGameEvent());
     }
 
-    public void ResumeGame()
+    public void Restart()
     {
-        Debug.Assert(state == GameState.Paused, $"Resume called with invalid state: {state}");
+        // only need to change states
+        state = GameState.Inactive;
+        dataService.SetState(GameState.Inactive);
 
-        Debug.Log("resuming game");
-
-        state = GameState.Playing;
-        EventBus.Publish(new ResumeGameEvent());
-    }
-
-    public void RunTutorial()
-    {
-        state = GameState.Tutorial; // turn off active player checking
-
-        tutorial.Initialize(board);
-        tutorial.StartTutorial();
+        Play();
     }
 
     public void SkipTutorial()
     {
+        Debug.Assert(state == GameState.Tutorial, $"Skip tutorial called with state: {state}");
+
         tutorial.CompleteTutorial();
     }
 
 
     // ================================
-    // Board Event Handlers
+    // Event Handlers
     // ================================
 
     // moves the player back to start or on the board.
@@ -179,8 +148,18 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Playing, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
 
-        RemoveCurrentPlayer();
+        if (points > 0)
+        {
+            score += points;
+            if (score > highScore)
+            {
+                highScore = score;
+            }
 
+            EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
+        }
+
+        RemoveCurrentPlayer();
         if (state == GameState.Playing) SpawnNewPlayer();
 
         // save the turn
@@ -188,54 +167,63 @@ public class GameManager : MonoBehaviour
 
     private void HandleFullBoard()    // called on a game over  - turn this into a local event
     {
-        Debug.Assert(state == GameState.Playing, $"Initiate game over from invalid state: {state}");
+        Debug.Assert(state == GameState.Active && playEnabled, $"Initiate game over from invalid state: {state}, {playEnabled}");
 
-        state = GameState.Over;
-
-        if (score == highScore)
-            dataService.SetHighScore(highScore);
         dataService.AddScore(score);
+        dataService.SetState(GameState.Inactive);
 
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
+        Reset();
     }
 
-    // move this logic to turn completed, the local event should pass a bool
-    // the score update should then be the win
-    private void HandleWin(WinEvent e)
+    // tutorial finsihed event
+    private void HandleTutorialComplete()
     {
-        if (e.Points == 0) return;
+        Debug.Assert(state == GameState.Tutorial, $"Tutorial complete but state = {state}");
 
-        score += e.Points;
-        if (score > highScore)
-        {
-            highScore = score;
-        }
-
-        EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
+        state = GameState.Inactive;
+        dataService.SetState(state);
+        playEnabled = false;
     }
 
     // ================================
     // Private Methods
     // ================================
 
-    private void ResetGame()
+    // game state helpers
+    private void Reset()
     {
-        RemoveCurrentPlayer();
+        Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");
 
+        RemoveCurrentPlayer();
         board.Reset();
         picker.Reset();
 
         score = 0;
         highScore = dataService.GetGameData().HighScore;
-
-        state = GameState.Fresh;
     }
 
-    private void ResetTutorial()
+    private void NewGame()
     {
-        state = GameState.Fresh;
+        Debug.Assert(state == GameState.Inactive, $"New game called from state: {state}");
+
+        state = GameState.Active;
+        dataService.SetState(state);
+
+        EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });   // prepare systems not owned by the game manager
+        SpawnNewPlayer();
     }
 
+    public void RunTutorial()
+    {
+        Debug.Assert(state == GameState.Tutorial, $"Tutorial run from state: {state}");
+
+        tutorial.Initialize(board);
+        tutorial.StartTutorial();
+    }
+
+
+    // player helpers
     private void SpawnNewPlayer()
     {
         Debug.Assert(!activePlayer, "Tried to spawn while player active");

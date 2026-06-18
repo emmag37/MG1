@@ -110,24 +110,26 @@ public class UIManager : MonoBehaviour
         }
 
         IUserSettings userSettings = settingsService.GetSettings();
-        if (type == BaseViewType.GamePlay && !userSettings.HasLaunched)
-        {
-            settingsService.SetLaunched();
+        IGameData gameData = gameDataService.GetGameData();
 
-            type = BaseViewType.Tutorial;   // switch to the tutorial sequence
-            gameManager.RunTutorial();
+        if (type == BaseViewType.GamePlay && gameData.State == GameState.Tutorial)
+        {
+            type = BaseViewType.Tutorial;
+            gameManager.Play();
         }
-        else if (type == BaseViewType.Tutorial) // shortcut for skip - only called when tut is active
+        else if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
+        {
+            gameManager.Restart();
+        }
+        else if (type == BaseViewType.GamePlay)
+        {
+            gameManager.Play();
+        }
+        else if (baseState == BaseViewType.Tutorial)         // signal for skip - only called when tutorial is active
         {
             SkipTutorial?.Invoke();
             gameManager.SkipTutorial();
             return;
-        }
-        else if (type == BaseViewType.GamePlay) {
-            if (baseState == BaseViewType.Home && gameManager.ActiveGame)
-                gameManager.ResumeGame();
-            else 
-                gameManager.StartGame();
         }
         
         ShowBaseView?.Invoke(type, userSettings);
@@ -144,7 +146,7 @@ public class UIManager : MonoBehaviour
 
         if (type == PopUpViewType.Pause)
         {
-            gameManager.PauseGame();
+            gameManager.Pause();
         }
         else if (type == PopUpViewType.Profile)
         {
@@ -166,7 +168,7 @@ public class UIManager : MonoBehaviour
         if (popUpStack.Peek() == PopUpViewType.Pause)
         {
             Debug.Log("pop pause");
-            gameManager.ResumeGame();
+            gameManager.Play();
         }
 
         PopOverlayView?.Invoke();
