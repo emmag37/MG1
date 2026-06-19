@@ -61,6 +61,9 @@ public class GameManager : MonoBehaviour
         if (state == GameState.Active)
         {
             // TODO: Load in previous game values
+
+
+            score = 0;
             activePlayer = true;
         }
         else
@@ -133,7 +136,7 @@ public class GameManager : MonoBehaviour
 
     // moves the player back to start or on the board.
     // if on the board, executes the player's turn.
-    private void HandleTurnCompleted(int points)  // turn this into a local event
+    private void HandleTurnCompleted(int points, (int, int) index)  // turn this into a local event
     {
         if (state == GameState.Tutorial) return;
 
@@ -151,10 +154,10 @@ public class GameManager : MonoBehaviour
             EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
         }
 
+        dataService.SaveTurn(score, index);
+
         RemoveCurrentPlayer();
         if (state == GameState.Active) SpawnNewPlayer();
-
-        // TODO: save the turn to your game
     }
 
     private void HandleFullBoard()    // called on a game over  - turn this into a local event
@@ -195,7 +198,7 @@ public class GameManager : MonoBehaviour
         score = 0;
         highScore = dataService.GetGameData().HighScore;
 
-        // TODO: prepare a fresh game to save
+        dataService.ResetGame();
     }
 
     private void NewGame()
@@ -229,6 +232,8 @@ public class GameManager : MonoBehaviour
         EventBus.Publish(new SpawnPlayerEvent { Color = playerColors.Color, NextColor = playerColors.NextColor });
 
         activePlayer = true;
+
+        dataService.SavePlayerColors(playerColors.Color, playerColors.NextColor);
     }
 
     private void RemoveCurrentPlayer()

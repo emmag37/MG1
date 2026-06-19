@@ -65,3 +65,27 @@ public class LeaderboardRanking : CappedRankedList<LeaderboardData>
     // hold the top 50 scores
     public LeaderboardRanking() : base(50) { }
 }
+
+
+// to store my board information, does not need to have dynamic size
+
+[Serializable]
+public class BoardData
+{
+    private const int rowSize = GameConstants.RowSize;
+    [SerializeField] private int[] cells;
+
+    public BoardData()
+    {
+        cells = new int[rowSize * rowSize];
+    }
+
+    public int Get(int x, int y) => cells[y * rowSize + x];
+    public void Set(int x, int y, int color) => cells[y * rowSize + x] = color;
+
+    public void Reset()
+    {
+        Array.Clear(cells, 0, cells.Length);
+    }
+}
+

@@ -25,7 +25,7 @@ public class BoardController: MonoBehaviour
     // Local Events
     // ================================
 
-    public event Action<int> TurnCompleted;
+    public event Action<int, (int, int)> TurnCompleted;
     public event Action FullBoard;
 
     // ================================
@@ -78,9 +78,11 @@ public class BoardController: MonoBehaviour
     public void Reset()
     {
         logic.ResetBoard();
+        EventBus.Publish(new ResetEvent()); // alerts the grid to clear pieces
     }
 
     // tutorial method
+    // deprecate
     public void ClearPieces()
     {
         Reset();
@@ -158,7 +160,7 @@ public class BoardController: MonoBehaviour
             });
         }
 
-        TurnCompleted?.Invoke(result.Points);
+        TurnCompleted?.Invoke(result.Points, (index.x, index.y));
     }
 
 }

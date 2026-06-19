@@ -8,6 +8,7 @@ public class GameDataService
     // Public Fields
     // ==================================================
     public IGameData GetGameData() => data;
+    public IGamePlayData GetGamePlayData() => game;
 
     // ==================================================
     // Private Fields
@@ -16,6 +17,7 @@ public class GameDataService
     private PlayerPrefsStorage playerPrefs;
 
     private GameData data;
+    private GamePlayData game;
 
 
     // ==================================================
@@ -28,12 +30,14 @@ public class GameDataService
         this.playerPrefs = playerPrefs;
 
         data = Load();
+        game = LoadGame();
     }
 
     // ==================================================
     // Public Methods
     // ==================================================
 
+    // game data methods
     public void SetState(GameState state)
     {
         data.State = state;
@@ -60,6 +64,41 @@ public class GameDataService
     }
 
 
+    // game play data methods
+    public void ResetGame()
+    {
+        // player colors don't need to be reset
+
+        game.CurrentScore = 0;
+        playerPrefs.SetInt(GameDataKeys.CurrentScore, 0);
+
+        game.Board.Reset();
+        disc.Save(GameDataFiles.BoardData, game.Board);
+    }
+
+    public void SaveTurn(int newScore, (int, int) index)
+    {
+        if (newScore > game.CurrentScore)
+        {
+            game.CurrentScore = newScore;
+            playerPrefs.SetInt(GameDataKeys.CurrentScore, newScore);
+        }
+
+        // the color will be whatever is stored at current color
+        game.Board.Set(index.Item1, index.Item2, (int)game.CurrentPlayer);
+        disc.Save(GameDataFiles.BoardData, game.Board);
+    }
+
+    public void SavePlayerColors(CellColor currentColor, CellColor nextColor)
+    {
+        game.CurrentPlayer = currentColor;
+        game.NextPlayer = nextColor;
+
+        playerPrefs.SetInt(GameDataKeys.CurrentPlayer, (int)game.CurrentPlayer);
+        playerPrefs.SetInt(GameDataKeys.NextPlayer, (int)game.NextPlayer);
+    }
+
+
     // ==================================================
     // Private Methods
     // ==================================================
@@ -75,5 +114,17 @@ public class GameDataService
         );
 
         return newData;
+    }
+
+    private GamePlayData LoadGame()
+    {
+        GamePlayData newGame = new GamePlayData(
+            currentPlayer: (CellColor)playerPrefs.GetInt(GameDataKeys.CurrentPlayer, (int)CellColor.Empty),
+            nextPlayer: (CellColor)playerPrefs.GetInt(GameDataKeys.NextPlayer, (int)CellColor.Empty),
+            currentScore: playerPrefs.GetInt(GameDataKeys.CurrentScore, 0),
+            board: disc.Load<BoardData>(GameDataFiles.BoardData)
+            );
+
+        return newGame;
     }
 }

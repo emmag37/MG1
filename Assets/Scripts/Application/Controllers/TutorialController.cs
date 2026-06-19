@@ -81,7 +81,7 @@ public class TutorialController : MonoBehaviour
     // ==================================================
 
     // player placed on board
-    private void HandleTurnCompleted(int points)
+    private void HandleTurnCompleted(int points, (int, int) index)
     {
         DestroyPlayer();
 

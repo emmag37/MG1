@@ -13,6 +13,11 @@ public static class GameDataKeys
 {
     public const string State = "game.state";
     public const string HighScore = "game.highScore";
+
+    // for game play data only
+    public const string CurrentPlayer = "game.currentPlayer";
+    public const string NextPlayer = "game.nextPlayer";
+    public const string CurrentScore = "game.currentScore";
 }
 
 public class PlayerPrefsStorage

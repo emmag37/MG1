@@ -41,7 +41,7 @@ public interface IGamePlayData
     CellColor CurrentPlayer { get; }
     CellColor NextPlayer { get; }
     int CurrentScore { get; }
-    CellColor[,] Board { get; }
+    BoardData Board { get; }
 }
 
 // ==================================================
@@ -71,9 +71,9 @@ public class GamePlayData : IGamePlayData
     public CellColor CurrentPlayer { get; set; }
     public CellColor NextPlayer { get; set; }
     public int CurrentScore { get; set; }
-    public CellColor[,] Board { get; set; }
+    public BoardData Board { get; set; }
 
-    public GamePlayData(CellColor currentPlayer, CellColor nextPlayer, int currentScore, CellColor[,] board)
+    public GamePlayData(CellColor currentPlayer, CellColor nextPlayer, int currentScore, BoardData board)
     {
         CurrentPlayer = currentPlayer;
         NextPlayer = nextPlayer;
