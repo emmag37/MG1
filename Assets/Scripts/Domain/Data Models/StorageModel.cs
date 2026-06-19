@@ -67,25 +67,27 @@ public class LeaderboardRanking : CappedRankedList<LeaderboardData>
 }
 
 
-// to store my board information, does not need to have dynamic size
+// sparse list to store board data, only ever read from for a list traversal
+[Serializable]
+public struct CellEntry
+{
+    public int x, y, color;
+    public CellEntry(int x, int y, int color) { this.x = x; this.y = y; this.color = color; }
+}
 
 [Serializable]
 public class BoardData
 {
-    private const int rowSize = GameConstants.RowSize;
-    [SerializeField] private int[] cells;
+    [SerializeField] private List<CellEntry> cells = new();
+    public IReadOnlyList<CellEntry> Cells => cells;
 
-    public BoardData()
+    public void Set(int x, int y, int color)
     {
-        cells = new int[rowSize * rowSize];
+        int i = cells.FindIndex(c => c.x == x && c.y == y);
+        if (i >= 0) cells[i] = new CellEntry(x, y, color);
+        else cells.Add(new CellEntry(x, y, color));
     }
 
-    public int Get(int x, int y) => cells[y * rowSize + x];
-    public void Set(int x, int y, int color) => cells[y * rowSize + x] = color;
-
-    public void Reset()
-    {
-        Array.Clear(cells, 0, cells.Length);
-    }
+    public void Reset() => cells.Clear();
 }
 

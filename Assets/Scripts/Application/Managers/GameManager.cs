@@ -60,14 +60,31 @@ public class GameManager : MonoBehaviour
         playEnabled = true;
         if (state == GameState.Active)
         {
-            // TODO: Load in previous game values
+            Debug.Log("load an active game play");
 
+            // TODO: DEBUG!!!
+                // attempted but got very messed up
+                // this branch runs, but the game play scene is empty including HUD?
 
-            score = 0;
+            IGamePlayData game = dataService.GetGamePlayData();
+
+            // load the current score and players
+            score = game.CurrentScore;
+            EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
+
+            EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
             activePlayer = true;
+
+            // load the board
+            foreach (CellEntry cell in game.Board.Cells)
+            {
+                board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
+            }
         }
         else
         {
+            Debug.Log("fresh game");
+
             // initialize fresh values
             score = 0;
             activePlayer = false;
