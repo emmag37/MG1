@@ -35,6 +35,15 @@ public interface IAllData : IRuntimeData
     IUserSettings UserSettings { get; }
 }
 
+// does not need to be runtime data, never passed to the UI on its own
+public interface IGamePlayData
+{
+    CellColor CurrentPlayer { get; }
+    CellColor NextPlayer { get; }
+    int CurrentScore { get; }
+    CellColor[,] Board { get; }
+}
+
 // ==================================================
 // Classes
 // ==================================================
@@ -55,6 +64,23 @@ public class GameData : IGameData
         ScoreHistory = scoreHistory;
         LeaderboardRanking = leaderboardRanking;
     }
+}
+
+public class GamePlayData : IGamePlayData
+{
+    public CellColor CurrentPlayer { get; set; }
+    public CellColor NextPlayer { get; set; }
+    public int CurrentScore { get; set; }
+    public CellColor[,] Board { get; set; }
+
+    public GamePlayData(CellColor currentPlayer, CellColor nextPlayer, int currentScore, CellColor[,] board)
+    {
+        CurrentPlayer = currentPlayer;
+        NextPlayer = nextPlayer;
+        CurrentScore = currentScore;
+        Board = board;
+    }
+
 }
 
 public class UserSettings : IUserSettings
