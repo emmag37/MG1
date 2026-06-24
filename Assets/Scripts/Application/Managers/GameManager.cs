@@ -57,6 +57,12 @@ public class GameManager : MonoBehaviour
         highScore = dataService.GetGameData().HighScore;
         state = dataService.GetGameData().State;
 
+        // REMOVE
+        /*
+        state = GameState.Inactive;
+        dataService.SetState(state);
+        */
+
         playEnabled = true;
         if (state == GameState.Active)
         {
@@ -68,18 +74,19 @@ public class GameManager : MonoBehaviour
 
             IGamePlayData game = dataService.GetGamePlayData();
 
+            // load the board - must always load the board before players
+            foreach (CellEntry cell in game.Board.Cells)
+            {
+                Debug.Log($"add item: ({cell.x}, {cell.y}), {cell.color}");
+                board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
+            }
+
             // load the current score and players
             score = game.CurrentScore;
             EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
 
             EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
             activePlayer = true;
-
-            // load the board
-            foreach (CellEntry cell in game.Board.Cells)
-            {
-                board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
-            }
         }
         else
         {
@@ -103,11 +110,14 @@ public class GameManager : MonoBehaviour
     {
         if (state == GameState.Inactive && !playEnabled)                                        // restart
         {
+            playEnabled = true;
+
             Reset();
             NewGame();
         }
         else if (state == GameState.Inactive && playEnabled)   // fresh from home, game over
         {
+            Debug.Log("fresh game branch");
             NewGame(); // can assume all game elements are reset
         }
         else if (state == GameState.Tutorial && playEnabled)
@@ -116,10 +126,13 @@ public class GameManager : MonoBehaviour
         }
         else if (state == GameState.Active && !playEnabled)
         {
+            playEnabled = true;
             EventBus.Publish(new ResumeGameEvent());                                            // resume gameplay
         }
-
-        playEnabled = true;
+        else if (state == GameState.Active && playEnabled)
+        {
+            EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });  // continue the gameplay
+        }
     }
 
     public void Pause()
@@ -169,6 +182,7 @@ public class GameManager : MonoBehaviour
             }
 
             EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
+            dataService.UpdateScore(score);
         }
 
         dataService.SaveTurn(score, index);
@@ -183,7 +197,7 @@ public class GameManager : MonoBehaviour
         
         state = GameState.Inactive;
         dataService.SetState(GameState.Inactive);
-        dataService.AddScore(score);
+        dataService.SetFinalScore(score);
 
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
         Reset();
@@ -221,6 +235,8 @@ public class GameManager : MonoBehaviour
     private void NewGame()
     {
         Debug.Assert(state == GameState.Inactive, $"New game called from state: {state}");
+
+        Debug.Log("new game!!!");
 
         state = GameState.Active;
         dataService.SetState(state);

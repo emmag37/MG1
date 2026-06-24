@@ -44,7 +44,7 @@ public class GameDataService
         playerPrefs.SetInt(GameDataKeys.State, (int)state);
     }
 
-    public void AddScore(int score)
+    public void UpdateScore(int score)
     {
         data.Score = score;
         if (score > data.HighScore)
@@ -52,6 +52,11 @@ public class GameDataService
             data.HighScore = score;
             playerPrefs.SetInt(GameDataKeys.HighScore, score);
         }
+    }
+
+    public void SetFinalScore(int score)
+    {
+        UpdateScore(score);
 
         ScoreHistory history = disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory);
         bool added = history.TryAddValue(score);

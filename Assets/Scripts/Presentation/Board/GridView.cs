@@ -27,6 +27,7 @@ public class GridView : MonoBehaviour
 
     void OnEnable()
     {
+        Debug.Log("enable place player in grid view");
         EventBus.Subscribe<PlacePlayerEvent>(OnSetPlayerCell);
         EventBus.Subscribe<GhostPreviewEvent>(OnGhostPreview);
     }
@@ -80,6 +81,7 @@ public class GridView : MonoBehaviour
     
     public void SetCell(Vector2Int index, CellColor color)
     {
+        Debug.Log($"set cell: {index}, {color}");
         grid[index.x, index.y].SetColor(color);
     }
 
@@ -113,6 +115,7 @@ public class GridView : MonoBehaviour
 
     private void OnSetPlayerCell(PlacePlayerEvent e)
     {
+        Debug.Log("recieved place player event");
         SetCell(e.Index, e.Color);
     }
 

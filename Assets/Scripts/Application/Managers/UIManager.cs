@@ -123,6 +123,7 @@ public class UIManager : MonoBehaviour
         }
         else if (type == BaseViewType.GamePlay)
         {
+            Debug.Log("attempt game play");
             gameManager.Play();
         }
         else if (baseState == BaseViewType.Tutorial)         // signal for skip - only called when tutorial is active
@@ -134,8 +135,6 @@ public class UIManager : MonoBehaviour
         
         ShowBaseView?.Invoke(type, userSettings);
         baseState = type;
-
-        Debug.Log($"{baseState}");
     }
 
     // pop up views

@@ -99,8 +99,6 @@ public class BoardView : MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
-        gridView.ResetCells();
-
         background.gameObject.SetActive(true);
         gridView.gameObject.SetActive(true);
     }

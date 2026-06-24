@@ -42,7 +42,5 @@ public class SafeAreaPanel : MonoBehaviour
         rectTransform.anchorMin = anchorMin;
         rectTransform.anchorMax = anchorMax;
         rectTransform.offsetMin = rectTransform.offsetMax = Vector2.zero;
-
-        Debug.Log("Safe Area: " + Screen.safeArea);
     }
 }

@@ -41,7 +41,6 @@ public class GameBootstrap : MonoBehaviour
 
         uiManager.Initialize(settingsService, gameDataService, gameManager);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
-        gameManager.Initialize(gameDataService);
 
         baseViewController.Initialize();
         popUpViewController.Initialize();
@@ -53,7 +52,8 @@ public class GameBootstrap : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("start");
+        gameManager.Initialize(gameDataService);    // requires all scripts to already be enabled
+
         uiManager.ShowView(BaseViewType.Home, false);
         audioManager.Play();
     }
