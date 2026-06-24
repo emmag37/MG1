@@ -150,8 +150,13 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Active, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
 
-        dataService.UpdateScore(score);
-        EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = dataService.GetGameData().HighScore });
+        if (points > 0)
+        {
+            score += points;
+            dataService.UpdateScore(score);
+            EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = dataService.GetGameData().HighScore });
+        }
+
         
         dataService.SaveTurn(score, index);
 
@@ -199,7 +204,7 @@ public class GameManager : MonoBehaviour
 
         // load the current score and players
         score = game.CurrentScore;
-        EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
+        dataService.UpdateScore(score);
 
         // this is not working properly
         EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
@@ -215,7 +220,9 @@ public class GameManager : MonoBehaviour
         picker.Reset();
 
         score = 0;
+        dataService.UpdateScore(score);
         highScore = dataService.GetGameData().HighScore;
+
 
         dataService.ResetGame();
     }

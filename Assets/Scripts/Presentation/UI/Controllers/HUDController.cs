@@ -66,7 +66,7 @@ public class HUDController : MonoBehaviour
     {
         Debug.Log("start game in HUD");
 
-        UpdateScore(0, e.Data.HighScore);
+        UpdateScore(e.Data.Score, e.Data.HighScore);
 
         HUDPanel.gameObject.SetActive(true);
     }
