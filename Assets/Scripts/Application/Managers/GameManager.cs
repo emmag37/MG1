@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     private PlayerPicker picker;
 
     private GameState state;
+    private bool gameLoaded;
     private bool playEnabled;
     private bool activePlayer;
 
@@ -57,46 +58,12 @@ public class GameManager : MonoBehaviour
         highScore = dataService.GetGameData().HighScore;
         state = dataService.GetGameData().State;
 
-        // REMOVE
-        /*
-        state = GameState.Inactive;
-        dataService.SetState(state);
-        */
-
+        // initialize values
         playEnabled = true;
-        if (state == GameState.Active)
-        {
-            Debug.Log("load an active game play");
+        gameLoaded = false;
 
-            // TODO: DEBUG!!!
-                // attempted but got very messed up
-                // this branch runs, but the game play scene is empty including HUD?
-
-            IGamePlayData game = dataService.GetGamePlayData();
-
-            // load the board - must always load the board before players
-            foreach (CellEntry cell in game.Board.Cells)
-            {
-                Debug.Log($"add item: ({cell.x}, {cell.y}), {cell.color}");
-                board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
-            }
-
-            // load the current score and players
-            score = game.CurrentScore;
-            EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
-
-            EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
-            activePlayer = true;
-        }
-        else
-        {
-            Debug.Log("fresh game");
-
-            // initialize fresh values
-            score = 0;
-            activePlayer = false;
-        }
-
+        score = 0;
+        activePlayer = false;
     }
 
 
@@ -129,9 +96,19 @@ public class GameManager : MonoBehaviour
             playEnabled = true;
             EventBus.Publish(new ResumeGameEvent());                                            // resume gameplay
         }
-        else if (state == GameState.Active && playEnabled)
+        else if (state == GameState.Active && playEnabled && !gameLoaded)
         {
+            Debug.Log("load game");
+
+            LoadGame();
             EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });  // continue the gameplay
+
+            gameLoaded = true;
+        }
+        else
+        {
+            Debug.Log("continue game");
+            playEnabled = true;
         }
     }
 
@@ -173,18 +150,9 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Active, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
 
-        if (points > 0)
-        {
-            score += points;
-            if (score > highScore)
-            {
-                highScore = score;
-            }
-
-            EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
-            dataService.UpdateScore(score);
-        }
-
+        dataService.UpdateScore(score);
+        EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = dataService.GetGameData().HighScore });
+        
         dataService.SaveTurn(score, index);
 
         RemoveCurrentPlayer();
@@ -218,6 +186,26 @@ public class GameManager : MonoBehaviour
     // ================================
 
     // game state helpers
+    private void LoadGame()
+    {
+        IGamePlayData game = dataService.GetGamePlayData();
+
+        // load the board - must always load the board before players
+        foreach (CellEntry cell in game.Board.Cells)
+        {
+            Debug.Log($"add item: ({cell.x}, {cell.y}), {cell.color}");
+            board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
+        }
+
+        // load the current score and players
+        score = game.CurrentScore;
+        EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = highScore });
+
+        // this is not working properly
+        EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
+        activePlayer = true;
+    }
+
     private void Reset()
     {
         Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");

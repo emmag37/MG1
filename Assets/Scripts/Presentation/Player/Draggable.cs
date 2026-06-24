@@ -104,7 +104,7 @@ public class Draggable : MonoBehaviour
         Vector2 pointerScreenPos = pointer.position.ReadValue();    // obtain the mouse world coordinates
         Vector3 pointerWorldPos = cam.ScreenToWorldPoint(pointerScreenPos);
         pointerWorldPos.z = 0;
-
+        
         // start moving
         if (pointer.press.wasPressedThisFrame)
         {
