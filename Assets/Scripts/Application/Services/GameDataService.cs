@@ -111,7 +111,7 @@ public class GameDataService
     private GameData Load()
     {
         GameData newData = new GameData(
-            state: (GameState)playerPrefs.GetInt(GameDataKeys.State, (int)GameState.Tutorial),  // always run tutorial for the first use
+            state: /*(GameState)playerPrefs.GetInt(GameDataKeys.State, (int)GameState.Tutorial)*/ (int)GameState.Tutorial,  // always run tutorial for the first use
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
             scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList,

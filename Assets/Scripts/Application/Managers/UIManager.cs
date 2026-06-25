@@ -114,6 +114,8 @@ public class UIManager : MonoBehaviour
 
         if (type == BaseViewType.GamePlay && gameData.State == GameState.Tutorial)
         {
+            // run tutorial
+            Debug.Log("run tutorial");
             type = BaseViewType.Tutorial;
             gameManager.Play();
         }
