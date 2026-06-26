@@ -26,8 +26,6 @@ public class Arrow : MonoBehaviour
         if (cameraWidthLock.OrthoSize == 0) cameraWidthLock.ApplyOrthographicSize();
         float scaledOffset = cameraWidthLock.OrthoSize / RefOrtho * RefOffset;
 
-        Debug.Log($"scaled offset: {scaledOffset}");
-
         // update the transform: world -> screen -> UI
         RectTransform canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
         Vector3 worldPos = cell.transform.position;

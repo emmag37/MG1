@@ -128,8 +128,11 @@ public class AudioManager : MonoBehaviour
 
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
-        if (sfxOn)
+        if (sfxOn && !float.IsInfinity(e.PlayerPosition.x))
+        {
+            Debug.Log($"play clip, pos: {e.PlayerPosition}");
             sfxSource.PlayOneShot(placePlayerClip);
+        }
     }
 
     private void OnWin(WinEvent e)

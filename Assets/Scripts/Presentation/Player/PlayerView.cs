@@ -88,6 +88,8 @@ public class PlayerView : MonoBehaviour
 
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
+        if (float.IsInfinity(e.PlayerPosition.x)) return;
+
         movement.Drop(e.PlayerPosition);
     }
 

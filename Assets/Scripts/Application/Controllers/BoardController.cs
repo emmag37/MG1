@@ -99,9 +99,8 @@ public class BoardController: MonoBehaviour
     // note - assumes that there are no players in existence
     public void AddNonPlayer(Vector2Int index, CellColor color)
     {
-        Debug.Log($"add non player: {index}, {color}");
-
         // add image to grid - no players to listen to this
+        Debug.Log("add non player");
         EventBus.Publish(new PlacePlayerEvent
         {
             PlayerPosition = Vector3.positiveInfinity,
