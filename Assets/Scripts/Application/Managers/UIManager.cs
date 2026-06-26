@@ -128,7 +128,7 @@ public class UIManager : MonoBehaviour
             Debug.Log("attempt game play");
             gameManager.Play();
         }
-        else if (baseState == BaseViewType.Tutorial)         // signal for skip - only called when tutorial is active
+        else if (baseState == BaseViewType.Tutorial && type == BaseViewType.Tutorial)         // signal for skip - only called when tutorial is active
         {
             SkipTutorial?.Invoke();
             gameManager.SkipTutorial();
