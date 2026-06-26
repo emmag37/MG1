@@ -75,6 +75,7 @@ public class GameManager : MonoBehaviour
     // results in active game state with play enabled
     public void Play()
     {
+        Debug.Log($"state: {state}, enabled: {playEnabled}");
         if (state == GameState.Inactive && !playEnabled)                                        // restart
         {
             playEnabled = true;
@@ -183,7 +184,7 @@ public class GameManager : MonoBehaviour
 
         state = GameState.Inactive;
         dataService.SetState(state);
-        playEnabled = false;
+        playEnabled = true;
     }
 
     // ================================
