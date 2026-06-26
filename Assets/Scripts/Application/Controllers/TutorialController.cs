@@ -69,6 +69,7 @@ public class TutorialController : MonoBehaviour
         if (activePlayer) DestroyPlayer();
         if (activeZone) ResetZone();
         board.TurnCompleted -= HandleTurnCompleted;
+        board.Reset();
 
         TutorialComplete?.Invoke();
 
