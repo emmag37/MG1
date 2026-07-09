@@ -42,9 +42,6 @@ public class PlayerView : MonoBehaviour
     // Initializers
     // ================================
 
-    // next step - remove player controller component
-        // wire all dependencies from player controller to this script
-
     /// <summary>
     /// Initializes a player to be moved around the board and sets its color.
     /// </summary>
@@ -70,7 +67,6 @@ public class PlayerView : MonoBehaviour
     }
 
 
-    // want to remove the event bus from the player
     // ================================
     // Event Bus Methods
     // ================================
