@@ -1,7 +1,6 @@
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]    // want to take this off of the player
-[RequireComponent(typeof(SpriteView))]
 [RequireComponent(typeof(Draggable))]
 public class PlayerView : MonoBehaviour
 {
@@ -14,8 +13,8 @@ public class PlayerView : MonoBehaviour
     // Private Fields
     // ================================
     private PlayerController controller;    // remove this
-    
-    private SpriteView image;               // handles rendering a specific image
+
+    private SpriteRenderer spriteRenderer;
     private Draggable dragAndDrop;          // turn more into just an input handler
 
     private Vector3 startPos;
@@ -58,20 +57,17 @@ public class PlayerView : MonoBehaviour
         startPos = transform.position;
 
         // cache attached components
-        image = GetComponent<SpriteView>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         dragAndDrop = GetComponent<Draggable>();
 
         // initialize your components
-        image.Initialize(this);     // initialize with this
         //dragAndDrop.Initialize() - initialize with this, boundaries
-
+        spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
 
         // old code
         controller = GetComponent<PlayerController>();
 
-        image.SetSprite(SpriteDatabase.Instance.GetSprite(playerColor));    // this should be done in the sprite renderer initialization
-
-        float radius = image.Radius;
+        float radius = spriteRenderer.bounds.extents.x;
 
         // adjust the board boundaries to the player size
         float left = boundaries.min.x + radius;     
