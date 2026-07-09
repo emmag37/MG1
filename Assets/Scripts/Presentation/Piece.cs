@@ -120,6 +120,7 @@ public class Piece : MonoBehaviour
         dragAndDrop.Drop(startPos);
     }
 
+    // track down how to add to the grid
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
         if (float.IsInfinity(e.PlayerPosition.x)) return;
@@ -127,7 +128,7 @@ public class Piece : MonoBehaviour
         dragAndDrop.Drop(e.PlayerPosition);
         TurnOffPlayer();
 
-        // make sure grid listens to this event and adds the object to the grid
+        // add itself to the grid??
     }
 
     private void OnPauseGame(PauseGameEvent e)

@@ -55,8 +55,9 @@ public struct ReturnPlayerEvent { }
 public struct PlacePlayerEvent
 {
     public Vector3 PlayerPosition;
-
     public Vector2Int Index;
+
+    // likely can remove this
     public CellColor Color;
 }
 
