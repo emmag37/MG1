@@ -66,6 +66,7 @@ public class TutorialController : MonoBehaviour
 
     public void CompleteTutorial()
     {
+        // reset and clear the play space
         if (activePlayer) DestroyPlayer();
         if (activeZone) ResetZone();
         board.TurnCompleted -= HandleTurnCompleted;

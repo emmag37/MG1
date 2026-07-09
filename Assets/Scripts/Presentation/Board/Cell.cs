@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 
-[RequireComponent(typeof(SpriteView))]
 [RequireComponent(typeof(Animator))]
 public class Cell : MonoBehaviour
 {
@@ -31,7 +30,7 @@ public class Cell : MonoBehaviour
     // ==================================================
     private int rowSize;
 
-    private SpriteView image;
+    private SpriteRenderer spriteRenderer;
     private CellColor color = CellColor.Empty;
 
     private Animator animator;
@@ -48,9 +47,8 @@ public class Cell : MonoBehaviour
 	/// <param name="rows">Number of rows in the grid.</param>
     public void Initialize()    // leave this function for future additions, ie animations, sound effects
     {
-        image = GetComponent<SpriteView>();
-        image.Initialize();
-        Radius = image.Radius;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        Radius = spriteRenderer.bounds.extents.x;
 
         animator = GetComponent<Animator>();
 
@@ -68,18 +66,18 @@ public class Cell : MonoBehaviour
 	/// <param name="newColor">New color for the cell.</param>
     public void SetColor(CellColor newColor)
     {
-        image.SetSprite(SpriteDatabase.Instance.GetSprite(newColor));     // validate in sprite database
+        SetSprite(SpriteDatabase.Instance.GetSprite(newColor));     // validate in sprite database
         color = newColor;
     }
 
     public void SetShadow()
     {
-        image.SetSprite(SpriteDatabase.Instance.GetShadow(color));
+        SetSprite(SpriteDatabase.Instance.GetShadow(color));
     }
 
     public void ResetShadow()
     {
-        image.SetSprite(SpriteDatabase.Instance.GetSprite(color));
+        SetSprite(SpriteDatabase.Instance.GetSprite(color));
     }
 
     /// <summary>
@@ -108,5 +106,15 @@ public class Cell : MonoBehaviour
 
         SetEmpty();
         PopFinished?.Invoke(this);
+    }
+
+
+    // private function - to take sprite view component off of this script (actually simpler)
+    private void SetSprite(Sprite sprite)
+    {
+        Debug.Assert(sprite != null, "Attempted to set sprite to null");
+
+        spriteRenderer.sprite = sprite;
+        Radius = spriteRenderer.bounds.extents.x;
     }
 }

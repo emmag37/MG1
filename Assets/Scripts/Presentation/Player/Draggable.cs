@@ -6,6 +6,8 @@ using System;
     // set camera as a serialized field
     // add event for drag started
 
+// draggable within specified boundaries adjusted for the objects size
+
 /// <summary>
 /// Performs object movement operations including user input dragging
 /// and dropping the object at specified position.
@@ -68,6 +70,9 @@ public class Draggable : MonoBehaviour
 	/// <param name="bottom">Bottom boundary.</param>
     public void Initialize(float left, float right, float top, float bottom)
     {
+        // now add initialization with boundaries if the object passes has a sprite renderer
+        // also make boundaries optional
+
         minX = left;
         maxX = right;
         minY = bottom;

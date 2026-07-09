@@ -1,17 +1,22 @@
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerController))]
+[RequireComponent(typeof(PlayerController))]    // want to take this off of the player
 [RequireComponent(typeof(SpriteView))]
 [RequireComponent(typeof(Draggable))]
 public class PlayerView : MonoBehaviour
 {
     // ================================
+    // Public Fields
+    // ================================
+    public CellColor Color;
+
+    // ================================
     // Private Fields
     // ================================
-    private PlayerController controller;
+    private PlayerController controller;    // remove this
     
-    private SpriteView image;
-    private Draggable movement;
+    private SpriteView image;               // handles rendering a specific image
+    private Draggable dragAndDrop;          // turn more into just an input handler
 
     private Vector3 startPos;
 
@@ -48,60 +53,65 @@ public class PlayerView : MonoBehaviour
     /// <param name="boundaries">Boundaries of the board.</param>
     public void Initialize(CellColor playerColor, Bounds boundaries)
     {
-        InitializeComponents();
+        // initialize set values
+        Color = playerColor;
+        startPos = transform.position;
 
-        image.SetSprite(SpriteDatabase.Instance.GetSprite(playerColor));
+        // cache attached components
+        image = GetComponent<SpriteView>();
+        dragAndDrop = GetComponent<Draggable>();
+
+        // initialize your components
+        image.Initialize(this);     // initialize with this
+        //dragAndDrop.Initialize() - initialize with this, boundaries
+
+
+        // old code
+        controller = GetComponent<PlayerController>();
+
+        image.SetSprite(SpriteDatabase.Instance.GetSprite(playerColor));    // this should be done in the sprite renderer initialization
 
         float radius = image.Radius;
 
-        float left = boundaries.min.x + radius;     // adjust the board boundaries to the player size
+        // adjust the board boundaries to the player size
+        float left = boundaries.min.x + radius;     
         float right = boundaries.max.x - radius;
         float top = boundaries.max.y - radius;
         float bottom = boundaries.min.y;
 
-        movement.Initialize(left, right, top, bottom);
+        dragAndDrop.Initialize(left, right, top, bottom);
+
+        dragAndDrop.StartDrag += HandleStartDrag;
+        dragAndDrop.Released += HandleReleased;
     }
 
-    private void InitializeComponents()
-    {
-        controller = GetComponent<PlayerController>();
 
-        image = GetComponent<SpriteView>();
-        image.Initialize();
-
-        movement = GetComponent<Draggable>();
-
-        startPos = transform.position;
-
-        movement.StartDrag += HandleStartDrag;
-        movement.Released += HandleReleased;
-    }
-
+    // want to remove the event bus from the player
     // ================================
     // Event Bus Methods
     // ================================
 
     private void OnReturnPlayer(ReturnPlayerEvent e)
     {
-        movement.Drop(startPos);
+        dragAndDrop.Drop(startPos);
     }
 
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
         if (float.IsInfinity(e.PlayerPosition.x)) return;
 
-        movement.Drop(e.PlayerPosition);
+        dragAndDrop.Drop(e.PlayerPosition);
     }
 
     private void OnPauseGame(PauseGameEvent e)
     {
-        movement.enabled = false;
+        dragAndDrop.enabled = false;
     }
 
     private void OnResumeGame(ResumeGameEvent e)
     {
         Debug.Log("resume movement");
-        movement.enabled = true;
+        dragAndDrop.enabled = true;
     }
 
 

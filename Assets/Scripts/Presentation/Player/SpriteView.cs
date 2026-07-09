@@ -1,12 +1,11 @@
 using UnityEngine;
 
-// MAKE MORE REUSABLE
-    // Can add other useful measurements like height, width, for non circular objects
+// needs to be the ONLY script that accesses sprite database
+    // one of my clean up goals
 
 /// <summary>
-/// Manages the sprite view.
+/// Sets the player sprite view according to the sprite database.
 /// </summary>
-[RequireComponent(typeof(SpriteRenderer))]
 public class SpriteView : MonoBehaviour
 {
     // ================================
@@ -16,7 +15,7 @@ public class SpriteView : MonoBehaviour
     /// <summary>
     /// Radius of the game object.
     /// </summary>
-    public float Radius { get; private set; }
+    public float Radius { get; private set; }   // do not need this
 
     // ================================
     // Private Fields
@@ -29,13 +28,15 @@ public class SpriteView : MonoBehaviour
     // Public Methods
     // ================================
 
-    public void Initialize()
+    public void Initialize(PlayerView player)
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        Radius = spriteRenderer.bounds.extents.x;
+        spriteRenderer = player.GetComponent<SpriteRenderer>();
+        SetSprite(SpriteDatabase.Instance.GetSprite(player.Color));
 
+        Radius = spriteRenderer.bounds.extents.x;   // remove
     }
 
+    // make this function private
     /// <summary>
 	/// Sets the objects sprite to the given color.
 	/// </summary>

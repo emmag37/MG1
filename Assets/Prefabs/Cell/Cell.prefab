@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 421657568361316366}
   - component: {fileID: 4055884118901066201}
   - component: {fileID: 1252488783021972421}
-  - component: {fileID: -4738901623334893058}
   - component: {fileID: 7388961558810320347}
   m_Layer: 0
   m_Name: Cell
@@ -107,18 +106,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cell
   index: {x: 0, y: 0}
---- !u!114 &-4738901623334893058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2181350689164714117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d48585638463417da58dc58cb510e3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GamePieceImage
 --- !u!95 &7388961558810320347
 Animator:
   serializedVersion: 7
