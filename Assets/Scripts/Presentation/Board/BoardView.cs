@@ -47,7 +47,7 @@ public class BoardView : MonoBehaviour
         geometry = new BoardGeometry();
 
         gridView.Initialize();
-        geometry.Initialize(gridView.CellRadius, BoardBounds);
+        geometry.Initialize(BoardBounds);  // want to take the "radius" out of my board geometry
     }
 
     void OnEnable()

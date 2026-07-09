@@ -9,12 +9,6 @@ public class GridView : MonoBehaviour
     private const int RowSize = GameConstants.RowSize;
 
     // ================================
-    // Public Fields
-    // ================================
-
-    public float CellRadius { get; private set; }
-
-    // ================================
     // Private Fields
     // ================================
 
@@ -69,9 +63,6 @@ public class GridView : MonoBehaviour
                 Debug.Assert(grid[x, y] != null, $"Missing cell at ({x}, {y})");
             }
         }
-
-        // initialize values
-        CellRadius = grid[0, 0].Radius;
     }
 
     // ================================

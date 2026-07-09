@@ -5,11 +5,6 @@ using System;
 public class Cell : MonoBehaviour
 {
     // ==================================================
-    // Constants
-    // ==================================================
-    private const int Empty = 0;    // potentially make global enum in sprite database
-
-    // ==================================================
     // Local Events
     // ==================================================
     public event Action<Cell> PopFinished;
@@ -23,15 +18,14 @@ public class Cell : MonoBehaviour
     // Public Properties
     // ==================================================
     public Vector2Int Index => index;
-    public float Radius { get; private set; }
+    public CellColor Color = CellColor.Empty;
 
     // ==================================================
     // Private Fields
     // ==================================================
-    private int rowSize;
+    private int rowSize;    // what is this for?
 
     private SpriteRenderer spriteRenderer;
-    private CellColor color = CellColor.Empty;
 
     private Animator animator;
 
@@ -48,7 +42,6 @@ public class Cell : MonoBehaviour
     public void Initialize()    // leave this function for future additions, ie animations, sound effects
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        Radius = spriteRenderer.bounds.extents.x;
 
         animator = GetComponent<Animator>();
 
@@ -67,17 +60,17 @@ public class Cell : MonoBehaviour
     public void SetColor(CellColor newColor)
     {
         SetSprite(SpriteDatabase.Instance.GetSprite(newColor));     // validate in sprite database
-        color = newColor;
+        Color = newColor;
     }
 
     public void SetShadow()
     {
-        SetSprite(SpriteDatabase.Instance.GetShadow(color));
+        SetSprite(SpriteDatabase.Instance.GetShadow(Color));
     }
 
     public void ResetShadow()
     {
-        SetSprite(SpriteDatabase.Instance.GetSprite(color));
+        SetSprite(SpriteDatabase.Instance.GetSprite(Color));
     }
 
     /// <summary>
@@ -85,7 +78,7 @@ public class Cell : MonoBehaviour
 	/// </summary>
     public void SetEmpty()
     {
-        if (color == CellColor.Empty) return;
+        if (Color == CellColor.Empty) return;
 
         SetColor(CellColor.Empty);
     }
@@ -115,6 +108,5 @@ public class Cell : MonoBehaviour
         Debug.Assert(sprite != null, "Attempted to set sprite to null");
 
         spriteRenderer.sprite = sprite;
-        Radius = spriteRenderer.bounds.extents.x;
     }
 }

@@ -16,14 +16,21 @@ public class BoardGeometry
     // Initialization
     // ==================================================
 
+    // TO-DO:
+        // re calculate the grid values w/o cell radius
+        // hard code for now
+        // should only need board bounds and the number of spaces in the board
+
     /// <summary>
 	/// Calculates the cell offset and origin world coordinates.
 	/// </summary>
 	/// <param name="rows">Number of rows on the board.</param>
 	/// <param name="cellRadius">Radius of a spot on the board.</param>
 	/// <param name="board">Boundaries of box that holds the board.</param>
-    public void Initialize(float cellRadius, Bounds board)
+    public void Initialize(Bounds board)
     {
+        float cellRadius = 1; // HARD CODE
+
         float boardLeft = board.min.x;
         float boardRight = board.max.x;
         float boardTop = board.max.y;
