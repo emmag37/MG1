@@ -10,17 +10,11 @@ public class Piece : MonoBehaviour
     // ==================================================
     // Local Events
     // ==================================================
-    public event Action<Cell> PopFinished;
-
-    // ==================================================
-    // Inspector Fields
-    // ==================================================
-    [SerializeField] Vector2Int index;
+    public event Action<Piece> PopFinished;
 
     // ==================================================
     // Public Properties
     // ==================================================
-    public Vector2Int Index => index;
     public CellColor Color;
 
     // ==================================================
@@ -181,5 +175,8 @@ public class Piece : MonoBehaviour
         EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
         EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
+
+        // update the sorting order
+        spriteRenderer.sortingOrder = 2;
     }
 }
