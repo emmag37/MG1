@@ -41,7 +41,6 @@ public class Cell : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
-        //SetEmpty();
         SetColor(CellColor.Empty);
     }
 
