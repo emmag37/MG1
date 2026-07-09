@@ -1,7 +1,9 @@
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerController))]    // want to take this off of the player
+
 [RequireComponent(typeof(Draggable))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class PlayerView : MonoBehaviour
 {
     // ================================
@@ -14,7 +16,6 @@ public class PlayerView : MonoBehaviour
     // ================================
     private PlayerController controller;    // remove this
 
-    private SpriteRenderer spriteRenderer;
     private Draggable dragAndDrop;          // turn more into just an input handler
 
     private Vector3 startPos;
@@ -45,6 +46,9 @@ public class PlayerView : MonoBehaviour
     // Initializers
     // ================================
 
+    // next step - fix the draggable initialization
+        // draggable should take a sprite renderer and some boundaries
+
     /// <summary>
     /// Initializes a player to be moved around the board and sets its color.
     /// </summary>
@@ -57,28 +61,19 @@ public class PlayerView : MonoBehaviour
         startPos = transform.position;
 
         // cache attached components
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         dragAndDrop = GetComponent<Draggable>();
 
         // initialize your components
-        //dragAndDrop.Initialize() - initialize with this, boundaries
         spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
+        dragAndDrop.Initialize(spriteRenderer, boundaries);
+
+        // subscribe to events
+        dragAndDrop.StartDrag += HandleStartDrag;
+        dragAndDrop.Released += HandleReleased;
 
         // old code
         controller = GetComponent<PlayerController>();
-
-        float radius = spriteRenderer.bounds.extents.x;
-
-        // adjust the board boundaries to the player size
-        float left = boundaries.min.x + radius;     
-        float right = boundaries.max.x - radius;
-        float top = boundaries.max.y - radius;
-        float bottom = boundaries.min.y;
-
-        dragAndDrop.Initialize(left, right, top, bottom);
-
-        dragAndDrop.StartDrag += HandleStartDrag;
-        dragAndDrop.Released += HandleReleased;
     }
 
 

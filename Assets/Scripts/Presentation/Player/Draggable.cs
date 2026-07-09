@@ -68,15 +68,18 @@ public class Draggable : MonoBehaviour
 	/// <param name="right">Right boundary.</param>
 	/// <param name="top">Top boundary.</param>
 	/// <param name="bottom">Bottom boundary.</param>
-    public void Initialize(float left, float right, float top, float bottom)
+    public void Initialize(SpriteRenderer spriteRenderer, Bounds boundaries)
     {
-        // now add initialization with boundaries if the object passes has a sprite renderer
-        // also make boundaries optional
+        // draggable must be given a sprite renderer, maybe make boundaries optional
+        // also use better calcuation of offset for reusable file
 
-        minX = left;
-        maxX = right;
-        minY = bottom;
-        maxY = top;
+        // adjust the board boundaries to the player size
+        float radius = spriteRenderer.bounds.extents.x;
+
+        minX = boundaries.min.x + radius;
+        maxX = boundaries.max.x - radius;
+        minY = boundaries.min.y;
+        maxY = boundaries.max.y - radius;
     }
 
 
