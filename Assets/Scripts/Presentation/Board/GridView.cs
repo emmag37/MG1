@@ -78,7 +78,7 @@ public class GridView : MonoBehaviour
     {
         foreach (Cell cell in grid)
         {
-            cell.SetEmpty();
+            cell.SetColor(CellColor.Empty);
         }
     }
 
@@ -111,11 +111,11 @@ public class GridView : MonoBehaviour
     {
         if (e.On)
         {
-            grid[e.Index.x, e.Index.y].SetShadow();
+            grid[e.Index.x, e.Index.y].SetColor(CellColor.Shadow);
         }
         else
         {
-            grid[e.Index.x, e.Index.y].ResetShadow();
+            grid[e.Index.x, e.Index.y].SetColor(CellColor.ResetShadow);
         }
     }
 

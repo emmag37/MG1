@@ -23,10 +23,7 @@ public class Cell : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private int rowSize;    // what is this for?
-
     private SpriteRenderer spriteRenderer;
-
     private Animator animator;
 
 
@@ -42,10 +39,10 @@ public class Cell : MonoBehaviour
     public void Initialize()    // leave this function for future additions, ie animations, sound effects
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
         animator = GetComponent<Animator>();
 
-        SetEmpty();
+        //SetEmpty();
+        SetColor(CellColor.Empty);
     }
 
 
@@ -59,28 +56,21 @@ public class Cell : MonoBehaviour
 	/// <param name="newColor">New color for the cell.</param>
     public void SetColor(CellColor newColor)
     {
-        SetSprite(SpriteDatabase.Instance.GetSprite(newColor));     // validate in sprite database
-        Color = newColor;
-    }
+        switch (newColor)
+        {
+            case CellColor.Shadow:
+                spriteRenderer.sprite = SpriteDatabase.Instance.GetShadow(Color);
+                break;
 
-    public void SetShadow()
-    {
-        SetSprite(SpriteDatabase.Instance.GetShadow(Color));
-    }
+            case CellColor.ResetShadow:
+                spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
+                break;
 
-    public void ResetShadow()
-    {
-        SetSprite(SpriteDatabase.Instance.GetSprite(Color));
-    }
-
-    /// <summary>
-	/// Sets the cell sprite to the empty color.
-	/// </summary>
-    public void SetEmpty()
-    {
-        if (Color == CellColor.Empty) return;
-
-        SetColor(CellColor.Empty);
+            default:
+                Color = newColor;
+                spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
+                break;
+        }
     }
 
     public void Pop()
@@ -95,18 +85,7 @@ public class Cell : MonoBehaviour
 
     private void OnAnimationComplete()
     {
-        //Debug.Log($"completed animation on {gameObject.name}", this);
-
-        SetEmpty();
+        SetColor(CellColor.Empty);
         PopFinished?.Invoke(this);
-    }
-
-
-    // private function - to take sprite view component off of this script (actually simpler)
-    private void SetSprite(Sprite sprite)
-    {
-        Debug.Assert(sprite != null, "Attempted to set sprite to null");
-
-        spriteRenderer.sprite = sprite;
     }
 }
