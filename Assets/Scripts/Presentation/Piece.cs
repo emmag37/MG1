@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
 
+// todo:
+    // replace player with piece
+
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Draggable))]

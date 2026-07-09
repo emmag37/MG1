@@ -16,7 +16,7 @@ public class PlayerSpawner : MonoBehaviour
     // Private Fields
     // ================================
 
-    private PlayerView player;
+    private Piece player;
     private Bounds playerBounds;
 
 
@@ -64,10 +64,10 @@ public class PlayerSpawner : MonoBehaviour
     {
         Debug.Assert(player == null, "Tried to instantiate a player when one already exists");
 
-        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<PlayerView>();
+        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
         player.Initialize(e.Color, playerBounds);
     }
-    
+
     private void OnDestroyPlayer(DestroyPlayerEvent e)
     {
         Debug.Assert(player != null, "Tried to destroy non-existent player");

@@ -161,7 +161,9 @@ public class GameManager : MonoBehaviour
         
         dataService.SaveTurn(score, index);
 
-        RemoveCurrentPlayer();
+        //RemoveCurrentPlayer();
+        // adds to the grid instead
+
         if (state == GameState.Active) SpawnNewPlayer();
     }
 
