@@ -64,10 +64,7 @@ public class PlayerSpawner : MonoBehaviour
     {
         Debug.Assert(player == null, "Tried to instantiate a player when one already exists");
 
-        GameObject newPlayer = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-        player = newPlayer.GetComponent<PlayerView>();
-
-        player.GetComponent<PlayerController>().Initialize(e.Color);
+        player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<PlayerView>();
         player.Initialize(e.Color, playerBounds);
     }
     

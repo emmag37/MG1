@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerController))]    // want to take this off of the player
 
 [RequireComponent(typeof(Draggable))]
 [RequireComponent(typeof(SpriteRenderer))]
@@ -14,10 +13,7 @@ public class PlayerView : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
-    private PlayerController controller;    // remove this
-
-    private Draggable dragAndDrop;          // turn more into just an input handler
-
+    private Draggable dragAndDrop;
     private Vector3 startPos;
 
     // ================================
@@ -46,8 +42,8 @@ public class PlayerView : MonoBehaviour
     // Initializers
     // ================================
 
-    // next step - fix the draggable initialization
-        // draggable should take a sprite renderer and some boundaries
+    // next step - remove player controller component
+        // wire all dependencies from player controller to this script
 
     /// <summary>
     /// Initializes a player to be moved around the board and sets its color.
@@ -71,9 +67,6 @@ public class PlayerView : MonoBehaviour
         // subscribe to events
         dragAndDrop.StartDrag += HandleStartDrag;
         dragAndDrop.Released += HandleReleased;
-
-        // old code
-        controller = GetComponent<PlayerController>();
     }
 
 
@@ -112,11 +105,11 @@ public class PlayerView : MonoBehaviour
 
     private void HandleStartDrag()
     {
-        controller.StartDrag();
+        EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = Color });
     }
 
     private void HandleReleased(Vector3 position)
     {
-        controller.Released(position);
+        EventBus.Publish(new PlayerReleasedEvent { PlayerPosition = position, Color = Color });
     }
 }
