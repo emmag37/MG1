@@ -39,7 +39,7 @@ public class BoardView : MonoBehaviour
     void Awake()
     {
         pieceRegistry = GetComponent<PieceRegistry>();
-        spriteRenderer.GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         pieceRegistry.Initialize(BoardBounds);
 

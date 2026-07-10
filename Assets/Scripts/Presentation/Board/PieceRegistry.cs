@@ -11,15 +11,12 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private GameObject piecePrefab;
-
 
     // ==================================================
     // Private Fields
     // ==================================================
-
     private Piece playerPiece;
     private Bounds playerBounds;
 
@@ -58,6 +55,8 @@ public class PieceRegistry : MonoBehaviour
 
     public void Initialize(Bounds boardBounds)
     {
+        Debug.Log("Initialize piece registry");
+
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;
 
@@ -83,10 +82,7 @@ public class PieceRegistry : MonoBehaviour
     {
         for (int i = 0; i < pieces.Length; i++)
         {
-            if (!pieces[i]) continue;
-
-            Destroy(pieces[i].gameObject);
-            pieces[i] = null;
+            DestroyPieceAt(i);
         }
     }
 
@@ -143,6 +139,8 @@ public class PieceRegistry : MonoBehaviour
     {
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
+        Debug.Log("Spawn new player");
+
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
         playerPiece.Initialize(e.Color, playerBounds);
     }
@@ -154,12 +152,19 @@ public class PieceRegistry : MonoBehaviour
         playerPiece.PlacePlayer(e.PlayerPosition);
 
         int idx = TwoDimToFlatIndex(e.Index);
+        if (playerPiece.Color == CellColor.Mask)
+            DestroyPieceAt(idx);
+
         pieces[idx] = playerPiece;
+
+        playerPiece = null;
     }
 
     private void OnDestroyPlayer(DestroyPlayerEvent e)
     {
         Debug.Assert(playerPiece != null, "Tried to destroy non-existent player");
+
+        Debug.Log("Destroy player - should not get called unless game restart");
 
         Destroy(playerPiece.gameObject);
         playerPiece = null;
@@ -196,5 +201,13 @@ public class PieceRegistry : MonoBehaviour
         pieces[idx] = null;
 
         return piece;
+    }
+
+    private void DestroyPieceAt(int index)
+    {
+        if (!pieces[index]) return;
+
+        Destroy(pieces[index].gameObject);
+        pieces[index] = null;
     }
 }

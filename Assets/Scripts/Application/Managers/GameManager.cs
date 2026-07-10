@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         this.dataService = dataService;
 
         picker = new PlayerPicker();
-        board.Initialize();
+        board.Initialize(); // this is my error
 
         board.FullBoard += HandleFullBoard;
         board.TurnCompleted += HandleTurnCompleted;
@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
 
         highScore = dataService.GetGameData().HighScore;
         state = dataService.GetGameData().State;
+
 
         // initialize values
         playEnabled = true;
@@ -99,10 +100,12 @@ public class GameManager : MonoBehaviour
         }
         else if (state == GameState.Active && playEnabled && !gameLoaded)
         {
-            Debug.Log("load game");
+            Debug.Log("load game - turned off");
 
-            LoadGame();
+            //LoadGame();
             EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });  // continue the gameplay
+
+            SpawnNewPlayer();   // remove once you turn this feature back on
 
             gameLoaded = true;
         }
@@ -150,6 +153,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Assert(state == GameState.Active, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
+        activePlayer = false;   // no longer call destroy here
 
         if (points > 0)
         {
@@ -158,11 +162,7 @@ public class GameManager : MonoBehaviour
             EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = dataService.GetGameData().HighScore });
         }
 
-        
         dataService.SaveTurn(score, index);
-
-        //RemoveCurrentPlayer();
-        // adds to the grid instead
 
         if (state == GameState.Active) SpawnNewPlayer();
     }

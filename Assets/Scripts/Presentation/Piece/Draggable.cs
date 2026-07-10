@@ -16,6 +16,7 @@ using System;
 /// <remarks>
 /// When enabled, the user can drag the object.
 /// </remarks>
+[RequireComponent(typeof(Collider2D))]
 public class Draggable : MonoBehaviour
 {
     // ================================

@@ -36,8 +36,6 @@ public class Piece : MonoBehaviour
         EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
     }
 
-    // could add OnDestroy() to error check unsubscribing from events
-
 
     // ==================================================
     // Initialization
@@ -52,7 +50,7 @@ public class Piece : MonoBehaviour
         startPos = transform.position;
 
         // cache attached components
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         dragAndDrop = GetComponent<Draggable>();
         animator = GetComponent<Animator>();
 
@@ -128,6 +126,8 @@ public class Piece : MonoBehaviour
     {
         Debug.Assert(dragAndDrop.enabled, "Receiving input on inactive piece");
 
+        Debug.Log("Start dragging piece");
+
         EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = Color });
     }
 
@@ -144,7 +144,7 @@ public class Piece : MonoBehaviour
 
         PopFinished?.Invoke(this);
 
-        Destroy(gameObject);
+        Destroy(gameObject);    // eventually remove once you put in your object pool
     }
 
 
@@ -162,6 +162,6 @@ public class Piece : MonoBehaviour
 
         EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
 
-        spriteRenderer.sortingOrder = 2;
+        spriteRenderer.sortingOrder = 2;    // object reference not set to instance of object
     }
 }

@@ -97,6 +97,7 @@ public class BoardController: MonoBehaviour
 
     // used by the tutorial and for loading in previous game state
     // note - assumes that there are no players in existence
+    // this function is broken
     public void AddNonPlayer(Vector2Int index, CellColor color)
     {
         // add image to grid - no players to listen to this
