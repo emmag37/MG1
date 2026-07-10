@@ -131,12 +131,6 @@ public class BoardView : MonoBehaviour
 
     private void OnWin(WinEvent e)  // need to subscribe
     {
-        // pop the cells
-        // once cells are popped, run the animation
-
-        // old code
-        //List<Cell> cells = gridView.GetCellsToClear(e.Index, e.Row, e.Column, e.RightDiag, e.LeftDiag);
-        
         StartCoroutine(WinAnimationRoutine(e));
     }
 
@@ -152,28 +146,6 @@ public class BoardView : MonoBehaviour
     // need to streamline this
     IEnumerator WinAnimationRoutine(WinEvent piecesToClear)
     {
-        /*
-        // get rid of this
-        int cleared = 0;
-        int total = cells.Count;
-
-        void OnCellCleared(Cell cell)
-        {
-            cleared++;
-            cell.PopFinished -= OnCellCleared;
-        }
-
-        // pop each cell
-        foreach (Cell cell in cells)
-        {
-            cell.PopFinished += OnCellCleared;
-            cell.Pop();
-        }
-
-        // wait for all cells to pop
-        yield return new WaitUntil(() => cleared >= total);
-        */
-
         // clear piece coroutine in piece registry
         yield return pieceRegistry.PopPieces(piecesToClear);
 

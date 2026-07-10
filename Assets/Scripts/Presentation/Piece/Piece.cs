@@ -141,7 +141,10 @@ public class Piece : MonoBehaviour
     private void OnAnimationComplete()
     {
         SetColor(CellColor.Empty);
+
         PopFinished?.Invoke(this);
+
+        Destroy(gameObject);
     }
 
 

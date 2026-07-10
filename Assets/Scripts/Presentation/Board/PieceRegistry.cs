@@ -24,6 +24,7 @@ public class PieceRegistry : MonoBehaviour
     private Piece playerPiece;
     private Bounds playerBounds;
 
+    // eventually turn this into an object pool to reuse objects
     private Piece[] pieces = new Piece[GameConstants.RowSize * GameConstants.RowSize];
 
 
@@ -80,20 +81,56 @@ public class PieceRegistry : MonoBehaviour
 
     public void ResetPieces()
     {
-        foreach (Piece piece in pieces)
+        for (int i = 0; i < pieces.Length; i++)
         {
-            if (piece) Destroy(piece.gameObject);
+            if (!pieces[i]) continue;
+
+            Destroy(pieces[i].gameObject);
+            pieces[i] = null;
         }
     }
 
-    // coroutine for pieces animation
+    // Coroutine for popping pieces animation
     public IEnumerator PopPieces(WinEvent e)
     {
-        // pop the pieces in rows
+        int cleared = 0;
+        int total = (e.Row ? 4 : 0) + (e.Column ? 4 : 0) + (e.RightDiag ? 4 : 0) + (e.LeftDiag ? 4 : 0) + 1;
 
-        // pop the player at index
+        void OnPopFinished(Piece piece)
+        {
+            cleared++;
+            piece.PopFinished -= OnPopFinished;
+        }
 
-        yield return null;
+        // helper
+        void PopPieceAt(int row, int col)
+        {
+            Piece piece = RemovePieceAt(row, col);
+            piece.PopFinished += OnPopFinished;
+            piece.Pop();
+        }
+
+        // pop the pieces in filled lines EXCEPT player
+        for (int i = 0; i < GameConstants.RowSize; i++)
+        {
+            if (e.Row && i != e.Index.y)    // i is not the player
+                PopPieceAt(e.Index.x, i);
+
+            if (e.Column && i != e.Index.x)
+                PopPieceAt(i, e.Index.y);
+
+            if (e.RightDiag && i != e.Index.x)
+                PopPieceAt(i, i);
+
+            if (e.LeftDiag && i != e.Index.x)   // start with top left
+                PopPieceAt(i, GameConstants.RowSize - 1 - i);
+        }
+
+        Piece player = RemovePieceAt(e.Index.x, e.Index.y);
+        player.PopFinished += OnPopFinished;
+        player.Pop();
+
+        yield return new WaitUntil(() => cleared >= total);
     }
 
 
@@ -151,4 +188,12 @@ public class PieceRegistry : MonoBehaviour
         return new Vector2Int(flatIndex / GameConstants.RowSize, flatIndex % GameConstants.RowSize);
     }
 
+    private Piece RemovePieceAt(int row, int col)
+    {
+        int idx = TwoDimToFlatIndex(new Vector2Int(row, col));
+        Piece piece = pieces[idx];
+        pieces[idx] = null;
+
+        return piece;
+    }
 }
