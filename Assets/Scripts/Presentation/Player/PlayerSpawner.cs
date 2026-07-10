@@ -76,6 +76,7 @@ public class PlayerSpawner : MonoBehaviour
         player = null;
     }
 
+    // this way only the active player is paused
     private void OnPausePlayer(PauseGameEvent e)
     {
         player.enabled = false;
@@ -85,7 +86,6 @@ public class PlayerSpawner : MonoBehaviour
     {
         player.enabled = true;
     }
-
 
     // ================================
     // Private Methods

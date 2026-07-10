@@ -1,9 +1,6 @@
 using UnityEngine;
 using System;
 
-// todo:
-    // replace player with piece
-
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Draggable))]
@@ -38,19 +35,9 @@ public class Piece : MonoBehaviour
     {
         EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
         EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
-
-        EventBus.Subscribe<PauseGameEvent>(OnPauseGame);
-        EventBus.Subscribe<ResumeGameEvent>(OnResumeGame);
     }
 
-    void OnDestroy()
-    {
-        EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
-        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
-
-        EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
-        EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
-    }
+    // could add OnDestroy() to error check unsubscribing from events
 
 
     // ==================================================
@@ -59,6 +46,8 @@ public class Piece : MonoBehaviour
 
     public void Initialize(CellColor playerColor, Bounds boundaries)
     {
+        Debug.Log("Initialize piece and enable player behavior");
+
         // initialize set values
         Color = playerColor;
         startPos = transform.position;
@@ -88,6 +77,8 @@ public class Piece : MonoBehaviour
 	/// <param name="newColor">New color for the cell.</param>
     public void SetColor(CellColor newColor)
     {
+        Debug.Assert(!dragAndDrop.enabled, "Attempted to set color on active player");
+
         switch (newColor)
         {
             case CellColor.Shadow:
@@ -107,6 +98,8 @@ public class Piece : MonoBehaviour
 
     public void Pop()
     {
+        Debug.Assert(!dragAndDrop.enabled, "Attempted pop animation on active player");
+
         animator.SetTrigger("PopCell");
     }
 
@@ -123,25 +116,13 @@ public class Piece : MonoBehaviour
     // track down how to add to the grid
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
-        if (float.IsInfinity(e.PlayerPosition.x)) return;
+        Debug.Log("Place piece");
+
+        if (float.IsInfinity(e.PlayerPosition.x)) return;   // error check and ignore for board population
 
         dragAndDrop.Drop(e.PlayerPosition);
         TurnOffPlayer();
-
-        // add itself to the grid??
     }
-
-    private void OnPauseGame(PauseGameEvent e)
-    {
-        dragAndDrop.enabled = false;
-    }
-
-    private void OnResumeGame(ResumeGameEvent e)
-    {
-        Debug.Log("resume movement");
-        dragAndDrop.enabled = true;
-    }
-
 
     // ==================================================
     // Local Event Handlers
@@ -149,11 +130,15 @@ public class Piece : MonoBehaviour
 
     private void HandleStartDrag()
     {
+        Debug.Assert(dragAndDrop.enabled, "Receiving input on inactive piece");
+
         EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = Color });
     }
 
     private void HandleReleased(Vector3 position)
     {
+        Debug.Assert(dragAndDrop.enabled, "Receiving input on inactive piece");
+
         EventBus.Publish(new PlayerReleasedEvent { PlayerPosition = position, Color = Color });
     }
 
@@ -170,17 +155,15 @@ public class Piece : MonoBehaviour
 
     private void TurnOffPlayer()    // leave this function for future additions, ie animations, sound effects
     {
-        // turn off player aspects
+        Debug.Log("Turn off player aspects");
+
         dragAndDrop.StartDrag -= HandleStartDrag;
         dragAndDrop.Released -= HandleReleased;
         dragAndDrop.enabled = false;
 
         EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
         EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
-        EventBus.Unsubscribe<PauseGameEvent>(OnPauseGame);
-        EventBus.Unsubscribe<ResumeGameEvent>(OnResumeGame);
 
-        // update the sorting order
         spriteRenderer.sortingOrder = 2;
     }
 }
