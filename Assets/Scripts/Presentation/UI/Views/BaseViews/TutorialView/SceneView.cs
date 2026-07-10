@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// todo: fix arrows
 public class SceneView : MonoBehaviour
 {
     // ================================
@@ -17,11 +18,11 @@ public class SceneView : MonoBehaviour
     {
         foreach (Arrow arrow in arrows)
         {
-            if (arrow.Index == index)
+            /*if (arrow.Index == index)
             {
                 arrow.gameObject.SetActive(false);
                 return;
-            }
+            }*/
         }
         // if reach here, no arrow was found
     }

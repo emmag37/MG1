@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
+
+// you need to clean this up w/ your new implementation
+    // reuses a single game object with a sprite renderer for empty boxes, then
+    // sets in piece registry if an open spot
+    // maybe just utilize the empty boxes, put shadow over the whole thing for ease?
 public class GhostPreview : MonoBehaviour
 {
     // ================================

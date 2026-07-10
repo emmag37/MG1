@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// add require components
+[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(PieceRegistry))]
 public class BoardView : MonoBehaviour
 {
     // ================================
@@ -14,14 +15,11 @@ public class BoardView : MonoBehaviour
     // Public Fields
     // ================================
 
-    public Bounds BoardBounds => background.bounds;
+    public Bounds BoardBounds => spriteRenderer.bounds; // this is now on sprite renderer
 
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private SpriteRenderer background;
-    [SerializeField] private GridView gridView;
-
     [SerializeField] private ScoreAnimation scoreAnimation;
 
     // ================================
@@ -31,20 +29,18 @@ public class BoardView : MonoBehaviour
     private BoardController boardController;
 
     private PieceRegistry pieceRegistry;
+    private SpriteRenderer spriteRenderer;
 
 
     // ================================
     // Unity Lifecycle Methods
     // ================================
 
-    void OnValidate()
-    {
-        Debug.Assert(background != null, "Background not set in board view");
-    }
-
     void Awake()
     {
         pieceRegistry = GetComponent<PieceRegistry>();
+        spriteRenderer.GetComponent<SpriteRenderer>();
+
         pieceRegistry.Initialize(BoardBounds);
 
         // old code
@@ -94,7 +90,7 @@ public class BoardView : MonoBehaviour
 
     public void SetCellColor(Vector2Int index, CellColor color)
     {
-        pieceRegistry.SetPiece(index, color);
+        pieceRegistry.TrySetPieceColor(index, color);
     }
 
     // ================================
@@ -103,17 +99,17 @@ public class BoardView : MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
-        background.gameObject.SetActive(true);
+        spriteRenderer.gameObject.SetActive(true);
     }
 
     private void OnExitGame(ExitGameEvent e)
     {
-        background.gameObject.SetActive(true);
+        spriteRenderer.gameObject.SetActive(true);
     }
 
     private void OnGameOver(GameOverEvent e)
     {
-        background.gameObject.SetActive(false);
+        spriteRenderer.gameObject.SetActive(false);
     }
 
 
@@ -138,6 +134,9 @@ public class BoardView : MonoBehaviour
     {
         pieceRegistry.ResetPieces();
     }
+
+    // this script needs to manage ghost preview
+    
 
     // ================================
     // Coroutines

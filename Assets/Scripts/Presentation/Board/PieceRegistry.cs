@@ -4,7 +4,6 @@ using System.Collections;
 // i'm going to rename this file to PieceRegistry
 // needs to live on the board - initialized by the board, like grid view is now
 
-// todo: add as component to board view
 // todo: implement ghost preview
 
 public class PieceRegistry : MonoBehaviour
@@ -14,7 +13,7 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
 
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject piecePrefab;
 
 
     // ==================================================
@@ -71,12 +70,13 @@ public class PieceRegistry : MonoBehaviour
     // Public Methods
     // ==================================================
 
-    public void SetPiece(Vector2Int index, CellColor color)
+    public bool TrySetPieceColor(Vector2Int index, CellColor color)
     {
         int idx = TwoDimToFlatIndex(index);
-        Debug.Assert(pieces[idx], "Attempted to set null piece");
+        if (pieces[idx] == null) return false;
 
         pieces[idx].SetColor(color);
+        return true;
     }
 
     public void ResetPieces()
@@ -91,6 +91,7 @@ public class PieceRegistry : MonoBehaviour
     }
 
     // Coroutine for popping pieces animation
+        // note: the pieces currently destroy themselves after animation, would like to add object pool for later
     public IEnumerator PopPieces(WinEvent e)
     {
         int cleared = 0;
@@ -142,7 +143,7 @@ public class PieceRegistry : MonoBehaviour
     {
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
-        playerPiece = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
+        playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
         playerPiece.Initialize(e.Color, playerBounds);
     }
 
