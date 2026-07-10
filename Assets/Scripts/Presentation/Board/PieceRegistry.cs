@@ -1,10 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-// i'm going to rename this file to PieceRegistry
-// needs to live on the board - initialized by the board, like grid view is now
-
-// todo: implement ghost preview
+// script is clean and ready to remove event bus
 
 public class PieceRegistry : MonoBehaviour
 {
@@ -55,8 +52,6 @@ public class PieceRegistry : MonoBehaviour
 
     public void Initialize(Bounds boardBounds)
     {
-        Debug.Log("Initialize piece registry");
-
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;
 
@@ -139,16 +134,12 @@ public class PieceRegistry : MonoBehaviour
     {
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
-        Debug.Log("Spawn new player");
-
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
         playerPiece.Initialize(e.Color, playerBounds);
     }
 
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
-        Debug.Log("Add active player to registry");
-
         playerPiece.PlacePlayer(e.PlayerPosition);
 
         int idx = TwoDimToFlatIndex(e.Index);
@@ -163,8 +154,6 @@ public class PieceRegistry : MonoBehaviour
     private void OnDestroyPlayer(DestroyPlayerEvent e)
     {
         Debug.Assert(playerPiece != null, "Tried to destroy non-existent player");
-
-        Debug.Log("Destroy player - should not get called unless game restart");
 
         Destroy(playerPiece.gameObject);
         playerPiece = null;

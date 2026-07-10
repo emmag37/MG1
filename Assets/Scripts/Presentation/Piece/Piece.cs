@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 
+// script is clean and ready to remove event bus
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Draggable))]
@@ -43,8 +44,6 @@ public class Piece : MonoBehaviour
 
     public void Initialize(CellColor playerColor, Bounds boundaries)
     {
-        Debug.Log("Initialize piece and enable player behavior");
-
         // initialize set values
         Color = playerColor;
         startPos = transform.position;
@@ -95,8 +94,6 @@ public class Piece : MonoBehaviour
 
     public void PlacePlayer(Vector3 position)
     {
-        Debug.Log("Place piece");
-
         dragAndDrop.Drop(position);
         TurnOffPlayer();
     }
@@ -126,8 +123,6 @@ public class Piece : MonoBehaviour
     {
         Debug.Assert(dragAndDrop.enabled, "Receiving input on inactive piece");
 
-        Debug.Log("Start dragging piece");
-
         EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = Color });
     }
 
@@ -154,8 +149,6 @@ public class Piece : MonoBehaviour
 
     private void TurnOffPlayer()    // leave this function for future additions, ie animations, sound effects
     {
-        Debug.Log("Turn off player aspects");
-
         dragAndDrop.StartDrag -= HandleStartDrag;
         dragAndDrop.Released -= HandleReleased;
         dragAndDrop.enabled = false;

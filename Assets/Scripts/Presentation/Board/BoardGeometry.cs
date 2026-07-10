@@ -8,38 +8,38 @@ public class BoardGeometry
     // ==================================================
     // Private Fields
     // ==================================================
-    private float cellOffset;               
-    private Vector3 originCellPos;
+
+    private int numRows;
+    private int numCols;
+
+    private float cellWidth;
+    public float zeroX;    // adjusted 0 at the left in world coordinates
+    public float zeroY;    // adjusted 0 at the top in world coordinates
 
 
     // ==================================================
     // Initialization
     // ==================================================
 
-    // TO-DO:
-        // re calculate the grid values w/o cell radius
-        // hard code for now
-        // should only need board bounds and the number of spaces in the board
-
     /// <summary>
 	/// Calculates the cell offset and origin world coordinates.
 	/// </summary>
 	/// <param name="rows">Number of rows on the board.</param>
+	/// <param name="cols">Number of cols on the board.</param>
 	/// <param name="cellRadius">Radius of a spot on the board.</param>
 	/// <param name="board">Boundaries of box that holds the board.</param>
-    public void Initialize(Bounds board)
+    public BoardGeometry(int rows, int cols, Bounds board)
     {
-        float cellRadius = 1; // HARD CODE
+        numRows = rows;
+        numCols = cols;
 
         float boardLeft = board.min.x;
-        float boardRight = board.max.x;
         float boardTop = board.max.y;
+        float boardRight = board.max.x;
 
-        float gridWidth = boardRight - boardLeft;
-        float spacing = (gridWidth - cellRadius * (GameConstants.RowSize * 2)) / (GameConstants.RowSize + 1);
-
-        cellOffset = cellRadius * 2 + spacing;
-        originCellPos = new Vector3(boardRight - gridWidth / 2, boardTop - gridWidth / 2, 0);
+        cellWidth = (boardRight - boardLeft) / numCols;
+        zeroX = boardLeft + cellWidth / 2;
+        zeroY = boardTop - cellWidth / 2;
     }
 
 
@@ -51,56 +51,27 @@ public class BoardGeometry
 	/// Calculates the board index from a position.
 	/// </summary>
 	/// <param name="position">Transform in world coordinates</param>
-	/// <returns>The board index corresponding to the board array.</returns>
+	/// <returns>The board index (row, col) corresponding to the board array.</returns>
     public Vector2Int TransformToBoardIndex(Vector3 position)
     {
-        Vector2Int gridIndex = new Vector2Int();    // intermediary where the origin is the center
+        int r = Mathf.Clamp(Mathf.RoundToInt((zeroY - position.y) / cellWidth), 0, numRows - 1);
+        int c = Mathf.Clamp(Mathf.RoundToInt((position.x - zeroX) / cellWidth), 0, numCols - 1);
 
-        gridIndex.x = Mathf.RoundToInt((position.y - originCellPos.y) / cellOffset);
-        gridIndex.y = Mathf.RoundToInt((position.x - originCellPos.x) / cellOffset);
-
-        return GridToBoardIndex(gridIndex);
+        return new Vector2Int(r, c);
     }
 
     /// <summary>
 	/// Calculates the world position of a cell.
 	/// </summary>
-	/// <param name="index">Board index of the cell.</param>
+	/// <param name="index">Board index of the cell, (row, col).</param>
 	/// <returns>The world positon of the cell.</returns>
     public Vector3 BoardIndexToTransform(Vector2Int index)
     {
         Vector3 newTransform = Vector3.zero;
-        Vector2Int gridIndex = BoardToGridIndex(index);     // intermediary where the origin is the center
 
-        newTransform.y = originCellPos.y + gridIndex.x * cellOffset;
-        newTransform.x = originCellPos.x + gridIndex.y * cellOffset;
+        newTransform.x = zeroX + index.y * cellWidth;
+        newTransform.y = zeroY - index.x * cellWidth;
 
         return newTransform;
-    }
-
-
-    // ==================================================
-    // Private Methods
-    // ==================================================
-
-    // Adjusts the rounded world grid index to a value useful for array access.
-    private Vector2Int GridToBoardIndex(Vector2Int pos)
-    {
-        Vector2Int index = new Vector2Int();
-
-        index.x = (GameConstants.RowSize - 1) / 2 - pos.x;   // reverse row direction first
-        index.y = pos.y + (GameConstants.RowSize - 1) / 2;
-
-        return index;
-    }
-
-    private Vector2Int BoardToGridIndex(Vector2Int pos)
-    {
-        Vector2Int index = new Vector2Int();
-
-        index.x = (GameConstants.RowSize - 1) / 2 - pos.x;   // reverse row direction first
-        index.y = pos.y - (GameConstants.RowSize - 1) / 2;
-
-        return index;
     }
 }

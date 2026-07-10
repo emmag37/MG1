@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
 
+
+// going to turn this into a turn operator
+
 // edit: need to put back resetting the board logic
 
 /// <summary>

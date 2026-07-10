@@ -2,21 +2,15 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+// rename to board - this is the root object for all other board components
+
+// todo: fix board geometry to no longer hard code anything
+    // also, this should be the only script accessing its values
+
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(PieceRegistry))]
 public class BoardView : MonoBehaviour
 {
-    // ================================
-    // Constants
-    // ================================
-    private const int RowSize = GameConstants.RowSize;
-
-    // ================================
-    // Public Fields
-    // ================================
-
-    public Bounds BoardBounds => spriteRenderer.bounds; // this is now on sprite renderer
-
     // ================================
     // Inspector Fields
     // ================================
@@ -27,9 +21,10 @@ public class BoardView : MonoBehaviour
     // ================================
     private BoardGeometry geometry;
     private BoardController boardController;
-
     private PieceRegistry pieceRegistry;
     private SpriteRenderer spriteRenderer;
+
+    // add back ghost preview
 
 
     // ================================
@@ -38,16 +33,14 @@ public class BoardView : MonoBehaviour
 
     void Awake()
     {
+        // cache components
         pieceRegistry = GetComponent<PieceRegistry>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        pieceRegistry.Initialize(BoardBounds);
-
-        // old code
         boardController = GetComponent<BoardController>();
-        geometry = new BoardGeometry();
 
-        geometry.Initialize(BoardBounds);  // want to take the "radius" out of my board geometry
+        // initialize components
+        pieceRegistry.Initialize(spriteRenderer.bounds);
+        geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
     }
 
     void OnEnable()
