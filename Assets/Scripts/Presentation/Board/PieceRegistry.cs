@@ -20,6 +20,8 @@ public class PlayerSpawner : MonoBehaviour
     private Piece playerPiece;
     private Bounds playerBounds;
 
+    private Piece[] pieces = new Piece[GameConstants.RowSize * GameConstants.RowSize];
+
 
     // ==================================================
     // Unity Lifecycle
@@ -28,6 +30,7 @@ public class PlayerSpawner : MonoBehaviour
     void OnEnable()
     {
         EventBus.Subscribe<SpawnPlayerEvent>(OnSpawnPlayer);
+        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Subscribe<DestroyPlayerEvent>(OnDestroyPlayer);
 
         EventBus.Subscribe<PauseGameEvent>(OnPausePlayer);
@@ -37,6 +40,7 @@ public class PlayerSpawner : MonoBehaviour
     void OnDisable()
     {
         EventBus.Unsubscribe<SpawnPlayerEvent>(OnSpawnPlayer);
+        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Unsubscribe<DestroyPlayerEvent>(OnDestroyPlayer);
 
         EventBus.Unsubscribe<PauseGameEvent>(OnPausePlayer);
@@ -50,7 +54,32 @@ public class PlayerSpawner : MonoBehaviour
 
     public void Initialize(Bounds boardBounds)
     {
-        SetPlayerBoundaries(boardBounds);
+        Vector3 min = boardBounds.min;
+        min.y = spawnPoint.position.y;
+
+        playerBounds = boardBounds;
+        playerBounds.SetMinMax(min, playerBounds.max);
+    }
+
+
+    // ==================================================
+    // Public Methods
+    // ==================================================
+
+    public void SetPiece(Vector2Int index, CellColor color)
+    {
+        int idx = TwoDimToFlatIndex(index);
+        Debug.Assert(pieces[idx], "Attempted to set null piece");
+
+        pieces[idx].SetColor(color);
+    }
+
+    public void ResetPieces()
+    {
+        foreach (Piece piece in pieces)
+        {
+            if (piece) Destroy(piece.gameObject);
+        }
     }
 
 
@@ -66,6 +95,16 @@ public class PlayerSpawner : MonoBehaviour
         playerPiece.Initialize(e.Color, playerBounds);
     }
 
+    private void OnPlacePlayer(PlacePlayerEvent e)
+    {
+        Debug.Log("Add active player to registry");
+
+        playerPiece.PlacePlayer(e.PlayerPosition);
+
+        int idx = TwoDimToFlatIndex(e.Index);
+        pieces[idx] = playerPiece;
+    }
+
     private void OnDestroyPlayer(DestroyPlayerEvent e)
     {
         Debug.Assert(playerPiece != null, "Tried to destroy non-existent player");
@@ -74,7 +113,6 @@ public class PlayerSpawner : MonoBehaviour
         playerPiece = null;
     }
 
-    // this way only the active player is paused - combine
     private void OnPausePlayer(PauseGameEvent e)
     {
         playerPiece.enabled = false;
@@ -89,14 +127,14 @@ public class PlayerSpawner : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    private void SetPlayerBoundaries(Bounds boardBounds)
+    private int TwoDimToFlatIndex(Vector2Int index)
     {
-        playerBounds = boardBounds;
+        return index.x * GameConstants.RowSize + index.y;     // x: row, y: column
+    }
 
-        Vector3 min = playerBounds.min;
-        min.y = spawnPoint.position.y;
-
-        playerBounds.SetMinMax(min, playerBounds.max);
+    private Vector2Int FlatToTwoDimIndex(int flatIndex)
+    {
+        return new Vector2Int(flatIndex / GameConstants.RowSize, flatIndex % GameConstants.RowSize);
     }
 
 }

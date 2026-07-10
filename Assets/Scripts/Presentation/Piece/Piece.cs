@@ -34,7 +34,6 @@ public class Piece : MonoBehaviour
     void Awake()
     {
         EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
-        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
     }
 
     // could add OnDestroy() to error check unsubscribing from events
@@ -96,6 +95,14 @@ public class Piece : MonoBehaviour
         }
     }
 
+    public void PlacePlayer(Vector3 position)
+    {
+        Debug.Log("Place piece");
+
+        dragAndDrop.Drop(position);
+        TurnOffPlayer();
+    }
+
     public void Pop()
     {
         Debug.Assert(!dragAndDrop.enabled, "Attempted pop animation on active player");
@@ -111,17 +118,6 @@ public class Piece : MonoBehaviour
     private void OnReturnPlayer(ReturnPlayerEvent e)
     {
         dragAndDrop.Drop(startPos);
-    }
-
-    // track down how to add to the grid
-    private void OnPlacePlayer(PlacePlayerEvent e)
-    {
-        Debug.Log("Place piece");
-
-        if (float.IsInfinity(e.PlayerPosition.x)) return;   // error check and ignore for board population
-
-        dragAndDrop.Drop(e.PlayerPosition);
-        TurnOffPlayer();
     }
 
     // ==================================================
@@ -162,7 +158,6 @@ public class Piece : MonoBehaviour
         dragAndDrop.enabled = false;
 
         EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
-        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
 
         spriteRenderer.sortingOrder = 2;
     }
