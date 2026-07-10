@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+// add require components
 public class BoardView : MonoBehaviour
 {
     // ================================
@@ -29,6 +30,8 @@ public class BoardView : MonoBehaviour
     private BoardGeometry geometry;
     private BoardController boardController;
 
+    private PieceRegistry pieceRegistry;
+
 
     // ================================
     // Unity Lifecycle Methods
@@ -41,12 +44,13 @@ public class BoardView : MonoBehaviour
 
     void Awake()
     {
-        // put the scaling for the board here? 
+        pieceRegistry = GetComponent<PieceRegistry>();
+        pieceRegistry.Initialize(BoardBounds);
 
+        // old code
         boardController = GetComponent<BoardController>();
         geometry = new BoardGeometry();
 
-        gridView.Initialize();
         geometry.Initialize(BoardBounds);  // want to take the "radius" out of my board geometry
     }
 
@@ -90,7 +94,7 @@ public class BoardView : MonoBehaviour
 
     public void SetCellColor(Vector2Int index, CellColor color)
     {
-        gridView.SetCell(index, color);
+        pieceRegistry.SetPiece(index, color);
     }
 
     // ================================
@@ -100,19 +104,16 @@ public class BoardView : MonoBehaviour
     private void OnStartGame(StartGameEvent e)
     {
         background.gameObject.SetActive(true);
-        gridView.gameObject.SetActive(true);
     }
 
     private void OnExitGame(ExitGameEvent e)
     {
         background.gameObject.SetActive(true);
-        gridView.gameObject.SetActive(true);
     }
 
     private void OnGameOver(GameOverEvent e)
     {
         background.gameObject.SetActive(false);
-        gridView.gameObject.SetActive(false);
     }
 
 
@@ -130,23 +131,29 @@ public class BoardView : MonoBehaviour
 
     private void OnWin(WinEvent e)  // need to subscribe
     {
-        List<Cell> cells = gridView.GetCellsToClear(e.Index, e.Row, e.Column, e.RightDiag, e.LeftDiag);
-        Vector3 playerPos = geometry.BoardIndexToTransform(e.Index);
+        // pop the cells
+        // once cells are popped, run the animation
 
-        StartCoroutine(WinAnimationRoutine(cells, e.Points, playerPos));
+        // old code
+        //List<Cell> cells = gridView.GetCellsToClear(e.Index, e.Row, e.Column, e.RightDiag, e.LeftDiag);
+        
+        StartCoroutine(WinAnimationRoutine(e));
     }
 
     private void OnBoardReset(ResetEvent e)
     {
-        gridView.ResetCells();
+        pieceRegistry.ResetPieces();
     }
 
     // ================================
     // Coroutines
     // ================================
 
-    IEnumerator WinAnimationRoutine(List<Cell> cells, int points, Vector3 playerPos)
+    // need to streamline this
+    IEnumerator WinAnimationRoutine(WinEvent piecesToClear)
     {
+        /*
+        // get rid of this
         int cleared = 0;
         int total = cells.Count;
 
@@ -165,8 +172,13 @@ public class BoardView : MonoBehaviour
 
         // wait for all cells to pop
         yield return new WaitUntil(() => cleared >= total);
+        */
+
+        // clear piece coroutine in piece registry
+        yield return pieceRegistry.PopPieces(piecesToClear);
 
         // run score animation
-        scoreAnimation.AnimateScore(points, playerPos);
+        Vector3 playerPos = geometry.BoardIndexToTransform(piecesToClear.Index);
+        scoreAnimation.AnimateScore(piecesToClear.Points, playerPos);
     }
 }

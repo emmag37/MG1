@@ -1,9 +1,13 @@
 using UnityEngine;
+using System.Collections;
 
 // i'm going to rename this file to PieceRegistry
 // needs to live on the board - initialized by the board, like grid view is now
 
-public class PlayerSpawner : MonoBehaviour
+// todo: add as component to board view
+// todo: implement ghost preview
+
+public class PieceRegistry : MonoBehaviour
 {
     // ==================================================
     // Inspector Fields
@@ -80,6 +84,16 @@ public class PlayerSpawner : MonoBehaviour
         {
             if (piece) Destroy(piece.gameObject);
         }
+    }
+
+    // coroutine for pieces animation
+    public IEnumerator PopPieces(WinEvent e)
+    {
+        // pop the pieces in rows
+
+        // pop the player at index
+
+        yield return null;
     }
 
 
