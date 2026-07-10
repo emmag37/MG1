@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// this file will get deleted
 public class GridView : MonoBehaviour
 {
     // ================================
@@ -12,6 +13,9 @@ public class GridView : MonoBehaviour
     // Private Fields
     // ================================
 
+    private Piece[] pieces = new Piece[RowSize * RowSize];
+
+    // remove this
     private Cell[,] grid = new Cell[RowSize, RowSize];  // grid children
 
 
@@ -21,13 +25,13 @@ public class GridView : MonoBehaviour
 
     void OnEnable()
     {
-        EventBus.Subscribe<PlacePlayerEvent>(OnSetPlayerCell);
+        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Subscribe<GhostPreviewEvent>(OnGhostPreview);
     }
 
     void OnDisable()
     {
-        EventBus.Unsubscribe<PlacePlayerEvent>(OnSetPlayerCell);
+        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Unsubscribe<GhostPreviewEvent>(OnGhostPreview);
     }
 
@@ -38,6 +42,10 @@ public class GridView : MonoBehaviour
     // Initializes the grid cells using children in the scene view
     public void Initialize()
     {
+        // pieces already initialized - do i even need to do anything?
+        // potentially add cells for inititial grid position
+
+        // old code
         // initialize the grid
         Cell[] childCells = GetComponentsInChildren<Cell>();
 
@@ -102,8 +110,10 @@ public class GridView : MonoBehaviour
     // Event Handlers
     // ================================
 
-    private void OnSetPlayerCell(PlacePlayerEvent e)
+    private void OnPlacePlayer(PlacePlayerEvent e)
     {
+        // need to add the piece to the grid - how??? need to figure out how i want to manage my pieces
+
         SetCell(e.Index, e.Color);
     }
 
@@ -123,6 +133,17 @@ public class GridView : MonoBehaviour
     // Private Methods
     // ================================
 
+    private int TwoDimToFlatIndex(Vector2Int index)
+    {
+        return index.x * RowSize + index.y;     // x: row, y: column
+    }
+
+    private Vector2Int FlatToTwoDimIndex(int flatIndex)
+    {
+        return new Vector2Int(flatIndex / RowSize, flatIndex % RowSize);
+    }
+
+    // old methods to check
     private void AddRowMinusPlayer(List<Cell> cells, Vector2Int index)
     {
         int x = index.x;

@@ -27,9 +27,9 @@ public class Piece : MonoBehaviour
     private Vector3 startPos;
 
 
-    // ================================
-    // Unity Lifecycle Methods
-    // ================================
+    // ==================================================
+    // Unity Lifecycle
+    // ==================================================
 
     void Awake()
     {
@@ -104,9 +104,9 @@ public class Piece : MonoBehaviour
     }
 
 
-    // ================================
+    // ==================================================
     // Event Bus Methods
-    // ================================
+    // ==================================================
 
     private void OnReturnPlayer(ReturnPlayerEvent e)
     {
@@ -149,9 +149,9 @@ public class Piece : MonoBehaviour
     }
 
 
-    // ================================
+    // ==================================================
     // Private Methods
-    // ================================
+    // ==================================================
 
     private void TurnOffPlayer()    // leave this function for future additions, ie animations, sound effects
     {
