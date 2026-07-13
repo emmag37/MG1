@@ -104,11 +104,11 @@ public class PieceRegistry : MonoBehaviour
     }
 
     // Coroutine for popping pieces animation
-        // note: the pieces currently destroy themselves after animation, would like to add object pool for later
-    public IEnumerator PopPieces(WinEvent e)
+    // note: the pieces currently destroy themselves after animation, would like to add object pool for later
+    public IEnumerator PopPieces(BoardLogic.PlayResult r, Vector2Int index)
     {
         int cleared = 0;
-        int total = (e.Row ? 4 : 0) + (e.Column ? 4 : 0) + (e.RightDiag ? 4 : 0) + (e.LeftDiag ? 4 : 0) + 1;
+        int total = (r.ClearRow ? 4 : 0) + (r.ClearCol ? 4 : 0) + (r.ClearRDiag ? 4 : 0) + (r.ClearLDiag ? 4 : 0) + 1;
 
         void OnPopFinished(Piece piece)
         {
@@ -127,20 +127,20 @@ public class PieceRegistry : MonoBehaviour
         // pop the pieces in filled lines EXCEPT player
         for (int i = 0; i < GameConstants.RowSize; i++)
         {
-            if (e.Row && i != e.Index.y)    // i is not the player
-                PopPieceAt(e.Index.x, i);
+            if (r.ClearRow && i != index.y)    // i is not the player
+                PopPieceAt(index.x, i);
 
-            if (e.Column && i != e.Index.x)
-                PopPieceAt(i, e.Index.y);
+            if (r.ClearCol && i != index.x)
+                PopPieceAt(i, index.y);
 
-            if (e.RightDiag && i != e.Index.x)
+            if (r.ClearRDiag && i != index.x)
                 PopPieceAt(i, i);
 
-            if (e.LeftDiag && i != e.Index.x)   // start with top left
+            if (r.ClearLDiag && i != index.x)   // start with top left
                 PopPieceAt(i, GameConstants.RowSize - 1 - i);
         }
 
-        Piece player = RemovePieceAt(e.Index.x, e.Index.y);
+        Piece player = RemovePieceAt(index.x, index.y);
         player.PopFinished += OnPopFinished;
         player.Pop();
 

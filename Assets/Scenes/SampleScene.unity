@@ -3861,6 +3861,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   board: {fileID: 1798150613}
+  boardView: {fileID: 0}
   tutorial: {fileID: 1413417920}
 --- !u!1 &372002863
 GameObject:
@@ -14147,7 +14148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96f44b855322a45ea86c646a271227fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostPreview
-  shadowSprite: {fileID: 0}
+  shadowSprite: {fileID: 257692676}
 --- !u!1 &1811068632
 GameObject:
   m_ObjectHideFlags: 0

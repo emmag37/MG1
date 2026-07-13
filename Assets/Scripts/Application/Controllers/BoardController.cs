@@ -28,8 +28,7 @@ public class BoardController: MonoBehaviour
     // Local Events
     // ================================
 
-    public event Action<int, (int, int)> TurnCompleted;
-    public event Action FullBoard;
+    //public event Action<bool, int, (int, int)> TurnCompleted;
 
     // ================================
     // Initializer
@@ -91,6 +90,8 @@ public class BoardController: MonoBehaviour
     /// <remarks>
     /// Invokes <see cref="FullBoard"/> if the board becomes full.
     /// </remarks>
+	///
+    /*
     private void RunPlay(Vector2Int index, CellColor color)
     {
         BoardLogic.PlayResult result;
@@ -99,14 +100,9 @@ public class BoardController: MonoBehaviour
             Debug.LogError($"Ran play with invalid index or color: {index}, {color}");
         }
 
-        if (result.FullBoard)
-        {
-            FullBoard?.Invoke();                    // activate a game over
-            return;
-        }
-
         if (result.Points > 0)
         {
+            
             EventBus.Publish(new WinEvent
             {
                 Index = index,
@@ -120,7 +116,7 @@ public class BoardController: MonoBehaviour
             });
         }
 
-        TurnCompleted?.Invoke(result.Points, (index.x, index.y));
-    }
+        TurnCompleted?.Invoke(result.FullBoard, result.Points, (index.x, index.y));
+    } */
 
 }

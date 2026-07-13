@@ -35,20 +35,8 @@ public struct ScoreUpdateEvent
 // Board Events
 // ==================================================
 
-public struct ResetEvent { }
-
 // game play
-public struct WinEvent
-{
-    public Vector2Int Index;
-
-    public bool Row;
-    public bool Column;
-    public bool RightDiag;
-    public bool LeftDiag;
-
-    public int Points;
-}
+public struct WinEvent { }
 
 // update player view
 public struct PlacePlayerEvent { }

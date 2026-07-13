@@ -1,17 +1,25 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+
+using PlayResult = BoardLogic.PlayResult;
 
 // rename to board - this is the root object for all other board components
 
 // todo: fix board geometry to no longer hard code anything
-    // also, this should be the only script accessing its values
+// also, this should be the only script accessing its values
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(PieceRegistry))]
 [RequireComponent(typeof(GhostPreview))]
 public class BoardView : MonoBehaviour
 {
+    // ================================
+    // Events
+    // ================================
+    public event Action<bool, int, (int, int)> TurnCompleted;
+
     // ================================
     // Inspector Fields
     // ================================
@@ -59,7 +67,6 @@ public class BoardView : MonoBehaviour
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
-        EventBus.Subscribe<WinEvent>(OnWin);
     }
 
     void OnDisable()
@@ -69,7 +76,6 @@ public class BoardView : MonoBehaviour
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
-        EventBus.Unsubscribe<WinEvent>(OnWin);
     }
 
     void OnDestroy()
@@ -122,7 +128,9 @@ public class BoardView : MonoBehaviour
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
         Vector2Int index = geometry.TransformToBoardIndex(e.PlayerPosition);
-        if (!logic.ValidCell(index.x, index.y, e.Color))
+
+        // run the board logic - returns early if invalid index
+        if (!logic.TryPlacePlayer(index.x, index.y, e.Color, out PlayResult result))     
         {
             pieceRegistry.ReturnPlayerToStart();
             return;
@@ -131,12 +139,16 @@ public class BoardView : MonoBehaviour
         Vector3 newPosition = geometry.BoardIndexToTransform(index);
         pieceRegistry.PlacePlayer(newPosition, index);
 
-        //RunPlay(index, color);
-    }
+        if (result.Points > 0)
+        {
+            // animation sequence, also removes the instances from the board
+            StartCoroutine(WinAnimationRoutine(result, index));
 
-    private void OnWin(WinEvent e)
-    {
-        StartCoroutine(WinAnimationRoutine(e));
+            // keep for audio manager
+            EventBus.Publish(new WinEvent());
+        }
+
+        TurnCompleted?.Invoke(result.FullBoard, result.Points, (index.x, index.y));
     }
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)
@@ -153,13 +165,13 @@ public class BoardView : MonoBehaviour
     // ================================
 
     // need to streamline this
-    IEnumerator WinAnimationRoutine(WinEvent piecesToClear)
+    IEnumerator WinAnimationRoutine(PlayResult piecesToClear, Vector2Int index)
     {
         // clear piece coroutine in piece registry
-        yield return pieceRegistry.PopPieces(piecesToClear);
+        yield return pieceRegistry.PopPieces(piecesToClear, index);
 
         // run score animation
-        Vector3 playerPos = geometry.BoardIndexToTransform(piecesToClear.Index);
+        Vector3 playerPos = geometry.BoardIndexToTransform(index);
         scoreAnimation.AnimateScore(piecesToClear.Points, playerPos);
     }
 }

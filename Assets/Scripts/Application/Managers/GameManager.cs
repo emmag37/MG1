@@ -36,8 +36,7 @@ public class GameManager : MonoBehaviour
 
     void OnDestroy()
     {
-        board.FullBoard -= HandleFullBoard;
-        board.TurnCompleted -= HandleTurnCompleted;
+        boardView.TurnCompleted -= HandleTurnCompleted;
         tutorial.TutorialComplete -= HandleTutorialComplete;
     }
 
@@ -51,10 +50,9 @@ public class GameManager : MonoBehaviour
         this.dataService = dataService;
 
         picker = new PlayerPicker();
-        board.Initialize(); // this is my error
+        board.Initialize();
 
-        board.FullBoard += HandleFullBoard;
-        board.TurnCompleted += HandleTurnCompleted;
+        boardView.TurnCompleted += HandleTurnCompleted;
         tutorial.TutorialComplete += HandleTutorialComplete;
 
         highScore = dataService.GetGameData().HighScore;
@@ -149,13 +147,19 @@ public class GameManager : MonoBehaviour
 
     // moves the player back to start or on the board.
     // if on the board, executes the player's turn.
-    private void HandleTurnCompleted(int points, (int, int) index)  // turn this into a local event
+    private void HandleTurnCompleted(bool fullBoard, int points, (int, int) index)  // turn this into a local event
     {
         if (state == GameState.Tutorial) return;
 
         Debug.Assert(state == GameState.Active, $"Turn ran during invalid state: {state}");
         Debug.Assert(activePlayer, "Player turn completed but no active player");
         activePlayer = false;   // no longer call destroy here
+
+        if (fullBoard)
+        {
+            InitiateGameOver();
+            return;
+        }
 
         if (points > 0)
         {
@@ -167,18 +171,6 @@ public class GameManager : MonoBehaviour
         dataService.SaveTurn(score, index);
 
         if (state == GameState.Active) SpawnNewPlayer();
-    }
-
-    private void HandleFullBoard()    // called on a game over  - turn this into a local event
-    {
-        Debug.Assert(state == GameState.Active && playEnabled, $"Initiate game over from invalid state: {state}, {playEnabled}");
-        
-        state = GameState.Inactive;
-        dataService.SetState(GameState.Inactive);
-        dataService.SetFinalScore(score);
-
-        EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
-        Reset();
     }
 
     // tutorial finsihed event
@@ -252,6 +244,18 @@ public class GameManager : MonoBehaviour
 
         tutorial.Initialize(board);
         tutorial.StartTutorial();
+    }
+
+    private void InitiateGameOver()    // called on a game over  - turn this into a local event
+    {
+        Debug.Assert(state == GameState.Active && playEnabled, $"Initiate game over from invalid state: {state}, {playEnabled}");
+
+        state = GameState.Inactive;
+        dataService.SetState(GameState.Inactive);
+        dataService.SetFinalScore(score);
+
+        EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
+        Reset();
     }
 
 
