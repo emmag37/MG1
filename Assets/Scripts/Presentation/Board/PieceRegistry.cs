@@ -28,7 +28,6 @@ public class PieceRegistry : MonoBehaviour
     void OnEnable()
     {
         EventBus.Subscribe<SpawnPlayerEvent>(OnSpawnPlayer);
-        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Subscribe<DestroyPlayerEvent>(OnDestroyPlayer);
 
         EventBus.Subscribe<PauseGameEvent>(OnPausePlayer);
@@ -38,7 +37,6 @@ public class PieceRegistry : MonoBehaviour
     void OnDisable()
     {
         EventBus.Unsubscribe<SpawnPlayerEvent>(OnSpawnPlayer);
-        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
         EventBus.Unsubscribe<DestroyPlayerEvent>(OnDestroyPlayer);
 
         EventBus.Unsubscribe<PauseGameEvent>(OnPausePlayer);
@@ -61,7 +59,31 @@ public class PieceRegistry : MonoBehaviour
 
 
     // ==================================================
-    // Public Methods
+    // Public Methods - Player
+    // ==================================================
+
+    public void PlacePlayer(Vector3 position, Vector2Int index)
+    {
+        playerPiece.PlacePlayer(position);
+
+        int idx = TwoDimToFlatIndex(index);
+        if (playerPiece.Color == CellColor.Mask)
+            DestroyPieceAt(idx);
+
+        pieces[idx] = playerPiece;
+        playerPiece = null;
+
+        EventBus.Publish(new PlacePlayerEvent());   // remove - only here so that the audio runs
+    }
+
+    public void ReturnPlayerToStart()
+    {
+        playerPiece.ReturnPlayer();
+    }
+
+
+    // ==================================================
+    // Public Methods - Cell
     // ==================================================
 
     public bool TrySetPieceColor(Vector2Int index, CellColor color)
@@ -71,11 +93,6 @@ public class PieceRegistry : MonoBehaviour
 
         pieces[idx].SetColor(color);
         return true;
-    }
-
-    public void ReturnPlayerToStart()
-    {
-        playerPiece.ReturnPlayer();
     }
 
     public void ResetPieces()
@@ -141,19 +158,6 @@ public class PieceRegistry : MonoBehaviour
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
         playerPiece.Initialize(e.Color, playerBounds);
-    }
-
-    private void OnPlacePlayer(PlacePlayerEvent e)
-    {
-        playerPiece.PlacePlayer(e.PlayerPosition);
-
-        int idx = TwoDimToFlatIndex(e.Index);
-        if (playerPiece.Color == CellColor.Mask)
-            DestroyPieceAt(idx);
-
-        pieces[idx] = playerPiece;
-
-        playerPiece = null;
     }
 
     private void OnDestroyPlayer(DestroyPlayerEvent e)

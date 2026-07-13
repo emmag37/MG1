@@ -51,15 +51,7 @@ public struct WinEvent
 }
 
 // update player view
-//public struct ReturnPlayerEvent { }
-public struct PlacePlayerEvent
-{
-    public Vector3 PlayerPosition;
-    public Vector2Int Index;
-
-    // likely can remove this
-    public CellColor Color;
-}
+public struct PlacePlayerEvent { }
 
 // continue tutorial
 public struct TutorialStepCompleteEvent

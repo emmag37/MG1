@@ -113,24 +113,19 @@ public class BoardView : MonoBehaviour
     // Player/Board Event Handlers
     // ================================
 
+    // handles connection between logic and piece registry
+    // crux that initiates a turn
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
         Vector2Int index = geometry.TransformToBoardIndex(e.PlayerPosition);
-        Vector3 newPosition = geometry.BoardIndexToTransform(index);
-
-        // try place player
         if (!logic.ValidCell(index.x, index.y, e.Color))
         {
             pieceRegistry.ReturnPlayerToStart();
             return;
         }
 
-        EventBus.Publish(new PlacePlayerEvent
-        {
-            PlayerPosition = newPosition,
-            Index = index,
-            Color = e.Color
-        });
+        Vector3 newPosition = geometry.BoardIndexToTransform(index);
+        pieceRegistry.PlacePlayer(newPosition, index);
 
         //RunPlay(index, color);
     }
