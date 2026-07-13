@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using PlayResult = BoardLogic.PlayResult;
 
+
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(PieceRegistry))]
 [RequireComponent(typeof(GhostPreview))]
@@ -12,7 +13,7 @@ public class Board : MonoBehaviour
     // ================================
     // Events
     // ================================
-    public event Action<bool, int, (int, int)> TurnCompleted;
+    public event Action FullBoard;
 
     // ================================
     // Inspector Fields
@@ -22,6 +23,8 @@ public class Board : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
+    private GameDataService gameData;
+
     private BoardGeometry geometry;
     private BoardLogic logic;
 
@@ -29,27 +32,11 @@ public class Board : MonoBehaviour
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
 
+    private int score = 0;      // considering giving this field its own script
 
     // ================================
     // Unity Lifecycle Methods
     // ================================
-
-    void Awake()
-    {
-        // cache components
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        pieceRegistry = GetComponent<PieceRegistry>();
-        ghostPreview = GetComponent<GhostPreview>();
-
-        // initialize components
-        geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
-        logic = new BoardLogic();
-        pieceRegistry.Initialize(spriteRenderer.bounds);
-        ghostPreview.Initialize(geometry);
-
-        // subscribe to events
-        ghostPreview.TryGhostPreview += HandleGhostPreview;
-    }
 
     void OnEnable()
     {
@@ -76,6 +63,29 @@ public class Board : MonoBehaviour
 
 
     // ================================
+    // Initializers
+    // ================================
+
+    public void Initialize(GameDataService dataService)
+    {
+        gameData = dataService;
+
+        // cache components
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        pieceRegistry = GetComponent<PieceRegistry>();
+        ghostPreview = GetComponent<GhostPreview>();
+
+        // initialize components
+        geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
+        logic = new BoardLogic();
+        pieceRegistry.Initialize(spriteRenderer.bounds);
+        ghostPreview.Initialize(geometry);
+
+        // subscribe to events
+        ghostPreview.TryGhostPreview += HandleGhostPreview;
+    }
+
+    // ================================
     // Public Methods
     // ================================
 
@@ -86,6 +96,7 @@ public class Board : MonoBehaviour
 
     public void Reset()
     {
+        score = 0;
         logic.ResetBoard();
         pieceRegistry.ResetPieces();
     }
@@ -97,7 +108,6 @@ public class Board : MonoBehaviour
     private void OnStartGame(StartGameEvent e)
     {
         spriteRenderer.gameObject.SetActive(true);
-
         pieceRegistry.SpawnNewPlayer();
     }
 
@@ -131,24 +141,22 @@ public class Board : MonoBehaviour
         Vector3 newPosition = geometry.BoardIndexToTransform(index);
         pieceRegistry.PlacePlayer(newPosition, index);
 
-        // full board check
+        if (result.FullBoard) FullBoard?.Invoke();
 
         if (result.Points > 0)
         {
-            // animation sequence, also removes the instances from the board
+            score += result.Points;
+            gameData.UpdateScore(score);    // updates high score prefab
+            EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = gameData.GetGameData().HighScore });
+
             StartCoroutine(WinAnimationRoutine(result, index));
-
-            // update points
-
-            // keep for audio manager
-            EventBus.Publish(new WinEvent());
+            EventBus.Publish(new WinEvent());   // keep for audio manager
         }
 
         pieceRegistry.SpawnNewPlayer();
 
-        // save the turn, players, points, all of it to one save method
-
-        TurnCompleted?.Invoke(result.FullBoard, result.Points, (index.x, index.y)); // remove this
+        // gameData.SaveTurn(score, index);
+        // save player colors
     }
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)

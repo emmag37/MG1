@@ -29,16 +29,12 @@ public class PieceRegistry : MonoBehaviour
 
     void OnEnable()
     {
-        //EventBus.Subscribe<DestroyPlayerEvent>(OnDestroyPlayer);
-
         EventBus.Subscribe<PauseGameEvent>(OnPausePlayer);
         EventBus.Subscribe<ResumeGameEvent>(OnResumePlayer);
     }
 
     void OnDisable()
     {
-        //EventBus.Unsubscribe<DestroyPlayerEvent>(OnDestroyPlayer);
-
         EventBus.Unsubscribe<PauseGameEvent>(OnPausePlayer);
         EventBus.Unsubscribe<ResumeGameEvent>(OnResumePlayer);
     }
@@ -64,6 +60,7 @@ public class PieceRegistry : MonoBehaviour
     // Public Methods - Player
     // ==================================================
 
+    // returns the color of the player after this one to be spawned (for preview)
     public void SpawnNewPlayer()
     {
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
