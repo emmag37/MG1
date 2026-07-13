@@ -13863,6 +13863,7 @@ GameObject:
   - component: {fileID: 1798150614}
   - component: {fileID: 1798150613}
   - component: {fileID: 1798150612}
+  - component: {fileID: 1798150615}
   m_Layer: 6
   m_Name: Board
   m_TagString: Untagged
@@ -14042,6 +14043,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardView
   scoreAnimation: {fileID: 456301254}
+--- !u!114 &1798150615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798150608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f44b855322a45ea86c646a271227fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GhostPreview
 --- !u!1 &1811068632
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(PieceRegistry))]
+[RequireComponent(typeof(GhostPreview))]
 public class BoardView : MonoBehaviour
 {
     // ================================
@@ -20,11 +21,11 @@ public class BoardView : MonoBehaviour
     // Private Fields
     // ================================
     private BoardGeometry geometry;
-    private BoardController boardController;
-    private PieceRegistry pieceRegistry;
     private SpriteRenderer spriteRenderer;
 
-    // add back ghost preview
+    private BoardController boardController;
+    private PieceRegistry pieceRegistry;
+    private GhostPreview ghostPreview;
 
 
     // ================================
@@ -37,10 +38,12 @@ public class BoardView : MonoBehaviour
         pieceRegistry = GetComponent<PieceRegistry>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         boardController = GetComponent<BoardController>();
+        ghostPreview = GetComponent<GhostPreview>();
 
         // initialize components
         pieceRegistry.Initialize(spriteRenderer.bounds);
         geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
+        ghostPreview.Initialize(geometry);
     }
 
     void OnEnable()
@@ -117,6 +120,9 @@ public class BoardView : MonoBehaviour
 
         boardController.TryPlacePlayer(index, e.Color, newPosition);
     }
+
+    // on player dragging
+    // start ghost preview routine
 
     private void OnWin(WinEvent e)  // need to subscribe
     {

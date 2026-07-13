@@ -11,8 +11,9 @@ public class GhostPreview : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
-    private BoardView boardView;
-    private BoardController boardController;
+    private BoardController boardController;    // remove
+
+    private BoardGeometry geometry;
 
     private Coroutine preview;
 
@@ -23,14 +24,6 @@ public class GhostPreview : MonoBehaviour
     // ================================
     // Unity Lifecycle
     // ================================
-
-    void Awake()
-    {
-        boardView = GetComponent<BoardView>();
-        boardController = GetComponent<BoardController>();
-
-        previewSet = false;
-    }
 
     void OnEnable()
     {
@@ -44,6 +37,20 @@ public class GhostPreview : MonoBehaviour
         // Player Events
         EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDragging);
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerRelease);
+    }
+
+
+    // ================================
+    // Initialization
+    // ================================
+
+    public void Initialize(BoardGeometry boardGeometry)
+    {
+        geometry = boardGeometry;
+
+        // old code
+        boardController = GetComponent<BoardController>();
+        previewSet = false;
     }
 
 
@@ -90,7 +97,7 @@ public class GhostPreview : MonoBehaviour
                 yield break;
 
             Vector3 position = player.position;
-            Vector2Int index = boardView.WorldToIndex(position);
+            Vector2Int index = geometry.TransformToBoardIndex(position);
 
             // try a new preview only when the index changes
             if (previewSet && index != previewIndex)
