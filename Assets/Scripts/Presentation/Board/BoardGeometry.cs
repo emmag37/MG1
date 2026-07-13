@@ -49,13 +49,14 @@ public class BoardGeometry
 
     /// <summary>
 	/// Calculates the board index from a position.
+	/// Clamps -1 to num rows/num cols for out of bounds values.
 	/// </summary>
 	/// <param name="position">Transform in world coordinates</param>
 	/// <returns>The board index (row, col) corresponding to the board array.</returns>
     public Vector2Int TransformToBoardIndex(Vector3 position)
     {
-        int r = Mathf.Clamp(Mathf.RoundToInt((zeroY - position.y) / cellWidth), 0, numRows - 1);
-        int c = Mathf.Clamp(Mathf.RoundToInt((position.x - zeroX) / cellWidth), 0, numCols - 1);
+        int r = Mathf.Clamp(Mathf.RoundToInt((zeroY - position.y) / cellWidth), -1, numRows);
+        int c = Mathf.Clamp(Mathf.RoundToInt((position.x - zeroX) / cellWidth), -1, numCols);
 
         return new Vector2Int(r, c);
     }

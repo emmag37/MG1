@@ -82,7 +82,7 @@ public class GhostPreview : MonoBehaviour
     {
         // stop the ghost preview
         StopCoroutine(preview);
-        previewSet = false;
+        ClearPreview();
     }
 
 
