@@ -45,44 +45,10 @@ public class BoardController: MonoBehaviour
     // Public Methods
     // ================================
 
-    /*
-    public void TryPlacePlayer(Vector2Int index, CellColor color, Vector3 newPosition)  // board view 121
-    {
-        if (!logic.ValidCell(index.x, index.y, color))
-        {
-            EventBus.Publish(new ReturnPlayerEvent());
-            return;
-        }
-
-        EventBus.Publish(new PlacePlayerEvent
-        {
-            PlayerPosition = newPosition,
-            Index = index,
-            Color = color
-        });
-
-        RunPlay(index, color);
-    }*/
-    
-    /// <summary>
-	/// Resets the board to empty cells.
-	/// </summary>
-    public void Reset()
-    {
-        logic.ResetBoard();
-        EventBus.Publish(new ResetEvent()); // alerts the grid to clear pieces
-    }
 
     // tutorial method
     // deprecate
     /*
-    public void ClearPieces()
-    {
-        Reset();
-
-        EventBus.Publish(new ResetEvent()); // alerts the grid to clear pieces
-    }
-    
     // used by the tutorial to make sure specific positions are live for players
     public void SetLiveZone((int, int)[] indices)
     {

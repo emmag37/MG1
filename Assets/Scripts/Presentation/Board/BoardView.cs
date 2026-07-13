@@ -60,7 +60,6 @@ public class BoardView : MonoBehaviour
 
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
         EventBus.Subscribe<WinEvent>(OnWin);
-        EventBus.Subscribe<ResetEvent>(OnBoardReset);
     }
 
     void OnDisable()
@@ -71,7 +70,6 @@ public class BoardView : MonoBehaviour
 
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
         EventBus.Unsubscribe<WinEvent>(OnWin);
-        EventBus.Unsubscribe<ResetEvent>(OnBoardReset);
     }
 
     void OnDestroy()
@@ -87,6 +85,12 @@ public class BoardView : MonoBehaviour
     public void SetCellColor(Vector2Int index, CellColor color)
     {
         pieceRegistry.TrySetPieceColor(index, color);
+    }
+
+    public void Reset()
+    {
+        logic.ResetBoard();
+        pieceRegistry.ResetPieces();
     }
 
     // ================================
@@ -133,11 +137,6 @@ public class BoardView : MonoBehaviour
     private void OnWin(WinEvent e)
     {
         StartCoroutine(WinAnimationRoutine(e));
-    }
-
-    private void OnBoardReset(ResetEvent e)
-    {
-        pieceRegistry.ResetPieces();
     }
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)

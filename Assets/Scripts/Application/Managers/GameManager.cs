@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     // Inspector Fields
     // ================================
     [SerializeField] private BoardController board;     // remove
+
+    [SerializeField] private BoardView boardView;
     [SerializeField] private TutorialController tutorial;
 
     // ================================
@@ -219,7 +221,8 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");
 
         RemoveCurrentPlayer();
-        board.Reset();
+
+        boardView.Reset();
         picker.Reset();
 
         score = 0;
