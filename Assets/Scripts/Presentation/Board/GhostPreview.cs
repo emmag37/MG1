@@ -1,18 +1,18 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 
-// you need to clean this up w/ your new implementation
-    // reuses a single game object with a sprite renderer for empty boxes, then
-    // sets in piece registry if an open spot
-    // maybe just utilize the empty boxes, put shadow over the whole thing for ease?
 public class GhostPreview : MonoBehaviour
 {
     // ================================
+    // Events
+    // ================================
+    public event Action<Vector2Int, CellColor> TryGhostPreview;
+
+    // ================================
     // Private Fields
     // ================================
-    private BoardController boardController;    // remove
-
     private BoardGeometry geometry;
 
     private Coroutine preview;
@@ -48,8 +48,6 @@ public class GhostPreview : MonoBehaviour
     {
         geometry = boardGeometry;
 
-        // old code
-        boardController = GetComponent<BoardController>();
         previewSet = false;
     }
 
@@ -103,11 +101,12 @@ public class GhostPreview : MonoBehaviour
             if (previewSet && index != previewIndex)
             {
                 ClearPreview();
-                boardController.TryGhostPreview(index, color);
+
+                TryGhostPreview?.Invoke(index, color);
             }
             else if (!previewSet)
             {
-                boardController.TryGhostPreview(index, color);
+                TryGhostPreview?.Invoke(index, color);
             }
 
             yield return null;
@@ -122,7 +121,7 @@ public class GhostPreview : MonoBehaviour
     private void ClearPreview()
     {
         previewSet = false;
-        boardController.TryGhostPreview(previewIndex, CellColor.Empty, false);
+        TryGhostPreview?.Invoke(previewIndex, CellColor.Empty);
     }
 
 }

@@ -44,6 +44,9 @@ public class BoardView : MonoBehaviour
         pieceRegistry.Initialize(spriteRenderer.bounds);
         geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
         ghostPreview.Initialize(geometry);
+
+        // subscribe to events
+        ghostPreview.TryGhostPreview += HandleGhostPreview;
     }
 
     void OnEnable()
@@ -68,21 +71,15 @@ public class BoardView : MonoBehaviour
         EventBus.Unsubscribe<ResetEvent>(OnBoardReset);
     }
 
+    void OnDestroy()
+    {
+        ghostPreview.TryGhostPreview -= HandleGhostPreview;
+    }
+
 
     // ================================
     // Public Methods
     // ================================
-    // used by ghost preview
-
-    public Vector2Int WorldToIndex(Vector3 position)
-    {
-        return geometry.TransformToBoardIndex(position);
-    }
-
-    public Vector3 IndexToWorld(Vector2Int index)
-    {
-        return geometry.BoardIndexToTransform(index);
-    }
 
     public void SetCellColor(Vector2Int index, CellColor color)
     {
@@ -134,7 +131,10 @@ public class BoardView : MonoBehaviour
         pieceRegistry.ResetPieces();
     }
 
-    // this script needs to manage ghost preview
+    private void HandleGhostPreview(Vector2Int index, CellColor color)
+    {
+        boardController.TryGhostPreview(index, color, (color != CellColor.Empty));
+    }
     
 
     // ================================
