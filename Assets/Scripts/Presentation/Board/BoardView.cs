@@ -32,8 +32,6 @@ public class BoardView : MonoBehaviour
     private BoardLogic logic;
 
     private SpriteRenderer spriteRenderer;
-
-    private BoardController boardController;        // just try to remove this
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
 
@@ -45,9 +43,8 @@ public class BoardView : MonoBehaviour
     void Awake()
     {
         // cache components
-        pieceRegistry = GetComponent<PieceRegistry>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        boardController = GetComponent<BoardController>();
+        pieceRegistry = GetComponent<PieceRegistry>();
         ghostPreview = GetComponent<GhostPreview>();
 
         // initialize components
@@ -123,8 +120,7 @@ public class BoardView : MonoBehaviour
     // Player/Board Event Handlers
     // ================================
 
-    // handles connection between logic and piece registry
-    // crux that initiates a turn
+    // handles connection between logic and piece registry, crux that initiates a turn
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
         Vector2Int index = geometry.TransformToBoardIndex(e.PlayerPosition);

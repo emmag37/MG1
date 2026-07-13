@@ -46,10 +46,11 @@ public class TutorialController : MonoBehaviour
     // Initializer
     // ==================================================
 
+    /*
     public void Initialize(BoardController board)
     {
         //this.board = board;
-    }
+    }*/
 
     // ==================================================
     // Public Methods

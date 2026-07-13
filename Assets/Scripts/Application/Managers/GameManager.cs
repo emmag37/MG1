@@ -10,8 +10,6 @@ public class GameManager : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private BoardController board;     // remove
-
     [SerializeField] private BoardView boardView;
     [SerializeField] private TutorialController tutorial;
 
@@ -50,7 +48,6 @@ public class GameManager : MonoBehaviour
         this.dataService = dataService;
 
         picker = new PlayerPicker();
-        board.Initialize();
 
         boardView.TurnCompleted += HandleTurnCompleted;
         tutorial.TutorialComplete += HandleTutorialComplete;
@@ -242,7 +239,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Assert(state == GameState.Tutorial, $"Tutorial run from state: {state}");
 
-        tutorial.Initialize(board);
+        //tutorial.Initialize(board);
         tutorial.StartTutorial();
     }
 
