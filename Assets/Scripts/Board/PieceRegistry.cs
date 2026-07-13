@@ -14,6 +14,8 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
+    private PlayerPicker picker;
+
     private Piece playerPiece;
     private Bounds playerBounds;
 
@@ -27,8 +29,7 @@ public class PieceRegistry : MonoBehaviour
 
     void OnEnable()
     {
-        EventBus.Subscribe<SpawnPlayerEvent>(OnSpawnPlayer);
-        EventBus.Subscribe<DestroyPlayerEvent>(OnDestroyPlayer);
+        //EventBus.Subscribe<DestroyPlayerEvent>(OnDestroyPlayer);
 
         EventBus.Subscribe<PauseGameEvent>(OnPausePlayer);
         EventBus.Subscribe<ResumeGameEvent>(OnResumePlayer);
@@ -36,8 +37,7 @@ public class PieceRegistry : MonoBehaviour
 
     void OnDisable()
     {
-        EventBus.Unsubscribe<SpawnPlayerEvent>(OnSpawnPlayer);
-        EventBus.Unsubscribe<DestroyPlayerEvent>(OnDestroyPlayer);
+        //EventBus.Unsubscribe<DestroyPlayerEvent>(OnDestroyPlayer);
 
         EventBus.Unsubscribe<PauseGameEvent>(OnPausePlayer);
         EventBus.Unsubscribe<ResumeGameEvent>(OnResumePlayer);
@@ -55,12 +55,26 @@ public class PieceRegistry : MonoBehaviour
 
         playerBounds = boardBounds;
         playerBounds.SetMinMax(min, playerBounds.max);
+
+        picker = new PlayerPicker();
     }
 
 
     // ==================================================
     // Public Methods - Player
     // ==================================================
+
+    public void SpawnNewPlayer()
+    {
+        Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
+
+        var playerColors = picker.CalculateNewPlayerColors();
+
+        playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
+        playerPiece.Initialize(playerColors.Color, playerBounds);
+
+        EventBus.Publish(new SpawnPlayerEvent { NextColor = playerColors.NextColor });  // for UI
+    }
 
     public void PlacePlayer(Vector3 position, Vector2Int index)
     {
@@ -97,6 +111,9 @@ public class PieceRegistry : MonoBehaviour
 
     public void ResetPieces()
     {
+        picker.Reset();
+        DestroyPlayer();
+
         for (int i = 0; i < pieces.Length; i++)
         {
             DestroyPieceAt(i);
@@ -152,22 +169,6 @@ public class PieceRegistry : MonoBehaviour
     // Event Bus Methods
     // ==================================================
 
-    private void OnSpawnPlayer(SpawnPlayerEvent e)
-    {
-        Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
-
-        playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-        playerPiece.Initialize(e.Color, playerBounds);
-    }
-
-    private void OnDestroyPlayer(DestroyPlayerEvent e)
-    {
-        Debug.Assert(playerPiece != null, "Tried to destroy non-existent player");
-
-        Destroy(playerPiece.gameObject);
-        playerPiece = null;
-    }
-
     private void OnPausePlayer(PauseGameEvent e)
     {
         playerPiece.enabled = false;
@@ -190,6 +191,14 @@ public class PieceRegistry : MonoBehaviour
     private Vector2Int FlatToTwoDimIndex(int flatIndex)
     {
         return new Vector2Int(flatIndex / GameConstants.RowSize, flatIndex % GameConstants.RowSize);
+    }
+
+    private void DestroyPlayer()
+    {
+        Debug.Assert(playerPiece != null, "Tried to destroy non-existent player");
+
+        Destroy(playerPiece.gameObject);
+        playerPiece = null;
     }
 
     private Piece RemovePieceAt(int row, int col)

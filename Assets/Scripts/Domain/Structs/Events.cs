@@ -19,10 +19,8 @@ public struct GameOverEvent
 
 public struct SpawnPlayerEvent
 {
-    public CellColor Color;
     public CellColor NextColor;
 }
-public struct DestroyPlayerEvent { }
 
 public struct ScoreUpdateEvent
 {

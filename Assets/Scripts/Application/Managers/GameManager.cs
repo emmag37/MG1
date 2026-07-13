@@ -10,19 +10,17 @@ public class GameManager : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private BoardView boardView;
+    [SerializeField] private Board boardView;
     [SerializeField] private TutorialController tutorial;
 
     // ================================
     // Private Fields
     // ================================
     private GameDataService dataService;
-    private PlayerPicker picker;
 
     private GameState state;
     private bool gameLoaded;
     private bool playEnabled;
-    private bool activePlayer;
 
     private int score;
     private int highScore;
@@ -47,8 +45,6 @@ public class GameManager : MonoBehaviour
     {
         this.dataService = dataService;
 
-        picker = new PlayerPicker();
-
         boardView.TurnCompleted += HandleTurnCompleted;
         tutorial.TutorialComplete += HandleTutorialComplete;
 
@@ -61,7 +57,6 @@ public class GameManager : MonoBehaviour
         gameLoaded = false;
 
         score = 0;
-        activePlayer = false;
     }
 
 
@@ -101,8 +96,6 @@ public class GameManager : MonoBehaviour
 
             //LoadGame();
             EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });  // continue the gameplay
-
-            SpawnNewPlayer();   // remove once you turn this feature back on
 
             gameLoaded = true;
         }
@@ -149,8 +142,7 @@ public class GameManager : MonoBehaviour
         if (state == GameState.Tutorial) return;
 
         Debug.Assert(state == GameState.Active, $"Turn ran during invalid state: {state}");
-        Debug.Assert(activePlayer, "Player turn completed but no active player");
-        activePlayer = false;   // no longer call destroy here
+        //Debug.Assert(activePlayer, "Player turn completed but no active player");
 
         if (fullBoard)
         {
@@ -167,7 +159,7 @@ public class GameManager : MonoBehaviour
 
         dataService.SaveTurn(score, index);
 
-        if (state == GameState.Active) SpawnNewPlayer();
+        //if (state == GameState.Active) SpawnNewPlayer();
     }
 
     // tutorial finsihed event
@@ -201,18 +193,14 @@ public class GameManager : MonoBehaviour
         dataService.UpdateScore(score);
 
         // this is not working properly
-        EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
-        activePlayer = true;
+        //EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
     }
 
     private void Reset()
     {
         Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");
 
-        RemoveCurrentPlayer();
-
         boardView.Reset();
-        picker.Reset();
 
         score = 0;
         dataService.UpdateScore(score);
@@ -232,7 +220,7 @@ public class GameManager : MonoBehaviour
         dataService.SetState(state);
 
         EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });   // prepare systems not owned by the game manager
-        SpawnNewPlayer();
+        //SpawnNewPlayer();
     }
 
     public void RunTutorial()
@@ -255,28 +243,4 @@ public class GameManager : MonoBehaviour
         Reset();
     }
 
-
-    // player helpers
-    private void SpawnNewPlayer()
-    {
-        Debug.Assert(!activePlayer, "Tried to spawn while player active");
-
-        if (state == GameState.Inactive) return;      // don't respawn on game over
-        
-        var playerColors = picker.CalculateNewPlayerColors();
-        EventBus.Publish(new SpawnPlayerEvent { Color = playerColors.Color, NextColor = playerColors.NextColor });
-
-        activePlayer = true;
-
-        dataService.SavePlayerColors(playerColors.Color, playerColors.NextColor);
-    }
-
-    private void RemoveCurrentPlayer()
-    {
-        Debug.Assert(activePlayer, "Tried to remove when no active player");
-
-        EventBus.Publish(new DestroyPlayerEvent());
-
-        activePlayer = false;
-    }
 }

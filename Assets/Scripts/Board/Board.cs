@@ -2,18 +2,12 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using PlayResult = BoardLogic.PlayResult;
-
-// rename to board - this is the root object for all other board components
-
-// todo: fix board geometry to no longer hard code anything
-// also, this should be the only script accessing its values
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(PieceRegistry))]
 [RequireComponent(typeof(GhostPreview))]
-public class BoardView : MonoBehaviour
+public class Board : MonoBehaviour
 {
     // ================================
     // Events
@@ -103,6 +97,8 @@ public class BoardView : MonoBehaviour
     private void OnStartGame(StartGameEvent e)
     {
         spriteRenderer.gameObject.SetActive(true);
+
+        pieceRegistry.SpawnNewPlayer();
     }
 
     private void OnExitGame(ExitGameEvent e)
@@ -135,16 +131,24 @@ public class BoardView : MonoBehaviour
         Vector3 newPosition = geometry.BoardIndexToTransform(index);
         pieceRegistry.PlacePlayer(newPosition, index);
 
+        // full board check
+
         if (result.Points > 0)
         {
             // animation sequence, also removes the instances from the board
             StartCoroutine(WinAnimationRoutine(result, index));
 
+            // update points
+
             // keep for audio manager
             EventBus.Publish(new WinEvent());
         }
 
-        TurnCompleted?.Invoke(result.FullBoard, result.Points, (index.x, index.y));
+        pieceRegistry.SpawnNewPlayer();
+
+        // save the turn, players, points, all of it to one save method
+
+        TurnCompleted?.Invoke(result.FullBoard, result.Points, (index.x, index.y)); // remove this
     }
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)
