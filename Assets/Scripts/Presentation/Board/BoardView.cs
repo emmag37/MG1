@@ -118,9 +118,6 @@ public class BoardView : MonoBehaviour
         boardController.TryPlacePlayer(index, e.Color, newPosition);
     }
 
-    // on player dragging
-    // start ghost preview routine
-
     private void OnWin(WinEvent e)  // need to subscribe
     {
         StartCoroutine(WinAnimationRoutine(e));
@@ -133,7 +130,10 @@ public class BoardView : MonoBehaviour
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)
     {
-        boardController.TryGhostPreview(index, color, (color != CellColor.Empty));
+        if (boardController.IsIndexOpen(index, color))
+        {
+            ghostPreview.SetPreview(index);
+        }
     }
     
 

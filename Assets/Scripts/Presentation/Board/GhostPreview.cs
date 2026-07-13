@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-
+// deprecate the GhostPreviewEvent on the event bus
 public class GhostPreview : MonoBehaviour
 {
     // ================================
@@ -13,10 +13,10 @@ public class GhostPreview : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
+    [SerializeField] private SpriteRenderer shadowSprite;
     private BoardGeometry geometry;
 
     private Coroutine preview;
-
     private bool previewSet;
     private Vector2Int previewIndex;
 
@@ -49,6 +49,22 @@ public class GhostPreview : MonoBehaviour
         geometry = boardGeometry;
 
         previewSet = false;
+        shadowSprite.enabled = false;
+    }
+
+
+    // ================================
+    // Public Methods
+    // ================================
+
+    public void SetPreview(Vector2Int index)
+    {
+        // set the preview
+        previewSet = true;
+        previewIndex = index;
+
+        shadowSprite.transform.position = geometry.BoardIndexToTransform(index);
+        shadowSprite.enabled = true;
     }
 
 
@@ -59,8 +75,6 @@ public class GhostPreview : MonoBehaviour
     private void OnPlayerDragging(PlayerDraggingEvent e)
     {
         // start the ghost preview
-        EventBus.Subscribe<GhostPreviewEvent>(OnPreview);
-
         preview = StartCoroutine(PreviewLoop(e.PlayerTransform, e.Color));
     }
 
@@ -68,18 +82,7 @@ public class GhostPreview : MonoBehaviour
     {
         // stop the ghost preview
         StopCoroutine(preview);
-
         previewSet = false;
-
-        EventBus.Unsubscribe<GhostPreviewEvent>(OnPreview);
-    }
-
-    private void OnPreview(GhostPreviewEvent e)
-    {
-        if (!e.On) return;
-
-        previewSet = true;
-        previewIndex = e.Index;
     }
 
 
@@ -121,7 +124,9 @@ public class GhostPreview : MonoBehaviour
     private void ClearPreview()
     {
         previewSet = false;
-        TryGhostPreview?.Invoke(previewIndex, CellColor.Empty);
+
+        // clear the preview sprite
+        shadowSprite.enabled = false;
     }
 
 }

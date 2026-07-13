@@ -61,13 +61,6 @@ public struct PlacePlayerEvent
     public CellColor Color;
 }
 
-// update ghost preview
-public struct GhostPreviewEvent
-{
-    public Vector2Int Index;
-    public bool On;
-}
-
 // continue tutorial
 public struct TutorialStepCompleteEvent
 {
