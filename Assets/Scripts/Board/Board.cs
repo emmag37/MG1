@@ -41,18 +41,12 @@ public class Board : MonoBehaviour
     void OnEnable()
     {
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
-        EventBus.Subscribe<GameOverEvent>(OnGameOver);
-
         EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
-        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
-
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
     }
 
@@ -101,26 +95,19 @@ public class Board : MonoBehaviour
         pieceRegistry.ResetPieces();
     }
 
+    public void PauseGame(bool pause)
+    {
+        pieceRegistry.PausePlayer(pause);
+    }
+
     // ================================
     // Game State Event Handlers
     // ================================
 
     private void OnStartGame(StartGameEvent e)
     {
-        spriteRenderer.gameObject.SetActive(true);
         pieceRegistry.SpawnNewPlayer();
     }
-
-    private void OnExitGame(ExitGameEvent e)
-    {
-        spriteRenderer.gameObject.SetActive(true);
-    }
-
-    private void OnGameOver(GameOverEvent e)
-    {
-        spriteRenderer.gameObject.SetActive(false);
-    }
-
 
     // ================================
     // Player/Board Event Handlers

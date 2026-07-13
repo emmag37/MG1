@@ -40,7 +40,6 @@ public class HUDController : MonoBehaviour
     void OnEnable()
     {
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Subscribe<SpawnPlayerEvent>(OnPlayerPreviewUpdate);
@@ -50,7 +49,6 @@ public class HUDController : MonoBehaviour
     void OnDisable()
     {
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
 
         EventBus.Subscribe<SpawnPlayerEvent>(OnPlayerPreviewUpdate);
@@ -69,11 +67,6 @@ public class HUDController : MonoBehaviour
         UpdateScore(e.Data.Score, e.Data.HighScore);
 
         HUDPanel.gameObject.SetActive(true);
-    }
-
-    private void OnExitGame(ExitGameEvent e)
-    {
-        HUDPanel.gameObject.SetActive(false);
     }
 
     private void OnGameOver(GameOverEvent e)

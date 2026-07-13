@@ -9,9 +9,7 @@ public struct StartGameEvent
 {
     public IGameData Data;
 }
-public struct ExitGameEvent { } 
-public struct PauseGameEvent { }
-public struct ResumeGameEvent { }
+
 public struct GameOverEvent
 {
     public IGameData Data;

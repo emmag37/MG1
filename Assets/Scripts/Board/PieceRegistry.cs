@@ -24,23 +24,6 @@ public class PieceRegistry : MonoBehaviour
 
 
     // ==================================================
-    // Unity Lifecycle
-    // ==================================================
-
-    void OnEnable()
-    {
-        EventBus.Subscribe<PauseGameEvent>(OnPausePlayer);
-        EventBus.Subscribe<ResumeGameEvent>(OnResumePlayer);
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<PauseGameEvent>(OnPausePlayer);
-        EventBus.Unsubscribe<ResumeGameEvent>(OnResumePlayer);
-    }
-
-
-    // ==================================================
     // Initializer
     // ==================================================
 
@@ -90,6 +73,11 @@ public class PieceRegistry : MonoBehaviour
     public void ReturnPlayerToStart()
     {
         playerPiece.ReturnPlayer();
+    }
+
+    public void PausePlayer(bool pause)
+    {
+        playerPiece.Pause(pause);   // pauses/resumes the player movement
     }
 
 
@@ -159,21 +147,6 @@ public class PieceRegistry : MonoBehaviour
         player.Pop();
 
         yield return new WaitUntil(() => cleared >= total);
-    }
-
-
-    // ==================================================
-    // Event Bus Methods
-    // ==================================================
-
-    private void OnPausePlayer(PauseGameEvent e)
-    {
-        playerPiece.enabled = false;
-    }
-
-    private void OnResumePlayer(ResumeGameEvent e)
-    {
-        playerPiece.enabled = true;
     }
 
     // ==================================================

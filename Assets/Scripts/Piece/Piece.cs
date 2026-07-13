@@ -100,6 +100,11 @@ public class Piece : MonoBehaviour
         animator.SetTrigger("PopCell");
     }
 
+    public void Pause(bool pause)
+    {
+        dragAndDrop.enabled = !pause;       // pauses/resumes the player movement
+    }
+
     // ==================================================
     // Local Event Handlers
     // ==================================================

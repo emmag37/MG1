@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private Board boardView;
+    [SerializeField] private Board board;
     [SerializeField] private TutorialController tutorial;
 
     // ================================
@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     void OnDestroy()
     {
-        boardView.FullBoard -= HandleFullBoard;
+        board.FullBoard -= HandleFullBoard;
         tutorial.TutorialComplete -= HandleTutorialComplete;
     }
 
@@ -45,9 +45,9 @@ public class GameManager : MonoBehaviour
     {
         this.dataService = dataService;
 
-        boardView.Initialize(dataService);
+        board.Initialize(dataService);
 
-        boardView.FullBoard += HandleFullBoard;
+        board.FullBoard += HandleFullBoard;
         tutorial.TutorialComplete += HandleTutorialComplete;
 
         highScore = dataService.GetGameData().HighScore;
@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
         else if (state == GameState.Active && !playEnabled)
         {
             playEnabled = true;
-            EventBus.Publish(new ResumeGameEvent());                                            // resume gameplay
+            board.PauseGame(false);                                            // resume gameplay
         }
         else if (state == GameState.Active && playEnabled && !gameLoaded)
         {
@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Active, $"Pause called with non-active state, state = {state}");
 
         playEnabled = false;
-        EventBus.Publish(new PauseGameEvent());
+        board.PauseGame(true);
     }
 
     public void Restart()
@@ -187,7 +187,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");
 
-        boardView.Reset();
+        board.Reset();
 
         score = 0;
         dataService.UpdateScore(score);

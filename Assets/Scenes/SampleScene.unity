@@ -3860,7 +3860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78ac11d5991004d8da5b5a6b5c61ab82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  boardView: {fileID: 1798150614}
+  board: {fileID: 1798150614}
   tutorial: {fileID: 1413417920}
 --- !u!1 &372002863
 GameObject:
@@ -13952,7 +13952,6 @@ GameObject:
   - component: {fileID: 1798150610}
   - component: {fileID: 1798150611}
   - component: {fileID: 1798150614}
-  - component: {fileID: 1798150613}
   - component: {fileID: 1798150612}
   - component: {fileID: 1798150615}
   m_Layer: 6
@@ -14110,18 +14109,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PieceRegistry
   spawnPoint: {fileID: 801581748}
   piecePrefab: {fileID: 8968158989547615814, guid: 30e2eda7f13b247728427c3a27c12b2a, type: 3}
---- !u!114 &1798150613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798150608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8abc9f8292c3f48d2bd6ac6528a6982d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BoardController
 --- !u!114 &1798150614
 MonoBehaviour:
   m_ObjectHideFlags: 0

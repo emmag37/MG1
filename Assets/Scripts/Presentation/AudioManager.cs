@@ -46,7 +46,6 @@ public class AudioManager : MonoBehaviour
         // game state events
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<ExitGameEvent>(OnExitGame);
 
         // game play events
         EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDrag);
@@ -59,7 +58,6 @@ public class AudioManager : MonoBehaviour
         // game state events
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-        EventBus.Unsubscribe<ExitGameEvent>(OnExitGame);
 
         // game play events
         EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDrag);
@@ -157,14 +155,6 @@ public class AudioManager : MonoBehaviour
         musicSource.Stop();
 
         musicSource.clip = gameMusic;
-        if (musicOn) musicSource.Play();
-    }
-
-    private void OnExitGame(ExitGameEvent e)
-    {
-        musicSource.Stop();
-
-        musicSource.clip = UIMusic;
         if (musicOn) musicSource.Play();
     }
 }
