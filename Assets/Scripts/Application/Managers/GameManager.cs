@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private BoardController board;
+    [SerializeField] private BoardController board;     // remove
     [SerializeField] private TutorialController tutorial;
 
     // ================================
@@ -202,7 +202,7 @@ public class GameManager : MonoBehaviour
         foreach (CellEntry cell in game.Board.Cells)
         {
             Debug.Log($"add item: ({cell.x}, {cell.y}), {cell.color}");
-            board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
+            //board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
         }
 
         // load the current score and players

@@ -29,16 +29,6 @@ public class Piece : MonoBehaviour
 
 
     // ==================================================
-    // Unity Lifecycle
-    // ==================================================
-
-    void Awake()
-    {
-        EventBus.Subscribe<ReturnPlayerEvent>(OnReturnPlayer);
-    }
-
-
-    // ==================================================
     // Initialization
     // ==================================================
 
@@ -98,21 +88,16 @@ public class Piece : MonoBehaviour
         TurnOffPlayer();
     }
 
+    public void ReturnPlayer()
+    {
+        dragAndDrop.Drop(startPos);
+    }
+
     public void Pop()
     {
         Debug.Assert(!dragAndDrop.enabled, "Attempted pop animation on active player");
 
         animator.SetTrigger("PopCell");
-    }
-
-
-    // ==================================================
-    // Event Bus Methods
-    // ==================================================
-
-    private void OnReturnPlayer(ReturnPlayerEvent e)
-    {
-        dragAndDrop.Drop(startPos);
     }
 
     // ==================================================
@@ -152,8 +137,6 @@ public class Piece : MonoBehaviour
         dragAndDrop.StartDrag -= HandleStartDrag;
         dragAndDrop.Released -= HandleReleased;
         dragAndDrop.enabled = false;
-
-        EventBus.Unsubscribe<ReturnPlayerEvent>(OnReturnPlayer);
 
         spriteRenderer.sortingOrder = 2;    // object reference not set to instance of object
     }

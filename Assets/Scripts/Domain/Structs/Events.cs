@@ -51,7 +51,7 @@ public struct WinEvent
 }
 
 // update player view
-public struct ReturnPlayerEvent { }
+//public struct ReturnPlayerEvent { }
 public struct PlacePlayerEvent
 {
     public Vector3 PlayerPosition;

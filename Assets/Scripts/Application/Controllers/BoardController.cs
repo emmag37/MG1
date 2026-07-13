@@ -45,7 +45,8 @@ public class BoardController: MonoBehaviour
     // Public Methods
     // ================================
 
-    public void TryPlacePlayer(Vector2Int index, CellColor color, Vector3 newPosition)
+    /*
+    public void TryPlacePlayer(Vector2Int index, CellColor color, Vector3 newPosition)  // board view 121
     {
         if (!logic.ValidCell(index.x, index.y, color))
         {
@@ -61,13 +62,7 @@ public class BoardController: MonoBehaviour
         });
 
         RunPlay(index, color);
-    }
-
-    // used for the ghost preview
-    public bool IsIndexOpen(Vector2Int index, CellColor color)
-    {
-        return logic.ValidCell(index.x, index.y, color);
-    }
+    }*/
     
     /// <summary>
 	/// Resets the board to empty cells.
@@ -80,22 +75,24 @@ public class BoardController: MonoBehaviour
 
     // tutorial method
     // deprecate
+    /*
     public void ClearPieces()
     {
         Reset();
 
         EventBus.Publish(new ResetEvent()); // alerts the grid to clear pieces
     }
-
+    
     // used by the tutorial to make sure specific positions are live for players
     public void SetLiveZone((int, int)[] indices)
     {
         logic.AddLiveZone(indices);
     }
-
+    */
     // used by the tutorial and for loading in previous game state
     // note - assumes that there are no players in existence
     // this function is broken
+    /*
     public void AddNonPlayer(Vector2Int index, CellColor color)
     {
         // add image to grid - no players to listen to this
@@ -112,7 +109,7 @@ public class BoardController: MonoBehaviour
         {
             Debug.LogError($"Ran play with invalid index or color: {index}, {color}");
         }
-    }
+    } */
 
 
     // ================================

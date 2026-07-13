@@ -21,9 +21,11 @@ public class BoardView : MonoBehaviour
     // Private Fields
     // ================================
     private BoardGeometry geometry;
+    private BoardLogic logic;
+
     private SpriteRenderer spriteRenderer;
 
-    private BoardController boardController;
+    private BoardController boardController;        // just try to remove this
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
 
@@ -41,8 +43,9 @@ public class BoardView : MonoBehaviour
         ghostPreview = GetComponent<GhostPreview>();
 
         // initialize components
-        pieceRegistry.Initialize(spriteRenderer.bounds);
         geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
+        logic = new BoardLogic();
+        pieceRegistry.Initialize(spriteRenderer.bounds);
         ghostPreview.Initialize(geometry);
 
         // subscribe to events
@@ -115,10 +118,24 @@ public class BoardView : MonoBehaviour
         Vector2Int index = geometry.TransformToBoardIndex(e.PlayerPosition);
         Vector3 newPosition = geometry.BoardIndexToTransform(index);
 
-        boardController.TryPlacePlayer(index, e.Color, newPosition);
+        // try place player
+        if (!logic.ValidCell(index.x, index.y, e.Color))
+        {
+            pieceRegistry.ReturnPlayerToStart();
+            return;
+        }
+
+        EventBus.Publish(new PlacePlayerEvent
+        {
+            PlayerPosition = newPosition,
+            Index = index,
+            Color = e.Color
+        });
+
+        //RunPlay(index, color);
     }
 
-    private void OnWin(WinEvent e)  // need to subscribe
+    private void OnWin(WinEvent e)
     {
         StartCoroutine(WinAnimationRoutine(e));
     }
@@ -130,7 +147,7 @@ public class BoardView : MonoBehaviour
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)
     {
-        if (boardController.IsIndexOpen(index, color))
+        if (logic.ValidCell(index.x, index.y, color))
         {
             ghostPreview.SetPreview(index);
         }

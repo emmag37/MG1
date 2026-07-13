@@ -4,6 +4,7 @@ using System;
 // bug with ghost preview - turns on once but then not again?
 public class TutorialController : MonoBehaviour
 {
+    
     // ==================================================
     // Constants
     // ==================================================
@@ -21,24 +22,24 @@ public class TutorialController : MonoBehaviour
     // Private Fields
     // ==================================================
 
-    private BoardController board;
-    private int currentStep;
+    //private BoardController board;
+    //private int currentStep;
 
-    private bool activePlayer = false;
-    private bool activeZone = false;    // true when the live areas of the board have changed
+    //private bool activePlayer = false;
+    //private bool activeZone = false;    // true when the live areas of the board have changed
 
     // ==================================================
     // Unity Lifecycle
-    // ==================================================
+    // =================================================
 
     void OnEnable()
     {
-        EventBus.Subscribe<ScoreAnimationEvent>(OnAnimationComplete);
+        //EventBus.Subscribe<ScoreAnimationEvent>(OnAnimationComplete);
     }
 
     void OnDisable()
     {
-        EventBus.Unsubscribe<ScoreAnimationEvent>(OnAnimationComplete);
+        //EventBus.Unsubscribe<ScoreAnimationEvent>(OnAnimationComplete);
     }
 
     // ==================================================
@@ -47,7 +48,7 @@ public class TutorialController : MonoBehaviour
 
     public void Initialize(BoardController board)
     {
-        this.board = board;
+        //this.board = board;
     }
 
     // ==================================================
@@ -56,32 +57,36 @@ public class TutorialController : MonoBehaviour
 
     public void StartTutorial()
     {
+        /*
         // step 0:
         currentStep = 0;
         SpawnPlayer(Color1);
         SetLiveZone(new (int, int)[] { (2, 2) });
 
         board.TurnCompleted += HandleTurnCompleted;
+        */
     }
 
     public void CompleteTutorial()
     {
+        /*
         // reset and clear the play space
         if (activePlayer) DestroyPlayer();
         if (activeZone) ResetZone();
         board.TurnCompleted -= HandleTurnCompleted;
-        board.Reset();
+        board.Reset(); */
 
         TutorialComplete?.Invoke();
 
-        Debug.Assert(!activePlayer && !activeZone, "Tutorial not properly reset");
+        //Debug.Assert(!activePlayer && !activeZone, "Tutorial not properly reset");
+        
     }
 
 
     // ==================================================
     // Event Handlers
     // ==================================================
-
+    /*
     // player placed on board
     private void HandleTurnCompleted(int points, (int, int) index)
     {
@@ -258,4 +263,5 @@ public class TutorialController : MonoBehaviour
         board.SetLiveZone(null);
         activeZone = false;
     }
+    */
 }

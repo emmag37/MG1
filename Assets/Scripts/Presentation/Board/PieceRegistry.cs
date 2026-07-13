@@ -73,6 +73,11 @@ public class PieceRegistry : MonoBehaviour
         return true;
     }
 
+    public void ReturnPlayerToStart()
+    {
+        playerPiece.ReturnPlayer();
+    }
+
     public void ResetPieces()
     {
         for (int i = 0; i < pieces.Length; i++)
