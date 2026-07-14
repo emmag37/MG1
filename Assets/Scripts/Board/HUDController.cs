@@ -45,15 +45,6 @@ public class HUDController : MonoBehaviour
         pauseButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Pause));
     }
 
-    void OnEnable()
-    {
-        EventBus.Subscribe<StartGameEvent>(OnStartGame);
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-    }
 
     // ================================
     // Public Methods
@@ -65,6 +56,18 @@ public class HUDController : MonoBehaviour
 
         score = 0;
         highScore = gameData.GetGameData().HighScore;
+        UpdateScoreText();
+    }
+
+    public void GameOver()
+    {
+        gameData.SetFinalScore(score);
+        HUDPanel.gameObject.SetActive(false);
+    }
+
+    public void Reset()
+    {
+        score = 0;
         UpdateScoreText();
     }
 
@@ -85,27 +88,6 @@ public class HUDController : MonoBehaviour
         }
 
         UpdateScoreText();
-    }
-
-    public void GameOver()
-    {
-        gameData.SetFinalScore(score);
-        HUDPanel.gameObject.SetActive(false);
-    }
-
-    public void Reset()
-    {
-        score = 0;
-    }
-
-
-    // ================================
-    // Event Handlers
-    // ================================
-
-    private void OnStartGame(StartGameEvent e)
-    {
-        HUDPanel.gameObject.SetActive(true);
     }
 
 

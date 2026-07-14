@@ -90,7 +90,8 @@ public class GameManager : MonoBehaviour
             Debug.Log("load game - turned off");
 
             //LoadGame();
-            EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });  // continue the gameplay
+            board.StartGame();
+            EventBus.Publish(new StartGameEvent());  // continue the gameplay
 
             gameLoaded = true;
         }
@@ -174,8 +175,6 @@ public class GameManager : MonoBehaviour
     private void Reset()
     {
         Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");
-
-        dataService.ResetGame();
     }
 
     private void NewGame()
@@ -187,8 +186,8 @@ public class GameManager : MonoBehaviour
         state = GameState.Active;
         dataService.SetState(state);
 
-        EventBus.Publish(new StartGameEvent { Data = dataService.GetGameData() });   // prepare systems not owned by the game manager
-        //SpawnNewPlayer();
+        board.StartGame();
+        EventBus.Publish(new StartGameEvent());   // prepare systems not owned by the game manager
     }
 
     public void RunTutorial()

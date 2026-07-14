@@ -33,27 +33,6 @@ public class Board : MonoBehaviour
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
 
-    // ================================
-    // Unity Lifecycle Methods
-    // ================================
-
-    void OnEnable()
-    {
-        EventBus.Subscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-        EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
-    }
-
-    void OnDestroy()
-    {
-        ghostPreview.TryGhostPreview -= HandleGhostPreview;
-    }
-
 
     // ================================
     // Initializers
@@ -74,18 +53,28 @@ public class Board : MonoBehaviour
         pieceRegistry.Initialize(spriteRenderer.bounds);
         ghostPreview.Initialize(geometry);
         hUD.Initialize(dataService);
-
-        // subscribe to events
-        ghostPreview.TryGhostPreview += HandleGhostPreview;
     }
 
     // ================================
     // Public Methods
     // ================================
 
-    public void SetCellColor(Vector2Int index, CellColor color)
+    public void StartGame()
     {
-        pieceRegistry.TrySetPieceColor(index, color);
+        Reset();
+
+        // subscribe to events
+        ghostPreview.TryGhostPreview += HandleGhostPreview;
+        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
+
+        var colors = pieceRegistry.SpawnNewPlayer();
+        gameData.SavePlayerColors(colors.Color, colors.NextColor);
+    }
+
+    
+    public void PauseGame(bool pause)
+    {
+        pieceRegistry.PausePlayer(pause);
     }
 
     public void Reset()
@@ -93,21 +82,12 @@ public class Board : MonoBehaviour
         logic.ResetBoard();
         pieceRegistry.ResetPieces();
         hUD.Reset();
+        gameData.ResetGame();
     }
 
-    public void PauseGame(bool pause)
+    public void SetCellColor(Vector2Int index, CellColor color)
     {
-        pieceRegistry.PausePlayer(pause);
-    }
-
-    // ================================
-    // Game State Event Handlers
-    // ================================
-
-    private void OnStartGame(StartGameEvent e)
-    {
-        var colors = pieceRegistry.SpawnNewPlayer();
-        gameData.SavePlayerColors(colors.Color, colors.NextColor);
+        pieceRegistry.TrySetPieceColor(index, color);
     }
 
     // ================================
@@ -129,7 +109,6 @@ public class Board : MonoBehaviour
         Vector3 newPosition = geometry.BoardIndexToTransform(index);
         pieceRegistry.PlacePlayer(newPosition, index);
 
-        // final piece - all game over events (besides UIManager and audio manager) run through here
         if (result.FullBoard)
         {
             GameOver();
@@ -177,11 +156,14 @@ public class Board : MonoBehaviour
     // Private Functions
     // ================================
 
-    private void GameOver()
+    private void GameOver() // will likely need another place to unsubscribe so this always happens
     {
         hUD.GameOver();
-        Reset();
         FullBoard?.Invoke();
+
+        // unsubscribe from events
+        ghostPreview.TryGhostPreview -= HandleGhostPreview;
+        EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
     }
 
 }
