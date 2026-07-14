@@ -61,13 +61,11 @@ public class GameBootstrap : MonoBehaviour
         // if tutorial, prepare the tutorial sequence
         // if active game, load in the game
 
-        Debug.Log("check active game");
-
         if (!(settingsService.GetSettings().HasLaunched))
         {
         }
         else if (gameDataService.GetGameData().InProgress)
-            LoadGame();
+            board.LoadGame();
         
 
         // always open a fresh new game with the home view
@@ -128,16 +126,6 @@ public class GameBootstrap : MonoBehaviour
         uiManager.ClearOverlayView -= popUpViewController.HandleClear;
 
         uiManager.SkipTutorial -= tutorialViewController.HandleSkipTutorial;
-    }
-
-
-    // ==================================================
-    // Load Methods
-    // ==================================================
-
-    private void LoadGame()
-    {
-        Debug.Log("Load game");
     }
 
 

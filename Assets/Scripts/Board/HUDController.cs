@@ -54,8 +54,9 @@ public class HUDController : MonoBehaviour
     {
         this.gameData = gameData;
 
-        score = 0;
+        score = gameData.GetGamePlayData().CurrentScore;    // reliably resets, should always be accurate
         highScore = gameData.GetGameData().HighScore;
+
         UpdateScoreText();
     }
 

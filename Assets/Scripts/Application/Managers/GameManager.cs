@@ -30,10 +30,8 @@ public class GameManager
 
         board.Initialize(dataService);
 
-        if (dataService.GetGameData().InProgress == true)
+        if (dataService.GetGameData().InProgress == true)   // to subscribe to events
             SetInProgress(true);
-
-        SetInProgress(false);   // remove once you support data loading
     }
 
 

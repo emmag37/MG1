@@ -40,6 +40,7 @@ public class Board : MonoBehaviour
     // Initializers
     // ================================
 
+    // initialize with the game load data
     public void Initialize(GameDataService dataService)
     {
         gameData = dataService;
@@ -52,10 +53,12 @@ public class Board : MonoBehaviour
 
         // initialize components
         geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
-        logic = new BoardLogic();
-        pieceRegistry.Initialize(spriteRenderer.bounds);
+        logic = new BoardLogic();   // add an overloaded constructor
+        pieceRegistry.Initialize(spriteRenderer.bounds);    // add values to initialize the active game state
         ghostPreview.Initialize(geometry);
-        hUD.Initialize(dataService);
+        hUD.Initialize(dataService);    // add a method that uses data service to initialize itself
+
+        // subscribe to events if active game
     }
 
     // ================================
@@ -78,7 +81,18 @@ public class Board : MonoBehaviour
         gameData.SavePlayerColors(colors.Color, colors.NextColor);
     }
 
-    
+    public void LoadGame()
+    {
+        Debug.Log("Load game");
+
+        // populate the board
+            // need to add the players to logic
+            // need to add the players to piece registry
+
+        // spawn a player
+        // set the hud
+    }
+
     public void PauseGame(bool pause)
     {
         pieceRegistry.PausePlayer(pause);
