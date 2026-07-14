@@ -59,6 +59,7 @@ public class Board : MonoBehaviour
         hUD.Initialize(dataService);
 
         // subscribe to events if active game
+        if (dataService.GetGameData().InProgress) Subscribe();
     }
 
     // ================================
@@ -70,12 +71,7 @@ public class Board : MonoBehaviour
     {
         Reset();
 
-        if (!subscribed)    // should never double-subscribe
-        {
-            ghostPreview.TryGhostPreview += HandleGhostPreview;
-            EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
-            subscribed = true;
-        }
+        if (!subscribed) Subscribe();   // never double-subscribe
 
         pieceRegistry.SpawnNewPlayer();
     }
@@ -105,6 +101,8 @@ public class Board : MonoBehaviour
     // handles connection between logic and piece registry, crux that initiates a turn
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
+        Debug.Log("on player released");
+
         Vector2Int index = BoardGeometry.TransformToBoardIndex(e.PlayerPosition);
 
         // run the board logic - returns early if invalid index
@@ -175,4 +173,10 @@ public class Board : MonoBehaviour
         subscribed = false;
     }
 
+    private void Subscribe()
+    {
+        ghostPreview.TryGhostPreview += HandleGhostPreview;
+        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        subscribed = true;
+    }
 }

@@ -43,6 +43,7 @@ public class PieceRegistry : MonoBehaviour
 
         if (gameData.GetGameData().InProgress)
         {
+            // not getting its events set correctly
             SpawnNewPlayer(color: gameData.GetGamePlayData().CurrentPlayer);    // load the active player
 
             // load the pieces on the board
@@ -71,7 +72,7 @@ public class PieceRegistry : MonoBehaviour
         }
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-        playerPiece.Initialize(color, playerBounds);
+        playerPiece.InitializeAsPlayer(color, playerBounds);
 
         return nextColor;
     }
@@ -210,7 +211,14 @@ public class PieceRegistry : MonoBehaviour
 
     private void LoadBoardPieces(IReadOnlyList<CellEntry> cells)
     {
+        foreach(CellEntry cell in cells)
+        {
+            Vector2Int index = new Vector2Int(cell.x, cell.y);
+            Vector3 position = BoardGeometry.BoardIndexToTransform(index);
 
+            Piece newPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
+            newPiece.InitializeAsCell((CellColor)cell.color, position, playerBounds);
+        }
     }
 
 }

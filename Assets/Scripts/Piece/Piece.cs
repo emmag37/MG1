@@ -32,12 +32,31 @@ public class Piece : MonoBehaviour
     // Initialization
     // ==================================================
 
-    public void Initialize(CellColor playerColor, Bounds boundaries)
+    public void InitializeAsPlayer(CellColor playerColor, Bounds boundaries)
     {
+        Debug.Log("initialize as player");
         // initialize set values
         Color = playerColor;
         startPos = transform.position;
 
+        // cache and initialized attached components
+        InitializeComponents(boundaries);
+
+        // subscribe to events
+        dragAndDrop.StartDrag += HandleStartDrag;
+        dragAndDrop.Released += HandleReleased;
+    }
+
+    public void InitializeAsCell(CellColor color, Vector3 position, Bounds boundaries)
+    {
+        Color = color;
+        transform.position = position;
+
+        InitializeComponents(boundaries);
+    }
+
+    private void InitializeComponents(Bounds boundaries)
+    {
         // cache attached components
         spriteRenderer = GetComponent<SpriteRenderer>();
         dragAndDrop = GetComponent<Draggable>();
@@ -46,10 +65,6 @@ public class Piece : MonoBehaviour
         // initialize your components
         spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
         dragAndDrop.Initialize(spriteRenderer, boundaries);
-
-        // subscribe to events
-        dragAndDrop.StartDrag += HandleStartDrag;
-        dragAndDrop.Released += HandleReleased;
     }
 
 
