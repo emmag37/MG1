@@ -11,11 +11,6 @@ using PlayResult = BoardLogic.PlayResult;
 public class Board : MonoBehaviour
 {
     // ================================
-    // Events
-    // ================================
-    public event Action FullBoard;
-
-    // ================================
     // Inspector Fields
     // ================================
     [SerializeField] private ScoreAnimation scoreAnimation;
@@ -31,7 +26,7 @@ public class Board : MonoBehaviour
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
 
-    private bool subscribed;
+    private bool inProgress;
 
 
     // ================================
@@ -42,7 +37,7 @@ public class Board : MonoBehaviour
     public void Initialize(GameDataService dataService)
     {
         gameData = dataService;
-        subscribed = false;
+        inProgress = gameData.GetGameData().InProgress;
 
         // cache components
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -57,9 +52,9 @@ public class Board : MonoBehaviour
 
         // in-progress only initialization
         IReadOnlyList<CellEntry> cells = null;
-        if (dataService.GetGameData().InProgress)
+        if (inProgress)
         {
-            Subscribe();
+            SetInProgress(true);
             cells = dataService.GetGamePlayData().Board.Cells;
         }
         logic = new BoardLogic(cells);
@@ -70,13 +65,19 @@ public class Board : MonoBehaviour
     // ================================
 
     // reset on game start
-    public void FreshGame()
+    public void PlayGame(bool restart = false)
     {
-        Reset();
+        if (restart) SetInProgress(false);
 
-        if (!subscribed) Subscribe();   // never double-subscribe
+        // prepare a fresh game
+        if (!inProgress)
+        {
+            Reset();
+            if (!inProgress) SetInProgress(true);
+            pieceRegistry.SpawnNewPlayer();
+        }
 
-        pieceRegistry.SpawnNewPlayer();
+        EventBus.Publish(new StartGameEvent()); // for the audio
     }
 
     public void PauseGame(bool pause)
@@ -84,18 +85,16 @@ public class Board : MonoBehaviour
         pieceRegistry.PausePlayer(pause);
     }
 
-    public void Reset()
+    public void StartTutorial()
     {
-        logic.ResetBoard();
-        pieceRegistry.ResetPieces();
-        hUD.Reset();
-        gameData.ResetGame();
+        // start the tutorial
     }
 
-    public void SetCellColor(Vector2Int index, CellColor color)
+    public void SkipTutorial()
     {
-        pieceRegistry.TrySetPieceColor(index, color);
+        // skip to the end of the tutorial
     }
+
 
     // ================================
     // Player/Board Event Handlers
@@ -165,21 +164,37 @@ public class Board : MonoBehaviour
     // Private Functions
     // ================================
 
+    private void Reset()
+    {
+        logic.ResetBoard();
+        pieceRegistry.ResetPieces();
+        hUD.Reset();
+        gameData.ResetGame();
+    }
+
     private void GameOver()
     {
         hUD.GameOver();
-        FullBoard?.Invoke();
-
-        // unsubscribe from events
-        ghostPreview.TryGhostPreview -= HandleGhostPreview;
-        EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
-        subscribed = false;
+        SetInProgress(false);
+        EventBus.Publish(new GameOverEvent { Data = gameData.GetGameData() });
     }
 
-    private void Subscribe()
+    private void SetInProgress(bool inProgress)
     {
-        ghostPreview.TryGhostPreview += HandleGhostPreview;
-        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
-        subscribed = true;
+        Debug.Log($"set in progress: {inProgress}");
+
+        this.inProgress = inProgress;
+        gameData.SetInProgress(inProgress);
+
+        if (inProgress)
+        {
+            ghostPreview.TryGhostPreview += HandleGhostPreview;
+            EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        }
+        else
+        {
+            ghostPreview.TryGhostPreview -= HandleGhostPreview;
+            EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        }
     }
 }

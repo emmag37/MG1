@@ -23,7 +23,6 @@ public class GameBootstrap : MonoBehaviour
     private SettingsService settingsService;
     private GameDataService gameDataService;
 
-    private GameManager gameManager;
 
     // ==================================================
     // Unity Lifecycle
@@ -39,11 +38,11 @@ public class GameBootstrap : MonoBehaviour
         gameDataService = new GameDataService(disc, playerPrefs);
 
         board.Initialize(gameDataService);
-        gameManager = new GameManager(gameDataService, board);
 
         // initialize systems
+        uiManager.Initialize(settingsService, gameDataService, board);
+
         IUserSettings userSettings = settingsService.GetSettings();
-        uiManager.Initialize(settingsService, gameDataService, gameManager);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
 
         baseViewController.Initialize();

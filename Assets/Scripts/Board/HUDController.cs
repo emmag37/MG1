@@ -9,9 +9,6 @@ public class HUDController : MonoBehaviour
     // Inspector Fields
     // ================================
 
-    // to remove this reference, bind the action in your composition root
-    [SerializeField] private GameManager gameManager;   // to remove
-
     [SerializeField] private Image HUDPanel;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text highScoreText;

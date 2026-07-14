@@ -29,7 +29,7 @@ public class UIManager : MonoBehaviour
     private SettingsService settingsService;
     private GameDataService gameDataService;
 
-    private GameManager gameManager;
+    private Board board;
 
     private BaseViewType baseState = BaseViewType.None;
     private Stack<PopUpViewType> popUpStack = new Stack<PopUpViewType>();
@@ -58,11 +58,11 @@ public class UIManager : MonoBehaviour
     // Initialize
     // ==================================================
 
-    public void Initialize(SettingsService settingsService, GameDataService gameDataService, GameManager gameManager)
+    public void Initialize(SettingsService settingsService, GameDataService gameDataService, Board board)
     {
         this.settingsService = settingsService;
         this.gameDataService = gameDataService;
-        this.gameManager = gameManager;
+        this.board = board;
     }
 
 
@@ -116,21 +116,21 @@ public class UIManager : MonoBehaviour
         {
             // run tutorial
             Debug.Log("run tutorial");
-            gameManager.StartTutorial();
+            board.StartTutorial();
         }
         else if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
         {
-            gameManager.Restart();
+            board.PlayGame(restart: true);
         }
         else if (type == BaseViewType.GamePlay)
         {
             Debug.Log("attempt game play");
-            gameManager.Play();
+            board.PlayGame();
         }
         else if (baseState == BaseViewType.Tutorial && type == BaseViewType.Tutorial)         // signal for skip - only called when tutorial is active
         {
             SkipTutorial?.Invoke();
-            gameManager.SkipTutorial();
+            board.SkipTutorial();
             return;
         }
         
@@ -148,7 +148,7 @@ public class UIManager : MonoBehaviour
 
         if (type == PopUpViewType.Pause)
         {
-            gameManager.Pause(true);
+            board.PauseGame(true);
         }
         else if (type == PopUpViewType.Profile)
         {
@@ -168,7 +168,7 @@ public class UIManager : MonoBehaviour
 
         if (popUpStack.Peek() == PopUpViewType.Pause)
         {
-            gameManager.Pause(false);   // unpause
+            board.PauseGame(false);   // unpause
         }
 
         PopOverlayView?.Invoke();
