@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// move this to application?
+// First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
 {
     // ==================================================
@@ -8,7 +8,7 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     [SerializeField] private UIManager uiManager;
     [SerializeField] private AudioManager audioManager;
-    [SerializeField] private GameManager gameManager;
+    [SerializeField] private Board board;
 
     [SerializeField] private BaseViewController baseViewController;
     [SerializeField] private PopUpViewController popUpViewController;
@@ -23,6 +23,8 @@ public class GameBootstrap : MonoBehaviour
     private SettingsService settingsService;
     private GameDataService gameDataService;
 
+    private GameManager gameManager;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -36,9 +38,11 @@ public class GameBootstrap : MonoBehaviour
         settingsService = new SettingsService(playerPrefs);
         gameDataService = new GameDataService(disc, playerPrefs);
 
+        board.Initialize(gameDataService);
+        gameManager = new GameManager(gameDataService, board);
+
         // initialize systems
         IUserSettings userSettings = settingsService.GetSettings();
-
         uiManager.Initialize(settingsService, gameDataService, gameManager);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
 
@@ -52,10 +56,21 @@ public class GameBootstrap : MonoBehaviour
 
     void Start()
     {
-        gameManager.Initialize(gameDataService);    // requires all scripts to already be enabled
 
         // here is where you need to put the load in info
+        // if tutorial, prepare the tutorial sequence
+        // if active game, load in the game
 
+        Debug.Log("check active game");
+
+        if (!(settingsService.GetSettings().HasLaunched))
+        {
+        }
+        else if (gameDataService.GetGameData().InProgress)
+            LoadGame();
+        
+
+        // always open a fresh new game with the home view
         uiManager.ShowView(BaseViewType.Home, false);
         audioManager.Play();
     }
@@ -114,4 +129,16 @@ public class GameBootstrap : MonoBehaviour
 
         uiManager.SkipTutorial -= tutorialViewController.HandleSkipTutorial;
     }
+
+
+    // ==================================================
+    // Load Methods
+    // ==================================================
+
+    private void LoadGame()
+    {
+        Debug.Log("Load game");
+    }
+
+
 }

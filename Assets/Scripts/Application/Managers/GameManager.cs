@@ -5,33 +5,35 @@ using System;
 /// Controls the game states and initiates plays.
 /// Bridges communication between player instances, the board, and UI updates.
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager
 {
-    // ================================
-    // Inspector Fields
-    // ================================
-    [SerializeField] private Board board;
-    [SerializeField] private TutorialController tutorial;
-
     // ================================
     // Private Fields
     // ================================
     private GameDataService dataService;
+    private Board board;
+
+    // add back in tutorial
 
     private bool inProgress = false;
 
 
     // ================================
-    // Initialize
+    // Constructor
     // ================================
 
-    public void Initialize(GameDataService dataService)
+    // turn this into a constructor
+    public GameManager(GameDataService dataService, Board board)
     {
         this.dataService = dataService;
+        this.board = board;
 
         board.Initialize(dataService);
 
-        // set in progress to true if necessary
+        if (dataService.GetGameData().InProgress == true)
+            SetInProgress(true);
+
+        SetInProgress(false);   // remove once you support data loading
     }
 
 
@@ -45,7 +47,6 @@ public class GameManager : MonoBehaviour
     {
         // two options: game in progress, or not
         // if game in progress, you actually don't need to do anything
-        Debug.Log($"in progress: {inProgress}");
 
         if (inProgress) return;
 
@@ -59,7 +60,6 @@ public class GameManager : MonoBehaviour
     // pause == true to pause, pause == false to unpause
     public void Pause(bool pause)
     {
-        Debug.Log($"pause: {pause}");
         board.PauseGame(pause);
     }
 
@@ -100,7 +100,10 @@ public class GameManager : MonoBehaviour
     // always subscribes/unsubscribes when this state changes
     private void SetInProgress(bool inProgress)
     {
+        Debug.Log($"set in progress: {inProgress}");
+
         this.inProgress = inProgress;
+        dataService.SetInProgress(inProgress);
 
         if (inProgress)
             board.FullBoard += HandleFullBoard;

@@ -163,7 +163,7 @@ public class Board : MonoBehaviour
     // Private Functions
     // ================================
 
-    private void GameOver() // need to also unsubscribe on a reset, or just don't subscribe again
+    private void GameOver()
     {
         hUD.GameOver();
         FullBoard?.Invoke();

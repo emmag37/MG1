@@ -11,7 +11,7 @@ public static class SettingsKeys
 
 public static class GameDataKeys
 {
-    public const string State = "game.state";
+    public const string InProgress = "game.progress";
     public const string HighScore = "game.highScore";
 
     // for game play data only

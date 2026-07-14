@@ -103,8 +103,6 @@ public class UIManager : MonoBehaviour
             Transition?.Invoke();
         }
 
-        Debug.Log($"Show view: {type}, stack count: {popUpStack.Count}");
-
         // why is pause not coming off of the stack????
         if (popUpStack.Count > 0)
         {
@@ -114,11 +112,10 @@ public class UIManager : MonoBehaviour
         IUserSettings userSettings = settingsService.GetSettings();
         IGameData gameData = gameDataService.GetGameData();
 
-        if (type == BaseViewType.GamePlay && gameData.State == GameState.Tutorial)
+        if (type == BaseViewType.Tutorial)
         {
             // run tutorial
             Debug.Log("run tutorial");
-            type = BaseViewType.Tutorial;
             gameManager.StartTutorial();
         }
         else if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
@@ -163,18 +160,14 @@ public class UIManager : MonoBehaviour
 
         PushOverlayView?.Invoke(type, data);
         popUpStack.Push(type);
-
-        Debug.Log($"push count: {popUpStack.Count}");
     }
 
     public void PopOverlay()
     {
         ButtonPressed?.Invoke();
 
-        Debug.Log("pop overlay");
         if (popUpStack.Peek() == PopUpViewType.Pause)
         {
-            Debug.Log("pop pause");
             gameManager.Pause(false);   // unpause
         }
 
@@ -197,8 +190,6 @@ public class UIManager : MonoBehaviour
     // private functions
     private void ClearOverlay()
     {
-        Debug.Log("Clear overlay");
-
         while (popUpStack.Count > 0)
         {
             PopOverlay();

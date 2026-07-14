@@ -3816,52 +3816,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 338253964}
   m_CullTransparentMesh: 1
---- !u!1 &354018341
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 354018343}
-  - component: {fileID: 354018344}
-  m_Layer: 0
-  m_Name: Game Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &354018343
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 354018341}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.48, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &354018344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 354018341}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78ac11d5991004d8da5b5a6b5c61ab82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  board: {fileID: 1798150614}
-  tutorial: {fileID: 1413417920}
 --- !u!1 &372002863
 GameObject:
   m_ObjectHideFlags: 0
@@ -6242,7 +6196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameBootstrap
   uiManager: {fileID: 230092281}
   audioManager: {fileID: 1013720842}
-  gameManager: {fileID: 354018344}
+  board: {fileID: 1798150614}
   baseViewController: {fileID: 300198981}
   popUpViewController: {fileID: 1764461906}
   tutorialViewController: {fileID: 1413417921}
@@ -14189,7 +14143,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f58bf992b8c05450488d1d8f03a9dc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HUDController
-  gameManager: {fileID: 354018344}
   HUDPanel: {fileID: 1981156590}
   scoreText: {fileID: 2115315121}
   highScoreText: {fileID: 98315442}
@@ -16950,6 +16903,5 @@ SceneRoots:
   - {fileID: 2022480357}
   - {fileID: 1013720843}
   - {fileID: 230092282}
-  - {fileID: 354018343}
   - {fileID: 779006562}
   - {fileID: 55911020}

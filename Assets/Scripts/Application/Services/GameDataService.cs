@@ -38,10 +38,10 @@ public class GameDataService
     // ==================================================
 
     // game data methods
-    public void SetState(GameState state)
+    public void SetInProgress(bool inProgress)
     {
-        data.State = state;
-        playerPrefs.SetInt(GameDataKeys.State, (int)state);
+        data.InProgress = inProgress;
+        playerPrefs.SetBool(GameDataKeys.InProgress, inProgress);
     }
 
     public void UpdateHighScore(int highScore)
@@ -112,7 +112,7 @@ public class GameDataService
     private GameData Load()
     {
         GameData newData = new GameData(
-            state: (GameState)playerPrefs.GetInt(GameDataKeys.State, (int)GameState.Tutorial),  // always run tutorial for the first use
+            inProgress: playerPrefs.GetBool(GameDataKeys.InProgress, false),  // always run tutorial for the first use
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
             scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList,
