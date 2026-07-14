@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour
 {
+    public int Score => score;
+
     // ================================
     // Inspector Fields
     // ================================

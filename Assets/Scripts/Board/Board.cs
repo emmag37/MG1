@@ -106,7 +106,8 @@ public class Board : MonoBehaviour
 
     private void OnStartGame(StartGameEvent e)
     {
-        pieceRegistry.SpawnNewPlayer();
+        var colors = pieceRegistry.SpawnNewPlayer();
+        gameData.SavePlayerColors(colors.Color, colors.NextColor);
     }
 
     // ================================
@@ -140,8 +141,7 @@ public class Board : MonoBehaviour
         var playerColors = pieceRegistry.SpawnNewPlayer();
         hUD.SetPlayerPreview(playerColors.NextColor);
 
-        // gameData.SaveTurn(score, index);
-        // save player colors
+        gameData.SaveTurn(hUD.Score, index, playerColors);
     }
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)
