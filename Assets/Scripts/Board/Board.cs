@@ -11,6 +11,11 @@ using PlayResult = BoardLogic.PlayResult;
 public class Board : MonoBehaviour
 {
     // ================================
+    // Events
+    // ================================
+    public event Action FullBoard;  
+
+    // ================================
     // Inspector Fields
     // ================================
     [SerializeField] private ScoreAnimation scoreAnimation;
@@ -27,7 +32,6 @@ public class Board : MonoBehaviour
     private GhostPreview ghostPreview;
 
     private bool inProgress;
-
 
     // ================================
     // Initializers
@@ -176,7 +180,9 @@ public class Board : MonoBehaviour
     {
         hUD.GameOver();
         SetInProgress(false);
-        EventBus.Publish(new GameOverEvent { Data = gameData.GetGameData() });
+
+        FullBoard?.Invoke();
+        EventBus.Publish(new GameOverEvent());
     }
 
     private void SetInProgress(bool inProgress)

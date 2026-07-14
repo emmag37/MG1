@@ -46,12 +46,12 @@ public class UIManager : MonoBehaviour
 
     void OnEnable()
     {
-        EventBus.Subscribe<GameOverEvent>(OnGameOver);
+        board.FullBoard += HandleGameOver;
     }
 
     void OnDisable()
     {
-        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+        board.FullBoard -= HandleGameOver;
     }
 
     // ==================================================
@@ -179,7 +179,7 @@ public class UIManager : MonoBehaviour
     // Event Handlers
     // ==================================================
 
-    private void OnGameOver(GameOverEvent e)
+    private void HandleGameOver()
     {
         baseState = BaseViewType.GameOver;
         ShowBaseView?.Invoke(BaseViewType.GameOver, gameDataService.GetGameData());

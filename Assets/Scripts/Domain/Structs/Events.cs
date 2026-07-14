@@ -6,10 +6,7 @@ using UnityEngine;
 
 public struct StartGameEvent { }    // used in audio manager
 
-public struct GameOverEvent     // used in audio manager and ui manager
-{
-    public IGameData Data;
-}
+public struct GameOverEvent { }    // used in audio manager
 
 
 // ==================================================
