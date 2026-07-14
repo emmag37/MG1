@@ -33,6 +33,8 @@ public class Board : MonoBehaviour
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
 
+    private bool subscribed;
+
 
     // ================================
     // Initializers
@@ -41,6 +43,7 @@ public class Board : MonoBehaviour
     public void Initialize(GameDataService dataService)
     {
         gameData = dataService;
+        subscribed = false;
 
         // cache components
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -64,9 +67,12 @@ public class Board : MonoBehaviour
     {
         Reset();
 
-        // subscribe to events
-        ghostPreview.TryGhostPreview += HandleGhostPreview;
-        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        if (!subscribed)    // should never double-subscribe
+        {
+            ghostPreview.TryGhostPreview += HandleGhostPreview;
+            EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
+            subscribed = true;
+        }
 
         var colors = pieceRegistry.SpawnNewPlayer();
         gameData.SavePlayerColors(colors.Color, colors.NextColor);
@@ -157,7 +163,7 @@ public class Board : MonoBehaviour
     // Private Functions
     // ================================
 
-    private void GameOver() // will likely need another place to unsubscribe so this always happens
+    private void GameOver() // need to also unsubscribe on a reset, or just don't subscribe again
     {
         hUD.GameOver();
         FullBoard?.Invoke();
@@ -165,6 +171,7 @@ public class Board : MonoBehaviour
         // unsubscribe from events
         ghostPreview.TryGhostPreview -= HandleGhostPreview;
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
+        subscribed = false;
     }
 
 }
