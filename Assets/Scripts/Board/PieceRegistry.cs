@@ -96,7 +96,7 @@ public class PieceRegistry : MonoBehaviour
     public void ResetPieces()
     {
         picker.Reset();
-        DestroyPlayer();
+        if (playerPiece != null) DestroyPlayer();
 
         for (int i = 0; i < pieces.Length; i++)
         {
@@ -164,7 +164,7 @@ public class PieceRegistry : MonoBehaviour
 
     private void DestroyPlayer()
     {
-        Debug.Assert(playerPiece != null, "Tried to destroy non-existent player");
+        Debug.Assert(playerPiece != null, "Tried to destroy non-existent player");  // triggers on game over
 
         Destroy(playerPiece.gameObject);
         playerPiece = null;

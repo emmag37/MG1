@@ -15,27 +15,16 @@ public struct GameOverEvent
     public IGameData Data;
 }
 
-public struct SpawnPlayerEvent
-{
-    public CellColor NextColor;
-}
-
-public struct ScoreUpdateEvent
-{
-    public int Score;
-    public int HighScore;
-}
-
 
 // ==================================================
 // Board Events
 // ==================================================
 
 // game play
-public struct WinEvent { }
+public struct WinEvent { }  // only used by audio manager
 
 // update player view
-public struct PlacePlayerEvent { }
+public struct PlacePlayerEvent { }  // used in audio manager and tutorial controller view
 
 // continue tutorial
 public struct TutorialStepCompleteEvent
@@ -47,16 +36,16 @@ public struct TutorialStepCompleteEvent
 // Player Events
 // ==================================================
 
-public struct PlayerDraggingEvent
+public struct PlayerDraggingEvent       // audio manager, ghost preview
 {
     public Transform PlayerTransform;
     public CellColor Color;
 }
 
-public struct PlayerReleasedEvent
+public struct PlayerReleasedEvent       // board, ghost preview
 {
-    public Vector3 PlayerPosition;  // turn this into index
+    public Vector3 PlayerPosition;
     public CellColor Color;
 }
 
-public struct ScoreAnimationEvent { }
+public struct ScoreAnimationEvent { }   // only used in score animation

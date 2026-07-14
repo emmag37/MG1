@@ -129,7 +129,12 @@ public class Board : MonoBehaviour
         Vector3 newPosition = geometry.BoardIndexToTransform(index);
         pieceRegistry.PlacePlayer(newPosition, index);
 
-        if (result.FullBoard)   FullBoard?.Invoke();
+        // final piece - all game over events (besides UIManager and audio manager) run through here
+        if (result.FullBoard)
+        {
+            GameOver();
+            return;
+        }
 
         if (result.Points > 0)
         {
@@ -167,4 +172,16 @@ public class Board : MonoBehaviour
         Vector3 playerPos = geometry.BoardIndexToTransform(index);
         scoreAnimation.AnimateScore(piecesToClear.Points, playerPos);
     }
+
+    // ================================
+    // Private Functions
+    // ================================
+
+    private void GameOver()
+    {
+        hUD.GameOver();
+        Reset();
+        FullBoard?.Invoke();
+    }
+
 }

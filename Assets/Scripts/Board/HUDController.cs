@@ -48,13 +48,11 @@ public class HUDController : MonoBehaviour
     void OnEnable()
     {
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
-        EventBus.Subscribe<GameOverEvent>(OnGameOver);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
-        EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
     }
 
     // ================================
@@ -89,6 +87,12 @@ public class HUDController : MonoBehaviour
         UpdateScoreText();
     }
 
+    public void GameOver()
+    {
+        gameData.SetFinalScore(score);
+        HUDPanel.gameObject.SetActive(false);
+    }
+
     public void Reset()
     {
         score = 0;
@@ -99,20 +103,9 @@ public class HUDController : MonoBehaviour
     // Event Handlers
     // ================================
 
-    // fix
     private void OnStartGame(StartGameEvent e)
     {
-        Debug.Log("start game in HUD");
-
-        //UpdateScore(e.Data.Score, e.Data.HighScore);
-
         HUDPanel.gameObject.SetActive(true);
-    }
-
-    private void OnGameOver(GameOverEvent e)
-    {
-        gameData.SetFinalScore(score);
-        HUDPanel.gameObject.SetActive(false);
     }
 
 

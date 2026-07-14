@@ -175,8 +175,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");
 
-        board.Reset();
-
         dataService.ResetGame();
     }
 
