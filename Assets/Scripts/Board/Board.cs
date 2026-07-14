@@ -19,6 +19,7 @@ public class Board : MonoBehaviour
     // Inspector Fields
     // ================================
     [SerializeField] private ScoreAnimation scoreAnimation;
+    [SerializeField] private HUDController hUD;
 
     // ================================
     // Private Fields
@@ -31,8 +32,6 @@ public class Board : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
-
-    private int score = 0;      // considering giving this field its own script
 
     // ================================
     // Unity Lifecycle Methods
@@ -74,6 +73,7 @@ public class Board : MonoBehaviour
         logic = new BoardLogic();
         pieceRegistry.Initialize(spriteRenderer.bounds);
         ghostPreview.Initialize(geometry);
+        hUD.Initialize(dataService);
 
         // subscribe to events
         ghostPreview.TryGhostPreview += HandleGhostPreview;
@@ -90,9 +90,9 @@ public class Board : MonoBehaviour
 
     public void Reset()
     {
-        score = 0;
         logic.ResetBoard();
         pieceRegistry.ResetPieces();
+        hUD.Reset();
     }
 
     public void PauseGame(bool pause)
@@ -128,19 +128,17 @@ public class Board : MonoBehaviour
         Vector3 newPosition = geometry.BoardIndexToTransform(index);
         pieceRegistry.PlacePlayer(newPosition, index);
 
-        if (result.FullBoard) FullBoard?.Invoke();
+        if (result.FullBoard)   FullBoard?.Invoke();
 
         if (result.Points > 0)
         {
-            score += result.Points;
-            gameData.UpdateScore(score);    // updates high score prefab
-            EventBus.Publish(new ScoreUpdateEvent { Score = score, HighScore = gameData.GetGameData().HighScore });
-
+            hUD.AddPoints(result.Points);
             StartCoroutine(WinAnimationRoutine(result, index));
             EventBus.Publish(new WinEvent());   // keep for audio manager
         }
 
-        pieceRegistry.SpawnNewPlayer();
+        var playerColors = pieceRegistry.SpawnNewPlayer();
+        hUD.SetPlayerPreview(playerColors.NextColor);
 
         // gameData.SaveTurn(score, index);
         // save player colors

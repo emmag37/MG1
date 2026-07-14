@@ -14122,6 +14122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardView
   scoreAnimation: {fileID: 456301254}
+  hUD: {fileID: 1811068634}
 --- !u!114 &1798150615
 MonoBehaviour:
   m_ObjectHideFlags: 0

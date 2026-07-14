@@ -22,9 +22,6 @@ public class GameManager : MonoBehaviour
     private bool gameLoaded;
     private bool playEnabled;
 
-    private int score;
-    private int highScore;
-
 
     // ================================
     // Unity Lifecycle Methods
@@ -50,15 +47,11 @@ public class GameManager : MonoBehaviour
         board.FullBoard += HandleFullBoard;
         tutorial.TutorialComplete += HandleTutorialComplete;
 
-        highScore = dataService.GetGameData().HighScore;
         state = dataService.GetGameData().State;
-
 
         // initialize values
         playEnabled = true;
         gameLoaded = false;
-
-        score = 0;
     }
 
 
@@ -143,7 +136,6 @@ public class GameManager : MonoBehaviour
 
         state = GameState.Inactive;
         dataService.SetState(GameState.Inactive);
-        dataService.SetFinalScore(score);
 
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
         Reset();
@@ -175,10 +167,6 @@ public class GameManager : MonoBehaviour
             //board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
         }
 
-        // load the current score and players
-        score = game.CurrentScore;
-        dataService.UpdateScore(score);
-
         // this is not working properly
         //EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
     }
@@ -188,11 +176,6 @@ public class GameManager : MonoBehaviour
         Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");
 
         board.Reset();
-
-        score = 0;
-        dataService.UpdateScore(score);
-        highScore = dataService.GetGameData().HighScore;
-
 
         dataService.ResetGame();
     }

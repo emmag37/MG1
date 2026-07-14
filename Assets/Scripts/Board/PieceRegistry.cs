@@ -43,8 +43,7 @@ public class PieceRegistry : MonoBehaviour
     // Public Methods - Player
     // ==================================================
 
-    // returns the color of the player after this one to be spawned (for preview)
-    public void SpawnNewPlayer()
+    public PlayerPicker.PlayerColors SpawnNewPlayer()
     {
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
@@ -53,7 +52,7 @@ public class PieceRegistry : MonoBehaviour
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
         playerPiece.Initialize(playerColors.Color, playerBounds);
 
-        EventBus.Publish(new SpawnPlayerEvent { NextColor = playerColors.NextColor });  // for UI
+        return playerColors;
     }
 
     public void PlacePlayer(Vector3 position, Vector2Int index)
@@ -77,7 +76,7 @@ public class PieceRegistry : MonoBehaviour
 
     public void PausePlayer(bool pause)
     {
-        playerPiece.Pause(pause);   // pauses/resumes the player movement
+        playerPiece.Pause(pause);   
     }
 
 

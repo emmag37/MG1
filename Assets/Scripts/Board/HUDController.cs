@@ -17,8 +17,14 @@ public class HUDController : MonoBehaviour
 
     [SerializeField] private Button pauseButton;
 
-    // private fields
+    // ================================
+    // Private Fields
+    // ================================
     private UIManager Manager => UIManager.Instance;
+    private GameDataService gameData;
+
+    private int score;
+    private int highScore;
 
     // ================================
     // Unity Lifecycle Methods
@@ -41,18 +47,49 @@ public class HUDController : MonoBehaviour
     {
         EventBus.Subscribe<StartGameEvent>(OnStartGame);
         EventBus.Subscribe<GameOverEvent>(OnGameOver);
-
-        EventBus.Subscribe<SpawnPlayerEvent>(OnPlayerPreviewUpdate);
-        EventBus.Subscribe<ScoreUpdateEvent>(OnScoreUpdate);
     }
 
     void OnDisable()
     {
         EventBus.Unsubscribe<StartGameEvent>(OnStartGame);
         EventBus.Unsubscribe<GameOverEvent>(OnGameOver);
+    }
 
-        EventBus.Subscribe<SpawnPlayerEvent>(OnPlayerPreviewUpdate);
-        EventBus.Unsubscribe<ScoreUpdateEvent>(OnScoreUpdate);
+    // ================================
+    // Public Methods
+    // ================================
+
+    public void Initialize(GameDataService gameData)
+    {
+        this.gameData = gameData;
+
+        score = 0;
+        highScore = gameData.GetGameData().HighScore;
+        UpdateScoreText();
+    }
+
+    public void SetPlayerPreview(CellColor nextColor)
+    {
+        playerPreview.sprite = SpriteDatabase.Instance.GetSprite(nextColor);
+    }
+
+    public void AddPoints(int points)
+    {
+        if (points == 0) return;
+
+        score += points;
+        if (score > highScore)
+        {
+            highScore = points;
+            gameData.UpdateHighScore(highScore);
+        }
+
+        UpdateScoreText();
+    }
+
+    public void Reset()
+    {
+        score = 0;
     }
 
 
@@ -60,28 +97,20 @@ public class HUDController : MonoBehaviour
     // Event Handlers
     // ================================
 
+    // fix
     private void OnStartGame(StartGameEvent e)
     {
         Debug.Log("start game in HUD");
 
-        UpdateScore(e.Data.Score, e.Data.HighScore);
+        //UpdateScore(e.Data.Score, e.Data.HighScore);
 
         HUDPanel.gameObject.SetActive(true);
     }
 
     private void OnGameOver(GameOverEvent e)
     {
+        gameData.SetFinalScore(score);
         HUDPanel.gameObject.SetActive(false);
-    }
-
-    public void OnPlayerPreviewUpdate(SpawnPlayerEvent e)
-    {
-        playerPreview.sprite = SpriteDatabase.Instance.GetSprite(e.NextColor);
-    }
-
-    public void OnScoreUpdate(ScoreUpdateEvent e)
-    {
-        UpdateScore(e.Score, e.HighScore);
     }
 
 
@@ -89,7 +118,7 @@ public class HUDController : MonoBehaviour
     // Private Methods
     // ================================
 
-    private void UpdateScore(int score, int highScore)
+    private void UpdateScoreText()
     {
         scoreText.text = $"{score}";
         highScoreText.text = $"{highScore}";
