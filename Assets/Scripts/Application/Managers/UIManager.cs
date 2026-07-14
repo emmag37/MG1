@@ -117,7 +117,7 @@ public class UIManager : MonoBehaviour
             // run tutorial
             Debug.Log("run tutorial");
             type = BaseViewType.Tutorial;
-            gameManager.Play();
+            gameManager.StartTutorial();
         }
         else if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
         {
@@ -149,7 +149,7 @@ public class UIManager : MonoBehaviour
 
         if (type == PopUpViewType.Pause)
         {
-            gameManager.Pause();
+            gameManager.Pause(true);
         }
         else if (type == PopUpViewType.Profile)
         {
@@ -171,7 +171,7 @@ public class UIManager : MonoBehaviour
         if (popUpStack.Peek() == PopUpViewType.Pause)
         {
             Debug.Log("pop pause");
-            gameManager.Play();
+            gameManager.Pause(false);   // unpause
         }
 
         PopOverlayView?.Invoke();

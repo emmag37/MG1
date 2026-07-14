@@ -54,6 +54,8 @@ public class GameBootstrap : MonoBehaviour
     {
         gameManager.Initialize(gameDataService);    // requires all scripts to already be enabled
 
+        // here is where you need to put the load in info
+
         uiManager.ShowView(BaseViewType.Home, false);
         audioManager.Play();
     }

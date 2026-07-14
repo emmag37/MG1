@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour
     private GameDataService dataService;
 
     private GameState state;
-    private bool gameLoaded;
     private bool playEnabled;
 
 
@@ -51,7 +50,6 @@ public class GameManager : MonoBehaviour
 
         // initialize values
         playEnabled = true;
-        gameLoaded = false;
     }
 
 
@@ -63,12 +61,14 @@ public class GameManager : MonoBehaviour
     // results in active game state with play enabled
     public void Play()
     {
+
+
+
         Debug.Log($"state: {state}, enabled: {playEnabled}");
         if (state == GameState.Inactive && !playEnabled)                                        // restart
         {
             playEnabled = true;
 
-            Reset();
             NewGame();
         }
         else if (state == GameState.Inactive && playEnabled)   // fresh from home, game over
@@ -76,24 +76,17 @@ public class GameManager : MonoBehaviour
             Debug.Log("fresh game branch");
             NewGame(); // can assume all game elements are reset
         }
-        else if (state == GameState.Tutorial && playEnabled)
-        {
-            RunTutorial();
-        }
         else if (state == GameState.Active && !playEnabled)
         {
             playEnabled = true;
             board.PauseGame(false);                                            // resume gameplay
         }
-        else if (state == GameState.Active && playEnabled && !gameLoaded)
+        else if (state == GameState.Active && playEnabled)  // old game not loaded flag
         {
-            Debug.Log("load game - turned off");
+            // used to load game here
 
-            //LoadGame();
-            board.StartGame();
+            board.FreshGame();
             EventBus.Publish(new StartGameEvent());  // continue the gameplay
-
-            gameLoaded = true;
         }
         else
         {
@@ -102,12 +95,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Pause()
+    // pause == true to pause, pause == false to unpause
+    public void Pause(bool pause)
     {
         Debug.Assert(state == GameState.Active, $"Pause called with non-active state, state = {state}");
 
-        playEnabled = false;
-        board.PauseGame(true);
+        playEnabled = !pause;
+        board.PauseGame(pause);
     }
 
     public void Restart()
@@ -117,6 +111,14 @@ public class GameManager : MonoBehaviour
         dataService.SetState(GameState.Inactive);
 
         Play();
+    }
+
+    public void StartTutorial()
+    {
+        Debug.Assert(state == GameState.Tutorial, $"Tutorial run from state: {state}");
+
+        //tutorial.Initialize(board);
+        tutorial.StartTutorial();
     }
 
     public void SkipTutorial()
@@ -139,7 +141,6 @@ public class GameManager : MonoBehaviour
         dataService.SetState(GameState.Inactive);
 
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
-        Reset();
     }
 
     // tutorial finsihed event
@@ -156,27 +157,6 @@ public class GameManager : MonoBehaviour
     // Private Methods
     // ================================
 
-    // game state helpers
-    private void LoadGame()
-    {
-        IGamePlayData game = dataService.GetGamePlayData();
-
-        // load the board - must always load the board before players
-        foreach (CellEntry cell in game.Board.Cells)
-        {
-            Debug.Log($"add item: ({cell.x}, {cell.y}), {cell.color}");
-            //board.AddNonPlayer(new Vector2Int(cell.x, cell.y), (CellColor)cell.color);
-        }
-
-        // this is not working properly
-        //EventBus.Publish(new SpawnPlayerEvent { Color = game.CurrentPlayer, NextColor = game.NextPlayer });
-    }
-
-    private void Reset()
-    {
-        Debug.Assert(state == GameState.Inactive, $"Reset called from state: {state}");
-    }
-
     private void NewGame()
     {
         Debug.Assert(state == GameState.Inactive, $"New game called from state: {state}");
@@ -186,16 +166,8 @@ public class GameManager : MonoBehaviour
         state = GameState.Active;
         dataService.SetState(state);
 
-        board.StartGame();
+        board.FreshGame();
         EventBus.Publish(new StartGameEvent());   // prepare systems not owned by the game manager
-    }
-
-    public void RunTutorial()
-    {
-        Debug.Assert(state == GameState.Tutorial, $"Tutorial run from state: {state}");
-
-        //tutorial.Initialize(board);
-        tutorial.StartTutorial();
     }
 
 }

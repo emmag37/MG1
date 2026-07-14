@@ -59,7 +59,8 @@ public class Board : MonoBehaviour
     // Public Methods
     // ================================
 
-    public void StartGame()
+    // reset on game start
+    public void FreshGame()
     {
         Reset();
 
