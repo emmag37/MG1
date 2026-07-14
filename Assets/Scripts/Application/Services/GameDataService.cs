@@ -77,8 +77,8 @@ public class GameDataService
         disc.Save(GameDataFiles.BoardData, game.Board);
     }
 
-    // saves the score, spawned colors, and new cell on the grid
-    public void SaveTurn(int newScore, Vector2Int index, PlayerPicker.PlayerColors colors)
+    // saves the score and new cell on the grid
+    public void SaveTurn(int newScore, Vector2Int index)
     {
         // update the score
         if (newScore > game.CurrentScore)
@@ -86,9 +86,6 @@ public class GameDataService
             game.CurrentScore = newScore;
             playerPrefs.SetInt(GameDataKeys.CurrentScore, newScore);
         }
-
-        // update the player colors
-        SavePlayerColors(colors.Color, colors.NextColor);
 
         // update and save the spot on the board
         game.Board.Set(index.x, index.y, (int)game.CurrentPlayer);

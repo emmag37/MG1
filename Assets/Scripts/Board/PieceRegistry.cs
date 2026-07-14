@@ -14,6 +14,7 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
+    private GameDataService gameData;
     private PlayerPicker picker;
 
     private Piece playerPiece;
@@ -27,8 +28,10 @@ public class PieceRegistry : MonoBehaviour
     // Initializer
     // ==================================================
 
-    public void Initialize(Bounds boardBounds)
+    public void Initialize(Bounds boardBounds, GameDataService gameData)
     {
+        this.gameData = gameData;
+
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;
 
@@ -36,6 +39,14 @@ public class PieceRegistry : MonoBehaviour
         playerBounds.SetMinMax(min, playerBounds.max);
 
         picker = new PlayerPicker();
+
+        if (gameData.GetGameData().InProgress)
+        {
+            // load the active player
+            SpawnNewPlayer(color: gameData.GetGamePlayData().CurrentPlayer);
+
+            // load the pieces on the board
+        }
     }
 
 
@@ -43,16 +54,25 @@ public class PieceRegistry : MonoBehaviour
     // Public Methods - Player
     // ==================================================
 
-    public PlayerPicker.PlayerColors SpawnNewPlayer()
+    // returns the color of the next player to be spawned, not the current one
+    public CellColor SpawnNewPlayer(CellColor color = CellColor.Empty)
     {
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
-        var playerColors = picker.CalculateNewPlayerColors();
+        CellColor nextColor = CellColor.Empty;  // default for game load case
+        if (color == CellColor.Empty)
+        {
+            var playerColors = picker.CalculateNewPlayerColors();
+            color = playerColors.Color;
+            nextColor = playerColors.NextColor;
+
+            gameData.SavePlayerColors(color, nextColor);
+        }
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-        playerPiece.Initialize(playerColors.Color, playerBounds);
+        playerPiece.Initialize(color, playerBounds);
 
-        return playerColors;
+        return nextColor;
     }
 
     public void PlacePlayer(Vector3 position, Vector2Int index)

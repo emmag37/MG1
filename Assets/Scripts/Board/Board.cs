@@ -54,9 +54,10 @@ public class Board : MonoBehaviour
         // initialize components
         geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
         logic = new BoardLogic();   // add an overloaded constructor
-        pieceRegistry.Initialize(spriteRenderer.bounds);    // add values to initialize the active game state
+
+        pieceRegistry.Initialize(spriteRenderer.bounds, dataService);    // add values to initialize the active game state
         ghostPreview.Initialize(geometry);
-        hUD.Initialize(dataService);    // add a method that uses data service to initialize itself
+        hUD.Initialize(dataService);
 
         // subscribe to events if active game
     }
@@ -77,8 +78,7 @@ public class Board : MonoBehaviour
             subscribed = true;
         }
 
-        var colors = pieceRegistry.SpawnNewPlayer();
-        gameData.SavePlayerColors(colors.Color, colors.NextColor);
+        pieceRegistry.SpawnNewPlayer();
     }
 
     public void PauseGame(bool pause)
@@ -131,10 +131,10 @@ public class Board : MonoBehaviour
             EventBus.Publish(new WinEvent());   // keep for audio manager
         }
 
-        var playerColors = pieceRegistry.SpawnNewPlayer();
-        hUD.SetPlayerPreview(playerColors.NextColor);
+        CellColor nextColor = pieceRegistry.SpawnNewPlayer();
+        hUD.SetPlayerPreview(nextColor);
 
-        gameData.SaveTurn(hUD.Score, index, playerColors);
+        gameData.SaveTurn(hUD.Score, index);
     }
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)
