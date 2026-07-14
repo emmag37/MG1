@@ -51,15 +51,18 @@ public class Board : MonoBehaviour
 
         // initialize components
         BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);  // static class now
-
-        logic = new BoardLogic();   // add an overloaded constructor
-
         pieceRegistry.Initialize(spriteRenderer.bounds, dataService);    // add values to initialize the active game state
-        //ghostPreview.Initialize(geometry);  // edit this
+        ghostPreview.Initialize();
         hUD.Initialize(dataService);
 
-        // subscribe to events if active game
-        if (dataService.GetGameData().InProgress) Subscribe();
+        // in-progress only initialization
+        IReadOnlyList<CellEntry> cells = null;
+        if (dataService.GetGameData().InProgress)
+        {
+            Subscribe();
+            cells = dataService.GetGamePlayData().Board.Cells;
+        }
+        logic = new BoardLogic(cells);
     }
 
     // ================================

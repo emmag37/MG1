@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Manages a representation of the board.
@@ -60,9 +61,20 @@ public class BoardLogic
     /// <summary>
 	/// Initializes the board for a game.
 	/// </summary>
-    public BoardLogic()
+    public BoardLogic(IReadOnlyList<CellEntry> cells = null)
     {
-        ResetColors();
+        if (cells == null)
+        {
+            ResetColors();
+            return;
+        }
+
+        // load in the game
+        foreach (CellEntry cell in cells)
+        {
+            AddToBoard(cell.x, cell.y, (CellColor)cell.color);
+        }
+        
     }
 
     public CellColor GetCellColor(int row, int col)

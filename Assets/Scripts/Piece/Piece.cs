@@ -53,6 +53,8 @@ public class Piece : MonoBehaviour
         transform.position = position;
 
         InitializeComponents(boundaries);
+
+        spriteRenderer.sortingOrder = 2;
     }
 
     private void InitializeComponents(Bounds boundaries)
