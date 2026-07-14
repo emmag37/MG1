@@ -54,10 +54,17 @@ public class HUDController : MonoBehaviour
     {
         this.gameData = gameData;
 
+        // load score
         score = gameData.GetGamePlayData().CurrentScore;    // reliably resets, should always be accurate
         highScore = gameData.GetGameData().HighScore;
-
         UpdateScoreText();
+
+        // load preview data
+        if (gameData.GetGameData().InProgress)
+        {
+            CellColor preview = gameData.GetGamePlayData().NextPlayer;
+            SetPlayerPreview(preview);
+        }
     }
 
     public void GameOver()

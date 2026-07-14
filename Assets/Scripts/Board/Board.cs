@@ -81,18 +81,6 @@ public class Board : MonoBehaviour
         gameData.SavePlayerColors(colors.Color, colors.NextColor);
     }
 
-    public void LoadGame()
-    {
-        Debug.Log("Load game");
-
-        // populate the board
-            // need to add the players to logic
-            // need to add the players to piece registry
-
-        // spawn a player
-        // set the hud
-    }
-
     public void PauseGame(bool pause)
     {
         pieceRegistry.PausePlayer(pause);

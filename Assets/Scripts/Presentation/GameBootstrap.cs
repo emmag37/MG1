@@ -64,9 +64,6 @@ public class GameBootstrap : MonoBehaviour
         if (!(settingsService.GetSettings().HasLaunched))
         {
         }
-        else if (gameDataService.GetGameData().InProgress)
-            board.LoadGame();
-        
 
         // always open a fresh new game with the home view
         uiManager.ShowView(BaseViewType.Home, false);

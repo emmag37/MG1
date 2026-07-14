@@ -28,8 +28,6 @@ public class GameManager
         this.dataService = dataService;
         this.board = board;
 
-        board.Initialize(dataService);
-
         if (dataService.GetGameData().InProgress == true)   // to subscribe to events
             SetInProgress(true);
     }
