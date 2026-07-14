@@ -91,6 +91,8 @@ public class PopUpViewController : MonoBehaviour
 
         PopUpView overlayView = overlayStack.Peek();
 
+        Debug.Log($"Pop overlay: {overlayView.Type}");
+
         /* remove this - want to make this class generic for future projects
         Debug.Assert(!(overlayView.Type == PopUpViewType.Pause || overlayView.Type == PopUpViewType.Profile)
             || overlayStack.Count == 1,
@@ -112,6 +114,8 @@ public class PopUpViewController : MonoBehaviour
 
     private void ClearOverlay()
     {
+        Debug.Log("Clear overlay");
+
         while (overlayStack.Count > 0)
         {
             PopOverlay();

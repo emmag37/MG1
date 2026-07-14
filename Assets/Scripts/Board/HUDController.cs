@@ -62,7 +62,6 @@ public class HUDController : MonoBehaviour
     public void GameOver()
     {
         gameData.SetFinalScore(score);
-        HUDPanel.gameObject.SetActive(false);
     }
 
     public void Reset()

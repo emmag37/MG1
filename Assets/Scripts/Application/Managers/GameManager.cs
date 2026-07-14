@@ -18,17 +18,7 @@ public class GameManager : MonoBehaviour
     // ================================
     private GameDataService dataService;
 
-    private bool inProgress;
-
-
-    // ================================
-    // Unity Lifecycle Methods
-    // ================================
-
-    void OnDestroy()
-    {
-        board.FullBoard -= HandleFullBoard;
-    }
+    private bool inProgress = false;
 
 
     // ================================
@@ -40,9 +30,8 @@ public class GameManager : MonoBehaviour
         this.dataService = dataService;
 
         board.Initialize(dataService);
-        board.FullBoard += HandleFullBoard;
 
-        inProgress = false;
+        // set in progress to true if necessary
     }
 
 
@@ -64,18 +53,20 @@ public class GameManager : MonoBehaviour
         board.FreshGame();
         EventBus.Publish(new StartGameEvent());
 
-        inProgress = true;
+        SetInProgress(true);
     }
 
     // pause == true to pause, pause == false to unpause
     public void Pause(bool pause)
     {
+        Debug.Log($"pause: {pause}");
         board.PauseGame(pause);
     }
 
     public void Restart()
     {
-        inProgress = false;     // trigger a fresh game
+        SetInProgress(false);     // trigger a fresh game
+
         Play();
     }
 
@@ -96,8 +87,25 @@ public class GameManager : MonoBehaviour
 
     private void HandleFullBoard()
     {
-        inProgress = false;
+        SetInProgress(false);
+
         EventBus.Publish(new GameOverEvent { Data = dataService.GetGameData() });
+    }
+
+
+    // ================================
+    // Private Methods
+    // ================================
+
+    // always subscribes/unsubscribes when this state changes
+    private void SetInProgress(bool inProgress)
+    {
+        this.inProgress = inProgress;
+
+        if (inProgress)
+            board.FullBoard += HandleFullBoard;
+        else
+            board.FullBoard -= HandleFullBoard;
     }
 
 }
