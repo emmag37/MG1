@@ -55,6 +55,7 @@ public class Piece : MonoBehaviour
         InitializeComponents(boundaries);
 
         spriteRenderer.sortingOrder = 2;
+        dragAndDrop.enabled = false;
     }
 
     private void InitializeComponents(Bounds boundaries)

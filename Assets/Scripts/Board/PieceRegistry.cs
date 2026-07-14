@@ -205,6 +205,9 @@ public class PieceRegistry : MonoBehaviour
     {
         if (!pieces[index]) return;
 
+        Vector2Int idx = FlatToTwoDimIndex(index);
+        Debug.Log($"destroy piece at: {idx}");
+
         Destroy(pieces[index].gameObject);
         pieces[index] = null;
     }
@@ -218,6 +221,9 @@ public class PieceRegistry : MonoBehaviour
 
             Piece newPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
             newPiece.InitializeAsCell((CellColor)cell.color, position, playerBounds);
+
+            int flatIndex = TwoDimToFlatIndex(index);
+            pieces[flatIndex] = newPiece;
         }
     }
 
