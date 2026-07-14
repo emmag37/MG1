@@ -25,8 +25,6 @@ public class Board : MonoBehaviour
     // Private Fields
     // ================================
     private GameDataService gameData;
-
-    private BoardGeometry geometry;
     private BoardLogic logic;
 
     private SpriteRenderer spriteRenderer;
@@ -52,11 +50,12 @@ public class Board : MonoBehaviour
         ghostPreview = GetComponent<GhostPreview>();
 
         // initialize components
-        geometry = new BoardGeometry(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);
+        BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);  // static class now
+
         logic = new BoardLogic();   // add an overloaded constructor
 
         pieceRegistry.Initialize(spriteRenderer.bounds, dataService);    // add values to initialize the active game state
-        ghostPreview.Initialize(geometry);
+        //ghostPreview.Initialize(geometry);  // edit this
         hUD.Initialize(dataService);
 
         // subscribe to events if active game
@@ -106,7 +105,7 @@ public class Board : MonoBehaviour
     // handles connection between logic and piece registry, crux that initiates a turn
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        Vector2Int index = geometry.TransformToBoardIndex(e.PlayerPosition);
+        Vector2Int index = BoardGeometry.TransformToBoardIndex(e.PlayerPosition);
 
         // run the board logic - returns early if invalid index
         if (!logic.TryPlacePlayer(index.x, index.y, e.Color, out PlayResult result))     
@@ -115,7 +114,7 @@ public class Board : MonoBehaviour
             return;
         }
 
-        Vector3 newPosition = geometry.BoardIndexToTransform(index);
+        Vector3 newPosition = BoardGeometry.BoardIndexToTransform(index);
         pieceRegistry.PlacePlayer(newPosition, index);
 
         if (result.FullBoard)
@@ -157,7 +156,7 @@ public class Board : MonoBehaviour
         yield return pieceRegistry.PopPieces(piecesToClear, index);
 
         // run score animation
-        Vector3 playerPos = geometry.BoardIndexToTransform(index);
+        Vector3 playerPos = BoardGeometry.BoardIndexToTransform(index);
         scoreAnimation.AnimateScore(piecesToClear.Points, playerPos);
     }
 

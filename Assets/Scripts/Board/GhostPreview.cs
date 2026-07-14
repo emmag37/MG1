@@ -14,7 +14,6 @@ public class GhostPreview : MonoBehaviour
     // Private Fields
     // ================================
     [SerializeField] private SpriteRenderer shadowSprite;
-    private BoardGeometry geometry;
 
     private Coroutine preview;
     private bool previewSet;
@@ -44,10 +43,8 @@ public class GhostPreview : MonoBehaviour
     // Initialization
     // ================================
 
-    public void Initialize(BoardGeometry boardGeometry)
+    public void Initialize()
     {
-        geometry = boardGeometry;
-
         previewSet = false;
         shadowSprite.enabled = false;
     }
@@ -63,7 +60,7 @@ public class GhostPreview : MonoBehaviour
         previewSet = true;
         previewIndex = index;
 
-        shadowSprite.transform.position = geometry.BoardIndexToTransform(index);
+        shadowSprite.transform.position = BoardGeometry.BoardIndexToTransform(index);
         shadowSprite.enabled = true;
     }
 
@@ -98,7 +95,7 @@ public class GhostPreview : MonoBehaviour
                 yield break;
 
             Vector3 position = player.position;
-            Vector2Int index = geometry.TransformToBoardIndex(position);
+            Vector2Int index = BoardGeometry.TransformToBoardIndex(position);
 
             // try a new preview only when the index changes
             if (previewSet && index != previewIndex)

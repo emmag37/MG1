@@ -3,18 +3,20 @@ using UnityEngine;
 /// <summary>
 /// Performs the index and world coordinate calculations of the board.
 /// </summary>
-public class BoardGeometry
+public static class BoardGeometry
 {
     // ==================================================
     // Private Fields
     // ==================================================
 
-    private int numRows;
-    private int numCols;
+    private static int numRows;
+    private static int numCols;
 
-    private float cellWidth;
-    public float zeroX;    // adjusted 0 at the left in world coordinates
-    public float zeroY;    // adjusted 0 at the top in world coordinates
+    private static float cellWidth;
+    private static float zeroX;    // adjusted 0 at the left in world coordinates
+    private static float zeroY;    // adjusted 0 at the top in world coordinates
+
+    private static bool initialized = false;
 
 
     // ==================================================
@@ -28,7 +30,7 @@ public class BoardGeometry
 	/// <param name="cols">Number of cols on the board.</param>
 	/// <param name="cellRadius">Radius of a spot on the board.</param>
 	/// <param name="board">Boundaries of box that holds the board.</param>
-    public BoardGeometry(int rows, int cols, Bounds board)
+    public static void Initialize(int rows, int cols, Bounds board)
     {
         numRows = rows;
         numCols = cols;
@@ -40,6 +42,8 @@ public class BoardGeometry
         cellWidth = (boardRight - boardLeft) / numCols;
         zeroX = boardLeft + cellWidth / 2;
         zeroY = boardTop - cellWidth / 2;
+
+        initialized = true;
     }
 
 
@@ -53,8 +57,10 @@ public class BoardGeometry
 	/// </summary>
 	/// <param name="position">Transform in world coordinates</param>
 	/// <returns>The board index (row, col) corresponding to the board array.</returns>
-    public Vector2Int TransformToBoardIndex(Vector3 position)
+    public static Vector2Int TransformToBoardIndex(Vector3 position)
     {
+        Debug.Assert(initialized, "Board geometry accessed without being initialized");
+
         int r = Mathf.Clamp(Mathf.RoundToInt((zeroY - position.y) / cellWidth), -1, numRows);
         int c = Mathf.Clamp(Mathf.RoundToInt((position.x - zeroX) / cellWidth), -1, numCols);
 
@@ -66,8 +72,10 @@ public class BoardGeometry
 	/// </summary>
 	/// <param name="index">Board index of the cell, (row, col).</param>
 	/// <returns>The world positon of the cell.</returns>
-    public Vector3 BoardIndexToTransform(Vector2Int index)
+    public static Vector3 BoardIndexToTransform(Vector2Int index)
     {
+        Debug.Assert(initialized, "Board geometry accessed without being initialized");
+
         Vector3 newTransform = Vector3.zero;
 
         newTransform.x = zeroX + index.y * cellWidth;

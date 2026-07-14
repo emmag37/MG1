@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 // script is clean and ready to remove event bus
 
@@ -42,10 +43,10 @@ public class PieceRegistry : MonoBehaviour
 
         if (gameData.GetGameData().InProgress)
         {
-            // load the active player
-            SpawnNewPlayer(color: gameData.GetGamePlayData().CurrentPlayer);
+            SpawnNewPlayer(color: gameData.GetGamePlayData().CurrentPlayer);    // load the active player
 
             // load the pieces on the board
+            LoadBoardPieces(gameData.GetGamePlayData().Board.Cells);
         }
     }
 
@@ -206,4 +207,10 @@ public class PieceRegistry : MonoBehaviour
         Destroy(pieces[index].gameObject);
         pieces[index] = null;
     }
+
+    private void LoadBoardPieces(IReadOnlyList<CellEntry> cells)
+    {
+
+    }
+
 }
