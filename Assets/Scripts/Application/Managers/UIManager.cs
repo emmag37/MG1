@@ -185,8 +185,6 @@ public class UIManager : MonoBehaviour
         ShowBaseView?.Invoke(BaseViewType.GameOver, gameDataService.GetGameData());
     }
 
-
-
     // private functions
     private void ClearOverlay()
     {

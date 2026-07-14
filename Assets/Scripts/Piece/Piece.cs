@@ -34,7 +34,6 @@ public class Piece : MonoBehaviour
 
     public void InitializeAsPlayer(CellColor playerColor, Bounds boundaries)
     {
-        Debug.Log("initialize as player");
         // initialize set values
         Color = playerColor;
         startPos = transform.position;

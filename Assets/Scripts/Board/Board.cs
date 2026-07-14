@@ -78,7 +78,9 @@ public class Board : MonoBehaviour
         {
             Reset();
             if (!inProgress) SetInProgress(true);
-            pieceRegistry.SpawnNewPlayer();
+
+            CellColor nextColor = pieceRegistry.SpawnNewPlayer().NextColor;
+            hUD.SetPlayerPreview(nextColor);
         }
 
         EventBus.Publish(new StartGameEvent()); // for the audio
@@ -134,10 +136,11 @@ public class Board : MonoBehaviour
             EventBus.Publish(new WinEvent());   // keep for audio manager
         }
 
-        CellColor nextColor = pieceRegistry.SpawnNewPlayer();
+        gameData.SaveTurn(hUD.Score, index);    // MUST save turn first, uses original stored colors
+
+        CellColor nextColor = pieceRegistry.SpawnNewPlayer().NextColor;
         hUD.SetPlayerPreview(nextColor);
 
-        gameData.SaveTurn(hUD.Score, index);
     }
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)

@@ -43,8 +43,11 @@ public class PieceRegistry : MonoBehaviour
 
         if (gameData.GetGameData().InProgress)
         {
-            // not getting its events set correctly
-            SpawnNewPlayer(color: gameData.GetGamePlayData().CurrentPlayer);    // load the active player
+            IGamePlayData playData = gameData.GetGamePlayData();
+
+            // load the active player
+            var colors = new PlayerPicker.PlayerColors { Color = playData.CurrentPlayer, NextColor = playData.NextPlayer };
+            SpawnNewPlayer(colors);
 
             // load the pieces on the board
             LoadBoardPieces(gameData.GetGamePlayData().Board.Cells);
@@ -56,25 +59,21 @@ public class PieceRegistry : MonoBehaviour
     // Public Methods - Player
     // ==================================================
 
-    // returns the color of the next player to be spawned, not the current one
-    public CellColor SpawnNewPlayer(CellColor color = CellColor.Empty)
+    // optional param to spawn a player with given colors, always returns non-null colors
+    public PlayerPicker.PlayerColors SpawnNewPlayer(PlayerPicker.PlayerColors colors = default)
     {
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
-        CellColor nextColor = CellColor.Empty;  // default for game load case
-        if (color == CellColor.Empty)
+        if (colors.Equals(default(PlayerPicker.PlayerColors)))
         {
-            var playerColors = picker.CalculateNewPlayerColors();
-            color = playerColors.Color;
-            nextColor = playerColors.NextColor;
-
-            gameData.SavePlayerColors(color, nextColor);
+            colors = picker.CalculateNewPlayerColors();
+            gameData.SavePlayerColors(colors.Color, colors.NextColor);
         }
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-        playerPiece.InitializeAsPlayer(color, playerBounds);
+        playerPiece.InitializeAsPlayer(colors.Color, playerBounds);
 
-        return nextColor;
+        return colors;
     }
 
     public void PlacePlayer(Vector3 position, Vector2Int index)
@@ -89,6 +88,8 @@ public class PieceRegistry : MonoBehaviour
         playerPiece = null;
 
         EventBus.Publish(new PlacePlayerEvent());   // remove - only here so that the audio runs
+
+        
     }
 
     public void ReturnPlayerToStart()
@@ -206,7 +207,6 @@ public class PieceRegistry : MonoBehaviour
         if (!pieces[index]) return;
 
         Vector2Int idx = FlatToTwoDimIndex(index);
-        Debug.Log($"destroy piece at: {idx}");
 
         Destroy(pieces[index].gameObject);
         pieces[index] = null;

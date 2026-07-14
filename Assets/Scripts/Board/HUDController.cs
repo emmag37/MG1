@@ -77,6 +77,7 @@ public class HUDController : MonoBehaviour
 
     public void SetPlayerPreview(CellColor nextColor)
     {
+        Debug.Log($"Preview color: {nextColor}");
         playerPreview.sprite = SpriteDatabase.Instance.GetSprite(nextColor);
     }
 
