@@ -16,7 +16,7 @@ public class TutorialController : MonoBehaviour
     // Events
     // ==================================================
 
-    public event Action TutorialComplete;
+    //public event Action TutorialComplete;
 
     // ==================================================
     // Private Fields
@@ -46,11 +46,10 @@ public class TutorialController : MonoBehaviour
     // Initializer
     // ==================================================
 
-    /*
-    public void Initialize(BoardController board)
+    public void Initialize()
     {
         //this.board = board;
-    }*/
+    }
 
     // ==================================================
     // Public Methods
@@ -77,7 +76,7 @@ public class TutorialController : MonoBehaviour
         board.TurnCompleted -= HandleTurnCompleted;
         board.Reset(); */
 
-        TutorialComplete?.Invoke();
+        //TutorialComplete?.Invoke();
 
         //Debug.Assert(!activePlayer && !activeZone, "Tutorial not properly reset");
         

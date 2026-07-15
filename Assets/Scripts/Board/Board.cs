@@ -30,6 +30,7 @@ public class Board : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
+    private TutorialController tutorial;
 
     private bool inProgress;
 
@@ -38,7 +39,7 @@ public class Board : MonoBehaviour
     // ================================
 
     // initialize with the game load data
-    public void Initialize(GameDataService dataService)
+    public void Initialize(GameDataService dataService, bool runTutorial)
     {
         gameData = dataService;
         inProgress = gameData.GetGameData().InProgress;
@@ -62,6 +63,14 @@ public class Board : MonoBehaviour
             cells = dataService.GetGamePlayData().Board.Cells;
         }
         logic = new BoardLogic(cells);
+
+        // tutorial only initialization - only runs the first time the game is played
+        if (runTutorial)
+        {
+            tutorial = GetComponent<TutorialController>();
+            tutorial.Initialize();
+        }
+
     }
 
     // ================================

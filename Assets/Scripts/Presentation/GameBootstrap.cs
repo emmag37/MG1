@@ -35,14 +35,12 @@ public class GameBootstrap : MonoBehaviour
         disc = new DiscStorage();
 
         settingsService = new SettingsService(playerPrefs);
+        IUserSettings userSettings = settingsService.GetSettings();
+
         gameDataService = new GameDataService(disc, playerPrefs);
 
-        board.Initialize(gameDataService);
-
-        // initialize systems
+        board.Initialize(gameDataService, userSettings.HasLaunched);
         uiManager.Initialize(settingsService, gameDataService, board);
-
-        IUserSettings userSettings = settingsService.GetSettings();
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
 
         baseViewController.Initialize();
