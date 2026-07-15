@@ -109,7 +109,7 @@ public class GameDataService
     private GameData Load()
     {
         GameData newData = new GameData(
-            inProgress: playerPrefs.GetBool(GameDataKeys.InProgress, false),  // always run tutorial for the first use
+            inProgress: /*playerPrefs.GetBool(GameDataKeys.InProgress, false)*/false,  // for testing tutorial
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
             scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList,

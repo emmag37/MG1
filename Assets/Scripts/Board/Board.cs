@@ -93,7 +93,9 @@ public class Board : MonoBehaviour
 
     public void StartTutorial()
     {
-        // start the tutorial
+        Debug.Log("Start tutorial");
+
+        hUD.gameObject.SetActive(false);    // hide the hUD (always on over game board, but will be using game scene for tutorial)
     }
 
     public void SkipTutorial()
