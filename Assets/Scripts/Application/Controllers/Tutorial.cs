@@ -9,7 +9,6 @@ public class Tutorial : MonoBehaviour
     // Constants
     // ==================================================
 
-    private const CellColor Color1 = CellColor.Color1;
     private const CellColor None = CellColor.Empty;
 
     // ==================================================
@@ -23,7 +22,7 @@ public class Tutorial : MonoBehaviour
     // ==================================================
 
     private Board board;
-    //private int currentStep;
+    private int currentStep;
 
     //private bool activePlayer = false;
     //private bool activeZone = false;    // true when the live areas of the board have changed
@@ -57,16 +56,19 @@ public class Tutorial : MonoBehaviour
 
     public void Start()
     {
-        Debug.Log("start tutorial");
+        Debug.Log("start tutorial, step 0");
 
-        /*
         // step 0:
         currentStep = 0;
-        SpawnPlayer(Color1);
-        SetLiveZone(new (int, int)[] { (2, 2) });
 
-        board.TurnCompleted += HandleTurnCompleted;
-        */
+        // prepare step 0 data
+        (int, int)[] liveZone = { (2, 2) };
+        CellColor playerColor = CellColor.Color1;
+
+        // run step in board
+        board.StartTutorialStep(playerColor, liveZone);
+
+        //board.TurnCompleted += HandleTurnCompleted;
     }
 
     public void CompleteTutorial()

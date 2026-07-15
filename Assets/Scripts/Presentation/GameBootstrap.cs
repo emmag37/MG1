@@ -1,4 +1,15 @@
 using UnityEngine;
+using System;
+
+[Flags]
+public enum InitFlag : byte
+{
+    None =  0,              // initialize nothing besides normal systems
+    Tutorial = 1 << 0,      // initialize the tutorial
+    LoadGame = 1 << 1       // initialize a previously started game
+    // can have 6 more flags for initialize
+}
+
 
 // First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
@@ -40,10 +51,16 @@ public class GameBootstrap : MonoBehaviour
 
         IUserSettings userSettings = settingsService.GetSettings();
 
-        board.Initialize(gameDataService);
+        // set the init flag
+        bool hasLaunched = userSettings.HasLaunched;
+        bool inProgress = gameDataService.GetGameData().InProgress;
+        InitFlag initInfo = (hasLaunched ? 0 : InitFlag.Tutorial) | (inProgress ? InitFlag.LoadGame : 0);
+        Debug.Log($"Init info: {initInfo}");
+
+        board.Initialize(initInfo, gameDataService);
         tutorial.Initialize(board);
 
-        uiManager.Initialize(settingsService, gameDataService, board, tutorial);
+        uiManager.Initialize(initInfo, board, tutorial, settingsService, gameDataService);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
 
         baseViewController.Initialize();

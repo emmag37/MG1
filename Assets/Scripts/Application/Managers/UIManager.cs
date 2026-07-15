@@ -59,7 +59,7 @@ public class UIManager : MonoBehaviour
     // Initialize
     // ==================================================
 
-    public void Initialize(SettingsService settingsService, GameDataService gameDataService, Board board, Tutorial tutorial)
+    public void Initialize(InitFlag initInfo, Board board, Tutorial tutorial, SettingsService settingsService, GameDataService gameDataService)
     {
         this.settingsService = settingsService;
         this.gameDataService = gameDataService;

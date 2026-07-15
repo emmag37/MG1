@@ -38,7 +38,7 @@ public class Board : MonoBehaviour
     // ================================
 
     // initialize with the game load data
-    public void Initialize(GameDataService dataService)
+    public void Initialize(InitFlag initInfo, GameDataService dataService)
     {
         gameData = dataService;
         inProgress = gameData.GetGameData().InProgress;
@@ -91,9 +91,14 @@ public class Board : MonoBehaviour
         pieceRegistry.PausePlayer(pause);
     }
 
-    public void PrepareTutorialStep()
+    public void StartTutorialStep(CellColor playerColor, (int, int)[] liveZone)
     {
+        Debug.Log("start tutorial step");
 
+        logic.AddLiveZone(liveZone);    // what behavior for null?
+
+        var colors = new PlayerPicker.PlayerColors { Color = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
+        pieceRegistry.SpawnNewPlayer(colors);
     }
 
     // ================================

@@ -6197,6 +6197,7 @@ MonoBehaviour:
   uiManager: {fileID: 230092281}
   audioManager: {fileID: 1013720842}
   board: {fileID: 1798150614}
+  tutorial: {fileID: 1582238095}
   baseViewController: {fileID: 300198981}
   popUpViewController: {fileID: 1764461906}
   tutorialViewController: {fileID: 1413417921}
@@ -11713,6 +11714,50 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5184943337357373849, guid: c8d3640fe00b349429934612bbb3fbd9, type: 3}
   m_PrefabInstance: {fileID: 1580264049}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1582238094
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1582238096}
+  - component: {fileID: 1582238095}
+  m_Layer: 0
+  m_Name: Tutorial
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1582238095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582238094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 562edce8541e149488bc61641897b3a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tutorial
+--- !u!4 &1582238096
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582238094}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.06292, y: -0.75164, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1593412189
 GameObject:
   m_ObjectHideFlags: 0
@@ -13895,7 +13940,6 @@ GameObject:
   - component: {fileID: 1798150614}
   - component: {fileID: 1798150612}
   - component: {fileID: 1798150615}
-  - component: {fileID: 1798150616}
   m_Layer: 6
   m_Name: Board
   m_TagString: Untagged
@@ -14078,18 +14122,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostPreview
   shadowSprite: {fileID: 257692676}
---- !u!114 &1798150616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798150608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 562edce8541e149488bc61641897b3a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TutorialController
 --- !u!1 &1811068632
 GameObject:
   m_ObjectHideFlags: 0
@@ -16905,3 +16937,4 @@ SceneRoots:
   - {fileID: 230092282}
   - {fileID: 779006562}
   - {fileID: 55911020}
+  - {fileID: 1582238096}
