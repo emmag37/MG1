@@ -1,10 +1,11 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 // bug with ghost preview - turns on once but then not again?
 public class Tutorial : MonoBehaviour
 {
-    
+
     // ==================================================
     // Constants
     // ==================================================
@@ -22,7 +23,9 @@ public class Tutorial : MonoBehaviour
     // ==================================================
 
     private Board board;
+
     private int currentStep;
+    private int turnsLeftInStep;    // makeshift recursion
 
     //private bool activePlayer = false;
     //private bool activeZone = false;    // true when the live areas of the board have changed
@@ -49,6 +52,9 @@ public class Tutorial : MonoBehaviour
     {
         this.board = board;
 
+        currentStep = 0;
+        turnsLeftInStep = 0;
+
         board.TutorialStepComplete += HandleStepComplete;
     }
 
@@ -60,9 +66,6 @@ public class Tutorial : MonoBehaviour
     {
         Debug.Log("start tutorial, step 0");
 
-        // step 0:
-        currentStep = 0;
-
         // prepare step 0 data
         (int, int)[] liveZone = { (2, 2) };
         CellColor playerColor = CellColor.Color1;
@@ -73,6 +76,8 @@ public class Tutorial : MonoBehaviour
 
     public void CompleteTutorial()
     {
+        Debug.Log("Complete tutorial");
+
         /*
         // reset and clear the play space
         if (activePlayer) DestroyPlayer();
@@ -83,7 +88,7 @@ public class Tutorial : MonoBehaviour
         //TutorialComplete?.Invoke();
 
         //Debug.Assert(!activePlayer && !activeZone, "Tutorial not properly reset");
-        
+
     }
 
 
@@ -93,61 +98,35 @@ public class Tutorial : MonoBehaviour
 
     private void HandleStepComplete()
     {
-        Debug.Log($"completed step: {currentStep}");
+        if (turnsLeftInStep == 0) // base case
+        {
+            Debug.Log($"completed step: {currentStep}");
+            EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
+            currentStep++;
+        }
 
-        currentStep++;
         switch (currentStep)
         {
             case 1:
-                break;
-            default:
-                break;
-        }
-    }
-
-    /*
-    // player placed on board
-    private void HandleTurnCompleted(int points, (int, int) index)
-    {
-        DestroyPlayer();
-
-        switch (currentStep)
-        {
-            case 0:
                 StepOne();
                 break;
-            case 1:
-                if (points == 0)
-                    SpawnPlayer(Color1);
-                break;
-            case 3:
-                StepFour();
-                break;
-            default:
-                // called when the players for case 2, 4, 5 are placed
-                break;
-        }
-    }
-
-    // win sequence completed
-    private void OnAnimationComplete(ScoreAnimationEvent e)
-    {
-        switch (currentStep)
-        {
-            case 1:
+            case 2:
                 StepTwo();
                 break;
-            case 2:
+            case 3:
                 StepThree();
                 break;
             case 4:
-                StepFive();
+                StepFour();
                 break;
             case 5:
-                StepSeven();
+                StepFive();
+                break;
+            case 6:
+                CompleteTutorial();
                 break;
             default:
-                // error with case 0 or 3, should never be called
+                Debug.Log("error");
                 break;
         }
     }
@@ -159,89 +138,95 @@ public class Tutorial : MonoBehaviour
 
     private void StepOne()
     {
-        Debug.Assert(currentStep == 0);
-        IncrementStep();
+        Debug.Log($"step: {currentStep}");
 
-        SetLiveZone(new (int, int)[] { (2, 0), (2, 1), (2, 3), (2, 4) });
-        SpawnPlayer(Color1);
+        if (turnsLeftInStep == 0)   // initialize step turns/spawns
+            turnsLeftInStep = 4;
+
+        turnsLeftInStep--;
+
+        // prepare step one data
+        CellColor playerColor = CellColor.Color1;
+        (int, int)[] liveZone = { (2, 0), (2, 1), (2, 3), (2, 4) };
+
+        board.StartTutorialStep(playerColor, liveZone);     // runs recursive step - event will call back
     }
 
     private void StepTwo()
     {
-        Debug.Assert(currentStep == 1);
-        IncrementStep();
+        Debug.Log($"step: {currentStep}");
 
-        // populate the scene
-        ResetZone();
+        // prepare step two data
+        CellColor playerColor = CellColor.Color2;
+        (int, int)[] liveZone = { (2, 2) };
 
+        // create step 2 cell list
+        List<CellEntry> cells = new List<CellEntry>();
         for (int i = 0; i < GameConstants.RowSize; i++)
         {
             if (i == 2) continue;
 
-            board.AddNonPlayer(new Vector2Int(i, i), Color1); // no player, so hopefully no bug
-            board.AddNonPlayer(new Vector2Int(i, 2), Color1);
-            board.AddNonPlayer(new Vector2Int(GameConstants.RowSize - 1 - i, i), Color1);
+            cells.Add(new CellEntry(i, i, (int)CellColor.Color2));
+            cells.Add(new CellEntry(i, 2, (int)CellColor.Color2));
+            cells.Add(new CellEntry(GameConstants.RowSize - 1 - i, i, (int)CellColor.Color2));
         }
 
-        SetLiveZone(new (int, int)[] { (2, 2) });
-        SpawnPlayer(Color1);
+        board.StartTutorialStep(playerColor, liveZone, cells);
     }
 
     private void StepThree()
     {
-        Debug.Assert(currentStep == 2);
-        IncrementStep();
+        Debug.Log($"step: {currentStep}");
 
-        // populate the scene
-        ResetZone();
+        // prepare step three data
+        CellColor playerColor = CellColor.Color1;
+        (int, int)[] liveZone = { (3, 2) };
 
-        PopulateExtraPieces();
+        // create cell list
+        List<CellEntry> cells = new List<CellEntry>();
+
+        cells.Add(new CellEntry(0, 2, (int)CellColor.Color2));
+        cells.Add(new CellEntry(1, 2, (int)CellColor.Color3));
+        cells.Add(new CellEntry(2, 2, (int)CellColor.Color4));
+        cells.Add(new CellEntry(3, 3, (int)CellColor.Color5));
+
         for (int i = 0; i < GameConstants.RowSize; i++)
         {
-            if (i == 3)
-            {
-                board.AddNonPlayer(new Vector2Int(3, i), CellColor.Color5); // this is not being added
-                continue;
-            }
+            if (i == 3) continue;
 
-            board.AddNonPlayer(new Vector2Int(4, i), CellColor.Color6);
-            if (i != 2) board.AddNonPlayer(new Vector2Int(3, i), Color1);
+            if (i != 2) cells.Add(new CellEntry(3, i, (int)CellColor.Color1));
+
+            cells.Add(new CellEntry(4, i, (int)CellColor.Color6));
         }
 
-        SetLiveZone(new (int, int)[] { (3, 2) });
-        SpawnPlayer(Color1);
+        board.StartTutorialStep(playerColor, liveZone, cells);
     }
 
     private void StepFour()
     {
-        Debug.Assert(currentStep == 3);
-        IncrementStep();
+        Debug.Log($"step: {currentStep}");
 
-        SetLiveZone(new (int, int)[] { (4, 3) });
-        SpawnPlayer(CellColor.WildCard);
+        CellColor playerColor = CellColor.WildCard;
+        (int, int)[] liveZone = { (4, 3) };
+
+        board.StartTutorialStep(playerColor, liveZone);
     }
 
     private void StepFive()
     {
-        Debug.Assert(currentStep == 4);
-        IncrementStep();
+        Debug.Log($"step: {currentStep}");
 
-        SetLiveZone(new (int, int)[] { (3, 3) });
-        SpawnPlayer(CellColor.Mask);
-    }
+        CellColor playerColor = CellColor.Mask;
+        (int, int)[] liveZone = { (3, 3) };
 
-    private void StepSeven()
-    {
-        Debug.Assert(currentStep == 5);
-        IncrementStep();
-
-        CompleteTutorial();
+        board.StartTutorialStep(playerColor, liveZone);
     }
 
     // ==================================================
     // Private Helper Functions
     // ==================================================
 
+    /*
     private void IncrementStep()
     {
         EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });

@@ -98,11 +98,17 @@ public class Board : MonoBehaviour
         pieceRegistry.PausePlayer(pause);
     }
 
-    public void StartTutorialStep(CellColor playerColor, (int, int)[] liveZone)
+    public void StartTutorialStep(CellColor playerColor, (int, int)[] liveZone, IReadOnlyList<CellEntry> cells = null)
     {
         Debug.Log("start tutorial step");
 
         logic.AddLiveZone(liveZone);    // what behavior for null?
+
+        if (cells != null)
+        {
+            logic.AddCellsToBoard(cells);
+            pieceRegistry.LoadBoardPieces(cells);
+        }
 
         var colors = new PlayerPicker.PlayerColors { Color = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
         pieceRegistry.SpawnNewPlayer(colors);
@@ -125,7 +131,8 @@ public class Board : MonoBehaviour
         if (runTutorial)
         {
             Debug.Log("finished the tutorial step");
-            TutorialStepComplete?.Invoke();
+
+            if (currentScore == 0) TutorialStepComplete?.Invoke();  // if points scored, invoke is timed to animation
             return;
         }
 
@@ -142,26 +149,63 @@ public class Board : MonoBehaviour
             ghostPreview.SetPreview(index);
         }
     }
-    
+
 
     // ================================
     // Coroutines
     // ================================
-
-    // need to streamline this
-    IEnumerator WinAnimationRoutine(PlayResult piecesToClear, Vector2Int index)
+    
+    private IEnumerator WinAnimationRoutine(PlayResult piecesToClear, Vector2Int index)
     {
         // clear piece coroutine in piece registry
         yield return pieceRegistry.PopPieces(piecesToClear, index);
 
         // run score animation
-        Vector3 playerPos = BoardGeometry.BoardIndexToTransform(index);
-        scoreAnimation.AnimateScore(piecesToClear.Points, playerPos);
+        if (runTutorial)
+        {
+            TutorialStepComplete?.Invoke();
+        }
+        else
+        {
+            Vector3 playerPos = BoardGeometry.BoardIndexToTransform(index);
+            scoreAnimation.AnimateScore(piecesToClear.Points, playerPos);
+        }
     }
 
     // ================================
     // Private Functions
     // ================================
+
+    // returns the current score following the turn
+    // main orchestration logic that should always be in this script
+    private int ExecuteTurn(CellColor color, Vector2Int index)
+    {
+        if (!logic.TryPlacePlayer(index.x, index.y, color, out PlayResult result))
+        {
+            pieceRegistry.ReturnPlayerToStart();
+            return -1;
+        }
+
+        Vector3 newPosition = BoardGeometry.BoardIndexToTransform(index);
+        pieceRegistry.PlacePlayer(newPosition, index);
+
+        if (result.FullBoard)
+        {
+            GameOver();
+            return -1;
+        }
+
+        if (runTutorial) hUD.Reset();   // tutorial mode ALWAYS returns points scored, not current score
+        
+        int currentScore = hUD.AddPoints(result.Points);
+        if (result.Points > 0)
+        {
+            StartCoroutine(WinAnimationRoutine(result, index));
+            EventBus.Publish(new WinEvent());   // keep for audio manager
+        }
+
+        return currentScore;
+    }
 
     private void Reset()
     {
@@ -205,32 +249,6 @@ public class Board : MonoBehaviour
         }
     }
 
-    // returns the current score following the turn
-    // main orchestration logic that should always be in this script
-    private int ExecuteTurn(CellColor color, Vector2Int index)
-    {
-        if (!logic.TryPlacePlayer(index.x, index.y, color, out PlayResult result))
-        {
-            pieceRegistry.ReturnPlayerToStart();
-            return -1;
-        }
+    
 
-        Vector3 newPosition = BoardGeometry.BoardIndexToTransform(index);
-        pieceRegistry.PlacePlayer(newPosition, index);
-
-        if (result.FullBoard)
-        {
-            GameOver();
-            return -1;
-        }
-
-        int currentScore = hUD.AddPoints(result.Points);
-        if (result.Points > 0)
-        {
-            StartCoroutine(WinAnimationRoutine(result, index));
-            EventBus.Publish(new WinEvent());   // keep for audio manager
-        }
-
-        return currentScore;
-    }
 }

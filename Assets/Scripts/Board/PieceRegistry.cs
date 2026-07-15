@@ -127,6 +127,21 @@ public class PieceRegistry : MonoBehaviour
         }
     }
 
+    public void LoadBoardPieces(IReadOnlyList<CellEntry> cells)
+    {
+        foreach (CellEntry cell in cells)
+        {
+            Vector2Int index = new Vector2Int(cell.x, cell.y);
+            Vector3 position = BoardGeometry.BoardIndexToTransform(index);
+
+            Piece newPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
+            newPiece.InitializeAsCell((CellColor)cell.color, position, playerBounds);
+
+            int flatIndex = TwoDimToFlatIndex(index);
+            pieces[flatIndex] = newPiece;
+        }
+    }
+
     // Coroutine for popping pieces animation
     // note: the pieces currently destroy themselves after animation, would like to add object pool for later
     public IEnumerator PopPieces(BoardLogic.PlayResult r, Vector2Int index)
@@ -212,19 +227,6 @@ public class PieceRegistry : MonoBehaviour
         pieces[index] = null;
     }
 
-    private void LoadBoardPieces(IReadOnlyList<CellEntry> cells)
-    {
-        foreach(CellEntry cell in cells)
-        {
-            Vector2Int index = new Vector2Int(cell.x, cell.y);
-            Vector3 position = BoardGeometry.BoardIndexToTransform(index);
-
-            Piece newPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-            newPiece.InitializeAsCell((CellColor)cell.color, position, playerBounds);
-
-            int flatIndex = TwoDimToFlatIndex(index);
-            pieces[flatIndex] = newPiece;
-        }
-    }
+    
 
 }
