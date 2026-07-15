@@ -99,8 +99,6 @@ public class UIManager : MonoBehaviour
     // base views
     public void ShowView(BaseViewType type, bool playSound = true)
     {
-
-
         if (playSound)
         {
             ButtonPressed?.Invoke();
@@ -115,13 +113,8 @@ public class UIManager : MonoBehaviour
 
         IUserSettings userSettings = settingsService.GetSettings();
         IGameData gameData = gameDataService.GetGameData();
-
-        if (type == BaseViewType.Tutorial)
-        {
-            Debug.Log("Launch tutorial base screen");
-            tutorial.StartTutorial();
-        }
-        else if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
+        
+        if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
         {
             board.PlayGame(restart: true);
         }
@@ -133,10 +126,15 @@ public class UIManager : MonoBehaviour
         else if (baseState == BaseViewType.Tutorial && type == BaseViewType.Tutorial)         // signal for skip - only called when tutorial is active
         {
             SkipTutorial?.Invoke();
-            //board.SkipTutorial();
+            tutorial.SkipTutorial();
             return;
         }
-        
+        else if (type == BaseViewType.Tutorial)
+        {
+            Debug.Log("Launch tutorial base screen");
+            tutorial.StartTutorial();
+        }
+
         ShowBaseView?.Invoke(type, userSettings);
         baseState = type;
     }

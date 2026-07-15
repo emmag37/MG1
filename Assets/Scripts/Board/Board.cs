@@ -78,6 +78,8 @@ public class Board : MonoBehaviour
     // reset on game start
     public void PlayGame(bool restart = false)
     {
+        if (runTutorial) TurnOffTutorial();
+
         if (restart) SetInProgress(false);
 
         // prepare a fresh game
@@ -102,7 +104,18 @@ public class Board : MonoBehaviour
     {
         Debug.Log("start tutorial step");
 
-        logic.AddLiveZone(liveZone);    // what behavior for null?
+        if (playerColor == CellColor.Empty)
+        {
+            Debug.Log("reset tutorial board");
+            Reset();
+        }
+        else
+        {
+            var colors = new PlayerPicker.PlayerColors { Color = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
+            pieceRegistry.SpawnNewPlayer(colors);
+        }
+
+        logic.AddLiveZone(liveZone);
 
         if (cells != null)
         {
@@ -110,8 +123,6 @@ public class Board : MonoBehaviour
             pieceRegistry.LoadBoardPieces(cells);
         }
 
-        var colors = new PlayerPicker.PlayerColors { Color = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
-        pieceRegistry.SpawnNewPlayer(colors);
     }
 
     // ================================
@@ -224,6 +235,14 @@ public class Board : MonoBehaviour
         EventBus.Publish(new GameOverEvent());
     }
 
+    private void TurnOffTutorial()
+    {
+        runTutorial = false;
+
+        SubscribeToEvents(false);
+        hUD.gameObject.SetActive(true); // need to put this somewhere else
+    }
+
     private void SetInProgress(bool inProgress)
     {
         Debug.Log($"set in progress: {inProgress}");
@@ -248,7 +267,4 @@ public class Board : MonoBehaviour
             EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
         }
     }
-
-    
-
 }

@@ -2,22 +2,9 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-// bug with ghost preview - turns on once but then not again?
+// eventually make the steps serializable to only load in when tutorial is actually used
 public class Tutorial : MonoBehaviour
 {
-
-    // ==================================================
-    // Constants
-    // ==================================================
-
-    private const CellColor None = CellColor.Empty;
-
-    // ==================================================
-    // Events
-    // ==================================================
-
-    //public event Action TutorialComplete;
-
     // ==================================================
     // Private Fields
     // ==================================================
@@ -26,23 +13,6 @@ public class Tutorial : MonoBehaviour
 
     private int currentStep;
     private int turnsLeftInStep;    // makeshift recursion
-
-    //private bool activePlayer = false;
-    //private bool activeZone = false;    // true when the live areas of the board have changed
-
-    // ==================================================
-    // Unity Lifecycle
-    // =================================================
-
-    void OnEnable()
-    {
-        //EventBus.Subscribe<ScoreAnimationEvent>(OnAnimationComplete);
-    }
-
-    void OnDisable()
-    {
-        //EventBus.Unsubscribe<ScoreAnimationEvent>(OnAnimationComplete);
-    }
 
     // ==================================================
     // Initializer
@@ -74,23 +44,18 @@ public class Tutorial : MonoBehaviour
         board.StartTutorialStep(playerColor, liveZone);
     }
 
-    public void CompleteTutorial()
+    public void SkipTutorial()
     {
-        Debug.Log("Complete tutorial");
+        Debug.Log("skip tutorial");
 
-        /*
-        // reset and clear the play space
-        if (activePlayer) DestroyPlayer();
-        if (activeZone) ResetZone();
-        board.TurnCompleted -= HandleTurnCompleted;
-        board.Reset(); */
+        List<CellEntry> cells = new List<CellEntry>();
+        cells.Add(new CellEntry(0, 2, (int)CellColor.Color2));
+        cells.Add(new CellEntry(1, 2, (int)CellColor.Color3));
+        cells.Add(new CellEntry(2, 2, (int)CellColor.Color4));
 
-        //TutorialComplete?.Invoke();
-
-        //Debug.Assert(!activePlayer && !activeZone, "Tutorial not properly reset");
-
+        // set the board to the ending state - empty triggers board reset
+        board.StartTutorialStep(CellColor.Empty, null, cells);
     }
-
 
     // ==================================================
     // Event Handlers
@@ -122,11 +87,7 @@ public class Tutorial : MonoBehaviour
             case 5:
                 StepFive();
                 break;
-            case 6:
-                CompleteTutorial();
-                break;
             default:
-                Debug.Log("error");
                 break;
         }
     }
@@ -221,51 +182,4 @@ public class Tutorial : MonoBehaviour
 
         board.StartTutorialStep(playerColor, liveZone);
     }
-
-    // ==================================================
-    // Private Helper Functions
-    // ==================================================
-
-    /*
-    private void IncrementStep()
-    {
-        EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
-        currentStep++;
-    }
-
-    private void PopulateExtraPieces()
-    {
-        board.AddNonPlayer(new Vector2Int(0, 2), CellColor.Color2);
-        board.AddNonPlayer(new Vector2Int(1, 2), CellColor.Color3);
-        board.AddNonPlayer(new Vector2Int(2, 2), CellColor.Color4);
-    }
-
-    private void SpawnPlayer(CellColor color)
-    {
-        Debug.Assert(!activePlayer, "Attempted to spawn an additional player in tutorial");
-
-        EventBus.Publish(new SpawnPlayerEvent { Color = color, NextColor = None });
-        activePlayer = true;
-    }
-
-    private void DestroyPlayer()
-    {
-        Debug.Assert(activePlayer, "Attempted to destroy non-existent player in tutorial");
-
-        EventBus.Publish(new DestroyPlayerEvent());
-        activePlayer = false;
-    }
-
-    private void SetLiveZone((int, int)[] zone)
-    {
-        board.SetLiveZone(zone);
-        activeZone = true;
-    }
-
-    private void ResetZone()
-    {
-        board.SetLiveZone(null);
-        activeZone = false;
-    }
-    */
 }

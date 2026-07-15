@@ -115,6 +115,8 @@ public class BoardLogic
         // Reset the grid
         numSpotsFilled = 0;
         ResetColors();
+
+        AddLiveZone(null);
     }
 
     /// <summary>
