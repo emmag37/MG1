@@ -54,7 +54,7 @@ public class Tutorial : MonoBehaviour
     // Public Methods
     // ==================================================
 
-    public void Start()
+    public void StartTutorial()
     {
         Debug.Log("start tutorial, step 0");
 

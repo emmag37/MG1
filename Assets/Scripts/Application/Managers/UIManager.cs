@@ -99,6 +99,8 @@ public class UIManager : MonoBehaviour
     // base views
     public void ShowView(BaseViewType type, bool playSound = true)
     {
+
+
         if (playSound)
         {
             ButtonPressed?.Invoke();
@@ -117,7 +119,7 @@ public class UIManager : MonoBehaviour
         if (type == BaseViewType.Tutorial)
         {
             Debug.Log("Launch tutorial base screen");
-            tutorial.Start();
+            tutorial.StartTutorial();
         }
         else if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
         {

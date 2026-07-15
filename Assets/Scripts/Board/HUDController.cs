@@ -47,7 +47,7 @@ public class HUDController : MonoBehaviour
     // Public Methods
     // ================================
 
-    public void Initialize(GameDataService gameData)
+    public void Initialize(bool loadGame, GameDataService gameData)
     {
         this.gameData = gameData;
 
@@ -57,7 +57,7 @@ public class HUDController : MonoBehaviour
         UpdateScoreText();
 
         // load preview data
-        if (gameData.GetGameData().InProgress)
+        if (loadGame)
         {
             CellColor preview = gameData.GetGamePlayData().NextPlayer;
             SetPlayerPreview(preview);

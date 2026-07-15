@@ -63,18 +63,18 @@ public class BoardLogic
 	/// </summary>
     public BoardLogic(IReadOnlyList<CellEntry> cells = null)
     {
-        if (cells == null)
-        {
-            ResetColors();
-            return;
-        }
+        ResetColors();
 
+        if (cells != null) InitializeBoard(cells);
+    }
+
+    public void InitializeBoard(IReadOnlyList<CellEntry> cells = null)
+    {
         // load in the game
         foreach (CellEntry cell in cells)
         {
             AddToBoard(cell.x, cell.y, (CellColor)cell.color);
         }
-        
     }
 
     public CellColor GetCellColor(int row, int col)

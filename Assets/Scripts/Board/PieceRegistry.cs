@@ -29,7 +29,7 @@ public class PieceRegistry : MonoBehaviour
     // Initializer
     // ==================================================
 
-    public void Initialize(Bounds boardBounds, GameDataService gameData)
+    public void Initialize(bool loadGame, Bounds boardBounds, GameDataService gameData)
     {
         this.gameData = gameData;
 
@@ -41,7 +41,7 @@ public class PieceRegistry : MonoBehaviour
 
         picker = new PlayerPicker();
 
-        if (gameData.GetGameData().InProgress)
+        if (loadGame)
         {
             IGamePlayData playData = gameData.GetGamePlayData();
 
@@ -62,6 +62,8 @@ public class PieceRegistry : MonoBehaviour
     // optional param to spawn a player with given colors, always returns non-null colors
     public PlayerPicker.PlayerColors SpawnNewPlayer(PlayerPicker.PlayerColors colors = default)
     {
+        Debug.Log("spawn new player");
+
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
         if (colors.Equals(default(PlayerPicker.PlayerColors)))

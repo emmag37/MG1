@@ -32,6 +32,7 @@ public class Board : MonoBehaviour
     private GhostPreview ghostPreview;
 
     private bool inProgress;
+    private bool runTutorial;
 
     // ================================
     // Initializers
@@ -40,8 +41,10 @@ public class Board : MonoBehaviour
     // initialize with the game load data
     public void Initialize(InitFlag initInfo, GameDataService dataService)
     {
+        inProgress = (initInfo & InitFlag.LoadGame) != 0;
+        runTutorial = (initInfo & InitFlag.Tutorial) != 0;
+
         gameData = dataService;
-        inProgress = gameData.GetGameData().InProgress;
 
         // cache components
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -50,18 +53,21 @@ public class Board : MonoBehaviour
 
         // initialize components
         BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);  // static class now
-        pieceRegistry.Initialize(spriteRenderer.bounds, dataService);    // add values to initialize the active game state
-        ghostPreview.Initialize();
-        hUD.Initialize(dataService);
 
-        // in-progress only initialization
-        IReadOnlyList<CellEntry> cells = null;
-        if (inProgress)
-        {
-            SetInProgress(true);
-            cells = dataService.GetGamePlayData().Board.Cells;
-        }
+        pieceRegistry.Initialize(inProgress, spriteRenderer.bounds, dataService);    // add values to initialize the active game state
+        ghostPreview.Initialize();
+        hUD.Initialize(inProgress, dataService);
+
+        IReadOnlyList<CellEntry> cells = inProgress ? dataService.GetGamePlayData().Board.Cells : null;
         logic = new BoardLogic(cells);
+
+        // set board states
+        if (runTutorial)
+        {
+            hUD.gameObject.SetActive(false);
+        }
+
+        SubscribeToEvents(runTutorial || inProgress);
     }
 
     // ================================
@@ -111,35 +117,20 @@ public class Board : MonoBehaviour
         Debug.Log("on player released");
 
         Vector2Int index = BoardGeometry.TransformToBoardIndex(e.PlayerPosition);
+        int currentScore = ExecuteTurn(e.Color, index);
 
-        // run the board logic - returns early if invalid index
-        if (!logic.TryPlacePlayer(index.x, index.y, e.Color, out PlayResult result))     
+        if (currentScore == -1) return;
+
+        if (runTutorial)
         {
-            pieceRegistry.ReturnPlayerToStart();
+            Debug.Log("finished the tutorial step");
             return;
-        }
-
-        Vector3 newPosition = BoardGeometry.BoardIndexToTransform(index);
-        pieceRegistry.PlacePlayer(newPosition, index);
-
-        if (result.FullBoard)
-        {
-            GameOver();
-            return;
-        }
-
-        int currentScore = hUD.AddPoints(result.Points);
-        if (result.Points > 0)
-        {
-            StartCoroutine(WinAnimationRoutine(result, index));
-            EventBus.Publish(new WinEvent());   // keep for audio manager
         }
 
         gameData.SaveTurn(currentScore, index);    // MUST save turn first, uses original stored colors
 
         CellColor nextColor = pieceRegistry.SpawnNewPlayer().NextColor;
         hUD.SetPlayerPreview(nextColor);
-
     }
 
     private void HandleGhostPreview(Vector2Int index, CellColor color)
@@ -194,7 +185,13 @@ public class Board : MonoBehaviour
         this.inProgress = inProgress;
         gameData.SetInProgress(inProgress);
 
-        if (inProgress)
+        SubscribeToEvents(inProgress);
+    }
+
+    // true to subscribe, false to unsubscribe
+    private void SubscribeToEvents(bool subscribe)
+    {
+        if (subscribe)
         {
             ghostPreview.TryGhostPreview += HandleGhostPreview;
             EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerReleased);
@@ -204,5 +201,34 @@ public class Board : MonoBehaviour
             ghostPreview.TryGhostPreview -= HandleGhostPreview;
             EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
         }
+    }
+
+    // returns the current score following the turn
+    // main orchestration logic that should always be in this script
+    private int ExecuteTurn(CellColor color, Vector2Int index)
+    {
+        if (!logic.TryPlacePlayer(index.x, index.y, color, out PlayResult result))
+        {
+            pieceRegistry.ReturnPlayerToStart();
+            return -1;
+        }
+
+        Vector3 newPosition = BoardGeometry.BoardIndexToTransform(index);
+        pieceRegistry.PlacePlayer(newPosition, index);
+
+        if (result.FullBoard)
+        {
+            GameOver();
+            return -1;
+        }
+
+        int currentScore = hUD.AddPoints(result.Points);
+        if (result.Points > 0)
+        {
+            StartCoroutine(WinAnimationRoutine(result, index));
+            EventBus.Publish(new WinEvent());   // keep for audio manager
+        }
+
+        return currentScore;
     }
 }
