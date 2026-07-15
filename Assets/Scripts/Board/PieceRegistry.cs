@@ -87,9 +87,7 @@ public class PieceRegistry : MonoBehaviour
         pieces[idx] = playerPiece;
         playerPiece = null;
 
-        EventBus.Publish(new PlacePlayerEvent());   // remove - only here so that the audio runs
-
-        
+        EventBus.Publish(new PlacePlayerEvent { Index = index } );
     }
 
     public void ReturnPlayerToStart()

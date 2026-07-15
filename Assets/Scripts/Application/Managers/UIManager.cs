@@ -116,7 +116,9 @@ public class UIManager : MonoBehaviour
         {
             // run tutorial
             Debug.Log("run tutorial");
-            board.StartTutorial();
+            //board.StartTutorial();
+
+            type = BaseViewType.Home;   // keep og logic for now
         }
         else if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
         {

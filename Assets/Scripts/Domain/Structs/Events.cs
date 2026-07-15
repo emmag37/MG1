@@ -17,7 +17,7 @@ public struct GameOverEvent { }    // used in audio manager
 public struct WinEvent { }  // only used by audio manager
 
 // update player view
-public struct PlacePlayerEvent { }  // used in audio manager and tutorial controller view
+public struct PlacePlayerEvent { public Vector2Int Index; }  // used in audio manager and tutorial controller view
 
 // continue tutorial
 public struct TutorialStepCompleteEvent

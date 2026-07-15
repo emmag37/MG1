@@ -60,12 +60,15 @@ public class GameBootstrap : MonoBehaviour
         // if tutorial, prepare the tutorial sequence
         // if active game, load in the game
 
+        BaseViewType startScreen = BaseViewType.Home;
         if (!(settingsService.GetSettings().HasLaunched))
         {
+            Debug.Log("start tutorial");
+            startScreen = BaseViewType.Tutorial;
         }
 
         // always open a fresh new game with the home view
-        uiManager.ShowView(BaseViewType.Home, false);
+        uiManager.ShowView(startScreen, false);
         audioManager.Play();
     }
 

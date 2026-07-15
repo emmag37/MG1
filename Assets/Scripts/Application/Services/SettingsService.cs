@@ -93,7 +93,7 @@ public class SettingsService
     private UserSettings Load()
     {
         UserSettings newSettings = new UserSettings(
-            launched: storage.GetBool(SettingsKeys.Launched, false),
+            launched: /*storage.GetBool(SettingsKeys.Launched, false)*/false,    // just while working on tutorial
             musicOn: storage.GetBool(SettingsKeys.Music, true),
             sfxOn: storage.GetBool(SettingsKeys.SFX, true),
             username: storage.GetString(SettingsKeys.Username, "default-name"),
