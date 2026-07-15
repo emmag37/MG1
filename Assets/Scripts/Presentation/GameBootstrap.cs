@@ -9,6 +9,7 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private Board board;
+    [SerializeField] private Tutorial tutorial;
 
     [SerializeField] private BaseViewController baseViewController;
     [SerializeField] private PopUpViewController popUpViewController;
@@ -35,12 +36,14 @@ public class GameBootstrap : MonoBehaviour
         disc = new DiscStorage();
 
         settingsService = new SettingsService(playerPrefs);
-        IUserSettings userSettings = settingsService.GetSettings();
-
         gameDataService = new GameDataService(disc, playerPrefs);
 
-        board.Initialize(gameDataService, userSettings.HasLaunched);
-        uiManager.Initialize(settingsService, gameDataService, board);
+        IUserSettings userSettings = settingsService.GetSettings();
+
+        board.Initialize(gameDataService);
+        tutorial.Initialize(board);
+
+        uiManager.Initialize(settingsService, gameDataService, board, tutorial);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
 
         baseViewController.Initialize();

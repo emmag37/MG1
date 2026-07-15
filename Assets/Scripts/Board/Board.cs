@@ -30,7 +30,6 @@ public class Board : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
-    private TutorialController tutorial;
 
     private bool inProgress;
 
@@ -39,7 +38,7 @@ public class Board : MonoBehaviour
     // ================================
 
     // initialize with the game load data
-    public void Initialize(GameDataService dataService, bool runTutorial)
+    public void Initialize(GameDataService dataService)
     {
         gameData = dataService;
         inProgress = gameData.GetGameData().InProgress;
@@ -63,14 +62,6 @@ public class Board : MonoBehaviour
             cells = dataService.GetGamePlayData().Board.Cells;
         }
         logic = new BoardLogic(cells);
-
-        // tutorial only initialization - only runs the first time the game is played
-        if (runTutorial)
-        {
-            tutorial = GetComponent<TutorialController>();
-            tutorial.Initialize();
-        }
-
     }
 
     // ================================
@@ -100,18 +91,10 @@ public class Board : MonoBehaviour
         pieceRegistry.PausePlayer(pause);
     }
 
-    public void StartTutorial()
+    public void PrepareTutorialStep()
     {
-        Debug.Log("Start tutorial");
 
-        hUD.gameObject.SetActive(false);    // hide the hUD (always on over game board, but will be using game scene for tutorial)
     }
-
-    public void SkipTutorial()
-    {
-        // skip to the end of the tutorial
-    }
-
 
     // ================================
     // Player/Board Event Handlers
@@ -140,14 +123,14 @@ public class Board : MonoBehaviour
             return;
         }
 
+        int currentScore = hUD.AddPoints(result.Points);
         if (result.Points > 0)
         {
-            hUD.AddPoints(result.Points);
             StartCoroutine(WinAnimationRoutine(result, index));
             EventBus.Publish(new WinEvent());   // keep for audio manager
         }
 
-        gameData.SaveTurn(hUD.Score, index);    // MUST save turn first, uses original stored colors
+        gameData.SaveTurn(currentScore, index);    // MUST save turn first, uses original stored colors
 
         CellColor nextColor = pieceRegistry.SpawnNewPlayer().NextColor;
         hUD.SetPlayerPreview(nextColor);

@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 
 // bug with ghost preview - turns on once but then not again?
-public class TutorialController : MonoBehaviour
+public class Tutorial : MonoBehaviour
 {
     
     // ==================================================
@@ -22,7 +22,7 @@ public class TutorialController : MonoBehaviour
     // Private Fields
     // ==================================================
 
-    //private BoardController board;
+    private Board board;
     //private int currentStep;
 
     //private bool activePlayer = false;
@@ -46,17 +46,19 @@ public class TutorialController : MonoBehaviour
     // Initializer
     // ==================================================
 
-    public void Initialize()
+    public void Initialize(Board board)
     {
-        //this.board = board;
+        this.board = board;
     }
 
     // ==================================================
     // Public Methods
     // ==================================================
 
-    public void StartTutorial()
+    public void Start()
     {
+        Debug.Log("start tutorial");
+
         /*
         // step 0:
         currentStep = 0;

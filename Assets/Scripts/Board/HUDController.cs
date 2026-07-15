@@ -81,18 +81,20 @@ public class HUDController : MonoBehaviour
         playerPreview.sprite = SpriteDatabase.Instance.GetSprite(nextColor);
     }
 
-    public void AddPoints(int points)
+    public int AddPoints(int points)
     {
-        if (points == 0) return;
-
-        score += points;
-        if (score > highScore)
+        if (points > 0)
         {
-            highScore = points;
-            gameData.UpdateHighScore(highScore);
-        }
+            score += points;
+            if (score > highScore)
+            {
+                highScore = points;
+                gameData.UpdateHighScore(highScore);
+            }
 
-        UpdateScoreText();
+            UpdateScoreText();
+        }
+        return score;
     }
 
 

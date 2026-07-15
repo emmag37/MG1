@@ -30,6 +30,7 @@ public class UIManager : MonoBehaviour
     private GameDataService gameDataService;
 
     private Board board;
+    private Tutorial tutorial;
 
     private BaseViewType baseState = BaseViewType.None;
     private Stack<PopUpViewType> popUpStack = new Stack<PopUpViewType>();
@@ -58,11 +59,12 @@ public class UIManager : MonoBehaviour
     // Initialize
     // ==================================================
 
-    public void Initialize(SettingsService settingsService, GameDataService gameDataService, Board board)
+    public void Initialize(SettingsService settingsService, GameDataService gameDataService, Board board, Tutorial tutorial)
     {
         this.settingsService = settingsService;
         this.gameDataService = gameDataService;
         this.board = board;
+        this.tutorial = tutorial;
     }
 
 
@@ -115,7 +117,7 @@ public class UIManager : MonoBehaviour
         if (type == BaseViewType.Tutorial)
         {
             Debug.Log("Launch tutorial base screen");
-            board.StartTutorial();
+            tutorial.Start();
         }
         else if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
         {
@@ -129,7 +131,7 @@ public class UIManager : MonoBehaviour
         else if (baseState == BaseViewType.Tutorial && type == BaseViewType.Tutorial)         // signal for skip - only called when tutorial is active
         {
             SkipTutorial?.Invoke();
-            board.SkipTutorial();
+            //board.SkipTutorial();
             return;
         }
         
