@@ -48,6 +48,8 @@ public class Tutorial : MonoBehaviour
     public void Initialize(Board board)
     {
         this.board = board;
+
+        board.TutorialStepComplete += HandleStepComplete;
     }
 
     // ==================================================
@@ -67,8 +69,6 @@ public class Tutorial : MonoBehaviour
 
         // run step in board
         board.StartTutorialStep(playerColor, liveZone);
-
-        //board.TurnCompleted += HandleTurnCompleted;
     }
 
     public void CompleteTutorial()
@@ -90,6 +90,21 @@ public class Tutorial : MonoBehaviour
     // ==================================================
     // Event Handlers
     // ==================================================
+
+    private void HandleStepComplete()
+    {
+        Debug.Log($"completed step: {currentStep}");
+
+        currentStep++;
+        switch (currentStep)
+        {
+            case 1:
+                break;
+            default:
+                break;
+        }
+    }
+
     /*
     // player placed on board
     private void HandleTurnCompleted(int points, (int, int) index)

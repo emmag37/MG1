@@ -13,7 +13,8 @@ public class Board : MonoBehaviour
     // ================================
     // Events
     // ================================
-    public event Action FullBoard;  
+    public event Action FullBoard;
+    public event Action TutorialStepComplete;
 
     // ================================
     // Inspector Fields
@@ -124,6 +125,7 @@ public class Board : MonoBehaviour
         if (runTutorial)
         {
             Debug.Log("finished the tutorial step");
+            TutorialStepComplete?.Invoke();
             return;
         }
 
