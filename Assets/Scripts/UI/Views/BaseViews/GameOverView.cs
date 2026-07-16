@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the game over screen.
 /// </summary>
-public class GameOverView : NewBaseView
+public class GameOverView : BaseView
 {
     // ==================================================
     // Inspector Fields

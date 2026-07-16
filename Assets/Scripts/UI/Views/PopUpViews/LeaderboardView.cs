@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // currently not using this screen
-public class LeaderboardView : NewPopUpView
+public class LeaderboardView : PopUpView
 {
     // ==================================================
     // Private Fields

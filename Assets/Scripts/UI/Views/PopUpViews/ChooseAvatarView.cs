@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class ChooseAvatarView : NewPopUpView
+public class ChooseAvatarView : PopUpView
 {
     // ==================================================
     // Inspector Fields

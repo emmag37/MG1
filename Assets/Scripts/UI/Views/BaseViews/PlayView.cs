@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the game play scene.
 /// </summary>
-public class PlayView : NewBaseView
+public class PlayView : BaseView
 {
     protected override void SetInfo(IRuntimeData data) { }
 }

@@ -7,13 +7,13 @@ public class PopUpViewController : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-	[SerializeField] private NewPopUpView[] popUpViewList;
+	[SerializeField] private PopUpView[] popUpViewList;
 
     // ==================================================
     // Private Fields
     // ==================================================
-    private Dictionary<PopUpViewType, NewPopUpView> popUpViews = new Dictionary<PopUpViewType, NewPopUpView>();
-    private Stack<NewPopUpView> overlayStack = new Stack<NewPopUpView>();
+    private Dictionary<PopUpViewType, PopUpView> popUpViews = new Dictionary<PopUpViewType, PopUpView>();
+    private Stack<PopUpView> overlayStack = new Stack<PopUpView>();
 
 
     // ==================================================
@@ -22,7 +22,7 @@ public class PopUpViewController : MonoBehaviour
 
     public void Initialize()
     {
-        foreach (NewPopUpView view in popUpViewList)
+        foreach (PopUpView view in popUpViewList)
         {
             if (popUpViews.ContainsKey(view.Type))
             {
@@ -67,7 +67,7 @@ public class PopUpViewController : MonoBehaviour
     private void PushOverlay(PopUpViewType type, IRuntimeData data)
     {
         int count = overlayStack.Count;
-        NewPopUpView overlayView = GetPopUpView(type);
+        PopUpView overlayView = GetPopUpView(type);
 
         overlayView.Show(data);
         overlayStack.Push(overlayView);
@@ -80,7 +80,7 @@ public class PopUpViewController : MonoBehaviour
         int count = overlayStack.Count;
         Debug.Assert(count > 0, "Attempted to pop from empty overlay stack");
 
-        NewPopUpView overlayView = overlayStack.Peek();
+        PopUpView overlayView = overlayStack.Peek();
 
         overlayView.Hide();
         overlayStack.Pop();
@@ -98,7 +98,7 @@ public class PopUpViewController : MonoBehaviour
 
     private void RefreshOverlay(PopUpViewType type, IRuntimeData data)
     {
-        NewPopUpView overlayView = GetPopUpView(type);
+        PopUpView overlayView = GetPopUpView(type);
         overlayView.UpdateView(data);
     }
 
@@ -106,9 +106,9 @@ public class PopUpViewController : MonoBehaviour
     // Helper Methods
     // ==================================================
 
-    private NewPopUpView GetPopUpView(PopUpViewType type)
+    private PopUpView GetPopUpView(PopUpViewType type)
     {
-        NewPopUpView view;
+        PopUpView view;
         if (!popUpViews.TryGetValue(type, out view))
         {
             Debug.LogError($"Could not access pop up view for type {type}");

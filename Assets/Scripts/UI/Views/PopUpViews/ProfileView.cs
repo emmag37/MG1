@@ -7,7 +7,7 @@ using TMPro;
 
 // need to decide what to do with the profanity filter
 // unity has some built in content checkers for alphanum, etc
-public class ProfileView : NewPopUpView
+public class ProfileView : PopUpView
 {
     // ==================================================
     // Inspector Fields

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RestartGameView : NewPopUpView
+public class RestartGameView : PopUpView
 {
     // ==================================================
     // Inspector Fields

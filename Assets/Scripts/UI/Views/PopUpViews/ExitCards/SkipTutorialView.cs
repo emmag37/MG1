@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkipTutorialView : NewPopUpView
+public class SkipTutorialView : PopUpView
 {
     // ==================================================
     // Inspector Fields

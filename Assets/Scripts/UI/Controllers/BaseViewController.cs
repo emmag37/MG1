@@ -7,13 +7,13 @@ public class BaseViewController : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private NewBaseView[] baseViewList;
+    [SerializeField] private BaseView[] baseViewList;
 
     // ==================================================
     // Private Fields
     // ==================================================
-    private Dictionary<BaseViewType, NewBaseView> baseViews = new Dictionary<BaseViewType, NewBaseView>();
-    private NewBaseView currentView;
+    private Dictionary<BaseViewType, BaseView> baseViews = new Dictionary<BaseViewType, BaseView>();
+    private BaseView currentView;
 
 
     // ==================================================
@@ -22,7 +22,7 @@ public class BaseViewController : MonoBehaviour
 
     public void Initialize()
     {
-        foreach (NewBaseView view in baseViewList)
+        foreach (BaseView view in baseViewList)
         {
             if (baseViews.ContainsKey(view.Type))
             {
@@ -68,7 +68,7 @@ public class BaseViewController : MonoBehaviour
 
     private void RefreshView(BaseViewType type, IRuntimeData data)
     {
-        NewBaseView view = GetBaseView(type);
+        BaseView view = GetBaseView(type);
         view.UpdateView(data);
     }
 
@@ -77,9 +77,9 @@ public class BaseViewController : MonoBehaviour
     // Helper Methods
     // ==================================================
 
-    private NewBaseView GetBaseView(BaseViewType type)
+    private BaseView GetBaseView(BaseViewType type)
     {
-        NewBaseView view;
+        BaseView view;
         if (!baseViews.TryGetValue(type, out view))
         {
             Debug.LogError($"Could not access base view for type {type}");

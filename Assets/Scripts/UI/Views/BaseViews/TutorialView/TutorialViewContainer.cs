@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TutorialViewContainer : NewBaseView
+public class TutorialViewContainer : BaseView
 {
     // ==================================================
     // Inspector Fields

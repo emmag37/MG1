@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the home screen.
 /// </summary>
-public class HomeView : NewBaseView
+public class HomeView : BaseView
 {
     // ==================================================
     // Inspector Fields
