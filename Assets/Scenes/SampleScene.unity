@@ -705,7 +705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddfbbb9df60ed47ada363ec0333bade6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverView
-  type: 3
+  baseType: 3
   settingsButton: {fileID: 69040891}
   homeButton: {fileID: 2118693160}
   replayButton: {fileID: 1138544388}
@@ -1632,7 +1632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d53b4203fcc445cda8bd124f670159d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayView
-  type: 2
+  baseType: 2
 --- !u!114 &96805676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3200,7 +3200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aedd5f31f54b423bb6097b5ca7e0f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkipTutorialView
-  type: 7
+  popUpType: 7
   exitButton: {fileID: 2054078167}
   yesButton: {fileID: 107727225}
   noButton: {fileID: 971016008}
@@ -3649,7 +3649,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb6c70f3e8d240b1a1178b3d322155f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardView
-  type: 4
+  popUpType: 4
   exitButton: {fileID: 1353513427}
 --- !u!114 &305109434
 MonoBehaviour:
@@ -5228,7 +5228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b420653d0aa8343b6ac6a62863b8d652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HomeView
-  type: 1
+  baseType: 1
   profileButton: {fileID: 2085384309}
   avatarImage: {fileID: 2081577123}
   settingsButton: {fileID: 1138610323}
@@ -6774,7 +6774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c560b61fceade459ea9b33c1a92f7532, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExitGameView
-  type: 6
+  popUpType: 6
   exitButton: {fileID: 44627455}
   yesButton: {fileID: 1516629131}
   noButton: {fileID: 46148732}
@@ -9139,7 +9139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d36618d9d4d10439db13fd52955d502e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProfileView
-  type: 3
+  popUpType: 3
   exitButton: {fileID: 1612251944}
   editUsernameButton: {fileID: 1780269026}
   usernameInput: {fileID: 1947712370}
@@ -10508,7 +10508,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c776d73082778409bb43a75c6a1df787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialViewContainer
-  type: 4
+  baseType: 4
   skipButton: {fileID: 934248314}
   exitButton: {fileID: 772730468}
   startPlayingButton: {fileID: 1302226673}
@@ -12611,7 +12611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 132ce192968ea469692ad0816474b447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsView
-  type: 2
+  popUpType: 2
   exitButton: {fileID: 4949339}
   termCondButton: {fileID: 1759788635}
   privacyPolButton: {fileID: 1428946750}
@@ -13001,7 +13001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8c03bb51989a4b3d908c985bf8046d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsView
-  type: 1
+  popUpType: 1
   exitButton: {fileID: 211410066}
   homeButton: {fileID: 1990685552}
   restartButton: {fileID: 1593412191}
@@ -15812,7 +15812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 939089ce207b74417990dd44b61f2fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChooseAvatarView
-  type: 5
+  popUpType: 5
   exitButton: {fileID: 782989680}
   avatarImage: {fileID: 1159483840}
   leftButton: {fileID: 485384414}

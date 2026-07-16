@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 // new ui view so this compiles while i work it out
-public abstract class UIView : MonoBehaviour
+public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
 {
     protected UIManager Manager => UIManager.Instance;  // maybe just make this a static class?
+
+    public abstract TType Type { get; }
 
     public virtual void Show(IRuntimeData data = null)
     {
@@ -22,17 +25,18 @@ public abstract class UIView : MonoBehaviour
     protected abstract void SetInfo(IRuntimeData data);
 }
 
-public abstract class BaseView : UIView
+public abstract class BaseView : UIView<BaseViewType>
 {
-    [SerializeField] private BaseViewType type;
-    public BaseViewType Type => type;
+    public override BaseViewType Type => baseType;
+
+    [SerializeField] private BaseViewType baseType;
 }
 
-public abstract class PopUpView : UIView
+public abstract class PopUpView : UIView<PopUpViewType>
 {
-    [SerializeField] private PopUpViewType type;
-    public PopUpViewType Type => type;
+    public override PopUpViewType Type => popUpType;
 
+    [SerializeField] private PopUpViewType popUpType;
     [SerializeField] private Button exitButton;
 
     protected virtual void OnValidate()
