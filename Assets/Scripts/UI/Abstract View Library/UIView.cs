@@ -25,28 +25,5 @@ public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
     protected abstract void SetInfo(IRuntimeData data);
 }
 
-public abstract class BaseView : UIView<BaseViewType>
-{
-    public override BaseViewType Type => baseType;
 
-    [SerializeField] private BaseViewType baseType;
-}
-
-public abstract class PopUpView : UIView<PopUpViewType>
-{
-    public override PopUpViewType Type => popUpType;
-
-    [SerializeField] private PopUpViewType popUpType;
-    [SerializeField] private Button exitButton;
-
-    protected virtual void OnValidate()
-    {
-        Debug.Assert(exitButton != null, "Exit button not set in pop up view");
-    }
-
-    protected virtual void Awake()
-    {
-        exitButton.onClick.AddListener(Manager.PopOverlay);
-    }
-}
 
