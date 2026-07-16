@@ -7,7 +7,8 @@ public enum InitFlag : byte
     None =  0,              // initialize nothing besides normal systems
     Tutorial = 1 << 0,      // initialize the tutorial
     LoadGame = 1 << 1       // initialize a previously started game
-    // can have 6 more flags for initialize
+
+    // can have 6 more flags
 }
 
 
@@ -22,8 +23,6 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private Board board;
     [SerializeField] private Tutorial tutorial;
 
-    [SerializeField] private BaseViewController baseViewController;
-    [SerializeField] private PopUpViewController popUpViewController;
     [SerializeField] private TutorialViewController tutorialViewController;
 
     // ==================================================
@@ -62,9 +61,6 @@ public class GameBootstrap : MonoBehaviour
 
         uiManager.Initialize(initInfo, board, tutorial, settingsService, gameDataService);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
-
-        baseViewController.Initialize();
-        popUpViewController.Initialize();
 
         // wire dependencies
         WireSettings();
@@ -106,8 +102,7 @@ public class GameBootstrap : MonoBehaviour
         settingsService.MusicUpdate += audioManager.HandleMusicUpdate;
         settingsService.SFXUpdate += audioManager.HandleSFXUpdate;
 
-        settingsService.ProfileUpdate += baseViewController.HandleProfileUpdate;
-        settingsService.ProfileUpdate += popUpViewController.HandleProfileUpdate;
+        settingsService.ProfileUpdate += uiManager.HandleProfileUpdate;
     }
 
     private void UnwireSettings()
@@ -115,19 +110,13 @@ public class GameBootstrap : MonoBehaviour
         settingsService.MusicUpdate -= audioManager.HandleMusicUpdate;
         settingsService.SFXUpdate -= audioManager.HandleSFXUpdate;
 
-        settingsService.ProfileUpdate -= baseViewController.HandleProfileUpdate;
-        settingsService.ProfileUpdate -= popUpViewController.HandleProfileUpdate;
+        settingsService.ProfileUpdate += uiManager.HandleProfileUpdate;
     }
 
     private void WireUI()
     {
         uiManager.ButtonPressed += audioManager.HandleButtonPressed;
         uiManager.Transition += audioManager.HandleTransition;
-
-        uiManager.ShowBaseView += baseViewController.HandleShowView;
-        uiManager.PushOverlayView += popUpViewController.HandlePush;
-        uiManager.PopOverlayView += popUpViewController.HandlePop;
-        uiManager.ClearOverlayView += popUpViewController.HandleClear;
 
         uiManager.SkipTutorial += tutorialViewController.HandleSkipTutorial;
     }
@@ -136,11 +125,6 @@ public class GameBootstrap : MonoBehaviour
     {
         uiManager.ButtonPressed -= audioManager.HandleButtonPressed;
         uiManager.Transition -= audioManager.HandleTransition;
-
-        uiManager.ShowBaseView -= baseViewController.HandleShowView;
-        uiManager.PushOverlayView -= popUpViewController.HandlePush;
-        uiManager.PopOverlayView -= popUpViewController.HandlePop;
-        uiManager.ClearOverlayView -= popUpViewController.HandleClear;
 
         uiManager.SkipTutorial -= tutorialViewController.HandleSkipTutorial;
     }

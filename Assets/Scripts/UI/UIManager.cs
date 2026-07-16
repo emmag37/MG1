@@ -7,7 +7,6 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Constants
     // ==================================================
-
     private const int BaseViewCapacity = 1;
     private const int PopUpViewCapacity = 3;    // think it might be two, but just to be safe
 
@@ -19,17 +18,10 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Events
     // ==================================================
-    public event Action<BaseViewType, IRuntimeData> ShowBaseView;
-
-    public event Action<PopUpViewType, IRuntimeData> PushOverlayView;
-    public event Action PopOverlayView;
-    public event Action ClearOverlayView;
-
     public event Action SkipTutorial;
 
     public event Action ButtonPressed;  // eventually move to event bus?
     public event Action Transition;
-
 
     // ==================================================
     // Inspector Fields
@@ -151,8 +143,6 @@ public class UIManager : MonoBehaviour
         }
 
         baseViewController.PushView(type, userSettings);
-
-        // deprecated: ClearOverlay, baseState, ShowBaseView
     }
 
     // rename to push pop up view
@@ -176,8 +166,6 @@ public class UIManager : MonoBehaviour
         }
 
         popUpViewController.PushView(type, data);
-
-        // deprecated: PushOverlayView, popUpStack
     }
 
     // rename to pop pop up view
@@ -191,8 +179,6 @@ public class UIManager : MonoBehaviour
         }
 
         popUpViewController.PopView();
-
-        // deprecated: PopOverlayView, popUpStack
     }
 
     // ==================================================
@@ -202,7 +188,11 @@ public class UIManager : MonoBehaviour
     private void HandleGameOver()
     {
         baseViewController.PushView(BaseViewType.GameOver, gameDataService.GetGameData());
+    }
 
-        // deprecated: baseState, ShowBaseView
+    public void HandleProfileUpdate(IUserSettings userSettings)
+    {
+        baseViewController.UpdateView(BaseViewType.Home, userSettings);
+        popUpViewController.UpdateView(PopUpViewType.Profile, userSettings);
     }
 }
