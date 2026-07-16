@@ -69,13 +69,6 @@ public class LeaderboardRanking : CappedRankedList<LeaderboardData>
 
 // sparse list to store board data, only ever read from for a list traversal
 [Serializable]
-public struct CellEntry
-{
-    public int x, y, color;
-    public CellEntry(int x, int y, int color) { this.x = x; this.y = y; this.color = color; }
-}
-
-[Serializable]
 public class BoardData
 {
     [SerializeField] private List<CellEntry> cells = new();
