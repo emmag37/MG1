@@ -14,12 +14,10 @@ public class HUDController : MonoBehaviour
     [SerializeField] private Text highScoreText;
     [SerializeField] private Image playerPreview;
 
-    [SerializeField] private Button pauseButton;
 
     // ================================
     // Private Fields
     // ================================
-    private UIManager Manager => UIManager.Instance;
     private GameDataService gameData;
 
     private int score;
@@ -36,12 +34,6 @@ public class HUDController : MonoBehaviour
 
         Debug.Assert(playerPreview != null, "Player preview not set");
     }
-
-    void Awake()
-    {
-        pauseButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Pause));
-    }
-
 
     // ================================
     // Public Methods

@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Public Fields
     // ==================================================
-    public static UIManager Instance { get; private set; }  // change this to an interface? need for my views
+    public static UIManager Instance { get; private set; }  // get rid of this singleton
 
     // ==================================================
     // Events
@@ -45,11 +45,6 @@ public class UIManager : MonoBehaviour
     // Unity Lifecycle Methods
     // ==================================================
 
-    void Awake()
-    {
-        Instance = this;
-    }
-
     void OnEnable()
     {
         board.FullBoard += HandleGameOver;
@@ -66,6 +61,8 @@ public class UIManager : MonoBehaviour
 
     public void Initialize(InitFlag initInfo, Board board, Tutorial tutorial, SettingsService settingsService, GameDataService gameDataService)
     {
+        Instance = this;
+
         this.settingsService = settingsService;
         this.gameDataService = gameDataService;
         this.board = board;

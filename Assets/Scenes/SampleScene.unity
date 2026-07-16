@@ -1633,6 +1633,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayView
   baseType: 2
+  pauseButton: {fileID: 1387991153}
 --- !u!114 &96805676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1694,7 +1695,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!1 &97706843
 GameObject:
@@ -2114,7 +2115,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1580264050}
+  m_Father: {fileID: 1981156588}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -6028,7 +6029,7 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5184943337357373849, guid: c8d3640fe00b349429934612bbb3fbd9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1387991152}
+      addedObject: {fileID: 130873935}
     - targetCorrespondingSourceObject: {fileID: 5184943337357373849, guid: c8d3640fe00b349429934612bbb3fbd9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 496419312}
@@ -10166,7 +10167,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1981156588}
+  m_Father: {fileID: 1580264050}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -11674,7 +11675,7 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 5184943337357373849, guid: c8d3640fe00b349429934612bbb3fbd9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 130873935}
+      addedObject: {fileID: 1387991152}
     - targetCorrespondingSourceObject: {fileID: 5184943337357373849, guid: c8d3640fe00b349429934612bbb3fbd9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 499366270}
@@ -14151,7 +14152,6 @@ MonoBehaviour:
   scoreText: {fileID: 2115315121}
   highScoreText: {fileID: 98315442}
   playerPreview: {fileID: 1751386953}
-  pauseButton: {fileID: 1387991153}
 --- !u!114 &1811068635
 MonoBehaviour:
   m_ObjectHideFlags: 0
