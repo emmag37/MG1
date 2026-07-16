@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// todo: reimplement update music and sfx
+
 /// <summary>
 /// UI view for the settings menu.
 /// </summary>
@@ -34,11 +36,12 @@ public class PauseView: PopUpView
     {
         base.Awake();
 
-        homeButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Home));
-        restartButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.RestartGame));
+        homeButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Home));
+        restartButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.RestartGame));
 
-        musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
-        sfxSlider.onValueChanged.AddListener((value) => Manager.UpdateSFXOn((int)value));
+        // re-implement
+        //musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
+        //sfxSlider.onValueChanged.AddListener((value) => Manager.UpdateSFXOn((int)value));
     }
 
 

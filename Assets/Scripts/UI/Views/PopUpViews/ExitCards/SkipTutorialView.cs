@@ -18,8 +18,8 @@ public class SkipTutorialView : PopUpView
     {
         base.Awake();
 
-        yesButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Tutorial));   // goes to the end of the tutorial
-        noButton.onClick.AddListener(() => Manager.PopOverlay());
+        yesButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Tutorial));   // goes to the end of the tutorial
+        noButton.onClick.AddListener(() => Host.PopView<PopUpViewType>());
     }
 
     // base class

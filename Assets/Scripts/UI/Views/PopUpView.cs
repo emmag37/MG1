@@ -27,7 +27,7 @@ public abstract class PopUpView : UIView<PopUpViewType>
 
     protected virtual void Awake()
     {
-        exitButton.onClick.AddListener(Manager.PopOverlay);
+        exitButton.onClick.AddListener(Host.PopView<PopUpViewType>);
     }
 }
 

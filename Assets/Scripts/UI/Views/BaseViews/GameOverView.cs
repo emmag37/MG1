@@ -34,10 +34,10 @@ public class GameOverView : BaseView
 
     void Awake()
     {
-        homeButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Home));
-        replayButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
+        homeButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Home));
+        replayButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));
 
-        settingsButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Settings));
+        settingsButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Settings));
     }
 
     // ==================================================

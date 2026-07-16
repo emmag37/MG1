@@ -2,16 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+
 public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
 {
-    protected UIManager Manager { get; private set; }
+    protected IUIViewHost Host { get; private set; }
 
     public abstract TType Type { get; }
 
-    public void Initialize(UIManager manager)
-    {
-        Manager = manager;
-    }
+    public void Initialize(IUIViewHost host) => Host = host;
 
     public virtual void Show(IRuntimeData data = null)
     {

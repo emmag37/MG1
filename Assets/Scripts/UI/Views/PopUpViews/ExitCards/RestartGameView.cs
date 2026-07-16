@@ -18,8 +18,8 @@ public class RestartGameView : PopUpView
     {
         base.Awake();
 
-        yesButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));   // should close whole stack, show a new game
-        noButton.onClick.AddListener(() => Manager.PopOverlay()); // close the whole thing - don't remember the function usage
+        yesButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));   // should close whole stack, show a new game
+        noButton.onClick.AddListener(() => Host.PopView<PopUpViewType>()); // close the whole thing - don't remember the function usage
     }
 
     // base class

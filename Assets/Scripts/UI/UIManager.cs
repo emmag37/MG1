@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviour, IUIViewHost
 {
     // ==================================================
     // Constants
@@ -70,10 +70,35 @@ public class UIManager : MonoBehaviour
         popUpViewController = new ViewController<PopUpView, PopUpViewType, IRuntimeData>(popUpViewList, PopUpViewCapacity, this);
     }
 
+    // ==================================================
+    // Interface Method Delegation
+    // ==================================================
+
+    public void PushView<TType>(TType type) where TType : struct, Enum
+    {
+        if (typeof(TType) == typeof(BaseViewType))
+            ShowBaseView((BaseViewType)(object)type);
+        else if (typeof(TType) == typeof(PopUpViewType))
+            PushOverlay((PopUpViewType)(object)type);
+        else
+            Debug.LogError($"Unsupported view type: {typeof(TType).Name}");
+    }
+
+    public void PopView<TType>() where TType : struct, Enum
+    {
+        if (typeof(TType) == typeof(PopUpViewType))
+            PopOverlay();
+        else
+            Debug.LogError($"Unsupported view type: {typeof(TType).Name}");
+    }
+
 
     // ==================================================
-    // Update Settings Methods
+    // Update Settings Methods - just forwarders, remove
     // ==================================================
+
+    // remove these, use a service locator on the actual view
+    // currently these functions are not supported
 
     public void UpdateMusicOn(int on)
     {
@@ -93,14 +118,14 @@ public class UIManager : MonoBehaviour
     public void UpdateAvatar(CellColor color)
     {
         settingsService.SetAvatar(color);
-    }
+    } 
 
     // ==================================================
     // View Controller Methods
     // ==================================================
 
     // rename to show base view
-    public void ShowView(BaseViewType type, bool playSound = true)
+    private void ShowBaseView(BaseViewType type, bool playSound = true)
     {
         if (playSound)
         {
@@ -135,7 +160,7 @@ public class UIManager : MonoBehaviour
     }
 
     // rename to push pop up view
-    public void PushOverlay(PopUpViewType type, bool playSound = true)
+    private void PushOverlay(PopUpViewType type, bool playSound = true)
     {
         if (playSound)
             ButtonPressed?.Invoke();
@@ -158,7 +183,7 @@ public class UIManager : MonoBehaviour
     }
 
     // rename to pop pop up view
-    public void PopOverlay()
+    private void PopOverlay()
     {
         ButtonPressed?.Invoke();
 

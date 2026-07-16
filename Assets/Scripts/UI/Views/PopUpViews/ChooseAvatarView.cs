@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+// todo: reimplement update avatar
 public class ChooseAvatarView : PopUpView
 {
     // ==================================================
@@ -42,7 +43,8 @@ public class ChooseAvatarView : PopUpView
         leftButton.onClick.AddListener(PreviousAvatar);
         rightButton.onClick.AddListener(NextAvatar);
 
-        chooseButton.onClick.AddListener(() => Manager.UpdateAvatar(currentColor));
+        // re-implement
+        //chooseButton.onClick.AddListener(() => Manager.UpdateAvatar(currentColor));
     }
 
     // ==================================================

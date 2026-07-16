@@ -80,7 +80,7 @@ public class GameBootstrap : MonoBehaviour
         }
 
         // always open a fresh new game with the home view
-        uiManager.ShowView(startScreen, false);
+        uiManager.PushView<BaseViewType>(startScreen);
         audioManager.Play();
     }
 

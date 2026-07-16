@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Collections;
 using TMPro;
 
+// todo: reimplement try update username
+
 // need to decide what to do with the profanity filter
 // unity has some built in content checkers for alphanum, etc
 public class ProfileView : PopUpView
@@ -50,7 +52,7 @@ public class ProfileView : PopUpView
     {
         base.Awake();
 
-        editAvatarButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.ChooseAvatar));
+        editAvatarButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.ChooseAvatar));
         editUsernameButton.onClick.AddListener(usernameInput.ActivateInputField);
 
         usernameInput.onSubmit.AddListener(value =>
@@ -98,16 +100,16 @@ public class ProfileView : PopUpView
 
     private void TryUpdateUsername(string name)
     {
-        if (Manager.TryUpdateUsername(name, out InvalidInputType error))
+        if (/*Manager.TryUpdateUsername(name, out InvalidInputType error)*/ name.Length > 0)
         {
             currentUsername = name;
             invalidInput.gameObject.SetActive(false);
         }
         else
         {
-            Debug.Log($"invalid input: {error}");
+            //Debug.Log($"invalid input: {error}");
 
-            invalidInput.text = errorMessages[error];
+            //invalidInput.text = errorMessages[error];
             invalidInput.gameObject.SetActive(true);
 
             StartCoroutine(ShakeTextRoutine());

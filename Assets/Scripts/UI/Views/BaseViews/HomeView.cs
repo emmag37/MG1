@@ -28,10 +28,10 @@ public class HomeView : BaseView
 
     void Awake()
     {
-        profileButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Profile));
-        settingsButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Settings));
+        profileButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Profile));
+        settingsButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Settings));
 
-        playButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
+        playButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));
     }
 
     // ==================================================

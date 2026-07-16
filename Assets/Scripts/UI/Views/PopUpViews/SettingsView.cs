@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// todo: reimplement update music and sfx
+
 public class SettingsView: PopUpView
 {
     // ==================================================
@@ -34,8 +37,9 @@ public class SettingsView: PopUpView
         // link for terms and conditions
         // link for privacy policy
 
-        musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
-        sfxSlider.onValueChanged.AddListener((value) => Manager.UpdateSFXOn((int)value));
+        // re-implement
+        //musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
+        //sfxSlider.onValueChanged.AddListener((value) => Manager.UpdateSFXOn((int)value));
     }
 
 

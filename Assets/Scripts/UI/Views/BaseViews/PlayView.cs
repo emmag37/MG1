@@ -11,7 +11,7 @@ public class PlayView : BaseView
     void Awake()
     {
         Debug.Log("button listener");
-        pauseButton.onClick.AddListener(() => Manager.PushOverlay(PopUpViewType.Pause));
+        pauseButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Pause));
     }
 
     protected override void SetInfo(IRuntimeData data) { }
