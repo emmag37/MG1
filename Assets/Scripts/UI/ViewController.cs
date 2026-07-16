@@ -10,6 +10,11 @@ public class ViewController<TView, TType, TData>
     where TData : IRuntimeData
 {
     // ==================================================
+    // Public Fields
+    // ==================================================
+    public int Count => viewStack.Count;
+    
+    // ==================================================
     // Private Fields
     // ==================================================
     private Dictionary<TType, TView> viewDictionary;
@@ -62,6 +67,13 @@ public class ViewController<TView, TType, TData>
 
         viewStack.Push(newView);
         newView.Show(data);
+    }
+
+    public TType PeekViewType()
+    {
+        if (viewStack.Count == 0) return default;   // error: peek from empty stack
+
+        return viewStack.Peek().Type;
     }
 
     public void PopView()

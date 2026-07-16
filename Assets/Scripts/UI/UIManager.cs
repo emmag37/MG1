@@ -5,6 +5,13 @@ using System.Collections.Generic;
 public class UIManager : MonoBehaviour
 {
     // ==================================================
+    // Constants
+    // ==================================================
+
+    private const int BaseViewCapacity = 1;
+    private const int PopUpViewCapacity = 3;    // think it might be two, but just to be safe
+
+    // ==================================================
     // Public Fields
     // ==================================================
     public static UIManager Instance { get; private set; }  // change this to an interface? need for my views
@@ -23,6 +30,14 @@ public class UIManager : MonoBehaviour
     public event Action ButtonPressed;  // eventually move to event bus?
     public event Action Transition;
 
+
+    // ==================================================
+    // Inspector Fields
+    // ==================================================
+    [SerializeField] private BaseView[] baseViewList;
+    [SerializeField] private PopUpView[] popUpViewList;
+
+
     // ==================================================
     // Private Fields
     // ==================================================
@@ -32,8 +47,8 @@ public class UIManager : MonoBehaviour
     private Board board;
     private Tutorial tutorial;
 
-    private BaseViewType baseState = BaseViewType.None;
-    private Stack<PopUpViewType> popUpStack = new Stack<PopUpViewType>();
+    private ViewController<BaseView, BaseViewType, IRuntimeData> baseViewController;
+    private ViewController<PopUpView, PopUpViewType, IRuntimeData> popUpViewController;
 
 
     // ==================================================
@@ -65,6 +80,9 @@ public class UIManager : MonoBehaviour
         this.gameDataService = gameDataService;
         this.board = board;
         this.tutorial = tutorial;
+
+        baseViewController = new ViewController<BaseView, BaseViewType, IRuntimeData>(baseViewList, BaseViewCapacity);
+        popUpViewController = new ViewController<PopUpView, PopUpViewType, IRuntimeData>(popUpViewList, PopUpViewCapacity);
     }
 
 
@@ -96,7 +114,7 @@ public class UIManager : MonoBehaviour
     // View Controller Methods
     // ==================================================
 
-    // base views
+    // rename to show base view
     public void ShowView(BaseViewType type, bool playSound = true)
     {
         if (playSound)
@@ -105,25 +123,23 @@ public class UIManager : MonoBehaviour
             Transition?.Invoke();
         }
 
-        // why is pause not coming off of the stack????
-        if (popUpStack.Count > 0)
+        if (popUpViewController.Count > 0)
         {
-            ClearOverlay();
+            popUpViewController.ClearViews();
         }
 
         IUserSettings userSettings = settingsService.GetSettings();
         IGameData gameData = gameDataService.GetGameData();
-        
-        if (type == BaseViewType.GamePlay && baseState == BaseViewType.GamePlay) // signal for restart
+
+        if (type == BaseViewType.GamePlay && baseViewController.PeekViewType() == BaseViewType.GamePlay)
         {
             board.PlayGame(restart: true);
         }
         else if (type == BaseViewType.GamePlay)
         {
-            Debug.Log("attempt game play");
             board.PlayGame();
         }
-        else if (baseState == BaseViewType.Tutorial && type == BaseViewType.Tutorial)         // signal for skip - only called when tutorial is active
+        else if (type == BaseViewType.Tutorial && baseViewController.PeekViewType() == BaseViewType.Tutorial)
         {
             SkipTutorial?.Invoke();
             tutorial.SkipTutorial();
@@ -131,15 +147,15 @@ public class UIManager : MonoBehaviour
         }
         else if (type == BaseViewType.Tutorial)
         {
-            Debug.Log("Launch tutorial base screen");
             tutorial.StartTutorial();
         }
 
-        ShowBaseView?.Invoke(type, userSettings);
-        baseState = type;
+        baseViewController.PushView(type, userSettings);
+
+        // deprecated: ClearOverlay, baseState, ShowBaseView
     }
 
-    // pop up views
+    // rename to push pop up view
     public void PushOverlay(PopUpViewType type, bool playSound = true)
     {
         if (playSound)
@@ -159,21 +175,24 @@ public class UIManager : MonoBehaviour
             data = new AllData(gameData, settingsData);
         }
 
-        PushOverlayView?.Invoke(type, data);
-        popUpStack.Push(type);
+        popUpViewController.PushView(type, data);
+
+        // deprecated: PushOverlayView, popUpStack
     }
 
+    // rename to pop pop up view
     public void PopOverlay()
     {
         ButtonPressed?.Invoke();
 
-        if (popUpStack.Peek() == PopUpViewType.Pause)
+        if (popUpViewController.PeekViewType() == PopUpViewType.Pause)
         {
-            board.PauseGame(false);   // unpause
+            board.PauseGame(false);
         }
 
-        PopOverlayView?.Invoke();
-        popUpStack.Pop();
+        popUpViewController.PopView();
+
+        // deprecated: PopOverlayView, popUpStack
     }
 
     // ==================================================
@@ -182,16 +201,8 @@ public class UIManager : MonoBehaviour
 
     private void HandleGameOver()
     {
-        baseState = BaseViewType.GameOver;
-        ShowBaseView?.Invoke(BaseViewType.GameOver, gameDataService.GetGameData());
-    }
+        baseViewController.PushView(BaseViewType.GameOver, gameDataService.GetGameData());
 
-    // private functions
-    private void ClearOverlay()
-    {
-        while (popUpStack.Count > 0)
-        {
-            PopOverlay();
-        }
+        // deprecated: baseState, ShowBaseView
     }
 }
