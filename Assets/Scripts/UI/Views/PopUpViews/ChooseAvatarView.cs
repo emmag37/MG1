@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class ChooseAvatarView : PopUpView<IUserSettings>
+public class ChooseAvatarView : NewPopUpView
 {
     // ==================================================
     // Inspector Fields
@@ -46,15 +46,19 @@ public class ChooseAvatarView : PopUpView<IUserSettings>
     }
 
     // ==================================================
-    // Public Methods
+    // Base Class Methods
     // ==================================================
 
-    public override void Show(IUserSettings data)
+    protected override void SetInfo(IRuntimeData data)
     {
-        currentColor = (CellColor)data.Avatar;
-        SetAvatarSprite();
+        if (data is not IUserSettings settings)
+        {
+            Debug.Log($"data passed to choose avatar view is not user settings, type: {data?.GetType().Name}");
+            return;
+        }
 
-        base.Show(data);
+        currentColor = (CellColor)settings.Avatar;
+        SetAvatarSprite();
     }
 
 

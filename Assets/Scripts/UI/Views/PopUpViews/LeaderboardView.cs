@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class LeaderboardView : PopUpView<IGameData>
+// currently not using this screen
+public class LeaderboardView : NewPopUpView
 {
     // ==================================================
     // Private Fields
@@ -9,16 +10,19 @@ public class LeaderboardView : PopUpView<IGameData>
 
 
     // ==================================================
-    // Public Methods
+    // Base Class Methods
     // ==================================================
 
-    public override void Show(IGameData data)
+    protected override void SetInfo(IRuntimeData data)
     {
+        if (data is not IGameData gameData)
+        {
+            Debug.Log($"data passed to leaderboard view is not game data, type: {data?.GetType().Name}");
+            return;
+        }
+
         if (listView == null) listView = GetComponent<LeaderboardScrollList>();
 
-        listView.Populate(data.LeaderboardRanking);
-
-        base.Show(data);
+        listView.Populate(gameData.LeaderboardRanking);
     }
-
 }

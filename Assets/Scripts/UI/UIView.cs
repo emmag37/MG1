@@ -32,6 +32,18 @@ public abstract class NewPopUpView : NewUIView
 {
     [SerializeField] private PopUpViewType type;
     public PopUpViewType Type => type;
+
+    [SerializeField] private Button exitButton;
+
+    protected virtual void OnValidate()
+    {
+        Debug.Assert(exitButton != null, "Exit button not set in pop up view");
+    }
+
+    protected virtual void Awake()
+    {
+        exitButton.onClick.AddListener(Manager.PopOverlay);
+    }
 }
 
 

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkipTutorialView : PopUpView
+public class SkipTutorialView : NewPopUpView
 {
     // ==================================================
     // Inspector Fields
@@ -21,4 +21,7 @@ public class SkipTutorialView : PopUpView
         yesButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.Tutorial));   // goes to the end of the tutorial
         noButton.onClick.AddListener(() => Manager.PopOverlay());
     }
+
+    // base class
+    protected override void SetInfo(IRuntimeData data) { }
 }

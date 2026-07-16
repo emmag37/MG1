@@ -7,7 +7,7 @@ using TMPro;
 
 // need to decide what to do with the profanity filter
 // unity has some built in content checkers for alphanum, etc
-public class ProfileView : PopUpView<IAllData>
+public class ProfileView : NewPopUpView
 {
     // ==================================================
     // Inspector Fields
@@ -69,16 +69,8 @@ public class ProfileView : PopUpView<IAllData>
     }
 
     // ==================================================
-    // Public Methods
+    // Base Class Methods
     // ==================================================
-
-    public override void Show(IAllData data)
-    {
-        SetUserProfile(data.UserSettings);
-        SetScoreHistory(data.GameData);
-        
-        base.Show(data);
-    }
 
     public override void Hide()
     {
@@ -87,15 +79,19 @@ public class ProfileView : PopUpView<IAllData>
         invalidInput.gameObject.SetActive(false);
     }
 
-    public override void UpdateOverlay(IAllData data)
+    protected override void SetInfo(IRuntimeData data)
     {
-        base.UpdateOverlay(data);
+        if (data is not IAllData allData)
+        {
+            Debug.Log($"data passed to profile view is not user settings, type: {data?.GetType().Name}");
+            return;
+        }
 
-        SetUserProfile(data.UserSettings);
-        SetScoreHistory(data.GameData);
+        SetUserProfile(allData.UserSettings);
+        SetScoreHistory(allData.GameData);
     }
 
-    
+
     // ==================================================
     // Private Methods
     // ==================================================

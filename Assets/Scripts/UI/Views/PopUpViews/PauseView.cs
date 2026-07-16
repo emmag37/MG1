@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the settings menu.
 /// </summary>
-public class PauseView: PopUpView<IUserSettings>
+public class PauseView: NewPopUpView
 {
     // ==================================================
     // Inspector Fields
@@ -43,14 +43,18 @@ public class PauseView: PopUpView<IUserSettings>
 
 
     // ==================================================
-    // Public Methods
+    // Base Class Methods
     // ==================================================
 
-    public override void Show(IUserSettings data)
+    protected override void SetInfo(IRuntimeData data)
     {
-        musicSlider.value = data.MusicOn ? 1 : 0;
-        sfxSlider.value = data.SFXOn ? 1 : 0;
+        if (data is not IUserSettings settings)
+        {
+            Debug.Log($"data passed to pause view is not user settings, type: {data?.GetType().Name}");
+            return;
+        }
 
-        base.Show(data);
+        musicSlider.value = settings.MusicOn ? 1 : 0;
+        sfxSlider.value = settings.SFXOn ? 1 : 0;
     }
 }

@@ -12,9 +12,9 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Events
     // ==================================================
-    public event Action<BaseViewType, object> ShowBaseView;
+    public event Action<BaseViewType, IRuntimeData> ShowBaseView;
 
-    public event Action<PopUpViewType, object> PushOverlayView;
+    public event Action<PopUpViewType, IRuntimeData> PushOverlayView;
     public event Action PopOverlayView;
     public event Action ClearOverlayView;
 

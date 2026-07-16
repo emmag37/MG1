@@ -7,13 +7,13 @@ public class BaseViewController : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private BaseView[] baseViewList;
+    [SerializeField] private NewBaseView[] baseViewList;
 
     // ==================================================
     // Private Fields
     // ==================================================
-    private Dictionary<BaseViewType, BaseView> baseViews = new Dictionary<BaseViewType, BaseView>();
-    private BaseView currentView;
+    private Dictionary<BaseViewType, NewBaseView> baseViews = new Dictionary<BaseViewType, NewBaseView>();
+    private NewBaseView currentView;
 
 
     // ==================================================
@@ -22,7 +22,7 @@ public class BaseViewController : MonoBehaviour
 
     public void Initialize()
     {
-        foreach (BaseView view in baseViewList)
+        foreach (NewBaseView view in baseViewList)
         {
             if (baseViews.ContainsKey(view.Type))
             {
@@ -38,7 +38,7 @@ public class BaseViewController : MonoBehaviour
     // Event Handlers
     // ==================================================
 
-    public void HandleShowView(BaseViewType type, object data)
+    public void HandleShowView(BaseViewType type, IRuntimeData data)
     {
         ShowView(type, data);
     }
@@ -53,7 +53,7 @@ public class BaseViewController : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    private void ShowView<T>(BaseViewType type, T data)
+    private void ShowView(BaseViewType type, IRuntimeData data)
     {
         if (currentView != null)
             currentView.Hide();
@@ -66,14 +66,10 @@ public class BaseViewController : MonoBehaviour
         Debug.Assert(currentView.Type == type, $"Show type mismatch. Expected: {type}, Found: {currentView.Type}");
     }
 
-    private void RefreshView<T>(BaseViewType type, T data)
+    private void RefreshView(BaseViewType type, IRuntimeData data)
     {
-        BaseView view = GetBaseView(type);
-
-        if (view is BaseView<T> typedView)
-        {
-            typedView.UpdateView(data);
-        }
+        NewBaseView view = GetBaseView(type);
+        view.UpdateView(data);
     }
 
 
@@ -81,9 +77,9 @@ public class BaseViewController : MonoBehaviour
     // Helper Methods
     // ==================================================
 
-    private BaseView GetBaseView(BaseViewType type)
+    private NewBaseView GetBaseView(BaseViewType type)
     {
-        BaseView view;
+        NewBaseView view;
         if (!baseViews.TryGetValue(type, out view))
         {
             Debug.LogError($"Could not access base view for type {type}");
