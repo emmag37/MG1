@@ -109,7 +109,7 @@ public class GameDataService
     private GameData Load()
     {
         GameData newData = new GameData(
-            inProgress: playerPrefs.GetBool(GameDataKeys.InProgress, false),
+            inProgress: /*playerPrefs.GetBool(GameDataKeys.InProgress, false)*/ false,
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
             scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList,

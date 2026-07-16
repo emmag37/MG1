@@ -12,8 +12,7 @@ public class TutorialViewController : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private int currentScene;
-
+    private int currentScene = 0;
 
     // ==================================================
     // Unity Lifecycle Methods
@@ -21,32 +20,27 @@ public class TutorialViewController : MonoBehaviour
 
     void OnEnable()
     {
-        EventBus.Subscribe<TutorialStepCompleteEvent>(OnStepComplete);
         EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
-
-        currentScene = 0;
     }
 
     void OnDisable()
     {
-        EventBus.Unsubscribe<TutorialStepCompleteEvent>(OnStepComplete);
         EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
     }
 
-
     // ==================================================
-    // Event Handlers
+    // Public Methods
     // ==================================================
 
-    public void HandleSkipTutorial()
+    public void SkipTutorial()
     {
         scenes[currentScene].gameObject.SetActive(false);
         scenes[scenes.Length - 1].gameObject.SetActive(true);
     }
 
-    private void OnStepComplete(TutorialStepCompleteEvent e)
+    public void ShowNextStep(int stepCompleted)
     {
-        Debug.Assert(e.StepCompleted == currentScene, "Tutorial step mismatch");
+        Debug.Assert(stepCompleted == currentScene, "Tutorial step mismatch");
 
         // update view to the next step
         scenes[currentScene].gameObject.SetActive(false);
@@ -55,7 +49,11 @@ public class TutorialViewController : MonoBehaviour
         scenes[currentScene].gameObject.SetActive(true);
     }
 
-    // add function to remove arrow when the player is placed
+    // ==================================================
+    // Event Handlers
+    // ==================================================
+
+    // function to remove arrow when the player is placed
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
         // remove the arrow associated with the index that was just placed

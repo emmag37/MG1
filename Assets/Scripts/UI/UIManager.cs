@@ -18,9 +18,7 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Events
     // ==================================================
-    public event Action SkipTutorial;
-
-    public event Action ButtonPressed;  // eventually move to event bus?
+	public event Action ButtonPressed;  // eventually move to event bus?
     public event Action Transition;
 
     // ==================================================
@@ -115,10 +113,7 @@ public class UIManager : MonoBehaviour
             Transition?.Invoke();
         }
 
-        if (popUpViewController.Count > 0)
-        {
-            popUpViewController.ClearViews();
-        }
+        if (popUpViewController.Count > 0) popUpViewController.ClearViews();
 
         IUserSettings userSettings = settingsService.GetSettings();
         IGameData gameData = gameDataService.GetGameData();
@@ -133,7 +128,6 @@ public class UIManager : MonoBehaviour
         }
         else if (type == BaseViewType.Tutorial && baseViewController.PeekViewType() == BaseViewType.Tutorial)
         {
-            SkipTutorial?.Invoke();
             tutorial.SkipTutorial();
             return;
         }

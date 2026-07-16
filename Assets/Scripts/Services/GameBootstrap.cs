@@ -23,8 +23,6 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private Board board;
     [SerializeField] private Tutorial tutorial;
 
-    [SerializeField] private TutorialViewController tutorialViewController;
-
     // ==================================================
     // Private Fields
     // ==================================================
@@ -117,16 +115,12 @@ public class GameBootstrap : MonoBehaviour
     {
         uiManager.ButtonPressed += audioManager.HandleButtonPressed;
         uiManager.Transition += audioManager.HandleTransition;
-
-        uiManager.SkipTutorial += tutorialViewController.HandleSkipTutorial;
     }
 
     private void UnwireUI()
     {
         uiManager.ButtonPressed -= audioManager.HandleButtonPressed;
         uiManager.Transition -= audioManager.HandleTransition;
-
-        uiManager.SkipTutorial -= tutorialViewController.HandleSkipTutorial;
     }
 
 

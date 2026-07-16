@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 
 // eventually make the steps serializable to only load in when tutorial is actually used
+    // data-driven
 public class Tutorial : MonoBehaviour
 {
     // ==================================================
     // Private Fields
     // ==================================================
-
     private Board board;
+    private TutorialViewController viewController;
 
     private int currentStep;
     private int turnsLeftInStep;    // makeshift recursion
@@ -17,10 +18,11 @@ public class Tutorial : MonoBehaviour
     // ==================================================
     // Initializer
     // ==================================================
-
     public void Initialize(Board board)
     {
         this.board = board;
+
+        viewController = GetComponent<TutorialViewController>();
 
         currentStep = 0;
         turnsLeftInStep = 0;
@@ -49,8 +51,8 @@ public class Tutorial : MonoBehaviour
         cells.Add(new CellEntry(1, 2, (int)CellColor.Color3));
         cells.Add(new CellEntry(2, 2, (int)CellColor.Color4));
 
-        // set the board to the ending state - empty triggers board reset
-        board.StartTutorialStep(CellColor.Empty, null, cells);
+        board.StartTutorialStep(CellColor.Empty, null, cells);      // set the board to the ending state - empty triggers board reset
+        viewController.SkipTutorial();
     }
 
     // ==================================================
@@ -61,7 +63,7 @@ public class Tutorial : MonoBehaviour
     {
         if (turnsLeftInStep == 0) // base case
         {
-            EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
+            viewController.ShowNextStep(currentStep);
             currentStep++;
         }
 
