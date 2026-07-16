@@ -1,14 +1,46 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// clean-up: probably can remove un typed ui views, most require data
+// new ui view so this compiles while i work it out
+public abstract class NewUIView : MonoBehaviour
+{
+    protected UIManager Manager => UIManager.Instance;  // maybe just make this a static class?
+
+    public virtual void Show(IRuntimeData data = null)
+    {
+        gameObject.SetActive(true);
+        SetInfo(data);
+    }
+
+    public virtual void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public virtual void UpdateView(IRuntimeData data) => SetInfo(data);
+
+    protected abstract void SetInfo(IRuntimeData data);
+}
+
+public abstract class NewBaseView : NewUIView
+{
+    [SerializeField] private BaseViewType type;
+    public BaseViewType Type => type;
+}
+
+public abstract class NewPopUpView : NewUIView
+{
+    [SerializeField] private PopUpViewType type;
+    public PopUpViewType Type => type;
+}
+
 
 /// <summary>
 /// Base class for all UI views.
 /// </summary>
 public abstract class UIView : MonoBehaviour
 {
-    protected UIManager Manager => UIManager.Instance;
+    protected UIManager Manager => UIManager.Instance;  // maybe just make this a static class?
 
     // show methods
     public virtual void Show()

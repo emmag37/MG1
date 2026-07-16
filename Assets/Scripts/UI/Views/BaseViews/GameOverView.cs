@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the game over screen.
 /// </summary>
-public class GameOverView : BaseView<IGameData>
+public class GameOverView : NewBaseView
 {
     // ==================================================
     // Inspector Fields
@@ -44,11 +44,15 @@ public class GameOverView : BaseView<IGameData>
     // Inherited Methods
     // ==================================================
 
-    public override void Show(IGameData data)
+    protected override void SetInfo(IRuntimeData data)
     {
-        gameScoreText.text = $"{data.Score}";
-        highScoreText.text = $"{data.HighScore}";
+        if (data is not IGameData gameData)
+        {
+            Debug.Log($"data passed to game over view is not game data, type: {data?.GetType().Name}");
+            return;
+        }
 
-        base.Show(data);
+        gameScoreText.text = $"{gameData.Score}";
+        highScoreText.text = $"{gameData.HighScore}";
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 /// <summary>
 /// UI view for the home screen.
 /// </summary>
-public class HomeView : BaseView<IUserSettings>
+public class HomeView : NewBaseView
 {
     // ==================================================
     // Inspector Fields
@@ -38,17 +38,14 @@ public class HomeView : BaseView<IUserSettings>
     // Public Methods
     // ==================================================
 
-    public override void Show(IUserSettings data)
+    protected override void SetInfo(IRuntimeData data)
     {
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
+        if (data is not IUserSettings settings)
+        {
+            Debug.Log($"data passed to home view is not user settings, type: {data?.GetType().Name}");
+            return;
+        }
 
-        base.Show(data);
-    }
-
-    public override void UpdateView(IUserSettings data)
-    {
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
-
-        base.UpdateView(data);
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)settings.Avatar);
     }
 }

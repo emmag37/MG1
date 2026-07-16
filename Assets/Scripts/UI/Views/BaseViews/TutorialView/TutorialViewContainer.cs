@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TutorialViewContainer : BaseView
+public class TutorialViewContainer : NewBaseView
 {
     // ==================================================
     // Inspector Fields
@@ -23,4 +23,6 @@ public class TutorialViewContainer : BaseView
 
         startPlayingButton.onClick.AddListener(() => Manager.ShowView(BaseViewType.GamePlay));
     }
+
+    protected override void SetInfo(IRuntimeData data) { }
 }
