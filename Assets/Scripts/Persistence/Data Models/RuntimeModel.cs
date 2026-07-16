@@ -2,11 +2,11 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public struct NoData { }
 
 // ==================================================
 // Interfaces
 // ==================================================
+
 public interface IGameData : IUIData
 {
     bool InProgress { get; }

@@ -199,9 +199,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Event Handlers
     // ==================================================
 
-    private void HandleGameOver()
+    private void HandleGameOver(int score, int highScore)
     {
-        baseViewController.PushView(BaseViewType.GameOver, gameDataService.GetGameData());
+        ScoreData scoreData = new ScoreData(score, highScore);
+        baseViewController.PushView(BaseViewType.GameOver, scoreData);
     }
 
     public void HandleProfileUpdate(IUserSettings userSettings)

@@ -56,9 +56,11 @@ public class HUDController : MonoBehaviour
         }
     }
 
-    public void GameOver()
+    public (int, int) GameOver()
     {
         gameData.SetFinalScore(score);
+
+        return (score, highScore);
     }
 
     public void Reset()

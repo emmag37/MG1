@@ -13,7 +13,7 @@ public class Board : MonoBehaviour
     // ================================
     // Events
     // ================================
-    public event Action FullBoard;
+    public event Action<int, int> FullBoard;        // score, highScore
     public event Action TutorialStepComplete;
 
     // ================================
@@ -221,10 +221,10 @@ public class Board : MonoBehaviour
 
     private void GameOver()
     {
-        hUD.GameOver();
+        (int, int) finalScores = hUD.GameOver();
         SetInProgress(false);
 
-        FullBoard?.Invoke();
+        FullBoard?.Invoke(finalScores.Item1, finalScores.Item2);
         EventBus.Publish(new GameOverEvent());
     }
 

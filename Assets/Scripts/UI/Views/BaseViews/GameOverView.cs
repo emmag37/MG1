@@ -46,13 +46,13 @@ public class GameOverView : BaseView
 
     protected override void SetInfo(IUIData data)
     {
-        if (data is not IGameData gameData)
+        if (data is not ScoreData scoreData)
         {
-            Debug.Log($"data passed to game over view is not game data, type: {data?.GetType().Name}");
+            Debug.Log($"data passed to game over view is not score data, type: {data?.GetType().Name}");
             return;
         }
 
-        gameScoreText.text = $"{gameData.Score}";
-        highScoreText.text = $"{gameData.HighScore}";
+        gameScoreText.text = $"{scoreData.score}";
+        highScoreText.text = $"{scoreData.highScore}";
     }
 }
