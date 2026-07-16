@@ -41,4 +41,4 @@ public struct PlayerReleasedEvent       // board, ghost preview
     public CellColor Color;
 }
 
-public struct ScoreAnimationEvent { }   // only used in score animation
+//public struct ScoreAnimationEvent { }   // only used in score animation

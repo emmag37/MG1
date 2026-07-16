@@ -102,11 +102,8 @@ public class Board : MonoBehaviour
 
     public void StartTutorialStep(CellColor playerColor, (int, int)[] liveZone, IReadOnlyList<CellEntry> cells = null)
     {
-        Debug.Log("start tutorial step");
-
         if (playerColor == CellColor.Empty)
         {
-            Debug.Log("reset tutorial board");
             Reset();
         }
         else
@@ -126,14 +123,12 @@ public class Board : MonoBehaviour
     }
 
     // ================================
-    // Player/Board Event Handlers
+    // Event Handlers
     // ================================
 
     // handles connection between logic and piece registry, crux that initiates a turn
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        Debug.Log("on player released");
-
         Vector2Int index = BoardGeometry.TransformToBoardIndex(e.PlayerPosition);
         int currentScore = ExecuteTurn(e.Color, index);
 
@@ -141,8 +136,6 @@ public class Board : MonoBehaviour
 
         if (runTutorial)
         {
-            Debug.Log("finished the tutorial step");
-
             if (currentScore == 0) TutorialStepComplete?.Invoke();  // if points scored, invoke is timed to animation
             return;
         }
@@ -245,8 +238,6 @@ public class Board : MonoBehaviour
 
     private void SetInProgress(bool inProgress)
     {
-        Debug.Log($"set in progress: {inProgress}");
-
         this.inProgress = inProgress;
         gameData.SetInProgress(inProgress);
 

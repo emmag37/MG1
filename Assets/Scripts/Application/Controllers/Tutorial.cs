@@ -34,8 +34,6 @@ public class Tutorial : MonoBehaviour
 
     public void StartTutorial()
     {
-        Debug.Log("start tutorial, step 0");
-
         // prepare step 0 data
         (int, int)[] liveZone = { (2, 2) };
         CellColor playerColor = CellColor.Color1;
@@ -46,8 +44,6 @@ public class Tutorial : MonoBehaviour
 
     public void SkipTutorial()
     {
-        Debug.Log("skip tutorial");
-
         List<CellEntry> cells = new List<CellEntry>();
         cells.Add(new CellEntry(0, 2, (int)CellColor.Color2));
         cells.Add(new CellEntry(1, 2, (int)CellColor.Color3));
@@ -65,7 +61,6 @@ public class Tutorial : MonoBehaviour
     {
         if (turnsLeftInStep == 0) // base case
         {
-            Debug.Log($"completed step: {currentStep}");
             EventBus.Publish(new TutorialStepCompleteEvent { StepCompleted = currentStep });
             currentStep++;
         }
@@ -99,8 +94,6 @@ public class Tutorial : MonoBehaviour
 
     private void StepOne()
     {
-        Debug.Log($"step: {currentStep}");
-
         if (turnsLeftInStep == 0)   // initialize step turns/spawns
             turnsLeftInStep = 4;
 
@@ -115,8 +108,6 @@ public class Tutorial : MonoBehaviour
 
     private void StepTwo()
     {
-        Debug.Log($"step: {currentStep}");
-
         // prepare step two data
         CellColor playerColor = CellColor.Color2;
         (int, int)[] liveZone = { (2, 2) };
@@ -137,8 +128,6 @@ public class Tutorial : MonoBehaviour
 
     private void StepThree()
     {
-        Debug.Log($"step: {currentStep}");
-
         // prepare step three data
         CellColor playerColor = CellColor.Color1;
         (int, int)[] liveZone = { (3, 2) };
@@ -165,8 +154,6 @@ public class Tutorial : MonoBehaviour
 
     private void StepFour()
     {
-        Debug.Log($"step: {currentStep}");
-
         CellColor playerColor = CellColor.WildCard;
         (int, int)[] liveZone = { (4, 3) };
 
@@ -175,8 +162,6 @@ public class Tutorial : MonoBehaviour
 
     private void StepFive()
     {
-        Debug.Log($"step: {currentStep}");
-
         CellColor playerColor = CellColor.Mask;
         (int, int)[] liveZone = { (3, 3) };
 

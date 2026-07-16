@@ -64,7 +64,5 @@ public class ScoreAnimation : MonoBehaviour
 
         animationImage.enabled = false;
         pointsText.enabled = false;
-
-        EventBus.Publish(new ScoreAnimationEvent());
     }
 }
