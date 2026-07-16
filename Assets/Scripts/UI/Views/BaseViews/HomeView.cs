@@ -38,7 +38,7 @@ public class HomeView : BaseView
     // Public Methods
     // ==================================================
 
-    protected override void SetInfo(IRuntimeData data)
+    protected override void SetInfo(IUIData data)
     {
         if (data is not IUserSettings settings)
         {

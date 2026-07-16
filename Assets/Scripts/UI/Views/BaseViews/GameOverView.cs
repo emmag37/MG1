@@ -44,7 +44,7 @@ public class GameOverView : BaseView
     // Inherited Methods
     // ==================================================
 
-    protected override void SetInfo(IRuntimeData data)
+    protected override void SetInfo(IUIData data)
     {
         if (data is not IGameData gameData)
         {

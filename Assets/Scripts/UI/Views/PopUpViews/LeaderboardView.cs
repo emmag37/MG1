@@ -13,7 +13,7 @@ public class LeaderboardView : PopUpView
     // Base Class Methods
     // ==================================================
 
-    protected override void SetInfo(IRuntimeData data)
+    protected override void SetInfo(IUIData data)
     {
         if (data is not IGameData gameData)
         {

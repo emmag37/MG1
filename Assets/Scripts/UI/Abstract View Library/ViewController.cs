@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class ViewController<TView, TType, TData>
     where TView : UIView<TType>
     where TType : struct, Enum
-    where TData : IRuntimeData
+    where TData : IUIData
 {
     // ==================================================
     // Public Fields

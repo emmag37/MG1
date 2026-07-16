@@ -34,8 +34,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     private Board board;
     private Tutorial tutorial;
 
-    private ViewController<BaseView, BaseViewType, IRuntimeData> baseViewController;
-    private ViewController<PopUpView, PopUpViewType, IRuntimeData> popUpViewController;
+    private ViewController<BaseView, BaseViewType, IUIData> baseViewController;
+    private ViewController<PopUpView, PopUpViewType, IUIData> popUpViewController;
 
 
     // ==================================================
@@ -66,8 +66,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
         this.board = board;
         this.tutorial = tutorial;
 
-        baseViewController = new ViewController<BaseView, BaseViewType, IRuntimeData>(baseViewList, BaseViewCapacity, this);
-        popUpViewController = new ViewController<PopUpView, PopUpViewType, IRuntimeData>(popUpViewList, PopUpViewCapacity, this);
+        baseViewController = new ViewController<BaseView, BaseViewType, IUIData>(baseViewList, BaseViewCapacity, this);
+        popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this);
     }
 
     // ==================================================
@@ -165,7 +165,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         if (playSound)
             ButtonPressed?.Invoke();
 
-        IRuntimeData data = settingsService.GetSettings();
+        IUIData data = settingsService.GetSettings();
 
         if (type == PopUpViewType.Pause)
         {

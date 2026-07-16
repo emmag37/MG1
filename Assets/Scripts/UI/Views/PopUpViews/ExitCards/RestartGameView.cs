@@ -23,5 +23,5 @@ public class RestartGameView : PopUpView
     }
 
     // base class
-    protected override void SetInfo(IRuntimeData data) { }
+    protected override void SetInfo(IUIData data) { }
 }

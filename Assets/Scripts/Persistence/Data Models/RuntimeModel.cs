@@ -7,10 +7,7 @@ public struct NoData { }
 // ==================================================
 // Interfaces
 // ==================================================
-
-public interface IRuntimeData { }
-
-public interface IGameData : IRuntimeData
+public interface IGameData : IUIData
 {
     bool InProgress { get; }
     int Score { get; }
@@ -20,7 +17,7 @@ public interface IGameData : IRuntimeData
     IReadOnlyList<LeaderboardData> LeaderboardRanking { get; }
 }
 
-public interface IUserSettings : IRuntimeData
+public interface IUserSettings : IUIData
 {
     bool HasLaunched { get; }
     bool MusicOn { get; }
@@ -29,7 +26,7 @@ public interface IUserSettings : IRuntimeData
     CellColor Avatar { get; }
 }
 
-public interface IAllData : IRuntimeData
+public interface IAllData : IUIData
 {
     IGameData GameData { get; }
     IUserSettings UserSettings { get; }

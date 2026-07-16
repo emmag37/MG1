@@ -11,7 +11,7 @@ public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
 
     public void Initialize(IUIViewHost host) => Host = host;
 
-    public virtual void Show(IRuntimeData data = null)
+    public virtual void Show(IUIData data = null)
     {
         gameObject.SetActive(true);
         SetInfo(data);
@@ -22,7 +22,7 @@ public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
         gameObject.SetActive(false);
     }
 
-    public virtual void UpdateView(IRuntimeData data) => SetInfo(data);
+    public virtual void UpdateView(IUIData data) => SetInfo(data);
 
-    protected abstract void SetInfo(IRuntimeData data);
+    protected abstract void SetInfo(IUIData data);
 }

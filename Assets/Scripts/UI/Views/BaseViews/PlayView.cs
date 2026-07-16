@@ -14,5 +14,5 @@ public class PlayView : BaseView
         pauseButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Pause));
     }
 
-    protected override void SetInfo(IRuntimeData data) { }
+    protected override void SetInfo(IUIData data) { }
 }
