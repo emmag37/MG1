@@ -5,7 +5,7 @@ using System;
 // new ui view so this compiles while i work it out
 public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
 {
-    protected UIManager Manager => UIManager.Instance;  // maybe just make this a static class?
+    protected UIManager Manager => UIManager.Instance;
 
     public abstract TType Type { get; }
 
