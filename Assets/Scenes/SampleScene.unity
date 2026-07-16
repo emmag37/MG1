@@ -2974,8 +2974,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0abd12d0089144ef962a5bdb160d889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
-  baseViewList: []
-  popUpViewList: []
+  baseViewList:
+  - {fileID: 96805675}
+  - {fileID: 569730866}
+  - {fileID: 31870412}
+  - {fileID: 1413417919}
+  popUpViewList:
+  - {fileID: 1734186019}
+  - {fileID: 1689814904}
+  - {fileID: 1193429060}
+  - {fileID: 2066625115}
+  - {fileID: 305109433}
+  - {fileID: 812847231}
+  - {fileID: 265786742}
 --- !u!4 &230092282
 Transform:
   m_ObjectHideFlags: 0
