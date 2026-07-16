@@ -11,11 +11,6 @@ public class UIManager : MonoBehaviour
     private const int PopUpViewCapacity = 3;    // think it might be two, but just to be safe
 
     // ==================================================
-    // Public Fields
-    // ==================================================
-    public static UIManager Instance { get; private set; }  // get rid of this singleton
-
-    // ==================================================
     // Events
     // ==================================================
 	public event Action ButtonPressed;  // eventually move to event bus?
@@ -31,6 +26,8 @@ public class UIManager : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
+    private bool instantiated = false;
+
     private SettingsService settingsService;
     private GameDataService gameDataService;
 
@@ -61,15 +58,16 @@ public class UIManager : MonoBehaviour
 
     public void Initialize(InitFlag initInfo, Board board, Tutorial tutorial, SettingsService settingsService, GameDataService gameDataService)
     {
-        Instance = this;
+        Debug.Assert(!instantiated, "Instance of UIManager already exists.");
+        instantiated = true;
 
         this.settingsService = settingsService;
         this.gameDataService = gameDataService;
         this.board = board;
         this.tutorial = tutorial;
 
-        baseViewController = new ViewController<BaseView, BaseViewType, IRuntimeData>(baseViewList, BaseViewCapacity);
-        popUpViewController = new ViewController<PopUpView, PopUpViewType, IRuntimeData>(popUpViewList, PopUpViewCapacity);
+        baseViewController = new ViewController<BaseView, BaseViewType, IRuntimeData>(baseViewList, BaseViewCapacity, this);
+        popUpViewController = new ViewController<PopUpView, PopUpViewType, IRuntimeData>(popUpViewList, PopUpViewCapacity, this);
     }
 
 

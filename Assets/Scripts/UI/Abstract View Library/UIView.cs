@@ -2,12 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-// new ui view so this compiles while i work it out
 public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
 {
-    protected UIManager Manager => UIManager.Instance;
+    protected UIManager Manager { get; private set; }
 
     public abstract TType Type { get; }
+
+    public void Initialize(UIManager manager)
+    {
+        Manager = manager;
+    }
 
     public virtual void Show(IRuntimeData data = null)
     {
@@ -24,6 +28,3 @@ public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
 
     protected abstract void SetInfo(IRuntimeData data);
 }
-
-
-

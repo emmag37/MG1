@@ -26,7 +26,7 @@ public class ViewController<TView, TType, TData>
     // Constructor
     // ==================================================
 
-    public ViewController(TView[] viewList, int stackCapacity)
+    public ViewController(TView[] viewList, int stackCapacity, UIManager manager)
     {
         // error: stack capacity must be greater than 0
 
@@ -41,6 +41,7 @@ public class ViewController<TView, TType, TData>
                 continue;
             }
 
+            view.Initialize(manager);
             viewDictionary.Add(view.Type, view);
         }
 
