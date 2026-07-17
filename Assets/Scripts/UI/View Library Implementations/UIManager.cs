@@ -183,14 +183,11 @@ public class UIManager : MonoBehaviour, IUIViewHost
         // update audio
     }
 
-    // note: this should not be called to update the score list
+    // note: this NEVER updated the score list
     private void UpdateProfile(ProfileData newProfile)
     {
-        // move username validator to be a component of this file?
-        // better yet, give it its own class like score history
-
-        uIDataService.Profile.Username = newProfile.Username;
         uIDataService.Profile.Avatar = newProfile.Avatar;
+        uIDataService.Profile.Username = newProfile.Username;
 
         baseViewController.UpdateView(BaseViewType.Home, uIDataService.Profile);
         popUpViewController.UpdateView(PopUpViewType.Profile, uIDataService.Profile);

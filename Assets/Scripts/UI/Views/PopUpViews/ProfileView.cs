@@ -26,7 +26,8 @@ public class ProfileView : PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-    private string currentUsername;
+    private ValidatedUsername username;
+
     Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
     {
         { InvalidInputType.Short, "Username must be at least 3 characters" },
@@ -57,7 +58,7 @@ public class ProfileView : PopUpView
 
         usernameInput.onSubmit.AddListener(value =>
         {
-            TryUpdateUsername(value);
+            UpdateUsername(value);
         });
         usernameInput.onDeselect.AddListener(_ =>
         {
@@ -90,7 +91,7 @@ public class ProfileView : PopUpView
         }
 
         SetUserProfile(profile);
-        //SetScoreHistory(allData.GameData);
+        SetScoreHistory(profile.ScoreList);
     }
 
 
@@ -98,18 +99,18 @@ public class ProfileView : PopUpView
     // Private Methods
     // ==================================================
 
-    private void TryUpdateUsername(string name)
+    private void UpdateUsername(string name)
     {
-        if (/*Manager.TryUpdateUsername(name, out InvalidInputType error)*/ name.Length > 0)
+        InvalidInputType error = username.TrySetUsername(name);
+        if (error == InvalidInputType.None)
         {
-            currentUsername = name;
             invalidInput.gameObject.SetActive(false);
         }
         else
         {
-            //Debug.Log($"invalid input: {error}");
+            Debug.Log($"invalid input: {error}");
 
-            //invalidInput.text = errorMessages[error];
+            invalidInput.text = errorMessages[error];
             invalidInput.gameObject.SetActive(true);
 
             StartCoroutine(ShakeTextRoutine());
@@ -118,17 +119,17 @@ public class ProfileView : PopUpView
 
     private void SetUserProfile(ProfileData profile)
     {
-        usernameInput.text = profile.Username;
+        usernameInput.text = profile.Username.GetUsername();
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
 
-        currentUsername = profile.Username;
+        username = profile.Username;
     }
 
-    private void SetScoreHistory(IGameData gameData)
+    private void SetScoreHistory(ScoreHistory scoreList)
     {
         if (listView == null) listView = GetComponent<ScoreHistoryScrollList>();
 
-        listView.Populate(gameData.ScoreHistory);   // error - null reference
+        listView.Populate(scoreList.ROList);
     }
 
 

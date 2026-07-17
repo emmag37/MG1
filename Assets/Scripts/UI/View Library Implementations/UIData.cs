@@ -26,7 +26,7 @@ public class SettingsData : IUIData
 [Serializable]
 public sealed class ProfileData : IUIData
 {
-    public string Username;
+    public ValidatedUsername Username;
     public CellColor Avatar;
     public ScoreHistory ScoreList;
 }

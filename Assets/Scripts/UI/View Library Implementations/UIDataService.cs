@@ -1,7 +1,7 @@
 using UnityEngine;
 
-// todo: implement load and save, implement add score to list
-    // get the highscore from the score list so this is only stored once
+// todo: create a new username class to update its behavior, like capped ranked list
+    // make only the string public/serializable
 
 public class UIDataService : MonoBehaviour
 {

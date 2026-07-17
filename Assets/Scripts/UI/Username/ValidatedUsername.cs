@@ -9,7 +9,8 @@ public enum InvalidInputType
     Profanity
 }
 
-public class UsernameValidator
+[System.Serializable]
+public class ValidatedUsername : ISerializationCallbackReceiver
 {
     // ==================================================
     // Constants
@@ -20,6 +21,11 @@ public class UsernameValidator
     private const string Chars = @"^\w+$";
 
     // ==================================================
+    // Serialized Fields - for JSON
+    // ==================================================
+    [SerializeField] private string username; // potentially make this read-only, but fine for now
+
+    // ==================================================
     // Private Fields
     // ==================================================
     private ProfanityService profanityDetector;
@@ -28,12 +34,36 @@ public class UsernameValidator
     // Public Methods
     // ==================================================
 
-    public UsernameValidator()
+    public ValidatedUsername()
     {
         profanityDetector = new ProfanityService();
     }
 
-    public InvalidInputType ValidUsername(string name)
+    public void OnAfterDeserialize()
+    {
+        profanityDetector = new ProfanityService();
+
+        // potentially re validate
+    }
+
+    public void OnBeforeSerialize() { } // for interface compile
+
+    public InvalidInputType TrySetUsername(string newUsername)
+    {
+        InvalidInputType error = ValidUsername(newUsername);
+
+        if (error == InvalidInputType.None)
+            username = newUsername;
+
+        return error;
+    }
+
+    public string GetUsername()
+    {
+        return username;
+    }
+
+    private InvalidInputType ValidUsername(string name)
     {
         // correct length
         if (name.Length < LowerBound)
