@@ -83,14 +83,14 @@ public class ProfileView : PopUpView
 
     protected override void SetInfo(IUIData data)
     {
-        if (data is not IAllData allData)
+        if (data is not IUserSettings userSettings)
         {
             Debug.Log($"data passed to profile view is not user settings, type: {data?.GetType().Name}");
             return;
         }
 
-        SetUserProfile(allData.UserSettings);
-        SetScoreHistory(allData.GameData);
+        SetUserProfile(userSettings);
+        //SetScoreHistory(allData.GameData);
     }
 
 

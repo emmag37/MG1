@@ -1,5 +1,7 @@
 using UnityEngine;
+using System;
 
+[Serializable]
 public enum CellColor
 {
     Empty = 0,

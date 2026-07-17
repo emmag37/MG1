@@ -1,0 +1,62 @@
+using UnityEngine;
+
+public class UIDataService : MonoBehaviour
+{
+    // ==================================================
+    // Public Fields
+    // ==================================================
+    public SettingsData Settings;
+    public ProfileData profile;
+
+    // ==================================================
+    // Private Fields
+    // ==================================================
+    private DiscStorage discStorageUtility;
+
+    private UIData data;    // value that gets saved to json file
+
+    // ==================================================
+    // Constructor
+    // ==================================================
+
+    // for now, pass the json save/load system into constructor.
+    // save/load is a good candidate for a service locator
+
+    public UIDataService(DiscStorage discStorageUtility)
+    {
+        this.discStorageUtility = discStorageUtility;
+
+        data = LoadData();
+    }
+
+    // ==================================================
+    // Load/Save
+    // ==================================================
+
+    private UIData LoadData()
+    {
+        // load the settings data
+
+        // load the profile data
+
+        // create data to return
+
+        return null;
+    }
+
+    // save data
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus) // app is being backgrounded
+            return;
+    }
+
+    // save data
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus) // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
+            return;
+    }
+
+
+}

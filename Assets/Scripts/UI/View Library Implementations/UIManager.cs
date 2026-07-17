@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+// todo: replace settings service with a UI data service
+
 public class UIManager : MonoBehaviour, IUIViewHost
 {
     // ==================================================
@@ -29,7 +31,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
     private bool instantiated = false;
 
     private SettingsService settingsService;
-    private GameDataService gameDataService;
 
     private Board board;
     private Tutorial tutorial;
@@ -56,13 +57,12 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Initialize
     // ==================================================
 
-    public void Initialize(InitFlag initInfo, Board board, Tutorial tutorial, SettingsService settingsService, GameDataService gameDataService)
+    public void Initialize(InitFlag initInfo, Board board, Tutorial tutorial, SettingsService settingsService)
     {
         Debug.Assert(!instantiated, "Instance of UIManager already exists.");
         instantiated = true;
 
         this.settingsService = settingsService;
-        this.gameDataService = gameDataService;
         this.board = board;
         this.tutorial = tutorial;
 
@@ -136,7 +136,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
         if (popUpViewController.Count > 0) popUpViewController.ClearViews();
 
         IUserSettings userSettings = settingsService.GetSettings();
-        IGameData gameData = gameDataService.GetGameData();
 
         if (type == BaseViewType.GamePlay && baseViewController.PeekViewType() == BaseViewType.GamePlay)
         {
@@ -173,10 +172,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
         else if (type == PopUpViewType.Profile)
         {
-            IUserSettings settingsData = (IUserSettings)data;
-            IGameData gameData = gameDataService.GetGameData();
-
-            data = new AllData(gameData, settingsData);
+            // need to pass the score history data as well
         }
 
         popUpViewController.PushView(type, data);

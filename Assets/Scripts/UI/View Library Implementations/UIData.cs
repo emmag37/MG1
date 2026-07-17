@@ -1,10 +1,33 @@
 using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 namespace System.Runtime.CompilerServices
 {
     internal static class IsExternalInit { }
 }
 
-public sealed record ProfileData(bool musicOn, bool sfxOn, string Username, CellColor Avatar) : IUIData;
+[Serializable]
+public class UIData : IUIData
+{
+    // this is the data that actually gets stored to disc
+    public SettingsData settingsData;
+    public ProfileData profileData;
+}
 
-public sealed record ScoreData(int score, int highScore) : IUIData;
+[Serializable]
+public class SettingsData : IUIData
+{
+    public bool MusicOn;
+    public bool SFXOn;
+}
+
+[Serializable]
+public sealed class ProfileData : IUIData
+{
+    public string Username;
+    public CellColor Avatar;
+    public List<int> ScoreHistory;
+}
+
+public sealed record ScoreData(int score, int highScore) : IUIData; // this is what is passed to the game over screen
