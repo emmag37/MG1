@@ -96,13 +96,9 @@ public class UIManager : MonoBehaviour, IUIViewHost
     public void UpdateData(IUIData data)
     {
         if (data is SettingsData settings)
-        {
-            // implement me!
-        }
+            UpdateSettings(settings);
         else if (data is ProfileData profile)
-        {
-            // implement me!
-        }
+            UpdateProfile(profile);
         else
             Debug.LogError($"Unsupported ui data type: {typeof(IUIData).Name}");
     }
@@ -178,6 +174,25 @@ public class UIManager : MonoBehaviour, IUIViewHost
     }
 
     // ==================================================
+    // UI Data Methods
+    // ==================================================
+
+    private void UpdateSettings(SettingsData newSettings)
+    {
+        // update the actual settings
+
+        // update audio/other settings driven systems
+    }
+
+    private void UpdateProfile(ProfileData newProfile)
+    {
+        // update the profile
+            // note: score list will never be updated here
+
+        // update the views
+    }
+
+    // ==================================================
     // Event Handlers
     // ==================================================
 
@@ -186,4 +201,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
         ScoreData scoreData = new ScoreData(score, highScore);
         baseViewController.PushView(BaseViewType.GameOver, scoreData);
     }
+
+
 }
