@@ -18,6 +18,11 @@ public class PauseView: PopUpView
     [SerializeField] private Slider sfxSlider;
 
     // ==================================================
+    // Private Fields
+    // ==================================================
+    private SettingsData settings;
+
+    // ==================================================
     // Unity Lifecycle
     // ==================================================
 
@@ -39,9 +44,8 @@ public class PauseView: PopUpView
         homeButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Home));
         restartButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.RestartGame));
 
-        // re-implement
-        //musicSlider.onValueChanged.AddListener((value) => Manager.UpdateMusicOn((int)value));
-        //sfxSlider.onValueChanged.AddListener((value) => Manager.UpdateSFXOn((int)value));
+        musicSlider.onValueChanged.AddListener((value) => UpdateMusic(value > 0));   // cast to bool, 1 for on, 0 for off
+        sfxSlider.onValueChanged.AddListener((value) => UpdateSFX(value > 0));
     }
 
 
@@ -57,7 +61,25 @@ public class PauseView: PopUpView
             return;
         }
 
+        this.settings = settings;
+
         musicSlider.value = settings.MusicOn ? 1 : 0;
         sfxSlider.value = settings.SFXOn ? 1 : 0;
+    }
+
+    // ==================================================
+    // Private Methods
+    // ==================================================
+
+    private void UpdateMusic(bool on)
+    {
+        settings.MusicOn = on;
+        Host.UpdateData(settings);
+    }
+
+    private void UpdateSFX(bool on)
+    {
+        settings.SFXOn = on;
+        Host.UpdateData(settings);
     }
 }

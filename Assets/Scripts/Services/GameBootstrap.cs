@@ -99,12 +99,14 @@ public class GameBootstrap : MonoBehaviour
     {
         uiManager.ButtonPressed += audioManager.HandleButtonPressed;
         uiManager.Transition += audioManager.HandleTransition;
+        uiManager.SettingsUpdate += audioManager.HandleSettingsUpdate;
     }
 
     private void UnwireUI()
     {
         uiManager.ButtonPressed -= audioManager.HandleButtonPressed;
         uiManager.Transition -= audioManager.HandleTransition;
+        uiManager.SettingsUpdate -= audioManager.HandleSettingsUpdate;
     }
 
 

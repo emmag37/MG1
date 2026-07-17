@@ -92,11 +92,10 @@ public class AudioManager : MonoBehaviour
     // Event Handlers
     // ================================
 
-    /*
-    // settings
-	public void HandleMusicUpdate(bool on)
+    public void HandleSettingsUpdate(bool music, bool sFX)
     {
-        musicOn = on;
+        musicOn = music;
+        sfxOn = sFX;
 
         if (musicOn)
             musicSource.Play();
@@ -104,12 +103,7 @@ public class AudioManager : MonoBehaviour
             musicSource.Stop();
     }
 
-    public void HandleSFXUpdate(bool on)
-    {
-        sfxOn = on;
-    }
-    */
-
+    
     // sound effects
     public void HandleButtonPressed()
     {

@@ -26,7 +26,9 @@ public class ProfileView : PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-    private ValidatedUsername username;
+    private ProfileData profile;
+
+    private ValidatedUsername username; // depracate this
 
     Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
     {
@@ -63,7 +65,7 @@ public class ProfileView : PopUpView
         usernameInput.onDeselect.AddListener(_ =>
         {
             if (!gameObject.activeInHierarchy) return;  // keeps incorrect text on screen on exit
-            usernameInput.SetTextWithoutNotify(currentUsername);
+            usernameInput.SetTextWithoutNotify(username.GetUsername());
         });
         usernameInput.onValueChanged.AddListener(_ =>
         {
@@ -90,6 +92,8 @@ public class ProfileView : PopUpView
             return;
         }
 
+        this.profile = profile;
+
         SetUserProfile(profile);
         SetScoreHistory(profile.ScoreList);
     }
@@ -101,9 +105,10 @@ public class ProfileView : PopUpView
 
     private void UpdateUsername(string name)
     {
-        InvalidInputType error = username.TrySetUsername(name);
+        InvalidInputType error = profile.Username.TrySetUsername(name);
         if (error == InvalidInputType.None)
         {
+            Host.UpdateData(profile);
             invalidInput.gameObject.SetActive(false);
         }
         else

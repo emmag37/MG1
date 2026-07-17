@@ -18,6 +18,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
 	public event Action ButtonPressed;  // eventually move to event bus?
     public event Action Transition;
 
+    public event Action<bool, bool> SettingsUpdate;
+
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -180,7 +182,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     private void UpdateSettings(SettingsData newSettings)
     {
         uIDataService.Settings = newSettings;
-        // update audio
+
+        SettingsUpdate?.Invoke(newSettings.MusicOn, newSettings.SFXOn);
     }
 
     // note: this NEVER updated the score list

@@ -18,8 +18,7 @@ public class ChooseAvatarView : PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-    CellColor currentColor;
-
+    private ProfileData profile;
 
     // ==================================================
     // Unity Lifecycle
@@ -44,7 +43,7 @@ public class ChooseAvatarView : PopUpView
         rightButton.onClick.AddListener(NextAvatar);
 
         // re-implement
-        //chooseButton.onClick.AddListener(() => Manager.UpdateAvatar(currentColor));
+        chooseButton.onClick.AddListener(() => Host.UpdateData(profile));
     }
 
     // ==================================================
@@ -59,7 +58,8 @@ public class ChooseAvatarView : PopUpView
             return;
         }
 
-        currentColor = (CellColor)profile.Avatar;
+        this.profile = profile;
+
         SetAvatarSprite();
     }
 
@@ -70,24 +70,24 @@ public class ChooseAvatarView : PopUpView
 
     private void PreviousAvatar()
     {
-        currentColor--;
-        if (currentColor == CellColor.Empty)
-            currentColor = CellColor.WildCard;
+        profile.Avatar--;
+        if (profile.Avatar == CellColor.Empty)
+            profile.Avatar = CellColor.WildCard;
 
         SetAvatarSprite();
     }
 
     private void NextAvatar()
     {
-        if (currentColor == CellColor.WildCard)
-            currentColor = CellColor.Empty;
-        currentColor++;
+        if (profile.Avatar == CellColor.WildCard)
+            profile.Avatar = CellColor.Empty;
+        profile.Avatar++;
 
         SetAvatarSprite();
     }
 
     private void SetAvatarSprite()
     {
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite(currentColor);
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite(profile.Avatar);
     }
 }
