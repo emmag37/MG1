@@ -49,7 +49,6 @@ public class GameBootstrap : MonoBehaviour
 
         // set initializer flag
         hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);
-        hasLaunched = false;
 
         bool inProgress = false;
         //bool inProgress = gameDataService.GetGameData().InProgress;
@@ -65,7 +64,7 @@ public class GameBootstrap : MonoBehaviour
         tutorial.Initialize(board);
 
         uiManager.Initialize(board, tutorial, uIDataService);
-        //audioManager.Initialize(uIDataService.Settings.MusicOn, uIDataService.Settings.SFXOn);
+        audioManager.Initialize(uIDataService.Settings.MusicOn, uIDataService.Settings.SFXOn);
 
         // wire dependencies
         WireUI();
