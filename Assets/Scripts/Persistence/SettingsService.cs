@@ -10,14 +10,6 @@ public class SettingsService
     public IUserSettings GetSettings() => settings;
 
     // ==================================================
-    // Events
-    // ==================================================
-    public event Action<bool> MusicUpdate;
-    public event Action<bool> SFXUpdate;
-
-    public event Action<IUserSettings> ProfileUpdate;
-
-    // ==================================================
     // Private Fields
     // ==================================================
     private PlayerPrefsStorage storage;
@@ -52,16 +44,12 @@ public class SettingsService
     {
         settings.MusicOn = on;
         storage.SetBool(SettingsKeys.Music, on);
-
-        MusicUpdate?.Invoke(on);
     }
 
     public void SetSFXOn(bool on)
     {
         settings.SFXOn = on;
         storage.SetBool(SettingsKeys.SFX, on);
-
-        SFXUpdate?.Invoke(on);
     }
 
     public bool TrySetUsername(string name, out InvalidInputType error)
@@ -81,8 +69,6 @@ public class SettingsService
     {
         settings.Avatar = color;
         storage.SetInt(SettingsKeys.Avatar, (int)color);
-
-        ProfileUpdate?.Invoke(GetSettings());
     }
 
 
@@ -93,7 +79,7 @@ public class SettingsService
     private UserSettings Load()
     {
         UserSettings newSettings = new UserSettings(
-            launched: /*storage.GetBool(SettingsKeys.Launched, false)*/ false,
+            launched: storage.GetBool(SettingsKeys.Launched, false),
             musicOn: storage.GetBool(SettingsKeys.Music, true),
             sfxOn: storage.GetBool(SettingsKeys.SFX, true),
             username: storage.GetString(SettingsKeys.Username, "default-name"),

@@ -1,5 +1,10 @@
 using UnityEngine;
 
+public static class InitKeys
+{
+    public const string HasLaunched = "init.hasLaunched";
+}
+
 public static class SettingsKeys
 {
     public const string Launched = "game.launched";

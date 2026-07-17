@@ -1,5 +1,8 @@
 using UnityEngine;
 
+
+// todo: re-implement settings updates
+
 public class AudioManager : MonoBehaviour
 {
     // ==================================================
@@ -89,6 +92,7 @@ public class AudioManager : MonoBehaviour
     // Event Handlers
     // ================================
 
+    /*
     // settings
 	public void HandleMusicUpdate(bool on)
     {
@@ -104,6 +108,7 @@ public class AudioManager : MonoBehaviour
     {
         sfxOn = on;
     }
+    */
 
     // sound effects
     public void HandleButtonPressed()

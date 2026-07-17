@@ -29,10 +29,10 @@ public class GameBootstrap : MonoBehaviour
     private PlayerPrefsStorage playerPrefs;
     private DiscStorage disc;
 
-    private SettingsService settingsService;
     private GameDataService gameDataService;
-
     private UIDataService uIDataService;
+
+    bool hasLaunched;
 
 
     // ==================================================
@@ -45,15 +45,12 @@ public class GameBootstrap : MonoBehaviour
         playerPrefs = new PlayerPrefsStorage();
         disc = new DiscStorage();
 
-        settingsService = new SettingsService(playerPrefs);
         gameDataService = new GameDataService(disc, playerPrefs);
-
-        uIDataService = new UIDataService(disc);    // load in the data
-
-        IUserSettings userSettings = settingsService.GetSettings();
+        uIDataService = new UIDataService(disc);    // load in the UI data
 
         // set the init flag - turn these bools into player prefs, they don't need to be saved together
-        bool hasLaunched = userSettings.HasLaunched;
+        // lets turn has launched into just player pref
+        hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);
         bool inProgress = gameDataService.GetGameData().InProgress;
 
         InitFlag initInfo = (hasLaunched ? 0 : InitFlag.Tutorial) | (inProgress ? InitFlag.LoadGame : 0);
@@ -63,10 +60,9 @@ public class GameBootstrap : MonoBehaviour
         tutorial.Initialize(board);
 
         uiManager.Initialize(board, tutorial, uIDataService);
-        audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
+        audioManager.Initialize(uIDataService.Settings.MusicOn, uIDataService.Settings.SFXOn);
 
         // wire dependencies
-        WireSettings();
         WireUI();
     }
 
@@ -78,7 +74,7 @@ public class GameBootstrap : MonoBehaviour
         // if active game, load in the game
 
         BaseViewType startScreen = BaseViewType.Home;
-        if (!(settingsService.GetSettings().HasLaunched))
+        if (!hasLaunched)
         {
             Debug.Log("start tutorial");
             startScreen = BaseViewType.Tutorial;
@@ -91,7 +87,6 @@ public class GameBootstrap : MonoBehaviour
 
     void OnDestroy()
     {
-        UnwireSettings();
         UnwireUI();
     }
 
@@ -99,22 +94,6 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Wire Methods
     // ==================================================
-
-    private void WireSettings()
-    {
-        settingsService.MusicUpdate += audioManager.HandleMusicUpdate;
-        settingsService.SFXUpdate += audioManager.HandleSFXUpdate;
-
-        settingsService.ProfileUpdate += uiManager.HandleProfileUpdate;
-    }
-
-    private void UnwireSettings()
-    {
-        settingsService.MusicUpdate -= audioManager.HandleMusicUpdate;
-        settingsService.SFXUpdate -= audioManager.HandleSFXUpdate;
-
-        settingsService.ProfileUpdate += uiManager.HandleProfileUpdate;
-    }
 
     private void WireUI()
     {

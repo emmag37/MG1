@@ -186,11 +186,4 @@ public class UIManager : MonoBehaviour, IUIViewHost
         ScoreData scoreData = new ScoreData(score, highScore);
         baseViewController.PushView(BaseViewType.GameOver, scoreData);
     }
-
-    // probably just going to deprecate this
-    public void HandleProfileUpdate(IUserSettings userSettings)
-    {
-        baseViewController.UpdateView(BaseViewType.Home, userSettings);
-        popUpViewController.UpdateView(PopUpViewType.Profile, userSettings);
-    }
 }
