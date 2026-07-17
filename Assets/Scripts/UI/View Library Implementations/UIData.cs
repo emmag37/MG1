@@ -40,3 +40,13 @@ public class ScoreHistory : CappedRankedList<int>
 }
 
 public sealed record ScoreData(int score, int highScore) : IUIData; // this is what is passed to the game over screen
+
+/* to be implemented in the future
+ * 
+[Serializable]
+public class LeaderboardRanking : CappedRankedList<LeaderboardData>
+{
+    // hold the top 50 scores
+    public LeaderboardRanking() : base(50) { }
+}
+*/

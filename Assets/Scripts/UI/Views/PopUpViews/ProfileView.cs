@@ -83,13 +83,13 @@ public class ProfileView : PopUpView
 
     protected override void SetInfo(IUIData data)
     {
-        if (data is not IUserSettings userSettings)
+        if (data is not ProfileData profile)
         {
-            Debug.Log($"data passed to profile view is not user settings, type: {data?.GetType().Name}");
+            Debug.Log($"data passed to profile view is not profile, type: {data?.GetType().Name}");
             return;
         }
 
-        SetUserProfile(userSettings);
+        SetUserProfile(profile);
         //SetScoreHistory(allData.GameData);
     }
 
@@ -116,12 +116,12 @@ public class ProfileView : PopUpView
         }
     }
 
-    private void SetUserProfile(IUserSettings userSettings)
+    private void SetUserProfile(ProfileData profile)
     {
-        usernameInput.text = userSettings.Username;
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)userSettings.Avatar);
+        usernameInput.text = profile.Username;
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
 
-        currentUsername = userSettings.Username;
+        currentUsername = profile.Username;
     }
 
     private void SetScoreHistory(IGameData gameData)

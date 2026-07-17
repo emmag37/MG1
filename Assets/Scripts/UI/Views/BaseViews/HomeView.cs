@@ -40,12 +40,12 @@ public class HomeView : BaseView
 
     protected override void SetInfo(IUIData data)
     {
-        if (data is not IUserSettings settings)
+        if (data is not ProfileData profile)
         {
             Debug.Log($"data passed to home view is not user settings, type: {data?.GetType().Name}");
             return;
         }
 
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)settings.Avatar);
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
     }
 }

@@ -8,13 +8,15 @@ public class LeaderboardView : PopUpView
     // ==================================================
     private LeaderboardScrollList listView;
 
-
     // ==================================================
     // Base Class Methods
     // ==================================================
 
     protected override void SetInfo(IUIData data)
     {
+        return;
+        /* future implement
+         * 
         if (data is not IGameData gameData)
         {
             Debug.Log($"data passed to leaderboard view is not game data, type: {data?.GetType().Name}");
@@ -24,5 +26,6 @@ public class LeaderboardView : PopUpView
         if (listView == null) listView = GetComponent<LeaderboardScrollList>();
 
         listView.Populate(gameData.LeaderboardRanking);
+        */
     }
 }

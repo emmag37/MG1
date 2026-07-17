@@ -14,22 +14,6 @@ public interface IGameData : IUIData
     int HighScore { get; }
 
     IReadOnlyList<int> ScoreHistory { get; }    // might put this in its own runtime data type, keep for now
-    IReadOnlyList<LeaderboardData> LeaderboardRanking { get; }
-}
-
-public interface IUserSettings : IUIData
-{
-    bool HasLaunched { get; }
-    bool MusicOn { get; }
-    bool SFXOn { get; }
-    string Username { get; }
-    CellColor Avatar { get; }
-}
-
-public interface IAllData : IUIData
-{
-    IGameData GameData { get; }
-    IUserSettings UserSettings { get; }
 }
 
 // does not need to be runtime data, never passed to the UI on its own
@@ -51,15 +35,13 @@ public class GameData : IGameData
     public int Score { get; set; }
     public int HighScore { get; set; }
     public IReadOnlyList<int> ScoreHistory { get; set; }
-    public IReadOnlyList<LeaderboardData> LeaderboardRanking { get; set; }
 
-    public GameData(bool inProgress, int score, int highScore, IReadOnlyList<int> scoreHistory, IReadOnlyList<LeaderboardData> leaderboardRanking)
+    public GameData(bool inProgress, int score, int highScore, IReadOnlyList<int> scoreHistory)
     {
         InProgress = inProgress;
         Score = score;
         HighScore = highScore;
         ScoreHistory = scoreHistory;
-        LeaderboardRanking = leaderboardRanking;
     }
 }
 
@@ -78,35 +60,5 @@ public class GamePlayData : IGamePlayData
         Board = board;
     }
 
-}
-
-public class UserSettings : IUserSettings
-{
-    public bool HasLaunched { get; set; }
-    public bool MusicOn { get; set; }
-    public bool SFXOn { get; set; }
-    public string Username { get; set; }
-    public CellColor Avatar { get; set; }
-
-    public UserSettings(bool launched, bool musicOn, bool sfxOn, string username, CellColor avatar)
-    {
-        HasLaunched = launched;
-        MusicOn = musicOn;
-        SFXOn = sfxOn;
-        Username = username;
-        Avatar = avatar;
-    }
-}
-
-public class AllData : IAllData
-{
-    public IGameData GameData { get; set; }
-    public IUserSettings UserSettings { get; set; }
-
-    public AllData(IGameData gameData, IUserSettings userSettings)
-    {
-        GameData = gameData;
-        UserSettings = userSettings;
-    }
 }
 

@@ -53,13 +53,13 @@ public class ChooseAvatarView : PopUpView
 
     protected override void SetInfo(IUIData data)
     {
-        if (data is not IUserSettings settings)
+        if (data is not ProfileData profile)
         {
-            Debug.Log($"data passed to choose avatar view is not user settings, type: {data?.GetType().Name}");
+            Debug.Log($"data passed to choose avatar view is not profile, type: {data?.GetType().Name}");
             return;
         }
 
-        currentColor = (CellColor)settings.Avatar;
+        currentColor = (CellColor)profile.Avatar;
         SetAvatarSprite();
     }
 

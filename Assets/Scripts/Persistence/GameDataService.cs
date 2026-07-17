@@ -112,8 +112,7 @@ public class GameDataService
             inProgress: playerPrefs.GetBool(GameDataKeys.InProgress, false),
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
-            scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList,
-            leaderboardRanking: (new LeaderboardRanking()).ROList    // need to load from the cloud, empty list for now
+            scoreHistory: disc.Load<ScoreHistory>(GameDataFiles.ScoreHistory).ROList
         );
 
         return newData;

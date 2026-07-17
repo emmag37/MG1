@@ -49,9 +49,9 @@ public class SettingsView: PopUpView
 
     protected override void SetInfo(IUIData data)
     {
-        if (data is not IUserSettings settings)
+        if (data is not SettingsData settings)
         {
-            Debug.Log($"data passed to settings view is not user settings, type: {data?.GetType().Name}");
+            Debug.Log($"data passed to settings view is not settings, type: {data?.GetType().Name}");
             return;
         }
 
