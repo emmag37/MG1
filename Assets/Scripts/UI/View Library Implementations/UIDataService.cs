@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// todo: implement load and save
+// todo: implement load and save, implement add score to list
 
 public class UIDataService : MonoBehaviour
 {
@@ -32,6 +32,15 @@ public class UIDataService : MonoBehaviour
     }
 
     // ==================================================
+    // Public Methods
+    // ==================================================
+
+    public void AddScoreToList(int score)
+    {
+
+    }
+
+    // ==================================================
     // Load/Save
     // ==================================================
 
@@ -59,6 +68,7 @@ public class UIDataService : MonoBehaviour
         if (!hasFocus) // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
             return;
     }
+
 
 
 }

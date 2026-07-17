@@ -179,17 +179,18 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private void UpdateSettings(SettingsData newSettings)
     {
-        // update the actual settings
-
-        // update audio/other settings driven systems
+        uIDataService.Settings = newSettings;
+        // update audio
     }
 
+    // note: this should not be called to update the score list
     private void UpdateProfile(ProfileData newProfile)
     {
-        // update the profile
-            // note: score list will never be updated here
+        uIDataService.Profile.Username = newProfile.Username;
+        uIDataService.Profile.Avatar = newProfile.Avatar;
 
-        // update the views
+        baseViewController.UpdateView(BaseViewType.Home, uIDataService.Profile);
+        popUpViewController.UpdateView(PopUpViewType.Profile, uIDataService.Profile);
     }
 
     // ==================================================
@@ -200,6 +201,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         ScoreData scoreData = new ScoreData(score, highScore);
         baseViewController.PushView(BaseViewType.GameOver, scoreData);
+
+        uIDataService.AddScoreToList(score);
     }
 
 
