@@ -47,20 +47,25 @@ public class GameBootstrap : MonoBehaviour
 
         gameDataService = new GameDataService(disc, playerPrefs);
 
-        uIDataService = GetComponent<UIDataService>();
-        uIDataService.Initialize(disc);    // load in the UI data
-
+        // set initializer flag
         hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);
-        bool inProgress = gameDataService.GetGameData().InProgress;
+        hasLaunched = false;
+
+        bool inProgress = false;
+        //bool inProgress = gameDataService.GetGameData().InProgress;
 
         InitFlag initInfo = (hasLaunched ? 0 : InitFlag.Tutorial) | (inProgress ? InitFlag.LoadGame : 0);
         Debug.Log($"Init info: {initInfo}");
+
+        // load data
+        uIDataService = GetComponent<UIDataService>();
+        uIDataService.Initialize(disc);    // load in the UI data
 
         board.Initialize(initInfo, gameDataService);
         tutorial.Initialize(board);
 
         uiManager.Initialize(board, tutorial, uIDataService);
-        audioManager.Initialize(uIDataService.Settings.MusicOn, uIDataService.Settings.SFXOn);
+        //audioManager.Initialize(uIDataService.Settings.MusicOn, uIDataService.Settings.SFXOn);
 
         // wire dependencies
         WireUI();

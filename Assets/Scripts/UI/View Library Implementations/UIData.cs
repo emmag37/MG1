@@ -29,6 +29,11 @@ public sealed class ProfileData : IUIData
     public ValidatedUsername Username;
     public CellColor Avatar;
     public ScoreHistory ScoreList;
+
+    public ProfileData()
+    {
+        Avatar = CellColor.Color1;
+    }
 }
 
 

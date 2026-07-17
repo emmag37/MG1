@@ -37,6 +37,8 @@ public class ValidatedUsername : ISerializationCallbackReceiver
     public ValidatedUsername()
     {
         profanityDetector = new ProfanityService();
+
+        username = "default-username";
     }
 
     public void OnAfterDeserialize()

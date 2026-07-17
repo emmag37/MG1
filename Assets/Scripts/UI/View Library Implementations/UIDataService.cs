@@ -1,7 +1,6 @@
 using UnityEngine;
 
-// todo: create a new username class to update its behavior, like capped ranked list
-    // make only the string public/serializable
+// todo: create some default profile data
 
 public class UIDataService : MonoBehaviour
 {
