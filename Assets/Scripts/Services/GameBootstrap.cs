@@ -1,6 +1,8 @@
 using UnityEngine;
 using System;
 
+// todo: put in progress in player prefs
+
 [Flags]
 public enum InitFlag : byte
 {
@@ -10,7 +12,6 @@ public enum InitFlag : byte
 
     // can have 6 more flags
 }
-
 
 // First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
@@ -41,15 +42,14 @@ public class GameBootstrap : MonoBehaviour
 
     void Awake()
     {
-        // create services
         playerPrefs = new PlayerPrefsStorage();
         disc = new DiscStorage();
 
         gameDataService = new GameDataService(disc, playerPrefs);
-        uIDataService = new UIDataService(disc);    // load in the UI data
 
-        // set the init flag - turn these bools into player prefs, they don't need to be saved together
-        // lets turn has launched into just player pref
+        uIDataService = GetComponent<UIDataService>();
+        uIDataService.Initialize(disc);    // load in the UI data
+
         hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);
         bool inProgress = gameDataService.GetGameData().InProgress;
 
@@ -78,6 +78,8 @@ public class GameBootstrap : MonoBehaviour
         {
             Debug.Log("start tutorial");
             startScreen = BaseViewType.Tutorial;
+
+            playerPrefs.SetBool(InitKeys.HasLaunched, true);
         }
 
         // always open a fresh new game with the home view

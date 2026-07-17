@@ -25,7 +25,7 @@ public class UIDataService : MonoBehaviour
     // for now, pass the json save/load system into constructor.
     // save/load is a good candidate for a service locator
 
-    public UIDataService(DiscStorage discStorageUtility)
+    public void Initialize(DiscStorage discStorageUtility)
     {
         this.discStorageUtility = discStorageUtility;
 
@@ -47,7 +47,7 @@ public class UIDataService : MonoBehaviour
 
     private void LoadData()
     {
-        UIData data = discStorageUtility.Load<UIData>(DataFiles.UIData);
+        data = discStorageUtility.Load<UIData>(DataFiles.UIData);
 
         Settings = data.SettingsData;
         Profile = data.ProfileData;
@@ -55,12 +55,12 @@ public class UIDataService : MonoBehaviour
 
     private void SaveData()
     {
-        data.SettingsData = Settings;   // update with any runtime changes
+        data.SettingsData = Settings;
         data.ProfileData = Profile;
 
         discStorageUtility.Save<UIData>(DataFiles.UIData, data);
     }
-
+    
     // save data
     private void OnApplicationPause(bool pauseStatus)
     {
