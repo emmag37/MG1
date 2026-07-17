@@ -30,8 +30,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ==================================================
     private bool instantiated = false;
 
-    private SettingsService settingsService;
-
     private UIDataService uIDataService;
 
     private Board board;
@@ -59,12 +57,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Initialize
     // ==================================================
 
-    public void Initialize(InitFlag initInfo, Board board, Tutorial tutorial, SettingsService settingsService, UIDataService uIDataService)
+    public void Initialize(Board board, Tutorial tutorial, UIDataService uIDataService)
     {
         Debug.Assert(!instantiated, "Instance of UIManager already exists.");
         instantiated = true;
-
-        this.settingsService = settingsService;
 
         this.uIDataService = uIDataService;
 
@@ -113,33 +109,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
 
     // ==================================================
-    // Update Settings Methods - just forwarders, remove
-    // ==================================================
-
-    // remove these, use a service locator on the actual view
-    // currently these functions are not supported
-
-    public void UpdateMusicOn(int on)
-    {
-        settingsService.SetMusicOn(on == 1? true : false);
-    }
-
-    public void UpdateSFXOn(int on)
-    {
-        settingsService.SetSFXOn(on == 1 ? true : false);
-    }
-
-    public bool TryUpdateUsername(string name, out InvalidInputType error)
-    {
-        return settingsService.TrySetUsername(name, out error);
-    }
-
-    public void UpdateAvatar(CellColor color)
-    {
-        settingsService.SetAvatar(color);
-    }
-
-    // ==================================================
     // View Controller Methods
     // ==================================================
 
@@ -153,8 +122,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
 
         if (popUpViewController.Count > 0) popUpViewController.ClearViews();
-
-        IUserSettings userSettings = settingsService.GetSettings();
 
         if (type == BaseViewType.GamePlay && baseViewController.PeekViewType() == BaseViewType.GamePlay)
         {
@@ -173,8 +140,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
         {
             tutorial.StartTutorial();
         }
-
-        baseViewController.PushView(type, userSettings);
+        
+        baseViewController.PushView(type, uIDataService.Profile);
     }
 
     // rename to push pop up view
@@ -183,15 +150,15 @@ public class UIManager : MonoBehaviour, IUIViewHost
         if (playSound)
             ButtonPressed?.Invoke();
 
-        IUIData data = settingsService.GetSettings();
+        IUIData data = uIDataService.Settings;
 
         if (type == PopUpViewType.Pause)
         {
             board.PauseGame(true);
         }
-        else if (type == PopUpViewType.Profile)
+        else if (type == PopUpViewType.Profile || type == PopUpViewType.ChooseAvatar)
         {
-            // need to pass the score history data as well
+            data = uIDataService.Profile;
         }
 
         popUpViewController.PushView(type, data);
@@ -220,6 +187,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         baseViewController.PushView(BaseViewType.GameOver, scoreData);
     }
 
+    // probably just going to deprecate this
     public void HandleProfileUpdate(IUserSettings userSettings)
     {
         baseViewController.UpdateView(BaseViewType.Home, userSettings);

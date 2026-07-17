@@ -62,7 +62,7 @@ public class GameBootstrap : MonoBehaviour
         board.Initialize(initInfo, gameDataService);
         tutorial.Initialize(board);
 
-        uiManager.Initialize(initInfo, board, tutorial, settingsService, uIDataService);
+        uiManager.Initialize(board, tutorial, uIDataService);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
 
         // wire dependencies

@@ -1,12 +1,14 @@
 using UnityEngine;
 
+// todo: implement load and save
+
 public class UIDataService : MonoBehaviour
 {
     // ==================================================
     // Public Fields
     // ==================================================
-    public SettingsData Settings;
-    public ProfileData profile;
+    public SettingsData Settings;       // edit these and their properties directly
+    public ProfileData Profile;
 
     // ==================================================
     // Private Fields

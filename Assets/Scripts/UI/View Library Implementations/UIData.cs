@@ -20,6 +20,7 @@ public class SettingsData : IUIData
 {
     public bool MusicOn;
     public bool SFXOn;
+    public bool VibrateOn;
 }
 
 [Serializable]
