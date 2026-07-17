@@ -45,7 +45,8 @@ public class GameBootstrap : MonoBehaviour
         playerPrefs = new PlayerPrefsStorage();
         disc = new DiscStorage();
 
-        gameDataService = new GameDataService(disc, playerPrefs);
+        gameDataService = GetComponent<GameDataService>();
+        gameDataService.Initialize(disc, playerPrefs);
 
         // set initializer flag
         hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);

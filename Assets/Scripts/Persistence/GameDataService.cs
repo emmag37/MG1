@@ -2,11 +2,13 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class GameDataService
+public class GameDataService : MonoBehaviour
 {
     // ==================================================
     // Public Fields
     // ==================================================
+    public GameData Game;
+
     public IGameData GetGameData() => data;
     public IGamePlayData GetGamePlayData() => game;
 
@@ -16,7 +18,7 @@ public class GameDataService
     private DiscStorage disc;
     private PlayerPrefsStorage playerPrefs;
 
-    private GameData data;
+    private OldGameData data;
     private GamePlayData game;
 
 
@@ -24,13 +26,21 @@ public class GameDataService
     // Constructor/Initializer
     // ==================================================
 
+    /*
     public GameDataService(DiscStorage disc, PlayerPrefsStorage playerPrefs)
+    {
+        
+        //data = Load();
+        //game = LoadGame();
+    }
+    */
+
+    public void Initialize(DiscStorage disc, PlayerPrefsStorage playerPrefs)
     {
         this.disc = disc;
         this.playerPrefs = playerPrefs;
 
-        data = Load();
-        game = LoadGame();
+        LoadData();
     }
 
     // ==================================================
@@ -103,12 +113,35 @@ public class GameDataService
 
 
     // ==================================================
-    // Private Methods
+    // Load/Save
     // ==================================================
 
-    private GameData Load()
+    private void LoadData()
     {
-        GameData newData = new GameData(
+        Game = disc.Load<GameData>(DataFiles.GameData);
+    }
+
+    private void SaveData()
+    {
+        disc.Save<GameData>(DataFiles.GameData, Game);
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        // app is being backgrounded
+        if (pauseStatus) SaveData();
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
+        if (!hasFocus) SaveData();
+    }
+
+    /*
+    private OldGameData Load()
+    {
+        OldGameData newData = new OldGameData(
             inProgress: playerPrefs.GetBool(GameDataKeys.InProgress, false),
             score: 0,
             highScore: playerPrefs.GetInt(GameDataKeys.HighScore, 0),
@@ -129,4 +162,5 @@ public class GameDataService
 
         return newGame;
     }
+    */
 }

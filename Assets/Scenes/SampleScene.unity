@@ -6223,8 +6223,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIDataService
   Settings:
-    MusicOn: 1
-    SFXOn: 1
+    MusicOn: 0
+    SFXOn: 0
     VibrateOn: 0
   Profile:
     Username:

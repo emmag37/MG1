@@ -4,6 +4,7 @@ using System.IO;
 public static class DataFiles
 {
     public const string UIData = "uIData.json";
+    public const string GameData = "gameData.json";
 }
 
 public static class GameDataFiles

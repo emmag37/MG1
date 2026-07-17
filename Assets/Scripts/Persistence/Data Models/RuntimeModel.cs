@@ -7,7 +7,7 @@ using System.Collections.Generic;
 // Interfaces
 // ==================================================
 
-public interface IGameData : IUIData
+public interface IGameData
 {
     bool InProgress { get; }
     int Score { get; }
@@ -29,14 +29,14 @@ public interface IGamePlayData
 // Classes
 // ==================================================
 
-public class GameData : IGameData
+public class OldGameData : IGameData
 {
     public bool InProgress { get; set; }
     public int Score { get; set; }
     public int HighScore { get; set; }
     public IReadOnlyList<int> ScoreHistory { get; set; }
 
-    public GameData(bool inProgress, int score, int highScore, IReadOnlyList<int> scoreHistory)
+    public OldGameData(bool inProgress, int score, int highScore, IReadOnlyList<int> scoreHistory)
     {
         InProgress = inProgress;
         Score = score;

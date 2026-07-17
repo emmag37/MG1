@@ -60,14 +60,12 @@ public class UIDataService : MonoBehaviour
         discStorageUtility.Save<UIData>(DataFiles.UIData, data);
     }
     
-    // save data
     private void OnApplicationPause(bool pauseStatus)
     {
         // app is being backgrounded
         if (pauseStatus) SaveData();
     }
 
-    // save data
     private void OnApplicationFocus(bool hasFocus)
     {
         // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)

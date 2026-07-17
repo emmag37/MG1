@@ -2,13 +2,13 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-// rename to board data? or the new game data
-
 [Serializable]
-public struct CellEntry
+public class GameData
 {
-    public int x, y, color;
-    public CellEntry(int x, int y, int color) { this.x = x; this.y = y; this.color = color; }
+    public int Score;
+    public CellColor CurrentPlayer;
+    public CellColor NextColor;
+    public BoardData board;
 }
 
 // sparse list to store board data, only ever read from for a list traversal
@@ -26,4 +26,11 @@ public class BoardData
     }
 
     public void Reset() => cells.Clear();
+}
+
+[Serializable]
+public struct CellEntry
+{
+    public int x, y, color;
+    public CellEntry(int x, int y, int color) { this.x = x; this.y = y; this.color = color; }
 }
