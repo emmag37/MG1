@@ -32,6 +32,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private SettingsService settingsService;
 
+    private UIDataService uIDataService;
+
     private Board board;
     private Tutorial tutorial;
 
@@ -57,12 +59,15 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Initialize
     // ==================================================
 
-    public void Initialize(InitFlag initInfo, Board board, Tutorial tutorial, SettingsService settingsService)
+    public void Initialize(InitFlag initInfo, Board board, Tutorial tutorial, SettingsService settingsService, UIDataService uIDataService)
     {
         Debug.Assert(!instantiated, "Instance of UIManager already exists.");
         instantiated = true;
 
         this.settingsService = settingsService;
+
+        this.uIDataService = uIDataService;
+
         this.board = board;
         this.tutorial = tutorial;
 
@@ -92,6 +97,20 @@ public class UIManager : MonoBehaviour, IUIViewHost
             Debug.LogError($"Unsupported view type: {typeof(TType).Name}");
     }
 
+    public void UpdateData(IUIData data)
+    {
+        if (data is SettingsData settings)
+        {
+            // implement me!
+        }
+        else if (data is ProfileData profile)
+        {
+            // implement me!
+        }
+        else
+            Debug.LogError($"Unsupported ui data type: {typeof(IUIData).Name}");
+    }
+
 
     // ==================================================
     // Update Settings Methods - just forwarders, remove
@@ -118,7 +137,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     public void UpdateAvatar(CellColor color)
     {
         settingsService.SetAvatar(color);
-    } 
+    }
 
     // ==================================================
     // View Controller Methods

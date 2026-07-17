@@ -32,6 +32,8 @@ public class GameBootstrap : MonoBehaviour
     private SettingsService settingsService;
     private GameDataService gameDataService;
 
+    private UIDataService uIDataService;
+
 
     // ==================================================
     // Unity Lifecycle
@@ -46,18 +48,21 @@ public class GameBootstrap : MonoBehaviour
         settingsService = new SettingsService(playerPrefs);
         gameDataService = new GameDataService(disc, playerPrefs);
 
+        uIDataService = new UIDataService(disc);    // load in the data
+
         IUserSettings userSettings = settingsService.GetSettings();
 
-        // set the init flag
+        // set the init flag - turn these bools into player prefs, they don't need to be saved together
         bool hasLaunched = userSettings.HasLaunched;
         bool inProgress = gameDataService.GetGameData().InProgress;
+
         InitFlag initInfo = (hasLaunched ? 0 : InitFlag.Tutorial) | (inProgress ? InitFlag.LoadGame : 0);
         Debug.Log($"Init info: {initInfo}");
 
         board.Initialize(initInfo, gameDataService);
         tutorial.Initialize(board);
 
-        uiManager.Initialize(initInfo, board, tutorial, settingsService);
+        uiManager.Initialize(initInfo, board, tutorial, settingsService, uIDataService);
         audioManager.Initialize(userSettings.MusicOn, userSettings.SFXOn);
 
         // wire dependencies
