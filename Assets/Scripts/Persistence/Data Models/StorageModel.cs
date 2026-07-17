@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 // need to define <, > , == for my leaderboard item
 
+// put this class into its own file
 public abstract class CappedRankedList<T> where T : IComparable<T>
 {
     // properties
@@ -52,13 +53,7 @@ public abstract class CappedRankedList<T> where T : IComparable<T>
 }
 
 
-[Serializable]
-public class ScoreHistory : CappedRankedList<int>
-{
-    // only hold top 10 scores in score history
-    public ScoreHistory() : base(10) { }
-}
-
+// unsure where to put this, most likely UI data
 [Serializable]
 public class LeaderboardRanking : CappedRankedList<LeaderboardData>
 {
@@ -66,6 +61,8 @@ public class LeaderboardRanking : CappedRankedList<LeaderboardData>
     public LeaderboardRanking() : base(50) { }
 }
 
+
+// move this to be with cell
 
 // sparse list to store board data, only ever read from for a list traversal
 [Serializable]

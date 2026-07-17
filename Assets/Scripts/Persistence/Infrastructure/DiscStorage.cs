@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.IO;
 
+public static class DataFiles
+{
+    public const string UIData = "uIData.json";
+}
+
 public static class GameDataFiles
 {
     public const string ScoreHistory = "scoreHistory.json";

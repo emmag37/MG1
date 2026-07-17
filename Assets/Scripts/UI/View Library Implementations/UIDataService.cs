@@ -1,6 +1,7 @@
 using UnityEngine;
 
 // todo: implement load and save, implement add score to list
+    // get the highscore from the score list so this is only stored once
 
 public class UIDataService : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class UIDataService : MonoBehaviour
     {
         this.discStorageUtility = discStorageUtility;
 
-        data = LoadData();
+        LoadData();
     }
 
     // ==================================================
@@ -37,38 +38,40 @@ public class UIDataService : MonoBehaviour
 
     public void AddScoreToList(int score)
     {
-
+        Profile.ScoreList.TryAddValue(score);
     }
 
     // ==================================================
     // Load/Save
     // ==================================================
 
-    private UIData LoadData()
+    private void LoadData()
     {
-        // load the settings data
+        UIData data = discStorageUtility.Load<UIData>(DataFiles.UIData);
 
-        // load the profile data
+        Settings = data.SettingsData;
+        Profile = data.ProfileData;
+    }
 
-        // create data to return
+    private void SaveData()
+    {
+        data.SettingsData = Settings;   // update with any runtime changes
+        data.ProfileData = Profile;
 
-        return null;
+        discStorageUtility.Save<UIData>(DataFiles.UIData, data);
     }
 
     // save data
     private void OnApplicationPause(bool pauseStatus)
     {
-        if (pauseStatus) // app is being backgrounded
-            return;
+        // app is being backgrounded
+        if (pauseStatus) SaveData();
     }
 
     // save data
     private void OnApplicationFocus(bool hasFocus)
     {
-        if (!hasFocus) // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
-            return;
+        // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
+        if (!hasFocus) SaveData();
     }
-
-
-
 }
