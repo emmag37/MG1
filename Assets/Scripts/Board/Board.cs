@@ -85,10 +85,10 @@ public class Board : MonoBehaviour
         if (restart) SetInProgress(false);
 
         // prepare a fresh game
-        if (/*!gameData.game.InProgress*/ true)
+        if (!gameData.InProgress)
         {
             Reset();
-            //if (!gameData.Game.InProgress) SetInProgress(true);
+            SetInProgress(true);
 
             CellColor nextColor = pieceRegistry.SpawnNewPlayer().NextColor;
             hUD.SetPlayerPreview(nextColor);
@@ -240,9 +240,7 @@ public class Board : MonoBehaviour
 
     private void SetInProgress(bool inProgress)
     {
-        //this.gameData.Game.InProgress = inProgress;
-        //gameData.Game.InProgress = inProgress;
-
+        gameData.InProgress = inProgress;
         SubscribeToEvents(inProgress);
     }
 
