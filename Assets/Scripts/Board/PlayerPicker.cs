@@ -6,19 +6,6 @@ using UnityEngine;
 public class PlayerPicker
 {
     // ================================
-    // Public Types
-    // ================================
-
-    /// <summary>
-	/// Contains the color value of the current player and the next player.
-	/// </summary>
-    public struct PlayerColors
-    {
-        public CellColor Color;
-        public CellColor NextColor;
-    }
-
-    // ================================
     // Private Fields
     // ================================
     private CellColor nextColor;
@@ -48,7 +35,7 @@ public class PlayerPicker
     {
         PlayerColors newColors = new PlayerColors();              // return the current, non-updated state
 
-        newColors.Color = nextColor;
+        newColors.PlayerColor = nextColor;
         newColors.NextColor = ChooseColor();
 
         nextColor = newColors.NextColor;

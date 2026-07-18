@@ -9,6 +9,10 @@ public class GameDataService : MonoBehaviour
     // ==================================================
     public bool InProgress;
 
+    public int Score => game.Score;
+    public PlayerColors PlayerColors => game.PlayerColors;
+    public IReadOnlyList<CellEntry> Board => game.Board.Cells;
+
     // ==================================================
     // Private Fields
     // ==================================================
@@ -27,6 +31,25 @@ public class GameDataService : MonoBehaviour
         this.playerPrefs = playerPrefs;
 
         LoadData();
+    }
+
+    // ==================================================
+    // Setters
+    // ==================================================
+
+    public void SetScore(int score)
+    {
+        game.Score = score;
+    }
+
+    public void SetPlayerColors(PlayerColors colors)
+    {
+        game.PlayerColors = colors;
+    }
+
+    public void AddPieceToBoardData(CellEntry entry)
+    {
+        game.Board.Set(entry);
     }
 
 

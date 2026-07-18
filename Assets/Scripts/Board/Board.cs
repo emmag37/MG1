@@ -62,7 +62,7 @@ public class Board : MonoBehaviour
 
         if (gameData.InProgress)
         {
-            // load in everything
+            
         }
 
         if (runTutorial)
@@ -110,7 +110,7 @@ public class Board : MonoBehaviour
         }
         else
         {
-            var colors = new PlayerPicker.PlayerColors { Color = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
+            PlayerColors colors = new PlayerColors { PlayerColor = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
             pieceRegistry.SpawnNewPlayer(colors);
         }
 

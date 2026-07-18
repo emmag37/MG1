@@ -15,7 +15,6 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    //private GameDataService gameData;
     private PlayerPicker picker;
 
     private Piece playerPiece;
@@ -29,10 +28,8 @@ public class PieceRegistry : MonoBehaviour
     // Initializer
     // ==================================================
 
-    public void Initialize(bool loadGame, Bounds boardBounds)
+    public void Initialize(Bounds boardBounds)
     {
-        //this.gameData = gameData;
-
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;
 
@@ -40,20 +37,12 @@ public class PieceRegistry : MonoBehaviour
         playerBounds.SetMinMax(min, playerBounds.max);
 
         picker = new PlayerPicker();
+    }
 
-        /*
-        if (loadGame)
-        {
-            IGamePlayData playData = gameData.GetGamePlayData();
-
-            // load the active player
-            var colors = new PlayerPicker.PlayerColors { Color = playData.CurrentPlayer, NextColor = playData.NextPlayer };
-            SpawnNewPlayer(colors);
-
-            // load the pieces on the board
-            LoadBoardPieces(gameData.GetGamePlayData().Board.Cells);
-        }
-        */
+    public void LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
+    {
+        SpawnNewPlayer(colors);
+        LoadBoardPieces(cells);
     }
 
 
@@ -62,22 +51,19 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
 
     // optional param to spawn a player with given colors, always returns non-null colors
-    public PlayerPicker.PlayerColors SpawnNewPlayer(PlayerPicker.PlayerColors colors = default)
+    public PlayerColors SpawnNewPlayer(PlayerColors? colors = null)
     {
-        Debug.Log("spawn new player");
-
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
-        if (colors.Equals(default(PlayerPicker.PlayerColors)))
+        if (colors == null)
         {
             colors = picker.CalculateNewPlayerColors();
-            //gameData.SavePlayerColors(colors.Color, colors.NextColor);
         }
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-        playerPiece.InitializeAsPlayer(colors.Color, playerBounds);
+        playerPiece.InitializeAsPlayer(colors.Value.PlayerColor, playerBounds);
 
-        return colors;
+        return colors.Value;
     }
 
     public void PlacePlayer(Vector3 position, Vector2Int index)
