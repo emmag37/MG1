@@ -18,7 +18,6 @@ public class HUDController : MonoBehaviour
     // ================================
     // Private Fields
     // ================================
-    private GameDataService gameData;
 
     private int score;
     private int highScore;
@@ -39,27 +38,23 @@ public class HUDController : MonoBehaviour
     // Public Methods
     // ================================
 
-    public void Initialize(bool loadGame, GameDataService gameData)
+    public void Initialize(int highScore, int score = 0, CellColor previewColor = CellColor.Empty)
     {
-        this.gameData = gameData;
+        this.highScore = highScore;
 
-        // load score
-        score = gameData.GetGamePlayData().CurrentScore;    // reliably resets, should always be accurate
-        highScore = gameData.GetGameData().HighScore;
         UpdateScoreText();
+    }
 
-        // load preview data
-        if (loadGame)
-        {
-            CellColor preview = gameData.GetGamePlayData().NextPlayer;
-            SetPlayerPreview(preview);
-        }
+    public void LoadGame(int score, CellColor previewColor)
+    {
+        this.score = score;
+
+        UpdateScoreText();
+        SetPlayerPreview(previewColor);
     }
 
     public (int, int) GameOver()
     {
-        gameData.SetFinalScore(score);
-
         return (score, highScore);
     }
 
@@ -80,11 +75,9 @@ public class HUDController : MonoBehaviour
         if (points > 0)
         {
             score += points;
+
             if (score > highScore)
-            {
                 highScore = points;
-                gameData.UpdateHighScore(highScore);
-            }
 
             UpdateScoreText();
         }

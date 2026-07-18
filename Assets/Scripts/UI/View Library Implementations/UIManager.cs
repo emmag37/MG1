@@ -202,7 +202,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private void HandleGameOver(int score, int highScore)
     {
-        ScoreData scoreData = new ScoreData(score, highScore);
+        FinalScoreData scoreData = new FinalScoreData(score, highScore);
         baseViewController.PushView(BaseViewType.GameOver, scoreData);
 
         uIDataService.AddScoreToList(score);

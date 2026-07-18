@@ -6,9 +6,14 @@ using System.Collections.Generic;
 public class GameData
 {
     public int Score;
+    public PlayerData Player;
+    public BoardData Board;
+}
+
+public class PlayerData
+{
     public CellColor CurrentPlayer;
     public CellColor NextColor;
-    public BoardData board;
 }
 
 // sparse list to store board data, only ever read from for a list traversal

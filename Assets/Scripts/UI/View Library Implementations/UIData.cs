@@ -44,7 +44,7 @@ public class ScoreHistory : CappedRankedList<int>
     public ScoreHistory() : base(10) { }
 }
 
-public sealed record ScoreData(int score, int highScore) : IUIData; // this is what is passed to the game over screen
+public sealed record FinalScoreData(int score, int highScore) : IUIData; // this is what is passed to the game over screen
 
 /* to be implemented in the future
  * 

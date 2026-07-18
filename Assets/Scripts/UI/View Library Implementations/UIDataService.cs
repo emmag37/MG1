@@ -40,6 +40,11 @@ public class UIDataService : MonoBehaviour
         Profile.ScoreList.TryAddValue(score);
     }
 
+    public int GetHighScore()
+    {
+        return Profile.ScoreList.ROList[0];     // returns the topmost score
+    }
+
     // ==================================================
     // Load/Save
     // ==================================================

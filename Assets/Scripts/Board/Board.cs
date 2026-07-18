@@ -32,7 +32,6 @@ public class Board : MonoBehaviour
     private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
 
-    private bool inProgress;
     private bool runTutorial;
 
     // ================================
@@ -40,12 +39,10 @@ public class Board : MonoBehaviour
     // ================================
 
     // initialize with the game load data
-    public void Initialize(InitFlag initInfo, GameDataService dataService)
+    public void Initialize(GameDataService gameData, bool runTutorial, int highScore)
     {
-        inProgress = (initInfo & InitFlag.LoadGame) != 0;
-        runTutorial = (initInfo & InitFlag.Tutorial) != 0;
-
-        gameData = dataService;
+        this.gameData = gameData;
+        this.runTutorial = runTutorial;
 
         // cache components
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -54,21 +51,26 @@ public class Board : MonoBehaviour
 
         // initialize components
         BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);  // static class now
-
-        pieceRegistry.Initialize(inProgress, spriteRenderer.bounds, dataService);    // add values to initialize the active game state
         ghostPreview.Initialize();
-        hUD.Initialize(inProgress, dataService);
 
-        IReadOnlyList<CellEntry> cells = inProgress ? dataService.GetGamePlayData().Board.Cells : null;
-        logic = new BoardLogic(cells);
+        hUD.Initialize(highScore);
+        //pieceRegistry.Initialize(true, spriteRenderer.bounds, gameData);    // add values to initialize the active game state
+        BoardLogic logic = new BoardLogic();
 
-        // set board states
+        //IReadOnlyList<CellEntry> cells = gameData.game.InProgress ? gameData.game.Board.Cells : null;
+        //logic = new BoardLogic(cells);
+
+        if (gameData.InProgress)
+        {
+            // load in everything
+        }
+
         if (runTutorial)
         {
             hUD.gameObject.SetActive(false);
         }
 
-        SubscribeToEvents(runTutorial || inProgress);
+        SubscribeToEvents(runTutorial || gameData.InProgress);
     }
 
     // ================================
@@ -83,10 +85,10 @@ public class Board : MonoBehaviour
         if (restart) SetInProgress(false);
 
         // prepare a fresh game
-        if (!inProgress)
+        if (/*!gameData.game.InProgress*/ true)
         {
             Reset();
-            if (!inProgress) SetInProgress(true);
+            //if (!gameData.Game.InProgress) SetInProgress(true);
 
             CellColor nextColor = pieceRegistry.SpawnNewPlayer().NextColor;
             hUD.SetPlayerPreview(nextColor);
@@ -140,7 +142,7 @@ public class Board : MonoBehaviour
             return;
         }
 
-        gameData.SaveTurn(currentScore, index);    // MUST save turn first, uses original stored colors
+        //gameData.SaveTurn(currentScore, index);    // MUST save turn first, uses original stored colors
 
         CellColor nextColor = pieceRegistry.SpawnNewPlayer().NextColor;
         hUD.SetPlayerPreview(nextColor);
@@ -216,7 +218,7 @@ public class Board : MonoBehaviour
         logic.ResetBoard();
         pieceRegistry.ResetPieces();
         hUD.Reset();
-        gameData.ResetGame();
+        //gameData.ResetGame();
     }
 
     private void GameOver()
@@ -238,8 +240,8 @@ public class Board : MonoBehaviour
 
     private void SetInProgress(bool inProgress)
     {
-        this.inProgress = inProgress;
-        gameData.SetInProgress(inProgress);
+        //this.gameData.Game.InProgress = inProgress;
+        //gameData.Game.InProgress = inProgress;
 
         SubscribeToEvents(inProgress);
     }

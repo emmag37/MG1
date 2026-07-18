@@ -3,16 +3,6 @@ using System;
 
 // todo: put in progress in player prefs
 
-[Flags]
-public enum InitFlag : byte
-{
-    None =  0,              // initialize nothing besides normal systems
-    Tutorial = 1 << 0,      // initialize the tutorial
-    LoadGame = 1 << 1       // initialize a previously started game
-
-    // can have 6 more flags
-}
-
 // First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
 {
@@ -45,26 +35,22 @@ public class GameBootstrap : MonoBehaviour
         playerPrefs = new PlayerPrefsStorage();
         disc = new DiscStorage();
 
-        gameDataService = GetComponent<GameDataService>();
-        gameDataService.Initialize(disc, playerPrefs);
-
-        // set initializer flag
+        // load data
         hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);
 
-        bool inProgress = false;
-        //bool inProgress = gameDataService.GetGameData().InProgress;
-
-        InitFlag initInfo = (hasLaunched ? 0 : InitFlag.Tutorial) | (inProgress ? InitFlag.LoadGame : 0);
-        Debug.Log($"Init info: {initInfo}");
-
-        // load data
         uIDataService = GetComponent<UIDataService>();
-        uIDataService.Initialize(disc);    // load in the UI data
+        uIDataService.Initialize(disc);    // automatically loads in the UI data
 
-        board.Initialize(initInfo, gameDataService);
-        tutorial.Initialize(board);
+        gameDataService = GetComponent<GameDataService>();
+        gameDataService.Initialize(disc, playerPrefs);   // only loads game data if a game was in progress
+
+        // initialize scene components
+        board.Initialize(gameDataService, !hasLaunched, uIDataService.GetHighScore());
+        if (!hasLaunched) tutorial.Initialize(board);
 
         uiManager.Initialize(board, tutorial, uIDataService);
+
+        // initialize services
         audioManager.Initialize(uIDataService.Settings.MusicOn, uIDataService.Settings.SFXOn);
 
         // wire dependencies

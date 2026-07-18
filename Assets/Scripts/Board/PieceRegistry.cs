@@ -15,7 +15,7 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private GameDataService gameData;
+    //private GameDataService gameData;
     private PlayerPicker picker;
 
     private Piece playerPiece;
@@ -29,9 +29,9 @@ public class PieceRegistry : MonoBehaviour
     // Initializer
     // ==================================================
 
-    public void Initialize(bool loadGame, Bounds boardBounds, GameDataService gameData)
+    public void Initialize(bool loadGame, Bounds boardBounds)
     {
-        this.gameData = gameData;
+        //this.gameData = gameData;
 
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;
@@ -41,6 +41,7 @@ public class PieceRegistry : MonoBehaviour
 
         picker = new PlayerPicker();
 
+        /*
         if (loadGame)
         {
             IGamePlayData playData = gameData.GetGamePlayData();
@@ -52,6 +53,7 @@ public class PieceRegistry : MonoBehaviour
             // load the pieces on the board
             LoadBoardPieces(gameData.GetGamePlayData().Board.Cells);
         }
+        */
     }
 
 
@@ -69,7 +71,7 @@ public class PieceRegistry : MonoBehaviour
         if (colors.Equals(default(PlayerPicker.PlayerColors)))
         {
             colors = picker.CalculateNewPlayerColors();
-            gameData.SavePlayerColors(colors.Color, colors.NextColor);
+            //gameData.SavePlayerColors(colors.Color, colors.NextColor);
         }
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
