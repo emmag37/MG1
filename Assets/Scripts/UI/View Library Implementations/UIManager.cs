@@ -41,6 +41,20 @@ public class UIManager : MonoBehaviour, IUIViewHost
     private ViewController<PopUpView, PopUpViewType, IUIData> popUpViewController;
 
 
+    // ================================
+    // Unity Lifecycle
+    // ================================
+
+    public void Awake()
+    {
+        board.FullBoard += HandleGameOver;
+    }
+
+    public void OnDestroy()
+    {
+        board.FullBoard -= HandleGameOver;
+    }
+
     // ==================================================
     // Initialize/Exit
     // ==================================================
@@ -56,14 +70,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
         baseViewController = new ViewController<BaseView, BaseViewType, IUIData>(baseViewList, BaseViewCapacity, this);
         popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this);
-
-        board.FullBoard += HandleGameOver;
     }
 
     public UIData Exit()
     {
-        board.FullBoard -= HandleGameOver;
-
         return data;
     }
 

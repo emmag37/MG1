@@ -40,6 +40,21 @@ public class Board : MonoBehaviour
     private bool runTutorial;
     public bool inProgress;
 
+
+    // ================================
+    // Unity Lifecycle
+    // ================================
+
+    public void Awake()
+    {
+        SubscribeToEvents(true);
+    }
+
+    public void OnDestroy()
+    {
+        SubscribeToEvents(false);
+    }
+
     // ================================
     // Initializers
     // ================================
@@ -74,16 +89,10 @@ public class Board : MonoBehaviour
         {
             hUD.gameObject.SetActive(false);
         }
-
-        // subscribe
-        SubscribeToEvents(true);
     }
-
 
     public GameData Exit()
     {
-        SubscribeToEvents(false);
-
         if (inProgress)
             logic.FillBoardData(data.Board);
 
@@ -270,6 +279,8 @@ public class Board : MonoBehaviour
     // true to subscribe, false to unsubscribe
     private void SubscribeToEvents(bool subscribe)
     {
+        Debug.Log($"subscribe to events: {subscribe}");
+
         if (subscribe)
         {
             ghostPreview.TryGhostPreview += HandleGhostPreview;

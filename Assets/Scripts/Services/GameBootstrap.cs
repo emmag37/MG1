@@ -22,6 +22,8 @@ public class GameBootstrap : MonoBehaviour
     bool hasLaunched;
     bool inProgress;
 
+    bool active = true;
+
 
     // ==================================================
     // Unity Lifecycle
@@ -83,13 +85,23 @@ public class GameBootstrap : MonoBehaviour
     private void OnApplicationPause(bool pauseStatus)
     {
         // app is being backgrounded
-        ExitAndSave();
+        if (pauseStatus)
+        {
+            ExitAndSave();
+        }
+        else
+            Reenter();
     }
 
     private void OnApplicationFocus(bool hasFocus)
     {
         // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
-        ExitAndSave();
+        if (!hasFocus)
+        {
+            ExitAndSave();
+        }
+        else
+            Reenter();
     }
 
     private void OnDestroy()
@@ -118,11 +130,13 @@ public class GameBootstrap : MonoBehaviour
 
 
     // ==================================================
-    // Persistence Methods
+    // Lifecycle Management Methods
     // ==================================================
 
     private void ExitAndSave()
     {
+        if (!active) return;
+
         // player prefs save
         PlayerPrefsStorage.SetBool(InitKeys.InProgress, board.InProgress);
 
@@ -134,6 +148,15 @@ public class GameBootstrap : MonoBehaviour
         disc.Save<UIData>(DataFiles.UIData, uIData);
         if (board.InProgress)
             disc.Save<GameData>(DataFiles.GameData, gameData);
+
+        active = false;
+    }
+
+    private void Reenter()
+    {
+        if (active) return;
+
+        active = true;
     }
 
 }
