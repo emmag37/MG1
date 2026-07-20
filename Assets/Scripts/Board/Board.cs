@@ -10,6 +10,8 @@ using PlayResult = BoardLogic.PlayResult;
 [RequireComponent(typeof(GhostPreview))]
 public class Board : MonoBehaviour
 {
+    public bool InProgress => inProgress;
+
     // ================================
     // Events
     // ================================
@@ -36,7 +38,7 @@ public class Board : MonoBehaviour
     private GhostPreview ghostPreview;
 
     private bool runTutorial;
-    private bool inProgress;
+    public bool inProgress;
 
     // ================================
     // Initializers
@@ -74,11 +76,19 @@ public class Board : MonoBehaviour
         }
 
         // subscribe
-        SubscribeToEvents(runTutorial || inProgress);
+        SubscribeToEvents(true);
     }
 
 
-    // close, or exit, or end or something
+    public GameData Exit()
+    {
+        SubscribeToEvents(false);
+
+        if (inProgress)
+            logic.FillBoardData(data.Board);
+
+        return data;
+    }
 
     // ================================
     // Public Methods
@@ -89,7 +99,7 @@ public class Board : MonoBehaviour
     {
         if (runTutorial) TurnOffTutorial();
 
-        if (restart) SetInProgress(false);
+        if (restart) inProgress = false;
 
         // prepare a fresh game
         if (!inProgress)
@@ -97,7 +107,7 @@ public class Board : MonoBehaviour
             Debug.Log("prepare fresh game");
 
             Reset();
-            SetInProgress(true);
+            inProgress = true;
 
             SpawnPlayer();
         }
@@ -129,7 +139,6 @@ public class Board : MonoBehaviour
             logic.AddCellsToBoard(cells);
             pieceRegistry.LoadBoardPieces(cells);
         }
-
     }
 
     // ================================
@@ -244,7 +253,7 @@ public class Board : MonoBehaviour
     private void GameOver()
     {
         (int, int) finalScores = hUD.GameOver();
-        SetInProgress(false);
+        inProgress = false;
 
         FullBoard?.Invoke(finalScores.Item1, finalScores.Item2);
         EventBus.Publish(new GameOverEvent());
@@ -256,12 +265,6 @@ public class Board : MonoBehaviour
 
         SubscribeToEvents(false);
         hUD.gameObject.SetActive(true); // need to put this somewhere else
-    }
-
-    private void SetInProgress(bool inProgress)
-    {
-        this.inProgress = inProgress;
-        SubscribeToEvents(inProgress);
     }
 
     // true to subscribe, false to unsubscribe

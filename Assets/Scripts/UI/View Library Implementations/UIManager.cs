@@ -42,21 +42,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
 
     // ==================================================
-    // Unity Lifecycle Methods
-    // ==================================================
-
-    void OnEnable()
-    {
-        board.FullBoard += HandleGameOver;
-    }
-
-    void OnDisable()
-    {
-        board.FullBoard -= HandleGameOver;
-    }
-
-    // ==================================================
-    // Initialize
+    // Initialize/Exit
     // ==================================================
 
     public void Initialize(UIData data, Board board, Tutorial tutorial)
@@ -70,6 +56,15 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
         baseViewController = new ViewController<BaseView, BaseViewType, IUIData>(baseViewList, BaseViewCapacity, this);
         popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this);
+
+        board.FullBoard += HandleGameOver;
+    }
+
+    public UIData Exit()
+    {
+        board.FullBoard -= HandleGameOver;
+
+        return data;
     }
 
     // ==================================================

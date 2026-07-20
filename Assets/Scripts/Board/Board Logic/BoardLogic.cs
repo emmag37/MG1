@@ -68,6 +68,21 @@ public class BoardLogic
         }
     }
 
+    public void FillBoardData(BoardData data)
+    {
+        for (int row = 0; row < RowSize; row++)
+        {
+            for (int col = 0; col < RowSize; col++)
+            {
+                if (gridColors[row, col] != Empty)
+                {
+                    CellEntry entry = new CellEntry(row, col, gridColors[row, col]);
+                    data.Set(entry);
+                }
+            }
+        }
+    }
+
     public CellColor GetCellColor(int row, int col)
     {
         return gridColors[row, col];

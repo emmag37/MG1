@@ -9,7 +9,7 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private UIManager uiManager;
+    [SerializeField] private UIManager uIManager;
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private Board board;
     [SerializeField] private Tutorial tutorial;
@@ -48,7 +48,7 @@ public class GameBootstrap : MonoBehaviour
         if (!hasLaunched)
             tutorial.Initialize(board);
 
-        uiManager.Initialize(uIData, board, tutorial);
+        uIManager.Initialize(uIData, board, tutorial);
         audioManager.Initialize(uIData.Settings.MusicOn, uIData.Settings.SFXOn);
 
 
@@ -73,20 +73,20 @@ public class GameBootstrap : MonoBehaviour
         }
 
         // always open a fresh new game with the home view
-        uiManager.PushView<BaseViewType>(startScreen);
+        uIManager.PushView<BaseViewType>(startScreen);
         audioManager.Play();
     }
 
     private void OnApplicationPause(bool pauseStatus)
     {
         // app is being backgrounded
-        // save data
+        ExitAndSave();
     }
 
     private void OnApplicationFocus(bool hasFocus)
     {
         // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
-        // save data
+        ExitAndSave();
     }
 
     private void OnDestroy()
@@ -101,17 +101,35 @@ public class GameBootstrap : MonoBehaviour
 
     private void WireUI()
     {
-        uiManager.ButtonPressed += audioManager.HandleButtonPressed;
-        uiManager.Transition += audioManager.HandleTransition;
-        uiManager.SettingsUpdate += audioManager.HandleSettingsUpdate;
+        uIManager.ButtonPressed += audioManager.HandleButtonPressed;
+        uIManager.Transition += audioManager.HandleTransition;
+        uIManager.SettingsUpdate += audioManager.HandleSettingsUpdate;
     }
 
     private void UnwireUI()
     {
-        uiManager.ButtonPressed -= audioManager.HandleButtonPressed;
-        uiManager.Transition -= audioManager.HandleTransition;
-        uiManager.SettingsUpdate -= audioManager.HandleSettingsUpdate;
+        uIManager.ButtonPressed -= audioManager.HandleButtonPressed;
+        uIManager.Transition -= audioManager.HandleTransition;
+        uIManager.SettingsUpdate -= audioManager.HandleSettingsUpdate;
     }
 
+
+    // ==================================================
+    // Persistence Methods
+    // ==================================================
+
+    private void ExitAndSave()
+    {
+        // player prefs
+        playerPrefs.SetBool(InitKeys.InProgress, board.InProgress);
+
+        // disc
+        UIData uIData = uIManager.Exit();
+        disc.Save<UIData>(DataFiles.UIData, uIData);
+
+        GameData gameData = board.Exit();
+        if (board.InProgress)
+            disc.Save<GameData>(DataFiles.GameData, gameData);
+    }
 
 }
