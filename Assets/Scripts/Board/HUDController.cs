@@ -80,7 +80,7 @@ public class HUDController : MonoBehaviour
             score += points;
 
             if (score > highScore)
-                highScore = points;
+                highScore = score;
 
             UpdateScoreText();
         }
