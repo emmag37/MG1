@@ -28,7 +28,7 @@ public class ProfileView : PopUpView
     // ==================================================
     private ProfileData profile;
 
-    private ValidatedUsername username; // depracate this
+    private ValidatedUsername username;
 
     Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
     {
