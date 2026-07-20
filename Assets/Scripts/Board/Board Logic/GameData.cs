@@ -8,6 +8,13 @@ public class GameData
     public int Score;
     public PlayerColors PlayerColors;
     public BoardData Board = new();
+
+    public void Reset()
+    {
+        Score = 0;
+        PlayerColors = default(PlayerColors);
+        Board.Reset();
+    }
 }
 
 [Serializable]

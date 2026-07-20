@@ -29,7 +29,6 @@ public class Board : MonoBehaviour
     // own its own instance of game data
     private GameData data;
 
-    private GameDataService gameDataService;        // remove
     private BoardLogic logic = new BoardLogic();
 
     private SpriteRenderer spriteRenderer;
@@ -75,7 +74,7 @@ public class Board : MonoBehaviour
         }
 
         // subscribe
-        SubscribeToEvents(runTutorial || gameDataService.InProgress);
+        SubscribeToEvents(runTutorial || inProgress);
     }
 
 
@@ -93,7 +92,7 @@ public class Board : MonoBehaviour
         if (restart) SetInProgress(false);
 
         // prepare a fresh game
-        if (!gameDataService.InProgress)
+        if (!inProgress)
         {
             Debug.Log("prepare fresh game");
 
@@ -140,7 +139,7 @@ public class Board : MonoBehaviour
     // handles connection between logic and piece registry, crux that initiates a turn
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        Debug.Assert(!runTutorial && e.Color == gameDataService.PlayerColors.PlayerColor, "player color mismatch");
+        Debug.Assert(!runTutorial && e.Color == data.PlayerColors.PlayerColor, "player color mismatch");
         
         Vector2Int index = BoardGeometry.TransformToBoardIndex(e.PlayerPosition);
         int currentScore = ExecuteTurn(e.Color, index);
@@ -153,8 +152,7 @@ public class Board : MonoBehaviour
             return;
         }
 
-        gameDataService.SetScore(currentScore);
-        gameDataService.AddPieceToBoard(index, e.Color);
+        data.Score = currentScore;
 
         SpawnPlayer();
     }
@@ -229,7 +227,8 @@ public class Board : MonoBehaviour
         PlayerColors colors = pieceRegistry.SpawnNewPlayer();
 
         hUD.SetPlayerPreview(colors.NextColor);
-        gameDataService.SetPlayerColors(colors);
+
+        data.PlayerColors = colors;
     }
 
     private void Reset()
@@ -239,7 +238,7 @@ public class Board : MonoBehaviour
         logic.ResetBoard();
         pieceRegistry.ResetPieces();
         hUD.Reset();
-        gameDataService.Reset();
+        data.Reset();
     }
 
     private void GameOver()
@@ -261,7 +260,7 @@ public class Board : MonoBehaviour
 
     private void SetInProgress(bool inProgress)
     {
-        gameDataService.InProgress = inProgress;
+        this.inProgress = inProgress;
         SubscribeToEvents(inProgress);
     }
 

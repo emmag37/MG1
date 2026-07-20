@@ -20,9 +20,6 @@ public class GameBootstrap : MonoBehaviour
     private PlayerPrefsStorage playerPrefs = new PlayerPrefsStorage();
     private DiscStorage disc = new DiscStorage();
 
-    //private GameDataService gameDataService;
-    //private UIDataService uIDataService;
-
     bool hasLaunched;
     bool inProgress;
 
@@ -33,7 +30,6 @@ public class GameBootstrap : MonoBehaviour
 
     private void Awake()
     {
-
         // load data
         hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);
         inProgress = playerPrefs.GetBool(InitKeys.InProgress, false);
@@ -98,19 +94,6 @@ public class GameBootstrap : MonoBehaviour
         UnwireUI();
     }
 
-    // ==================================================
-    // Initialization/Load Methods
-    // ==================================================
-
-    private void Load()
-    {
-
-    }
-
-    private void Initialize()
-    {
-
-    }
 
     // ==================================================
     // Wire Methods
