@@ -44,12 +44,12 @@ public class GameBootstrap : MonoBehaviour
 
 
         // initialize systems
-        board.Initialize(gameData, 0, hasLaunched, inProgress);
+        board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), hasLaunched, inProgress);
         if (!hasLaunched)
             tutorial.Initialize(board);
 
         uiManager.Initialize(uIData, board, tutorial);
-        audioManager.Initialize(uIData.SettingsData.MusicOn, uIData.SettingsData.SFXOn);
+        audioManager.Initialize(uIData.Settings.MusicOn, uIData.Settings.SFXOn);
 
 
         // wire dependencies

@@ -32,8 +32,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ==================================================
     private bool instantiated = false;
 
-    private UIDataService uIDataService;
-
     private UIData data;
 
     private Board board;
@@ -140,7 +138,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
             tutorial.StartTutorial();
         }
         
-        baseViewController.PushView(type, uIDataService.Profile);
+        baseViewController.PushView(type, data.Profile);
     }
 
     // rename to push pop up view
@@ -149,7 +147,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         if (playSound)
             ButtonPressed?.Invoke();
 
-        IUIData data = uIDataService.Settings;
+        IUIData viewData = data.Settings;
 
         if (type == PopUpViewType.Pause)
         {
@@ -157,10 +155,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
         else if (type == PopUpViewType.Profile || type == PopUpViewType.ChooseAvatar)
         {
-            data = uIDataService.Profile;
+            viewData = data.Profile;
         }
 
-        popUpViewController.PushView(type, data);
+        popUpViewController.PushView(type, viewData);
     }
 
     // rename to pop pop up view
@@ -182,7 +180,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private void UpdateSettings(SettingsData newSettings)
     {
-        uIDataService.Settings = newSettings;
+        data.Settings = newSettings;
 
         SettingsUpdate?.Invoke(newSettings.MusicOn, newSettings.SFXOn);
     }
@@ -190,11 +188,11 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // note: this NEVER updated the score list
     private void UpdateProfile(ProfileData newProfile)
     {
-        uIDataService.Profile.Avatar = newProfile.Avatar;
-        uIDataService.Profile.Username = newProfile.Username;
+        data.Profile.Avatar = newProfile.Avatar;
+        data.Profile.Username = newProfile.Username;
 
-        baseViewController.UpdateView(BaseViewType.Home, uIDataService.Profile);
-        popUpViewController.UpdateView(PopUpViewType.Profile, uIDataService.Profile);
+        baseViewController.UpdateView(BaseViewType.Home, data.Profile);
+        popUpViewController.UpdateView(PopUpViewType.Profile, data.Profile);
     }
 
     // ==================================================
@@ -206,7 +204,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         FinalScoreData scoreData = new FinalScoreData(score, highScore);
         baseViewController.PushView(BaseViewType.GameOver, scoreData);
 
-        uIDataService.AddScoreToList(score);
+        data.Profile.ScoreList.TryAddValue(score);
     }
 
 

@@ -11,8 +11,8 @@ namespace System.Runtime.CompilerServices
 public class UIData : IUIData
 {
     // this is the data that actually gets stored to disc
-    public SettingsData SettingsData;
-    public ProfileData ProfileData;
+    public SettingsData Settings;
+    public ProfileData Profile;
 }
 
 [Serializable]

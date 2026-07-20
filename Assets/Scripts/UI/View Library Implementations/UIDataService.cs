@@ -50,14 +50,14 @@ public class UIDataService : MonoBehaviour
     {
         data = discStorageUtility.Load<UIData>(DataFiles.UIData);
 
-        Settings = data.SettingsData;
-        Profile = data.ProfileData;
+        Settings = data.Settings;
+        Profile = data.Profile;
     }
 
     private void SaveData()
     {
-        data.SettingsData = Settings;
-        data.ProfileData = Profile;
+        data.Settings = Settings;
+        data.Profile = Profile;
 
         discStorageUtility.Save<UIData>(DataFiles.UIData, data);
     }
