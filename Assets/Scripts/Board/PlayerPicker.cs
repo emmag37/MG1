@@ -10,19 +10,7 @@ public class PlayerPicker
     // ================================
     private CellColor nextColor;
 
-    // ================================
-    // Constructors
-    // ================================
 
-    /// <summary>
-	/// Chooses the first 'next' color of the game.
-	/// </summary>
-    public PlayerPicker()
-    {
-        nextColor = ChooseColor();
-    }
-
-    
     // ================================
     // Public Methods
     // ================================
@@ -33,6 +21,8 @@ public class PlayerPicker
 	/// <returns>The current player and next player's color.</returns>
     public PlayerColors CalculateNewPlayerColors()
     {
+        if (nextColor == CellColor.Empty) nextColor = ChooseColor();
+
         PlayerColors newColors = new PlayerColors();              // return the current, non-updated state
 
         newColors.PlayerColor = nextColor;
@@ -43,9 +33,14 @@ public class PlayerPicker
         return newColors;
     }
 
+    public void SetNextColor(CellColor color)
+    {
+        nextColor = color;
+    }
+
     /// <summary>
-	/// Chooses a new 'next' color for a fresh game.
-	/// </summary>
+    /// Chooses a new 'next' color for a fresh game.
+    /// </summary>
     public void Reset()
     {
         nextColor = ChooseColor();

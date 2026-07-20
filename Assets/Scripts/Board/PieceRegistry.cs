@@ -15,7 +15,7 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private PlayerPicker picker;
+    private PlayerPicker picker = new PlayerPicker();
 
     private Piece playerPiece;
     private Bounds playerBounds;
@@ -35,8 +35,6 @@ public class PieceRegistry : MonoBehaviour
 
         playerBounds = boardBounds;
         playerBounds.SetMinMax(min, playerBounds.max);
-
-        picker = new PlayerPicker();
     }
 
     public void LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
@@ -56,9 +54,9 @@ public class PieceRegistry : MonoBehaviour
         Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
 
         if (colors == null)
-        {
             colors = picker.CalculateNewPlayerColors();
-        }
+        else
+            picker.SetNextColor(colors.Value.NextColor);
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
         playerPiece.InitializeAsPlayer(colors.Value.PlayerColor, playerBounds);

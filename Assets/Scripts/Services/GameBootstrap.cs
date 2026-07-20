@@ -49,13 +49,12 @@ public class GameBootstrap : MonoBehaviour
         Debug.Assert(board != null);
 
         // initialize systems
-        board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), hasLaunched, inProgress);
+        board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);
         if (!hasLaunched)
             tutorial.Initialize(board);
 
         uIManager.Initialize(uIData, board, tutorial);
         audioManager.Initialize(uIData.Settings.MusicOn, uIData.Settings.SFXOn);
-
 
         // wire dependencies
         WireUI();
@@ -87,6 +86,7 @@ public class GameBootstrap : MonoBehaviour
         // app is being backgrounded
         if (pauseStatus)
         {
+            Debug.Log("pause application");
             ExitAndSave();
         }
         else
@@ -98,10 +98,17 @@ public class GameBootstrap : MonoBehaviour
         // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
         if (!hasFocus)
         {
+            Debug.Log("lose focus");
             ExitAndSave();
         }
         else
             Reenter();
+    }
+
+    // for testing in the editor
+    private void OnApplicationQuit()
+    {
+        ExitAndSave();
     }
 
     private void OnDestroy()
@@ -138,6 +145,7 @@ public class GameBootstrap : MonoBehaviour
         if (!active) return;
 
         // player prefs save
+        Debug.Log($"in progress: {board.InProgress}");
         PlayerPrefsStorage.SetBool(InitKeys.InProgress, board.InProgress);
 
         // exit systems

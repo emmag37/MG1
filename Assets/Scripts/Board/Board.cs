@@ -272,7 +272,6 @@ public class Board : MonoBehaviour
     {
         runTutorial = false;
 
-        SubscribeToEvents(false);
         hUD.gameObject.SetActive(true); // need to put this somewhere else
     }
 
