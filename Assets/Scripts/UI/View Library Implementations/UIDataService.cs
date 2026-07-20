@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// todo: create some default profile data
+// todo: make setters so you just edit the values directly
 
 public class UIDataService : MonoBehaviour
 {
@@ -40,11 +40,8 @@ public class UIDataService : MonoBehaviour
         Profile.ScoreList.TryAddValue(score);
     }
 
-    public int GetHighScore()
-    {
-        return Profile.ScoreList.ROList[0];     // returns the topmost score
-    }
-
+    public int GetHighScore() => Profile.ScoreList.HighScore();
+ 
     // ==================================================
     // Load/Save
     // ==================================================

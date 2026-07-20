@@ -47,9 +47,9 @@ public class Tutorial : MonoBehaviour
     public void SkipTutorial()
     {
         List<CellEntry> cells = new List<CellEntry>();
-        cells.Add(new CellEntry(0, 2, (int)CellColor.Color2));
-        cells.Add(new CellEntry(1, 2, (int)CellColor.Color3));
-        cells.Add(new CellEntry(2, 2, (int)CellColor.Color4));
+        cells.Add(new CellEntry(0, 2, CellColor.Color2));
+        cells.Add(new CellEntry(1, 2, CellColor.Color3));
+        cells.Add(new CellEntry(2, 2, CellColor.Color4));
 
         board.StartTutorialStep(CellColor.Empty, null, cells);      // set the board to the ending state - empty triggers board reset
         viewController.SkipTutorial();
@@ -120,9 +120,9 @@ public class Tutorial : MonoBehaviour
         {
             if (i == 2) continue;
 
-            cells.Add(new CellEntry(i, i, (int)CellColor.Color2));
-            cells.Add(new CellEntry(i, 2, (int)CellColor.Color2));
-            cells.Add(new CellEntry(GameConstants.RowSize - 1 - i, i, (int)CellColor.Color2));
+            cells.Add(new CellEntry(i, i, CellColor.Color2));
+            cells.Add(new CellEntry(i, 2, CellColor.Color2));
+            cells.Add(new CellEntry(GameConstants.RowSize - 1 - i, i, CellColor.Color2));
         }
 
         board.StartTutorialStep(playerColor, liveZone, cells);
@@ -137,18 +137,18 @@ public class Tutorial : MonoBehaviour
         // create cell list
         List<CellEntry> cells = new List<CellEntry>();
 
-        cells.Add(new CellEntry(0, 2, (int)CellColor.Color2));
-        cells.Add(new CellEntry(1, 2, (int)CellColor.Color3));
-        cells.Add(new CellEntry(2, 2, (int)CellColor.Color4));
-        cells.Add(new CellEntry(3, 3, (int)CellColor.Color5));
+        cells.Add(new CellEntry(0, 2, CellColor.Color2));
+        cells.Add(new CellEntry(1, 2, CellColor.Color3));
+        cells.Add(new CellEntry(2, 2, CellColor.Color4));
+        cells.Add(new CellEntry(3, 3, CellColor.Color5));
 
         for (int i = 0; i < GameConstants.RowSize; i++)
         {
             if (i == 3) continue;
 
-            if (i != 2) cells.Add(new CellEntry(3, i, (int)CellColor.Color1));
+            if (i != 2) cells.Add(new CellEntry(3, i, CellColor.Color1));
 
-            cells.Add(new CellEntry(4, i, (int)CellColor.Color6));
+            cells.Add(new CellEntry(4, i, CellColor.Color6));
         }
 
         board.StartTutorialStep(playerColor, liveZone, cells);

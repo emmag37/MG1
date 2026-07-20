@@ -47,9 +47,19 @@ public class GameDataService : MonoBehaviour
         game.PlayerColors = colors;
     }
 
-    public void AddPieceToBoardData(CellEntry entry)
+    public void AddPieceToBoard(Vector2Int index, CellColor color)
     {
+        CellEntry entry = new CellEntry(index.x, index.y, color);
         game.Board.Set(entry);
+    }
+
+    public void Reset()
+    {
+        game.Score = 0;
+        game.PlayerColors = default(PlayerColors);
+
+        Debug.Assert(game.Board != null, "null board");
+        game.Board.Reset();
     }
 
 

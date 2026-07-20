@@ -7,7 +7,7 @@ public class GameData
 {
     public int Score;
     public PlayerColors PlayerColors;
-    public BoardData Board;
+    public BoardData Board = new();
 }
 
 [Serializable]
@@ -39,6 +39,8 @@ public class BoardData
 [Serializable]
 public struct CellEntry
 {
-    public int x, y, color;
-    public CellEntry(int x, int y, int color) { this.x = x; this.y = y; this.color = color; }
+    public int x, y;
+    public CellColor color;
+
+    public CellEntry(int x, int y, CellColor color) { this.x = x; this.y = y; this.color = color; }
 }

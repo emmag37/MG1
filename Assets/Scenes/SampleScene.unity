@@ -6172,6 +6172,7 @@ GameObject:
   - component: {fileID: 779006562}
   - component: {fileID: 779006561}
   - component: {fileID: 779006563}
+  - component: {fileID: 779006564}
   m_Layer: 0
   m_Name: GameBootstrap
   m_TagString: Untagged
@@ -6232,6 +6233,19 @@ MonoBehaviour:
     Avatar: 0
     ScoreList:
       list: 
+--- !u!114 &779006564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 779006560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52fddf4148877412fb96a39cd0c3c639, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameDataService
+  InProgress: 0
 --- !u!1 &782989678
 GameObject:
   m_ObjectHideFlags: 0

@@ -58,19 +58,13 @@ public class BoardLogic
     // Public Methods
     // ================================
 
-    /// <summary>
-	/// Initializes the board for a game.
-	/// </summary>
-    public BoardLogic(IReadOnlyList<CellEntry> cells = null)
-    {
-        if (cells != null) AddCellsToBoard(cells);
-    }
+    // relies on default constructor
 
-    public void AddCellsToBoard(IReadOnlyList<CellEntry> cells = null)
+    public void AddCellsToBoard(IReadOnlyList<CellEntry> cells)
     {
         foreach (CellEntry cell in cells)
         {
-            AddToBoard(cell.x, cell.y, (CellColor)cell.color);
+            AddToBoard(cell.x, cell.y, cell.color);
         }
     }
 

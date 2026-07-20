@@ -17,47 +17,50 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private PlayerPrefsStorage playerPrefs;
-    private DiscStorage disc;
+    private PlayerPrefsStorage playerPrefs = new PlayerPrefsStorage();
+    private DiscStorage disc = new DiscStorage();
 
-    private GameDataService gameDataService;
-    private UIDataService uIDataService;
+    //private GameDataService gameDataService;
+    //private UIDataService uIDataService;
 
     bool hasLaunched;
+    bool inProgress;
 
 
     // ==================================================
     // Unity Lifecycle
     // ==================================================
 
-    void Awake()
+    private void Awake()
     {
-        playerPrefs = new PlayerPrefsStorage();
-        disc = new DiscStorage();
 
         // load data
         hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);
+        inProgress = playerPrefs.GetBool(InitKeys.InProgress, false);
 
-        uIDataService = GetComponent<UIDataService>();
-        uIDataService.Initialize(disc);    // automatically loads in the UI data
+        GameData gameData;
+        if (inProgress)
+            gameData = disc.Load<GameData>(DataFiles.GameData);
+        else
+            gameData = new GameData();
 
-        gameDataService = GetComponent<GameDataService>();
-        gameDataService.Initialize(disc, playerPrefs);   // only loads game data if a game was in progress
+        UIData uIData = disc.Load<UIData>(DataFiles.UIData);
 
-        // initialize scene components
-        board.Initialize(gameDataService, !hasLaunched, uIDataService.GetHighScore());
-        if (!hasLaunched) tutorial.Initialize(board);
 
-        uiManager.Initialize(board, tutorial, uIDataService);
+        // initialize systems
+        board.Initialize(gameData, 0, hasLaunched, inProgress);
+        if (!hasLaunched)
+            tutorial.Initialize(board);
 
-        // initialize services
-        audioManager.Initialize(uIDataService.Settings.MusicOn, uIDataService.Settings.SFXOn);
+        uiManager.Initialize(uIData, board, tutorial);
+        audioManager.Initialize(uIData.SettingsData.MusicOn, uIData.SettingsData.SFXOn);
+
 
         // wire dependencies
         WireUI();
     }
 
-    void Start()
+    private void Start()
     {
 
         // here is where you need to put the load in info
@@ -78,11 +81,36 @@ public class GameBootstrap : MonoBehaviour
         audioManager.Play();
     }
 
-    void OnDestroy()
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        // app is being backgrounded
+        // save data
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
+        // save data
+    }
+
+    private void OnDestroy()
     {
         UnwireUI();
     }
 
+    // ==================================================
+    // Initialization/Load Methods
+    // ==================================================
+
+    private void Load()
+    {
+
+    }
+
+    private void Initialize()
+    {
+
+    }
 
     // ==================================================
     // Wire Methods

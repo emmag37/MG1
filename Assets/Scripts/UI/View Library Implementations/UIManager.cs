@@ -34,6 +34,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private UIDataService uIDataService;
 
+    private UIData data;
+
     private Board board;
     private Tutorial tutorial;
 
@@ -59,13 +61,12 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Initialize
     // ==================================================
 
-    public void Initialize(Board board, Tutorial tutorial, UIDataService uIDataService)
+    public void Initialize(UIData data, Board board, Tutorial tutorial)
     {
         Debug.Assert(!instantiated, "Instance of UIManager already exists.");
         instantiated = true;
 
-        this.uIDataService = uIDataService;
-
+        this.data = data;
         this.board = board;
         this.tutorial = tutorial;
 

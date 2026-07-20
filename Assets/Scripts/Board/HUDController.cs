@@ -49,6 +49,9 @@ public class HUDController : MonoBehaviour
     {
         this.score = score;
 
+        if (score > highScore)
+            highScore = score;
+
         UpdateScoreText();
         SetPlayerPreview(previewColor);
     }

@@ -42,6 +42,13 @@ public class ScoreHistory : CappedRankedList<int>
 {
     // only hold top 10 scores in score history
     public ScoreHistory() : base(10) { }
+
+    public int HighScore()
+    {
+        if (list.Count > 0) return list[0];
+
+        return 0;
+    }
 }
 
 public sealed record FinalScoreData(int score, int highScore) : IUIData; // this is what is passed to the game over screen
