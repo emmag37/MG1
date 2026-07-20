@@ -27,15 +27,10 @@ public class SettingsData : IUIData
 public sealed class ProfileData : IUIData
 {
     public ValidatedUsername Username;
-    public CellColor Avatar;
-    public ScoreHistory ScoreList;
-
-    public ProfileData()
-    {
-        Avatar = CellColor.Color1;
-    }
+    public CellColor Avatar = CellColor.Color1;
+    public ScoreHistory ScoreList = new ScoreHistory();
 }
-
+ 
 
 [Serializable]
 public class ScoreHistory : CappedRankedList<int>
@@ -45,9 +40,10 @@ public class ScoreHistory : CappedRankedList<int>
 
     public int HighScore()
     {
-        if (list.Count > 0) return list[0];
-
-        return 0;
+        if (list.Count > 0)
+            return list[0];
+        else
+            return 0;
     }
 }
 

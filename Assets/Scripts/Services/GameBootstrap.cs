@@ -41,6 +41,10 @@ public class GameBootstrap : MonoBehaviour
 
         UIData uIData = disc.Load<UIData>(DataFiles.UIData);
 
+        Debug.Assert(gameData != null);
+        Debug.Assert(uIData != null);
+        Debug.Assert(uIData.Profile.ScoreList != null);
+        Debug.Assert(board != null);
 
         // initialize systems
         board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), hasLaunched, inProgress);
