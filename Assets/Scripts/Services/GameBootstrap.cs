@@ -17,7 +17,6 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private PlayerPrefsStorage playerPrefs = new PlayerPrefsStorage();
     private DiscStorage disc = new DiscStorage();
 
     bool hasLaunched;
@@ -31,8 +30,8 @@ public class GameBootstrap : MonoBehaviour
     private void Awake()
     {
         // load data
-        hasLaunched = playerPrefs.GetBool(InitKeys.HasLaunched, false);
-        inProgress = playerPrefs.GetBool(InitKeys.InProgress, false);
+        hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
+        inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
 
         GameData gameData;
         if (inProgress)
@@ -69,7 +68,7 @@ public class GameBootstrap : MonoBehaviour
             Debug.Log("start tutorial");
             startScreen = BaseViewType.Tutorial;
 
-            playerPrefs.SetBool(InitKeys.HasLaunched, true);
+            PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);
         }
 
         // always open a fresh new game with the home view
@@ -120,14 +119,15 @@ public class GameBootstrap : MonoBehaviour
 
     private void ExitAndSave()
     {
-        // player prefs
-        playerPrefs.SetBool(InitKeys.InProgress, board.InProgress);
+        // player prefs save
+        PlayerPrefsStorage.SetBool(InitKeys.InProgress, board.InProgress);
 
-        // disc
+        // exit systems
         UIData uIData = uIManager.Exit();
-        disc.Save<UIData>(DataFiles.UIData, uIData);
-
         GameData gameData = board.Exit();
+
+        // disc save
+        disc.Save<UIData>(DataFiles.UIData, uIData);
         if (board.InProgress)
             disc.Save<GameData>(DataFiles.GameData, gameData);
     }

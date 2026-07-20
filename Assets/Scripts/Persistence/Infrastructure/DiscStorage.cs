@@ -7,12 +7,6 @@ public static class DataFiles
     public const string GameData = "gameData.json";
 }
 
-public static class GameDataFiles
-{
-    public const string ScoreHistory = "scoreHistory.json";
-    public const string BoardData = "boardData.json";
-}
-
 public class DiscStorage
 {
     private string GetPath(string fileName)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class GameDataService : MonoBehaviour
 {
+    /*
     // ==================================================
     // Public Fields
     // ==================================================
@@ -97,4 +98,5 @@ public class GameDataService : MonoBehaviour
         // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
         if (!hasFocus) SaveData();
     }
+    */
 }
