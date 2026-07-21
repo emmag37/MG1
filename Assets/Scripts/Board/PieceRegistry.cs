@@ -9,7 +9,7 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private SpawnerPositionAdjust spawnPointAdjuster;
     [SerializeField] private GameObject piecePrefab;
 
     // ==================================================
@@ -17,6 +17,7 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     private PlayerPicker picker = new PlayerPicker();
 
+    private Transform spawnPoint;
     private Piece playerPiece;
     private Bounds playerBounds;
 
@@ -30,6 +31,8 @@ public class PieceRegistry : MonoBehaviour
 
     public void Initialize(Bounds boardBounds)
     {
+        spawnPoint = spawnPointAdjuster.Initialize();
+
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;
 
@@ -57,6 +60,8 @@ public class PieceRegistry : MonoBehaviour
             colors = picker.CalculateNewPlayerColors();
         else
             picker.SetNextColor(colors.Value.NextColor);
+
+        Debug.Log($"spawnPoint.position: {spawnPoint.position}");
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
         playerPiece.InitializeAsPlayer(colors.Value.PlayerColor, playerBounds);

@@ -14066,7 +14066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c4f0fe644de4ce8a6ac0ed8353828e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PieceRegistry
-  spawnPoint: {fileID: 801581748}
+  spawnPointAdjuster: {fileID: 801581749}
   piecePrefab: {fileID: 8968158989547615814, guid: 30e2eda7f13b247728427c3a27c12b2a, type: 3}
 --- !u!114 &1798150614
 MonoBehaviour:

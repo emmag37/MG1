@@ -35,5 +35,4 @@ public class DiscStorage
 
         return JsonUtility.FromJson<T>(json);
     }
-
 }

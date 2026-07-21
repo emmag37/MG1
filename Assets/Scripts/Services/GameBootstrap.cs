@@ -41,11 +41,11 @@ public class GameBootstrap : MonoBehaviour
         else
             gameData = new GameData();
 
-        UIData uIData = disc.Load<UIData>(DataFiles.UIData);
+        UIData uIData = disc.Load<UIData>(DataFiles.UIData);    // is there an error here?
 
         Debug.Assert(gameData != null);
         Debug.Assert(uIData != null);
-        Debug.Assert(uIData.Profile.ScoreList != null);
+        Debug.Assert(uIData.Profile.ScoreList != null);     // null ref exception
         Debug.Assert(board != null);
 
         // initialize systems

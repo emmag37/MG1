@@ -11,11 +11,10 @@ public class CameraWidthLock : MonoBehaviour
 
     private Camera _cam;
 
-    void Awake() => _cam = GetComponent<Camera>();
-    void Start() => ApplyOrthographicSize();
-
     public void ApplyOrthographicSize()
     {
+        _cam = GetComponent<Camera>();
+
         float referenceAspect = ReferenceWidth / ReferenceHeight;
         float currentAspect = (float)Screen.width / Screen.height;
         float baseOrthoSize = (ReferenceHeight / PixelsPerUnit) / 2f;

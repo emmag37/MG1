@@ -6,10 +6,12 @@ public class SpawnerPositionAdjust : MonoBehaviour
 
     private CameraWidthLock cameraWidthLock;
 
-    private void Start()
+    public Transform Initialize()
     {
         cameraWidthLock = Camera.main.GetComponent<CameraWidthLock>();
         ApplyScale();
+
+        return transform;
     }
 
     private void ApplyScale()
@@ -23,5 +25,7 @@ public class SpawnerPositionAdjust : MonoBehaviour
         var pos = transform.position;
         pos.y *= (scale + 1) / 2;   // split the difference
         transform.position = pos;
+
+        Debug.Log($"new transform pos: {pos}");
     }
 }

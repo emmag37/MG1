@@ -38,6 +38,8 @@ public class Piece : MonoBehaviour
         Color = playerColor;
         startPos = transform.position;
 
+        Debug.Log($"start pos: {startPos}");
+
         // cache and initialized attached components
         InitializeComponents(boundaries);
 
@@ -66,6 +68,8 @@ public class Piece : MonoBehaviour
 
         // initialize your components
         spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
+
+        Debug.Log($"sprite renderer pos: {spriteRenderer.transform.position}");
         dragAndDrop.Initialize(spriteRenderer, boundaries);
     }
 

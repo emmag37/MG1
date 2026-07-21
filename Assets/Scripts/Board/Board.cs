@@ -94,8 +94,14 @@ public class Board : MonoBehaviour
     public GameData Exit()
     {
         if (inProgress)
-            logic.FillBoardData(data.Board);
+        {
+            // set score
+            data.Score = hUD.Score;
 
+            // set next
+
+            logic.FillBoardData(data.Board);
+        }
         return data;
     }
 
@@ -169,8 +175,6 @@ public class Board : MonoBehaviour
             if (currentScore == 0) TutorialStepComplete?.Invoke();  // if points scored, invoke is timed to animation
             return;
         }
-
-        data.Score = currentScore;
 
         SpawnPlayer();
     }
