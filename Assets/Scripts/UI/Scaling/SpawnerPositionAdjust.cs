@@ -9,6 +9,7 @@ public class SpawnerPositionAdjust : MonoBehaviour
     public Transform Initialize()
     {
         cameraWidthLock = Camera.main.GetComponent<CameraWidthLock>();
+
         ApplyScale();
 
         return transform;

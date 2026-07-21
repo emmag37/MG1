@@ -38,8 +38,6 @@ public class Piece : MonoBehaviour
         Color = playerColor;
         startPos = transform.position;
 
-        Debug.Log($"start pos: {startPos}");
-
         // cache and initialized attached components
         InitializeComponents(boundaries);
 

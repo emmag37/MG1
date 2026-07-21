@@ -2,10 +2,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// script is clean and ready to remove event bus
 
 public class PieceRegistry : MonoBehaviour
 {
+    public PlayerColors Colors => currentColors;
+
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -15,7 +16,7 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private PlayerPicker picker = new PlayerPicker();
+    private PlayerColors currentColors = new PlayerColors();    // initializes with next set to a color, player empty
 
     private Transform spawnPoint;
     private Piece playerPiece;
@@ -38,11 +39,15 @@ public class PieceRegistry : MonoBehaviour
 
         playerBounds = boardBounds;
         playerBounds.SetMinMax(min, playerBounds.max);
+
+        currentColors.Reset();      // initializes the 'next' color
     }
 
     public void LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
     {
-        SpawnNewPlayer(colors);
+        currentColors.NextColor = colors.NextColor;
+        SpawnNewPlayer(colors.PlayerColor);
+
         LoadBoardPieces(cells);
     }
 
@@ -51,22 +56,21 @@ public class PieceRegistry : MonoBehaviour
     // Public Methods - Player
     // ==================================================
 
-    // optional param to spawn a player with given colors, always returns non-null colors
-    public PlayerColors SpawnNewPlayer(PlayerColors? colors = null)
+    // next should always be set
+    public CellColor SpawnNewPlayer(CellColor? color = null)
     {
-        Debug.Assert(playerPiece == null, "Tried to instantiate a player when one already exists");
+        if (!color.HasValue)
+        {
+            color = currentColors.NextColor;
+            currentColors.NextColor = PlayerPicker.ChooseColor();
+        }
 
-        if (colors == null)
-            colors = picker.CalculateNewPlayerColors();
-        else
-            picker.SetNextColor(colors.Value.NextColor);
-
-        Debug.Log($"spawnPoint.position: {spawnPoint.position}");
+        currentColors.PlayerColor = color.Value;
 
         playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-        playerPiece.InitializeAsPlayer(colors.Value.PlayerColor, playerBounds);
+        playerPiece.InitializeAsPlayer(color.Value, playerBounds);
 
-        return colors.Value;
+        return currentColors.NextColor;
     }
 
     public void PlacePlayer(Vector3 position, Vector2Int index)
@@ -109,7 +113,8 @@ public class PieceRegistry : MonoBehaviour
 
     public void ResetPieces()
     {
-        picker.Reset();
+        currentColors.Reset();
+
         if (playerPiece != null) DestroyPlayer();
 
         for (int i = 0; i < pieces.Length; i++)

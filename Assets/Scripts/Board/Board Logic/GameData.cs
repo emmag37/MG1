@@ -5,23 +5,30 @@ using System.Collections.Generic;
 [Serializable]
 public class GameData
 {
-    public int Score;
-    public PlayerColors PlayerColors;
+    public int Score = 0;   // should always default to 0
+    public PlayerColors PlayerColors = new();
     public BoardData Board = new();
 
     public void Reset()
     {
         Score = 0;
-        PlayerColors = default(PlayerColors);
+        PlayerColors.Reset();
         Board.Reset();
     }
 }
 
 [Serializable]
-public struct PlayerColors
+public class PlayerColors
 {
     public CellColor PlayerColor;
     public CellColor NextColor;
+
+    public void Reset()
+    {
+        // this initializes the colors using picker itself
+        PlayerColor = CellColor.Empty;
+        NextColor = PlayerPicker.ChooseColor();
+    }
 }
 
 // sparse list to store board data, only ever read from for a list traversal

@@ -95,10 +95,8 @@ public class Board : MonoBehaviour
     {
         if (inProgress)
         {
-            // set score
             data.Score = hUD.Score;
-
-            // set next
+            data.PlayerColors = pieceRegistry.Colors;
 
             logic.FillBoardData(data.Board);
         }
@@ -143,8 +141,8 @@ public class Board : MonoBehaviour
         }
         else
         {
-            PlayerColors colors = new PlayerColors { PlayerColor = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
-            pieceRegistry.SpawnNewPlayer(colors);
+            //PlayerColors colors = new PlayerColors { PlayerColor = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
+            pieceRegistry.SpawnNewPlayer(playerColor);
         }
 
         logic.AddLiveZone(liveZone);
@@ -163,7 +161,7 @@ public class Board : MonoBehaviour
     // handles connection between logic and piece registry, crux that initiates a turn
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        Debug.Assert(!runTutorial && e.Color == data.PlayerColors.PlayerColor, "player color mismatch");
+        Debug.Assert(!runTutorial && e.Color == pieceRegistry.Colors.PlayerColor, "player color mismatch");
         
         Vector2Int index = BoardGeometry.TransformToBoardIndex(e.PlayerPosition);
         int currentScore = ExecuteTurn(e.Color, index);
@@ -246,11 +244,9 @@ public class Board : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        PlayerColors colors = pieceRegistry.SpawnNewPlayer();
+        CellColor nextColor = pieceRegistry.SpawnNewPlayer();
 
-        hUD.SetPlayerPreview(colors.NextColor);
-
-        data.PlayerColors = colors;
+        hUD.SetPlayerPreview(nextColor);
     }
 
     private void Reset()
