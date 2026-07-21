@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+
 public class Audio : IAudio
 {
     // background music functions
@@ -17,4 +19,21 @@ public class Audio : IAudio
     {
         Debug.Log("play effect");
     }
+}
+
+
+public enum SoundEffects
+{
+    PlacePlayer,
+    PickupPlayer,
+    Win,
+    GameOver,
+    Button,
+    Transition
+}
+
+public enum Music
+{
+    Game,
+    UI
 }
