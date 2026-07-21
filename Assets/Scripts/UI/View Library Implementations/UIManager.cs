@@ -15,8 +15,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ==================================================
     // Events
     // ==================================================
-	public event Action ButtonPressed;  // eventually move to event bus?
-    public event Action Transition;
+	public event Action ButtonPressed;  // to remove
+    public event Action Transition;     // to remove
 
     public event Action<bool, bool> SettingsUpdate;
 
@@ -119,8 +119,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         if (playSound)
         {
-            ButtonPressed?.Invoke();
-            Transition?.Invoke();
+            ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
+            ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Transition);
+            //ButtonPressed?.Invoke();
+            //Transition?.Invoke();
         }
 
         if (popUpViewController.Count > 0) popUpViewController.ClearViews();
@@ -151,8 +153,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         if (playSound)
         {
-            ServiceLocator.Get<IAudio>().PlaySoundEffect(0);
-            ButtonPressed?.Invoke();
+            ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
+            //ButtonPressed?.Invoke();
         }
 
         IUIData viewData = data.Settings;
@@ -172,7 +174,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to pop pop up view
     private void PopOverlay()
     {
-        ButtonPressed?.Invoke();
+        ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
+        //ButtonPressed?.Invoke();
 
         if (popUpViewController.PeekViewType() == PopUpViewType.Pause)
         {
