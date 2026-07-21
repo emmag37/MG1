@@ -28,6 +28,8 @@ public class Board : MonoBehaviour
     // Private Fields
     // ================================
 
+    private IAudio audioService;
+
     // own its own instance of game data
     private GameData data;
 
@@ -65,6 +67,8 @@ public class Board : MonoBehaviour
         this.data = data;
         this.inProgress = inProgress;
         this.runTutorial = runTutorial;
+
+        audioService = ServiceLocator.Get<IAudio>();
 
         // cache components
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -125,7 +129,7 @@ public class Board : MonoBehaviour
             SpawnPlayer();
         }
 
-        EventBus.Publish(new StartGameEvent()); // for the audio
+        EventBus.Publish(new StartGameEvent()); // for the audio (music)
     }
 
     public void PauseGame(bool pause)
@@ -141,7 +145,6 @@ public class Board : MonoBehaviour
         }
         else
         {
-            //PlayerColors colors = new PlayerColors { PlayerColor = playerColor, NextColor = CellColor.Empty };    // no next for tutorial
             pieceRegistry.SpawnNewPlayer(playerColor);
         }
 
@@ -236,7 +239,8 @@ public class Board : MonoBehaviour
         if (result.Points > 0)
         {
             StartCoroutine(WinAnimationRoutine(result, index));
-            EventBus.Publish(new WinEvent());   // keep for audio manager
+            audioService.PlaySoundEffect(AudioType.Win);
+            //EventBus.Publish(new WinEvent());   // keep for audio manager
         }
 
         return currentScore;

@@ -53,7 +53,7 @@ public class AudioManager : MonoBehaviour
         // game play events
         EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDrag);
         EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
-        EventBus.Subscribe<WinEvent>(OnWin);
+        //EventBus.Subscribe<WinEvent>(OnWin);
     }
 
     void OnDisable()
@@ -65,7 +65,7 @@ public class AudioManager : MonoBehaviour
         // game play events
         EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDrag);
         EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
-        EventBus.Unsubscribe<WinEvent>(OnWin);
+        //EventBus.Unsubscribe<WinEvent>(OnWin);
     }
 
     // ==================================================
@@ -129,11 +129,12 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(placePlayerClip);
     }
 
+    /*
     private void OnWin(WinEvent e)
     {
         if (sfxOn)
             sfxSource.PlayOneShot(winClip);
-    }
+    } */
     
     // music
     private void OnGameOver(GameOverEvent e)
