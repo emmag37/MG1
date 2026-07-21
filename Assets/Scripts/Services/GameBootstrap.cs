@@ -86,6 +86,8 @@ public class GameBootstrap : MonoBehaviour
 
         // always open a fresh new game with the home view
         uIManager.PushView<BaseViewType>(startScreen);
+
+
         audioManager.Play();
     }
 
@@ -131,16 +133,20 @@ public class GameBootstrap : MonoBehaviour
 
     private void WireUI()
     {
+        /*
         uIManager.ButtonPressed += audioManager.HandleButtonPressed;
         uIManager.Transition += audioManager.HandleTransition;
         uIManager.SettingsUpdate += audioManager.HandleSettingsUpdate;
+        */
     }
 
     private void UnwireUI()
     {
+        /*
         uIManager.ButtonPressed -= audioManager.HandleButtonPressed;
         uIManager.Transition -= audioManager.HandleTransition;
         uIManager.SettingsUpdate -= audioManager.HandleSettingsUpdate;
+        */
     }
 
 

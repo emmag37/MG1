@@ -15,10 +15,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ==================================================
     // Events
     // ==================================================
-	public event Action ButtonPressed;  // to remove
-    public event Action Transition;     // to remove
+	//public event Action ButtonPressed;  // to remove
+    //public event Action Transition;     // to remove
 
-    public event Action<bool, bool> SettingsUpdate;
+    //public event Action<bool, bool> SettingsUpdate; // to remove
 
     // ==================================================
     // Inspector Fields
@@ -117,12 +117,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to show base view
     private void ShowBaseView(BaseViewType type, bool playSound = true)
     {
-        if (playSound)
+        if (playSound && data.Settings.SFXOn)
         {
             ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
             ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Transition);
-            //ButtonPressed?.Invoke();
-            //Transition?.Invoke();
         }
 
         if (popUpViewController.Count > 0) popUpViewController.ClearViews();
@@ -151,10 +149,9 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to push pop up view
     private void PushOverlay(PopUpViewType type, bool playSound = true)
     {
-        if (playSound)
+        if (playSound && data.Settings.SFXOn)
         {
             ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
-            //ButtonPressed?.Invoke();
         }
 
         IUIData viewData = data.Settings;
@@ -174,8 +171,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to pop pop up view
     private void PopOverlay()
     {
-        ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
-        //ButtonPressed?.Invoke();
+        if (data.Settings.SFXOn)
+            ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
 
         if (popUpViewController.PeekViewType() == PopUpViewType.Pause)
         {
@@ -192,8 +189,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
     private void UpdateSettings(SettingsData newSettings)
     {
         data.Settings = newSettings;
-
-        SettingsUpdate?.Invoke(newSettings.MusicOn, newSettings.SFXOn);
     }
 
     // note: this NEVER updated the score list
