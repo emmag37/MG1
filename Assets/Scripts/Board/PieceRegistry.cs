@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+// could potentially separate out some of this logic into a piece factory class
 
 public class PieceRegistry : MonoBehaviour
 {

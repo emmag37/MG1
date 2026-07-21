@@ -17,6 +17,7 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
+    private Audio audioService = new Audio();
     private DiscStorage disc = new DiscStorage();
 
     bool hasLaunched;
@@ -55,6 +56,10 @@ public class GameBootstrap : MonoBehaviour
 
         uIManager.Initialize(uIData, board, tutorial);
         audioManager.Initialize(uIData.Settings.MusicOn, uIData.Settings.SFXOn);
+
+        // inject services
+        ServiceLocator.Register<IAudio>(audioService);
+        // you can add the json file system later
 
         // wire dependencies
         WireUI();

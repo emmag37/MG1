@@ -94,13 +94,13 @@ public class AudioManager : MonoBehaviour
 
     public void HandleSettingsUpdate(bool music, bool sFX)
     {
+        if (!musicOn && music)
+            musicSource.Play();
+        else if (!music)
+            musicSource.Stop();
+
         musicOn = music;
         sfxOn = sFX;
-
-        if (musicOn)
-            musicSource.Play();
-        else
-            musicSource.Stop();
     }
 
     
