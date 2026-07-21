@@ -15,6 +15,9 @@ public class AudioService : IAudio
         this.musicSource = musicSource;
         this.sFXSource = sFXSource;
 
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+
         // load in all of the audio clips
         var audioClipObjects = Resources.LoadAll<AudioClipData>("AudioClips");
         foreach (AudioClipData data in audioClipObjects)
@@ -30,6 +33,11 @@ public class AudioService : IAudio
     public void PlayMusic(AudioType audioType)
     {
         Debug.Log($"play music: {audioType}");
+
+        AudioClip clip = clipLookup[audioType].clip;
+        musicSource.clip = clip;
+
+        musicSource.Play();
     }
     public void StopMusic(AudioType audioType)
     {

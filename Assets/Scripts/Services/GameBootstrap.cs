@@ -86,9 +86,9 @@ public class GameBootstrap : MonoBehaviour
 
         // always open a fresh new game with the home view
         uIManager.PushView<BaseViewType>(startScreen);
+        ServiceLocator.Get<IAudio>().PlayMusic(AudioType.UIMusic);
 
-
-        audioManager.Play();
+        //audioManager.Play();
     }
 
     private void OnApplicationPause(bool pauseStatus)
