@@ -1,9 +1,20 @@
 using UnityEngine;
 
 
-
-public class Audio : IAudio
+public class AudioService : IAudio
 {
+    private AudioSource musicSource;
+    private AudioSource sFXSource;
+
+    // constructor
+    public AudioService(AudioSource musicSource, AudioSource sFXSource)
+    {
+        this.musicSource = musicSource;
+        this.sFXSource = sFXSource;
+
+        // initialize the scriptable objects
+    }
+
     // background music functions
     public void PlayMusic(int musicID)
     {
@@ -21,19 +32,3 @@ public class Audio : IAudio
     }
 }
 
-
-public enum SoundEffects
-{
-    PlacePlayer,
-    PickupPlayer,
-    Win,
-    GameOver,
-    Button,
-    Transition
-}
-
-public enum Music
-{
-    Game,
-    UI
-}

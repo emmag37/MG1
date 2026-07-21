@@ -150,7 +150,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
     private void PushOverlay(PopUpViewType type, bool playSound = true)
     {
         if (playSound)
+        {
+            ServiceLocator.Get<IAudio>().PlaySoundEffect(0);
             ButtonPressed?.Invoke();
+        }
 
         IUIData viewData = data.Settings;
 
