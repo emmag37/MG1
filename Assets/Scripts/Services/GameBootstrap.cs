@@ -22,6 +22,8 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     private DiscStorage disc = new DiscStorage();
 
+    private AudioService audioService;
+
     bool hasLaunched;
     bool inProgress;
 
@@ -51,18 +53,17 @@ public class GameBootstrap : MonoBehaviour
         Debug.Assert(uIData.Profile.ScoreList != null);     // null ref exception
         Debug.Assert(board != null);
 
+        // inject services
+        audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
+        ServiceLocator.Register<IAudio>(audioService);
+
         // initialize systems
         board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);
         if (!hasLaunched)
             tutorial.Initialize(board);
 
         uIManager.Initialize(uIData, board, tutorial);
-        audioManager.Initialize(uIData.Settings.MusicOn, uIData.Settings.SFXOn);
-
-        // inject services
-        ServiceLocator.Register<IAudio>(new AudioService(musicSource, sFXSource));
-
-        // you can add the json file system later
+        audioManager.Initialize(uIData.AudioSettings.MusicOn, uIData.AudioSettings.SFXOn);
         
         // wire dependencies
         WireUI();
@@ -87,8 +88,6 @@ public class GameBootstrap : MonoBehaviour
         // always open a fresh new game with the home view
         uIManager.PushView<BaseViewType>(startScreen);
         ServiceLocator.Get<IAudio>().PlayMusic(AudioType.UIMusic);
-
-        //audioManager.Play();
     }
 
     private void OnApplicationPause(bool pauseStatus)
@@ -133,20 +132,12 @@ public class GameBootstrap : MonoBehaviour
 
     private void WireUI()
     {
-        /*
-        uIManager.ButtonPressed += audioManager.HandleButtonPressed;
-        uIManager.Transition += audioManager.HandleTransition;
-        uIManager.SettingsUpdate += audioManager.HandleSettingsUpdate;
-        */
+        
     }
 
     private void UnwireUI()
     {
-        /*
-        uIManager.ButtonPressed -= audioManager.HandleButtonPressed;
-        uIManager.Transition -= audioManager.HandleTransition;
-        uIManager.SettingsUpdate -= audioManager.HandleSettingsUpdate;
-        */
+        
     }
 
 
@@ -164,6 +155,8 @@ public class GameBootstrap : MonoBehaviour
 
         // exit systems
         UIData uIData = uIManager.Exit();
+        uIData.AudioSettings = audioService.GetSettings();
+
         GameData gameData = board.Exit();
 
         // disc save

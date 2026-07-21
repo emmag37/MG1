@@ -19,7 +19,7 @@ public class SettingsView: PopUpView
     // Private Fields
     // ==================================================
 
-    private SettingsData settings;
+    private IAudio audioService; 
 
     // ==================================================
     // Unity Lifecycle
@@ -40,9 +40,10 @@ public class SettingsView: PopUpView
     {
         base.Awake();
 
+        audioService = ServiceLocator.Get<IAudio>();
+
         // link for terms and conditions
         // link for privacy policy
-
 
         musicSlider.onValueChanged.AddListener((value) => UpdateMusic(value > 0));   // cast to bool, 1 for on, 0 for off
         sfxSlider.onValueChanged.AddListener((value) => UpdateSFX(value > 0));
@@ -53,19 +54,18 @@ public class SettingsView: PopUpView
     // Protected Methods
     // ==================================================
 
-    protected override void SetInfo(IUIData data)
+    public override void Show(IUIData data = null)
     {
-        if (data is not SettingsData settings)
-        {
-            Debug.Log($"data passed to settings view is not settings, type: {data?.GetType().Name}");
-            return;
-        }
+        base.Show(data);
 
-        this.settings = settings;
+        AudioSettings audioSettings = audioService.GetSettings();
 
-        musicSlider.value = settings.MusicOn ? 1 : 0;
-        sfxSlider.value = settings.SFXOn ? 1 : 0;
+        musicSlider.value = audioSettings.MusicOn ? 1 : 0;
+        sfxSlider.value = audioSettings.SFXOn ? 1 : 0;
     }
+
+    protected override void SetInfo(IUIData data) { }
+
 
     // ==================================================
     // Private Methods
@@ -73,13 +73,13 @@ public class SettingsView: PopUpView
 
     private void UpdateMusic(bool on)
     {
-        settings.MusicOn = on;
-        Host.UpdateData(settings);
+        AudioSettings audioSettings = audioService.GetSettings();
+        audioSettings.MusicOn = on;
     }
 
     private void UpdateSFX(bool on)
     {
-        settings.SFXOn = on;
-        Host.UpdateData(settings);
+        AudioSettings audioSettings = audioService.GetSettings();
+        audioSettings.SFXOn = on;
     }
 }

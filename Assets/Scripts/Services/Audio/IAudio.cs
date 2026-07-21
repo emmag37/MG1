@@ -8,4 +8,7 @@ public interface IAudio
 
     // sound effects functions
     public void PlaySoundEffect(AudioType audioType);
+
+    // settings
+    public AudioSettings GetSettings();
 }

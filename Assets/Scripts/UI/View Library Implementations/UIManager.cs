@@ -13,14 +13,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
     private const int PopUpViewCapacity = 3;    // think it might be two, but just to be safe
 
     // ==================================================
-    // Events
-    // ==================================================
-	//public event Action ButtonPressed;  // to remove
-    //public event Action Transition;     // to remove
-
-    //public event Action<bool, bool> SettingsUpdate; // to remove
-
-    // ==================================================
     // Inspector Fields
     // ==================================================
     [SerializeField] private BaseView[] baseViewList;
@@ -31,6 +23,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Private Fields
     // ==================================================
     private bool instantiated = false;
+
+    private IAudio audioService;
 
     private UIData data;
 
@@ -70,6 +64,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
         baseViewController = new ViewController<BaseView, BaseViewType, IUIData>(baseViewList, BaseViewCapacity, this);
         popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this);
+
+        audioService = ServiceLocator.Get<IAudio>();
     }
 
     public UIData Exit()
@@ -101,9 +97,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     public void UpdateData(IUIData data)
     {
-        if (data is SettingsData settings)
-            UpdateSettings(settings);
-        else if (data is ProfileData profile)
+        if (data is ProfileData profile)
             UpdateProfile(profile);
         else
             Debug.LogError($"Unsupported ui data type: {typeof(IUIData).Name}");
@@ -117,11 +111,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to show base view
     private void ShowBaseView(BaseViewType type, bool playSound = true)
     {
-        if (playSound && data.Settings.SFXOn)
-        {
-            ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
-            ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Transition);
-        }
+        audioService.PlaySoundEffect(AudioType.Button);
+        audioService.PlaySoundEffect(AudioType.Transition);
 
         if (popUpViewController.Count > 0) popUpViewController.ClearViews();
 
@@ -149,10 +140,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to push pop up view
     private void PushOverlay(PopUpViewType type, bool playSound = true)
     {
-        if (playSound && data.Settings.SFXOn)
-        {
-            ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
-        }
+        audioService.PlaySoundEffect(AudioType.Button);
 
         IUIData viewData = data.Settings;
 
@@ -171,8 +159,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to pop pop up view
     private void PopOverlay()
     {
-        if (data.Settings.SFXOn)
-            ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.Button);
+        audioService.PlaySoundEffect(AudioType.Button);
 
         if (popUpViewController.PeekViewType() == PopUpViewType.Pause)
         {
@@ -185,11 +172,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ==================================================
     // UI Data Methods
     // ==================================================
-
-    private void UpdateSettings(SettingsData newSettings)
-    {
-        data.Settings = newSettings;
-    }
 
     // note: this NEVER updated the score list
     private void UpdateProfile(ProfileData newProfile)
