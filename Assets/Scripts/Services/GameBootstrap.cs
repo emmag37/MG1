@@ -64,7 +64,7 @@ public class GameBootstrap : MonoBehaviour
         if (!hasLaunched)
             tutorial.Initialize(board);
 
-        uIManager.Initialize(uIData, board, tutorial);
+        uIManager.Initialize(uIData.Profile, board, tutorial);
     }
 
     // only runs once everything is done being loaded
@@ -127,7 +127,8 @@ public class GameBootstrap : MonoBehaviour
         PlayerPrefsStorage.SetBool(InitKeys.InProgress, board.InProgress);
 
         // exit systems
-        UIData uIData = uIManager.Exit();
+        UIData uIData = new UIData();
+        uIData.Profile = uIManager.Exit();
         uIData.AudioSettings = audioService.GetSettings();
         uIData.VibrationOn = vibrationService.GetSettings();
 

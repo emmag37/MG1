@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private IAudio audioService;
 
-    private UIData data;
+    private ProfileData profile;
 
     private Board board;
     private Tutorial tutorial;
@@ -53,12 +53,12 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Initialize/Exit
     // ==================================================
 
-    public void Initialize(UIData data, Board board, Tutorial tutorial)
+    public void Initialize(ProfileData profile, Board board, Tutorial tutorial)
     {
         Debug.Assert(!instantiated, "Instance of UIManager already exists.");
         instantiated = true;
 
-        this.data = data;
+        this.profile = profile;
         this.board = board;
         this.tutorial = tutorial;
 
@@ -68,9 +68,9 @@ public class UIManager : MonoBehaviour, IUIViewHost
         audioService = ServiceLocator.Get<IAudio>();
     }
 
-    public UIData Exit()
+    public ProfileData Exit()
     {
-        return data;
+        return profile;
     }
 
     // ==================================================
@@ -139,7 +139,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
             audioService.PlaySoundEffect(AudioType.Transition);
         }
         
-        baseViewController.PushView(type, data.Profile);
+        baseViewController.PushView(type, profile);
     }
 
     // rename to push pop up view
@@ -147,7 +147,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         audioService.PlaySoundEffect(AudioType.Button);    // move to the button
 
-        IUIData viewData = data.Profile;    // used to be data.Settings
+        IUIData viewData = profile;    // used to be data.Settings
 
         if (type == PopUpViewType.Pause)
         {
@@ -155,7 +155,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
         else if (type == PopUpViewType.Profile || type == PopUpViewType.ChooseAvatar)
         {
-            viewData = data.Profile;
+            viewData = profile;
         }
 
         popUpViewController.PushView(type, viewData);
@@ -181,11 +181,11 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // note: this NEVER updated the score list
     private void UpdateProfile(ProfileData newProfile)
     {
-        data.Profile.Avatar = newProfile.Avatar;
-        data.Profile.Username = newProfile.Username;
+        profile.Avatar = newProfile.Avatar;
+        profile.Username = newProfile.Username;
 
-        baseViewController.UpdateView(BaseViewType.Home, data.Profile);
-        popUpViewController.UpdateView(PopUpViewType.Profile, data.Profile);
+        baseViewController.UpdateView(BaseViewType.Home, profile);
+        popUpViewController.UpdateView(PopUpViewType.Profile, profile);
     }
 
     // ==================================================
@@ -197,7 +197,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         FinalScoreData scoreData = new FinalScoreData(score, highScore);
         baseViewController.PushView(BaseViewType.GameOver, scoreData);
 
-        data.Profile.ScoreList.TryAddValue(score);
+        profile.ScoreList.TryAddValue(score);
     }
 
 
