@@ -109,10 +109,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ==================================================
 
     // rename to show base view
-    private void ShowBaseView(BaseViewType type, bool playSound = true)
+    private void ShowBaseView(BaseViewType type)
     {
-        audioService.PlaySoundEffect(AudioType.Button);
-        audioService.PlaySoundEffect(AudioType.Transition);
+        if (baseViewController.PeekViewType() != BaseViewType.None)
+            audioService.PlaySoundEffect(AudioType.Button);     // move this to the actual button, but you're gonna want to turn it into a prefab first
 
         if (popUpViewController.Count > 0) popUpViewController.ClearViews();
 
@@ -122,6 +122,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
         else if (type == BaseViewType.GamePlay)
         {
+            audioService.PlaySoundEffect(AudioType.Transition);
             board.PlayGame();
         }
         else if (type == BaseViewType.Tutorial && baseViewController.PeekViewType() == BaseViewType.Tutorial)
@@ -132,6 +133,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
         else if (type == BaseViewType.Tutorial)
         {
             tutorial.StartTutorial();
+        }
+        else if (type == BaseViewType.Home && baseViewController.PeekViewType() != BaseViewType.None)
+        {
+            audioService.PlaySoundEffect(AudioType.Transition);
         }
         
         baseViewController.PushView(type, data.Profile);
