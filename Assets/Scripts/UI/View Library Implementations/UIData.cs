@@ -12,7 +12,7 @@ public class UIData : IUIData
 {
     // settings
     public AudioSettings AudioSettings;
-    public bool VibrationOn = true;                // will only ever be the one setting
+    public bool VibrationOn = true;                
 
     // profile
     public ProfileData Profile = new();
@@ -26,10 +26,11 @@ public class AudioSettings
 }
 
 [Serializable]
-public sealed class ProfileData : IUIData
+public class ProfileData : IUIData
 {
     public ValidatedUsername Username = new();
     public CellColor Avatar = CellColor.Color1;
+
     public ScoreHistory ScoreList = new();
 }
 

@@ -86,7 +86,7 @@ public class ProfileView : PopUpView
 
     protected override void SetInfo(IUIData data)
     {
-        if (data is not ProfileData profile)
+        if (data != null && data is not ProfileData profile)
         {
             Debug.Log($"data passed to profile view is not profile, type: {data?.GetType().Name}");
             return;

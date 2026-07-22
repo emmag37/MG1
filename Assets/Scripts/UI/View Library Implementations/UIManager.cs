@@ -147,18 +147,12 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         audioService.PlaySoundEffect(AudioType.Button);    // move to the button
 
-        IUIData viewData = profile;    // used to be data.Settings
-
         if (type == PopUpViewType.Pause)
         {
             board.PauseGame(true);
         }
-        else if (type == PopUpViewType.Profile || type == PopUpViewType.ChooseAvatar)
-        {
-            viewData = profile;
-        }
 
-        popUpViewController.PushView(type, viewData);
+        popUpViewController.PushView(type, profile);
     }
 
     // rename to pop pop up view
@@ -178,11 +172,12 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // UI Data Methods
     // ==================================================
 
-    // note: this NEVER updated the score list
+    // note: this NEVER updates the score list
+    // should actually just refresh views
     private void UpdateProfile(ProfileData newProfile)
     {
-        profile.Avatar = newProfile.Avatar;
-        profile.Username = newProfile.Username;
+        //profile.Avatar = newProfile.Avatar;
+        //profile.Username = newProfile.Username;
 
         baseViewController.UpdateView(BaseViewType.Home, profile);
         popUpViewController.UpdateView(PopUpViewType.Profile, profile);
