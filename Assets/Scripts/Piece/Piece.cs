@@ -132,6 +132,7 @@ public class Piece : MonoBehaviour
     {
         Debug.Assert(dragAndDrop.enabled, "Receiving input on inactive piece");
 
+        ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.PickupPlayer);
         EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = Color });
     }
 

@@ -116,17 +116,21 @@ public class AudioManager : MonoBehaviour
         if (sfxOn)
             sfxSource.PlayOneShot(transitionClip);
     }
-
+     
     private void OnPlayerDrag(PlayerDraggingEvent e)
     {
+        /*
         if (sfxOn)
             sfxSource.PlayOneShot(pickupPlayerClip);
+        */
     }
 
     private void OnPlacePlayer(PlacePlayerEvent e)
     {
+        /*
         if (sfxOn)
             sfxSource.PlayOneShot(placePlayerClip);
+        */
     }
 
     /*
@@ -135,6 +139,8 @@ public class AudioManager : MonoBehaviour
         if (sfxOn)
             sfxSource.PlayOneShot(winClip);
     } */
+
+    // done through here
     
     // music
     private void OnGameOver(GameOverEvent e)

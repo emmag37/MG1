@@ -14,14 +14,14 @@ public struct GameOverEvent { }    // used in audio manager
 // ==================================================
 
 // update player view
-public struct PlacePlayerEvent { public Vector2Int Index; }  // used in audio manager and tutorial controller view
+public struct PlacePlayerEvent { public Vector2Int Index; }  // tutorial controller view
 
 
 // ==================================================
 // Player Events
 // ==================================================
 
-public struct PlayerDraggingEvent       // audio manager, ghost preview
+public struct PlayerDraggingEvent       // ghost preview
 {
     public Transform PlayerTransform;
     public CellColor Color;
