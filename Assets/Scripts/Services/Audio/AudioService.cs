@@ -65,7 +65,7 @@ public class AudioService : IAudio
         if (settings.MusicOn == on) return;
 
         if (on)
-            musicSource.UnPause();
+            musicSource.Play();
         else
             musicSource.Pause();
 
