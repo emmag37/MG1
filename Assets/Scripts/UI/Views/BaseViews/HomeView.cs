@@ -15,6 +15,9 @@ public class HomeView : BaseView
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button playButton;
 
+    // private fields
+    private ProfileData profile;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -38,14 +41,19 @@ public class HomeView : BaseView
     // Public Methods
     // ==================================================
 
-    protected override void SetInfo(IUIData data)
+    protected override void InitializeData(IUIData initData)
     {
-        if (data is not ProfileData profile)
+        if (initData is not ProfileData profile)
         {
-            Debug.Log($"data passed to home view is not user settings, type: {data?.GetType().Name}");
+            Debug.Log($"data passed to initialize home view is not profile, type: {initData?.GetType().Name}");
             return;
         }
 
+        this.profile = profile;
+    }
+
+    protected override void SetInfo(IUIData data)
+    {
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
     }
 }

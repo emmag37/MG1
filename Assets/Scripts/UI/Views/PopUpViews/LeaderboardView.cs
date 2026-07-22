@@ -12,6 +12,8 @@ public class LeaderboardView : PopUpView
     // Base Class Methods
     // ==================================================
 
+    protected override void InitializeData(IUIData initData) { }
+
     protected override void SetInfo(IUIData data)
     {
         return;

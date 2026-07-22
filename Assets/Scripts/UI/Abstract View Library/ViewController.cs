@@ -26,7 +26,7 @@ public class ViewController<TView, TType, TData>
     // Constructor
     // ==================================================
 
-    public ViewController(TView[] viewList, int stackCapacity, IUIViewHost host)
+    public ViewController(TView[] viewList, int stackCapacity, IUIViewHost host, IUIData initData)
     {
         // error: stack capacity must be greater than 0
 
@@ -41,7 +41,7 @@ public class ViewController<TView, TType, TData>
                 continue;
             }
 
-            view.Initialize(host);
+            view.Initialize(host, initData);
             viewDictionary.Add(view.Type, view);
         }
 

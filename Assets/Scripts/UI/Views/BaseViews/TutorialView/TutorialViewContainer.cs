@@ -24,5 +24,6 @@ public class TutorialViewContainer : BaseView
         startPlayingButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));
     }
 
+    protected override void InitializeData(IUIData initData) { }
     protected override void SetInfo(IUIData data) { }
 }

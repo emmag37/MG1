@@ -20,6 +20,8 @@ public class ChooseAvatarView : PopUpView
     // ==================================================
     private ProfileData profile;
 
+    private CellColor currentAvatar;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -42,24 +44,27 @@ public class ChooseAvatarView : PopUpView
         leftButton.onClick.AddListener(PreviousAvatar);
         rightButton.onClick.AddListener(NextAvatar);
 
-        // re-implement
-        chooseButton.onClick.AddListener(() => Host.UpdateData(profile));
+        chooseButton.onClick.AddListener(ChooseAvatar);
     }
 
     // ==================================================
     // Base Class Methods
     // ==================================================
 
-    protected override void SetInfo(IUIData data)
+    protected override void InitializeData(IUIData initData)
     {
-        if (data is not ProfileData profile)
+        if (initData is not ProfileData profile)
         {
-            Debug.Log($"data passed to choose avatar view is not profile, type: {data?.GetType().Name}");
+            Debug.Log($"data passed to initialize choose avatar view is not profile, type: {initData?.GetType().Name}");
             return;
         }
 
         this.profile = profile;
+    }
 
+    protected override void SetInfo(IUIData data)
+    {
+        currentAvatar = profile.Avatar;
         SetAvatarSprite();
     }
 
@@ -68,26 +73,32 @@ public class ChooseAvatarView : PopUpView
     // Private Methods
     // ==================================================
 
+    private void ChooseAvatar()
+    {
+        profile.Avatar = currentAvatar;
+        Host.UpdateData(profile);
+    }
+
     private void PreviousAvatar()
     {
-        profile.Avatar--;
-        if (profile.Avatar == CellColor.Empty)
-            profile.Avatar = CellColor.WildCard;
+        currentAvatar--;
+        if (currentAvatar == CellColor.Empty)
+            currentAvatar = CellColor.WildCard;
 
         SetAvatarSprite();
     }
 
     private void NextAvatar()
     {
-        if (profile.Avatar == CellColor.WildCard)
-            profile.Avatar = CellColor.Empty;
-        profile.Avatar++;
+        if (currentAvatar == CellColor.WildCard)
+            currentAvatar = CellColor.Empty;
+        currentAvatar++;
 
         SetAvatarSprite();
     }
 
     private void SetAvatarSprite()
     {
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite(profile.Avatar);
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite(currentAvatar);
     }
 }

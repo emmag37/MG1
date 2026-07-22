@@ -84,18 +84,31 @@ public class ProfileView : PopUpView
         invalidInput.gameObject.SetActive(false);
     }
 
-    protected override void SetInfo(IUIData data)
+    protected override void InitializeData(IUIData initData)
     {
-        if (data != null && data is not ProfileData profile)
+        if (initData is not ProfileData profile)
         {
-            Debug.Log($"data passed to profile view is not profile, type: {data?.GetType().Name}");
+            Debug.Log($"data passed to initialize profile view is not profile, type: {initData?.GetType().Name}");
             return;
         }
 
         this.profile = profile;
+    }
 
-        SetUserProfile(profile);
-        SetScoreHistory(profile.ScoreList);
+    protected override void SetInfo(IUIData data)
+    {
+        Debug.Log("set profile view");
+
+        usernameInput.text = profile.Username.GetUsername();
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
+
+        username = profile.Username;
+
+        // set the score list
+        if (listView == null)
+            listView = GetComponent<ScoreHistoryScrollList>();
+
+        listView.Populate(profile.ScoreList.ROList);
     }
 
 
@@ -108,7 +121,6 @@ public class ProfileView : PopUpView
         InvalidInputType error = profile.Username.TrySetUsername(name);
         if (error == InvalidInputType.None)
         {
-            Host.UpdateData(profile);
             invalidInput.gameObject.SetActive(false);
         }
         else
@@ -121,22 +133,6 @@ public class ProfileView : PopUpView
             StartCoroutine(ShakeTextRoutine());
         }
     }
-
-    private void SetUserProfile(ProfileData profile)
-    {
-        usernameInput.text = profile.Username.GetUsername();
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
-
-        username = profile.Username;
-    }
-
-    private void SetScoreHistory(ScoreHistory scoreList)
-    {
-        if (listView == null) listView = GetComponent<ScoreHistoryScrollList>();
-
-        listView.Populate(scoreList.ROList);
-    }
-
 
     // ==================================================
     // Coroutines

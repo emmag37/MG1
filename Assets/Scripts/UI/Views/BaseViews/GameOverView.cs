@@ -44,6 +44,8 @@ public class GameOverView : BaseView
     // Inherited Methods
     // ==================================================
 
+    protected override void InitializeData(IUIData initData) { }
+
     protected override void SetInfo(IUIData data)
     {
         if (data is not FinalScoreData scoreData)

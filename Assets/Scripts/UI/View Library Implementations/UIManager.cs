@@ -62,8 +62,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
         this.board = board;
         this.tutorial = tutorial;
 
-        baseViewController = new ViewController<BaseView, BaseViewType, IUIData>(baseViewList, BaseViewCapacity, this);
-        popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this);
+        baseViewController = new ViewController<BaseView, BaseViewType, IUIData>(baseViewList, BaseViewCapacity, this, profile);
+        popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this, profile);
 
         audioService = ServiceLocator.Get<IAudio>();
     }
@@ -98,7 +98,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     public void UpdateData(IUIData data)
     {
         if (data is ProfileData profile)
-            UpdateProfile(profile);
+            UpdateProfile();
         else
             Debug.LogError($"Unsupported ui data type: {typeof(IUIData).Name}");
     }
@@ -173,12 +173,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ==================================================
 
     // note: this NEVER updates the score list
-    // should actually just refresh views
-    private void UpdateProfile(ProfileData newProfile)
+    private void UpdateProfile()
     {
-        //profile.Avatar = newProfile.Avatar;
-        //profile.Username = newProfile.Username;
-
         baseViewController.UpdateView(BaseViewType.Home, profile);
         popUpViewController.UpdateView(PopUpViewType.Profile, profile);
     }
