@@ -46,7 +46,6 @@ public class ScoreAnimation : MonoBehaviour
         );
         transform.localPosition = uiPos;
 
-        //Handheld.Vibrate(); // short vibration to run during animation
         StartCoroutine(AnimatePointsRoutine());
     }
 

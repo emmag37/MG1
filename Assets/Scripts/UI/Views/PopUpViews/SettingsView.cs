@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-// todo: reimplement update music and sfx
-
 public class SettingsView: PopUpView
 {
     // ==================================================
@@ -15,11 +13,14 @@ public class SettingsView: PopUpView
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
 
+    [SerializeField] private Slider vibrateSlider;
+
     // ==================================================
     // Private Fields
     // ==================================================
 
-    private IAudio audioService; 
+    private IAudio audioService;
+    private IVibration vibrationService;
 
     // ==================================================
     // Unity Lifecycle
@@ -41,12 +42,15 @@ public class SettingsView: PopUpView
         base.Awake();
 
         audioService = ServiceLocator.Get<IAudio>();
+        vibrationService = ServiceLocator.Get<IVibration>();
 
         // link for terms and conditions
         // link for privacy policy
 
         musicSlider.onValueChanged.AddListener((value) => UpdateMusic(value > 0));   // cast to bool, 1 for on, 0 for off
         sfxSlider.onValueChanged.AddListener((value) => UpdateSFX(value > 0));
+
+        vibrateSlider.onValueChanged.AddListener((value) => vibrationService.SetVibrationOn(value > 0));
     }
 
 

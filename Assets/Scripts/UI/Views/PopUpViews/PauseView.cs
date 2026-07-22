@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// todo: reimplement update music and sfx
 
 /// <summary>
 /// UI view for the settings menu.
@@ -17,12 +16,14 @@ public class PauseView: PopUpView
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
 
+    [SerializeField] private Slider vibrateSlider;
+
     // ==================================================
     // Private Fields
     // ==================================================
 
     private IAudio audioService;
-
+    private IVibration vibrationService;
 
     // ==================================================
     // Unity Lifecycle
@@ -44,12 +45,15 @@ public class PauseView: PopUpView
         base.Awake();
 
         audioService = ServiceLocator.Get<IAudio>();
+        vibrationService = ServiceLocator.Get<IVibration>();
 
         homeButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Home));
         restartButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.RestartGame));
 
         musicSlider.onValueChanged.AddListener((value) => UpdateMusic(value > 0));   // cast to bool, 1 for on, 0 for off
         sfxSlider.onValueChanged.AddListener((value) => UpdateSFX(value > 0));
+
+        vibrateSlider.onValueChanged.AddListener((value) => vibrationService.SetVibrationOn(value > 0));
     }
 
 
