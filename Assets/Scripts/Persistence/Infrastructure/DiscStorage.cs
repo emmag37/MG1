@@ -7,7 +7,13 @@ public static class DataFiles
     public const string GameData = "gameData.json";
 }
 
-public class DiscStorage
+public interface IStorage
+{
+    void Save<T>(string fileName, T data);
+    T Load<T>(string fileName) where T : new();
+}
+
+public class DiscStorage : IStorage
 {
     private string GetPath(string fileName)
     {

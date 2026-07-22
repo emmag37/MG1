@@ -19,8 +19,7 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private DiscStorage disc = new DiscStorage();
-
+    private DiscStorage discService = new DiscStorage();
     private AudioService audioService;
 
     bool hasLaunched;
@@ -41,11 +40,11 @@ public class GameBootstrap : MonoBehaviour
 
         GameData gameData;
         if (inProgress)
-            gameData = disc.Load<GameData>(DataFiles.GameData);
+            gameData = discService.Load<GameData>(DataFiles.GameData);
         else
             gameData = new GameData();
 
-        UIData uIData = disc.Load<UIData>(DataFiles.UIData);
+        UIData uIData = discService.Load<UIData>(DataFiles.UIData);
 
         // replace these with safety checks
         Debug.Assert(gameData != null);
@@ -131,9 +130,9 @@ public class GameBootstrap : MonoBehaviour
         GameData gameData = board.Exit();
 
         // disc save
-        disc.Save<UIData>(DataFiles.UIData, uIData);
+        discService.Save<UIData>(DataFiles.UIData, uIData);
         if (board.InProgress)
-            disc.Save<GameData>(DataFiles.GameData, gameData);
+            discService.Save<GameData>(DataFiles.GameData, gameData);
 
         active = false;
     }
