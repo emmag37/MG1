@@ -1,14 +1,6 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
-// make this read-only eventually
-[Serializable]
-public class AudioSettings
-{
-    public bool MusicOn;
-    public bool SFXOn;
-}
 
 public class AudioService : IAudio
 {

@@ -10,17 +10,19 @@ namespace System.Runtime.CompilerServices
 [Serializable]
 public class UIData : IUIData
 {
-    // this is the data that actually gets stored to disc
-    public SettingsData Settings = new();
-    public ProfileData Profile = new();
+    // settings
+    public AudioSettings AudioSettings;
+    public bool VibrationOn = true;                // will only ever be the one setting
 
-    public AudioSettings AudioSettings = new();
+    // profile
+    public ProfileData Profile = new();
 }
 
 [Serializable]
-public class SettingsData : IUIData
+public class AudioSettings
 {
-    public bool VibrateOn;
+    public bool MusicOn = true;
+    public bool SFXOn = true;
 }
 
 [Serializable]
@@ -30,7 +32,6 @@ public sealed class ProfileData : IUIData
     public CellColor Avatar = CellColor.Color1;
     public ScoreHistory ScoreList = new();
 }
- 
 
 [Serializable]
 public class ScoreHistory : CappedRankedList<int>

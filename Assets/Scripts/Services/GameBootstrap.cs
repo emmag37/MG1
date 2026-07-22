@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 
-// todo: put in progress in player prefs
 
 // First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
@@ -55,6 +54,8 @@ public class GameBootstrap : MonoBehaviour
         // inject services
         audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
         ServiceLocator.Register<IAudio>(audioService);
+
+        ServiceLocator.Register<IVibration>(new VibrationService(uIData.VibrationOn));
 
         // initialize systems
         board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);

@@ -147,7 +147,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         audioService.PlaySoundEffect(AudioType.Button);    // move to the button
 
-        IUIData viewData = data.Settings;
+        IUIData viewData = data.Profile;    // used to be data.Settings
 
         if (type == PopUpViewType.Pause)
         {
