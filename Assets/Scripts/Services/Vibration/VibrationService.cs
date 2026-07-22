@@ -14,7 +14,8 @@ public class VibrationService : IVibration
     // interface methods
     public void ShortVibration()
     {
-        Handheld.Vibrate();
+        if (vibrationOn)
+            Handheld.Vibrate();
     }
 
     public void SetVibrationOn(bool on)

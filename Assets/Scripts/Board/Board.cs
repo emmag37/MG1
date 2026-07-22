@@ -240,6 +240,7 @@ public class Board : MonoBehaviour
         {
             StartCoroutine(WinAnimationRoutine(result, index));
             audioService.PlaySoundEffect(AudioType.Win);
+            ServiceLocator.Get<IVibration>().ShortVibration();
         }
 
         return currentScore;
