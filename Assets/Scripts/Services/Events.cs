@@ -1,15 +1,6 @@
 using UnityEngine;
 
 // ==================================================
-// Game Events
-// ==================================================
-
-public struct StartGameEvent { }    // used in audio manager
-
-public struct GameOverEvent { }    // used in audio manager
-
-
-// ==================================================
 // Board Events
 // ==================================================
 

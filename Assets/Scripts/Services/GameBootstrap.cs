@@ -10,7 +10,7 @@ public class GameBootstrap : MonoBehaviour
     // Inspector Fields
     // ==================================================
     [SerializeField] private UIManager uIManager;
-    [SerializeField] private AudioManager audioManager;
+    //[SerializeField] private AudioManager audioManager;
     [SerializeField] private Board board;
     [SerializeField] private Tutorial tutorial;
 
@@ -63,7 +63,7 @@ public class GameBootstrap : MonoBehaviour
             tutorial.Initialize(board);
 
         uIManager.Initialize(uIData, board, tutorial);
-        audioManager.Initialize(uIData.AudioSettings.MusicOn, uIData.AudioSettings.SFXOn);
+        //audioManager.Initialize(uIData.AudioSettings.MusicOn, uIData.AudioSettings.SFXOn);
         
         // wire dependencies
         WireUI();
@@ -79,7 +79,6 @@ public class GameBootstrap : MonoBehaviour
         BaseViewType startScreen = BaseViewType.Home;
         if (!hasLaunched)
         {
-            Debug.Log("start tutorial");
             startScreen = BaseViewType.Tutorial;
 
             PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);

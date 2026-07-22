@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    /*
     // ==================================================
     // Inspector Fields
     // ==================================================
@@ -53,7 +54,6 @@ public class AudioManager : MonoBehaviour
         // game play events
         EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDrag);
         EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
-        //EventBus.Subscribe<WinEvent>(OnWin);
     }
 
     void OnDisable()
@@ -65,7 +65,6 @@ public class AudioManager : MonoBehaviour
         // game play events
         EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDrag);
         EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
-        //EventBus.Unsubscribe<WinEvent>(OnWin);
     }
 
     // ==================================================
@@ -116,13 +115,13 @@ public class AudioManager : MonoBehaviour
         if (sfxOn)
             sfxSource.PlayOneShot(transitionClip);
     }
-     
+    /* 
     private void OnPlayerDrag(PlayerDraggingEvent e)
     {
         /*
         if (sfxOn)
             sfxSource.PlayOneShot(pickupPlayerClip);
-        */
+        
     }
 
     private void OnPlacePlayer(PlacePlayerEvent e)
@@ -130,7 +129,7 @@ public class AudioManager : MonoBehaviour
         /*
         if (sfxOn)
             sfxSource.PlayOneShot(placePlayerClip);
-        */
+        
     }
 
     /*
@@ -138,7 +137,7 @@ public class AudioManager : MonoBehaviour
     {
         if (sfxOn)
             sfxSource.PlayOneShot(winClip);
-    } */
+    }
 
     // done through here
     
@@ -152,7 +151,7 @@ public class AudioManager : MonoBehaviour
         {
             //sfxSource.PlayOneShot(gameOverClip);
 
-            musicSource.Play();
+            //musicSource.Play();
         }
     }
 
@@ -163,4 +162,5 @@ public class AudioManager : MonoBehaviour
         musicSource.clip = gameMusic;
         if (musicOn) musicSource.Play();
     }
+*/
 }

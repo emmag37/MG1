@@ -1,14 +1,17 @@
 using UnityEngine;
 
+
 public interface IAudio
 {
-    // background music functions
-    public void PlayMusic(AudioType audioType);
-    public void StopMusic(AudioType audioType);
+    // for continuous audio - only one active at a time
+    void PlayMusic(AudioType audioType);
+    void StopMusic();
+    void SetMusicOn(bool on);
 
-    // sound effects functions
-    public void PlaySoundEffect(AudioType audioType);
+    // for one shot audio
+    void PlaySoundEffect(AudioType audioType);
+    void SetEffectsOn(bool on);
 
     // settings
-    public AudioSettings GetSettings();
+    AudioSettings GetSettings();
 }

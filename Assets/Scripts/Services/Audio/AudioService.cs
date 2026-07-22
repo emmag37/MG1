@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+// make this read-only eventually
 [Serializable]
 public class AudioSettings
 {
@@ -49,9 +50,26 @@ public class AudioService : IAudio
         if (settings.MusicOn)
             musicSource.Play();
     }
-    public void StopMusic(AudioType audioType)
+
+    public void StopMusic()
     {
-        Debug.Log($"stop music: {audioType}");
+        Debug.Log("stop music");
+
+        musicSource.Stop();
+    }
+
+    public void SetMusicOn(bool on) // used for continuous audio clips
+    {
+        Debug.Log($"pause/unpause music");
+
+        if (settings.MusicOn == on) return;
+
+        if (on)
+            musicSource.UnPause();
+        else
+            musicSource.Pause();
+
+        settings.MusicOn = on;
     }
 
     // sound effects functions
@@ -63,6 +81,11 @@ public class AudioService : IAudio
 
         AudioClip clip = clipLookup[audioType].clip;
         sFXSource.PlayOneShot(clip);
+    }
+
+    public void SetEffectsOn(bool on)
+    {
+        settings.SFXOn = on;
     }
 
     // settings

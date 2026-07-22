@@ -75,13 +75,11 @@ public class PauseView: PopUpView
 
     private void UpdateMusic(bool on)
     {
-        AudioSettings audioSettings = audioService.GetSettings();
-        audioSettings.MusicOn = on;
+        audioService.SetMusicOn(on);
     }
 
     private void UpdateSFX(bool on)
     {
-        AudioSettings audioSettings = audioService.GetSettings();
-        audioSettings.SFXOn = on;
+        audioService.SetEffectsOn(on);
     }
 }
