@@ -129,7 +129,7 @@ public class Board : MonoBehaviour
             SpawnPlayer();
         }
 
-        EventBus.Publish(new StartGameEvent()); // for the audio (music)
+        audioService.PlayMusic(AudioType.GameMusic);
     }
 
     public void PauseGame(bool pause)
@@ -240,7 +240,6 @@ public class Board : MonoBehaviour
         {
             StartCoroutine(WinAnimationRoutine(result, index));
             audioService.PlaySoundEffect(AudioType.Win);
-            //EventBus.Publish(new WinEvent());   // keep for audio manager
         }
 
         return currentScore;
@@ -268,8 +267,10 @@ public class Board : MonoBehaviour
         (int, int) finalScores = hUD.GameOver();
         inProgress = false;
 
+        audioService.PlaySoundEffect(AudioType.GameOver);
+        audioService.PlayMusic(AudioType.UIMusic);
+
         FullBoard?.Invoke(finalScores.Item1, finalScores.Item2);
-        EventBus.Publish(new GameOverEvent());
     }
 
     private void TurnOffTutorial()

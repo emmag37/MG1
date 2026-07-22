@@ -150,7 +150,7 @@ public class AudioManager : MonoBehaviour
         musicSource.clip = UIMusic;
         if (musicOn)
         {
-            sfxSource.PlayOneShot(gameOverClip);
+            //sfxSource.PlayOneShot(gameOverClip);
 
             musicSource.Play();
         }
