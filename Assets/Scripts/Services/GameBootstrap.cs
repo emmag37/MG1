@@ -10,7 +10,6 @@ public class GameBootstrap : MonoBehaviour
     // Inspector Fields
     // ==================================================
     [SerializeField] private UIManager uIManager;
-    //[SerializeField] private AudioManager audioManager;
     [SerializeField] private Board board;
     [SerializeField] private Tutorial tutorial;
 
@@ -46,11 +45,12 @@ public class GameBootstrap : MonoBehaviour
         else
             gameData = new GameData();
 
-        UIData uIData = disc.Load<UIData>(DataFiles.UIData);    // is there an error here?
+        UIData uIData = disc.Load<UIData>(DataFiles.UIData);
 
+        // replace these with safety checks
         Debug.Assert(gameData != null);
         Debug.Assert(uIData != null);
-        Debug.Assert(uIData.Profile.ScoreList != null);     // null ref exception
+        Debug.Assert(uIData.Profile.ScoreList != null);
         Debug.Assert(board != null);
 
         // inject services
@@ -63,28 +63,20 @@ public class GameBootstrap : MonoBehaviour
             tutorial.Initialize(board);
 
         uIManager.Initialize(uIData, board, tutorial);
-        //audioManager.Initialize(uIData.AudioSettings.MusicOn, uIData.AudioSettings.SFXOn);
-        
-        // wire dependencies
-        WireUI();
     }
 
+    // only runs once everything is done being loaded
     private void Start()
     {
-
-        // here is where you need to put the load in info
-        // if tutorial, prepare the tutorial sequence
-        // if active game, load in the game
-
+        // set the opening view
         BaseViewType startScreen = BaseViewType.Home;
         if (!hasLaunched)
         {
             startScreen = BaseViewType.Tutorial;
-
             PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);
         }
 
-        // always open a fresh new game with the home view
+        // open the scene
         uIManager.PushView<BaseViewType>(startScreen);
         audioService.PlayMusic(AudioType.UIMusic);
     }
@@ -117,26 +109,6 @@ public class GameBootstrap : MonoBehaviour
     private void OnApplicationQuit()
     {
         ExitAndSave();
-    }
-
-    private void OnDestroy()
-    {
-        UnwireUI();
-    }
-
-
-    // ==================================================
-    // Wire Methods
-    // ==================================================
-
-    private void WireUI()
-    {
-        
-    }
-
-    private void UnwireUI()
-    {
-        
     }
 
 
