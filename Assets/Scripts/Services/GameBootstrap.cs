@@ -20,6 +20,7 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     private DiscStorage discService = new DiscStorage();
     private AudioService audioService;
+    private VibrationService vibrationService;
 
     bool hasLaunched;
     bool inProgress;
@@ -55,7 +56,8 @@ public class GameBootstrap : MonoBehaviour
         audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
         ServiceLocator.Register<IAudio>(audioService);
 
-        ServiceLocator.Register<IVibration>(new VibrationService(uIData.VibrationOn));
+        vibrationService = new VibrationService(uIData.VibrationOn);
+        ServiceLocator.Register<IVibration>(vibrationService);
 
         // initialize systems
         board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);
@@ -127,6 +129,7 @@ public class GameBootstrap : MonoBehaviour
         // exit systems
         UIData uIData = uIManager.Exit();
         uIData.AudioSettings = audioService.GetSettings();
+        uIData.VibrationOn = vibrationService.GetSettings();
 
         GameData gameData = board.Exit();
 

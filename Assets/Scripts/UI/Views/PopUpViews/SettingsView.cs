@@ -47,8 +47,8 @@ public class SettingsView: PopUpView
         // link for terms and conditions
         // link for privacy policy
 
-        musicSlider.onValueChanged.AddListener((value) => UpdateMusic(value > 0));   // cast to bool, 1 for on, 0 for off
-        sfxSlider.onValueChanged.AddListener((value) => UpdateSFX(value > 0));
+        musicSlider.onValueChanged.AddListener((value) => audioService.SetMusicOn(value > 0));   // cast to bool, 1 for on, 0 for off
+        sfxSlider.onValueChanged.AddListener((value) => audioService.SetEffectsOn(value > 0));
 
         vibrateSlider.onValueChanged.AddListener((value) => vibrationService.SetVibrationOn(value > 0));
     }
@@ -58,23 +58,24 @@ public class SettingsView: PopUpView
     // Protected Methods
     // ==================================================
 
-    public override void Show(IUIData data = null)
+    protected override void SetInfo(IUIData data)
     {
-        base.Show(data);
+        Debug.Log("set info");
 
         AudioSettings audioSettings = audioService.GetSettings();
+        bool vibrateOn = vibrationService.GetSettings();
 
         musicSlider.value = audioSettings.MusicOn ? 1 : 0;
         sfxSlider.value = audioSettings.SFXOn ? 1 : 0;
+
+        vibrateSlider.value = vibrateOn ? 1 : 0;
     }
-
-    protected override void SetInfo(IUIData data) { }
-
 
     // ==================================================
     // Private Methods
     // ==================================================
 
+    /*
     private void UpdateMusic(bool on)
     {
         audioService.SetMusicOn(on);
@@ -84,4 +85,5 @@ public class SettingsView: PopUpView
     {
         audioService.SetEffectsOn(on);
     }
+    */
 }
