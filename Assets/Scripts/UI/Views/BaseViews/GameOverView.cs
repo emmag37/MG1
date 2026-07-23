@@ -10,12 +10,18 @@ public class GameOverView : BaseView
     // Inspector Fields
     // ==================================================
     [SerializeField] private Button settingsButton;
-
     [SerializeField] private Button homeButton;
     [SerializeField] private Button replayButton;
 
     [SerializeField] private Text gameScoreText;
     [SerializeField] private Text highScoreText;
+
+    // ==================================================
+    // Private Fields
+    // ==================================================
+    private UIButton settingsUIButton;
+    private UIButton homeUIButton;
+    private UIButton replayUIButton;
 
 
     // ==================================================
@@ -24,9 +30,9 @@ public class GameOverView : BaseView
 
     void OnValidate()
     {
+        Debug.Assert(settingsButton != null, "Settings button not set in game over view");
         Debug.Assert(homeButton != null, "Home button not set in game over view");
         Debug.Assert(replayButton != null, "Replay button not set in game over view");
-        Debug.Assert(settingsButton != null, "Settings button not set in game over view");
 
         Debug.Assert(gameScoreText != null, "Game score text not set in game over view");
         Debug.Assert(highScoreText != null, "High score text not set in game over view");
@@ -34,10 +40,9 @@ public class GameOverView : BaseView
 
     void Awake()
     {
-        homeButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Home));
-        replayButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));
-
-        settingsButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Settings));
+        settingsUIButton = UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
+        homeUIButton = UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
+        replayUIButton = UIButtonFactory.Navigate<BaseViewType>(replayButton, Host, BaseViewType.GamePlay);
     }
 
     // ==================================================

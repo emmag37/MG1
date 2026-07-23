@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class UIButton
 {
@@ -38,5 +39,10 @@ public static class UIButtonFactory
 
     public static UIButton ClosePopUp<TType>(Button button, IUIViewHost host) where TType : struct, Enum
         => new UIButton(button, host.PopView<TType>);
+
+    public static UIButton EditInput(Button button, TMP_InputField inputField)
+        => new UIButton(button, inputField.ActivateInputField);
+
+    // web link action eventually
 }
 

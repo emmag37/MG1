@@ -8,10 +8,11 @@ public class PlayView : BaseView
 {
     [SerializeField] private Button pauseButton;
 
+    private UIButton pauseUIButton;
+
     void Awake()
     {
-        Debug.Log("button listener");
-        pauseButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Pause));
+        pauseUIButton = UIButtonFactory.Navigate<PopUpViewType>(pauseButton, Host, PopUpViewType.Pause);
     }
 
     protected override void InitializeData(IUIData initData) { }

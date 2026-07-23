@@ -27,15 +27,16 @@ public class ProfileView : PopUpView
     // Private Fields
     // ==================================================
     private ProfileData profile;
-
     private ValidatedUsername username;
-
     Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
     {
         { InvalidInputType.Short, "Username must be at least 3 characters" },
         { InvalidInputType.SpecialChars, "Only letters, numbers, and underscores allowed" },
         { InvalidInputType.Profanity, "That username isn’t allowed" }
     };
+
+    private UIButton editUsernameUIButton;
+    private UIButton editAvatarUIButton;
 
     // ==================================================
     // Unity Lifecycle
@@ -55,8 +56,8 @@ public class ProfileView : PopUpView
     {
         base.Awake();
 
-        editAvatarButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.ChooseAvatar));
-        editUsernameButton.onClick.AddListener(usernameInput.ActivateInputField);
+        editUsernameUIButton = UIButtonFactory.EditInput(editUsernameButton, usernameInput);
+        editAvatarUIButton = UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
 
         usernameInput.onSubmit.AddListener(value =>
         {

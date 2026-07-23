@@ -9,8 +9,15 @@ public class TutorialViewContainer : BaseView
 
     [SerializeField] private Button skipButton;
     [SerializeField] private Button exitButton;
-
     [SerializeField] private Button startPlayingButton;
+
+    // ==================================================
+    // Private Fields
+    // ==================================================
+
+    private UIButton skipUIButton;
+    private UIButton exitUIButton;
+    private UIButton startPlayingUIButton;
 
     // ==================================================
     // Unity Lifecycle
@@ -18,10 +25,9 @@ public class TutorialViewContainer : BaseView
 
     void Awake()
     {
-        skipButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.SkipTutorial));
-        exitButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Home));
-
-        startPlayingButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));
+        skipUIButton = UIButtonFactory.Navigate<PopUpViewType>(skipButton, Host, PopUpViewType.SkipTutorial);
+        exitUIButton = UIButtonFactory.Navigate<BaseViewType>(exitButton, Host, BaseViewType.Home);
+        startPlayingUIButton = UIButtonFactory.Navigate<BaseViewType>(startPlayingButton, Host, BaseViewType.GamePlay);
     }
 
     protected override void InitializeData(IUIData initData) { }
