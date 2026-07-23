@@ -26,8 +26,8 @@ public class ProfileView : PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-    private ProfileData profile;
-    private ValidatedUsername username;
+    private string username;
+
     Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
     {
         { InvalidInputType.Short, "Username must be at least 3 characters" },
@@ -66,7 +66,7 @@ public class ProfileView : PopUpView
         usernameInput.onDeselect.AddListener(_ =>
         {
             if (!gameObject.activeInHierarchy) return;  // keeps incorrect text on screen on exit
-            usernameInput.SetTextWithoutNotify(username.GetUsername());
+            usernameInput.SetTextWithoutNotify(username);
         });
         usernameInput.onValueChanged.AddListener(_ =>
         {
@@ -85,25 +85,20 @@ public class ProfileView : PopUpView
         invalidInput.gameObject.SetActive(false);
     }
 
-    protected override void InitializeData(IUIData initData)
-    {
-        if (initData is not ProfileData profile)
-        {
-            Debug.Log($"data passed to initialize profile view is not profile, type: {initData?.GetType().Name}");
-            return;
-        }
-
-        this.profile = profile;
-    }
+    protected override void InitializeData(IUIData initData) { }
 
     protected override void SetInfo(IUIData data)
     {
-        Debug.Log("set profile view");
+        if (data is not ProfileData profile)
+        {
+            Debug.LogError($"Data type mismatch, wanted ProfileData, recieved {data?.GetType().Name}");
+            return;
+        }
 
-        usernameInput.text = profile.Username.GetUsername();
+        username = profile.Username.GetUsername();
+
+        usernameInput.text = username;
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
-
-        username = profile.Username;
 
         // set the score list
         if (listView == null)
@@ -119,6 +114,7 @@ public class ProfileView : PopUpView
 
     private void UpdateUsername(string name)
     {
+        /*
         InvalidInputType error = profile.Username.TrySetUsername(name);
         if (error == InvalidInputType.None)
         {
@@ -133,6 +129,7 @@ public class ProfileView : PopUpView
 
             StartCoroutine(ShakeTextRoutine());
         }
+        */
     }
 
     // ==================================================

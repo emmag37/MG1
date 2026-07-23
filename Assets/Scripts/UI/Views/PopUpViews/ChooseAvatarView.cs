@@ -18,8 +18,6 @@ public class ChooseAvatarView : PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-    private ProfileData profile;
-
     private CellColor currentAvatar;
 
     // ==================================================
@@ -51,19 +49,17 @@ public class ChooseAvatarView : PopUpView
     // Base Class Methods
     // ==================================================
 
-    protected override void InitializeData(IUIData initData)
-    {
-        if (initData is not ProfileData profile)
-        {
-            Debug.Log($"data passed to initialize choose avatar view is not profile, type: {initData?.GetType().Name}");
-            return;
-        }
-
-        this.profile = profile;
-    }
+    // actually just remove this
+    protected override void InitializeData(IUIData initData) { }
 
     protected override void SetInfo(IUIData data)
     {
+        if (data is not ProfileData profile)
+        {
+            Debug.LogError($"Data type mismatch, wanted ProfileData, recieved {data?.GetType().Name}");
+            return;
+        }
+
         currentAvatar = profile.Avatar;
         SetAvatarSprite();
     }
@@ -75,10 +71,6 @@ public class ChooseAvatarView : PopUpView
 
     private void ChooseAvatar()
     {
-        //profile.Avatar = currentAvatar;
-        //Host.UpdateData(profile);
-
-        Debug.Log($"choose avatar: {currentAvatar}");
         Host.PatchUpdate(new AvatarPatch(currentAvatar));
     }
 

@@ -18,8 +18,6 @@ public class HomeView : BaseView
     // ==================================================
     // Private Fields
     // ==================================================
-    private ProfileData profile;
-
     UIButton profileUIButton;
     UIButton settingsUIButton;
     UIButton playUIButton;
@@ -54,19 +52,16 @@ public class HomeView : BaseView
     // Public Methods
     // ==================================================
 
-    protected override void InitializeData(IUIData initData)
-    {
-        if (initData is not ProfileData profile)
-        {
-            Debug.Log($"data passed to initialize home view is not profile, type: {initData?.GetType().Name}");
-            return;
-        }
-
-        this.profile = profile;
-    }
+    protected override void InitializeData(IUIData initData) { }
 
     protected override void SetInfo(IUIData data)
     {
+        if (data is not ProfileData profile)
+        {
+            Debug.LogError($"Data type mismatch, wanted ProfileData, recieved {data?.GetType().Name}");
+            return;
+        }
+
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
     }
 }

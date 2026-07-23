@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private IAudio audioService;
 
-    private ProfileData profile;
+    private ProfileData profile;        // this should be the ONLY instance of profile (outside of load in bootstrap)
 
     private Board board;
     private Tutorial tutorial;
@@ -62,8 +62,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
         this.board = board;
         this.tutorial = tutorial;
 
-        baseViewController = new ViewController<BaseView, BaseViewType, IUIData>(baseViewList, BaseViewCapacity, this, profile);
-        popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this, profile);
+        baseViewController = new ViewController<BaseView, BaseViewType, IUIData>(baseViewList, BaseViewCapacity, this);
+        popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this);
 
         audioService = ServiceLocator.Get<IAudio>();
     }
@@ -79,15 +79,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     public void PushView<TType>(TType type) where TType : struct, Enum
     {
-        /*
-        if (typeof(TType) == typeof(BaseViewType))
-            ShowBaseView((BaseViewType)(object)type);
-        else if (typeof(TType) == typeof(PopUpViewType))
-            PushOverlay((PopUpViewType)(object)type);
-        else
-            Debug.LogError($"Unsupported view type: {typeof(TType).Name}");
-        */
-
         switch (type)
         {
             case BaseViewType t:
@@ -122,7 +113,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
         switch (patch)
         {
             case AvatarPatch p:
-                Debug.Log("avatar patch update");
                 AvatarUpdate(p.avatar);
                 break;
             case UsernamePatch p:
@@ -197,8 +187,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private void AvatarUpdate(CellColor avatar)
     {
-        Debug.Log("avatar update");
-
         profile.Avatar = avatar;
 
         baseViewController.UpdateView(BaseViewType.Home, profile);
