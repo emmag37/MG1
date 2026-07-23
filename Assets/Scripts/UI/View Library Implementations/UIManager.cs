@@ -111,8 +111,10 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to show base view
     private void ShowBaseView(BaseViewType type)
     {
+        /*
         if (baseViewController.PeekViewType() != BaseViewType.None)
             audioService.PlaySoundEffect(AudioType.Button);     // move this to the actual button
+        */
 
         if (popUpViewController.Count > 0) popUpViewController.ClearViews();
 
@@ -145,7 +147,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to push pop up view
     private void PushOverlay(PopUpViewType type, bool playSound = true)
     {
-        audioService.PlaySoundEffect(AudioType.Button);    // move to the button
+        //audioService.PlaySoundEffect(AudioType.Button);    // move to the button
 
         if (type == PopUpViewType.Pause)
         {
@@ -158,7 +160,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to pop pop up view
     private void PopOverlay()
     {
-        audioService.PlaySoundEffect(AudioType.Button);     // move to the button
+        //audioService.PlaySoundEffect(AudioType.Button);     // move to the button
 
         if (popUpViewController.PeekViewType() == PopUpViewType.Pause)
         {

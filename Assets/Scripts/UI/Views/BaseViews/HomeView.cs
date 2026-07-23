@@ -15,8 +15,15 @@ public class HomeView : BaseView
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button playButton;
 
-    // private fields
+    // ==================================================
+    // Private Fields
+    // ==================================================
     private ProfileData profile;
+
+    UIButton<PopUpViewType> profileUIButton;
+    UIButton<PopUpViewType> settingsUIButton;
+    UIButton<BaseViewType> playUIButton;
+
 
     // ==================================================
     // Unity Lifecycle
@@ -31,10 +38,17 @@ public class HomeView : BaseView
 
     void Awake()
     {
+        /*
         profileButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Profile));
         settingsButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Settings));
 
         playButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));
+        */
+
+        profileUIButton = new UIButton<PopUpViewType>(Host, profileButton, PopUpViewType.Profile);
+        settingsUIButton = new UIButton<PopUpViewType>(Host, settingsButton, PopUpViewType.Settings);
+        playUIButton = new UIButton<BaseViewType>(Host, playButton, BaseViewType.GamePlay);
+
     }
 
     // ==================================================
