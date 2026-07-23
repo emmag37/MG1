@@ -52,9 +52,9 @@ public class ProfileView : PopUpView
         Debug.Assert(avatarImage != null, "Avatar image not set in profile view");
     }
 
-    protected override void Awake()
+    public override void Initialize(IUIViewHost host)
     {
-        base.Awake();
+        base.Initialize(host);
 
         editUsernameUIButton = UIButtonFactory.EditInput(editUsernameButton, usernameInput);
         editAvatarUIButton = UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);

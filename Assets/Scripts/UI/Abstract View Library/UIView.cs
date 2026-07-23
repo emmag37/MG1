@@ -9,7 +9,7 @@ public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
 
     public abstract TType Type { get; }
 
-    public void Initialize(IUIViewHost host) => Host = host;
+    public virtual void Initialize(IUIViewHost host) => Host = host;
 
     public virtual void Show(IUIData data = null)
     {
