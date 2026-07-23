@@ -47,7 +47,11 @@ public static class UIButtonFactory
     public static UIButton SendPatch(Button button, IUIViewHost host, Func<IUIPatch> getPatch)
         => new UIButton(button, () => host.PatchUpdate(getPatch()));
 
-    //public static UIButton Increment();
+    public static UIButton Increment<T>(Button button, IIncrementList<T> list, Action<T> onChanged)
+        => new UIButton(button, () => onChanged(list.Next()));
+
+    public static UIButton Decrement<T>(Button button, IIncrementList<T> list, Action<T> onChanged)
+        => new UIButton(button, () => onChanged(list.Prev()));
 
     // web link action eventually
 }

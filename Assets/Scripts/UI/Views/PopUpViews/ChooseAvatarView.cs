@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 // todo: reimplement update avatar
 public class ChooseAvatarView : PopUpView
@@ -19,6 +21,7 @@ public class ChooseAvatarView : PopUpView
     // Private Fields
     // ==================================================
     private CellColor avatar;
+    private RingList<CellColor> colorList;
 
     private UIButton leftUIButton;
     private UIButton rightUIButton;
@@ -43,11 +46,16 @@ public class ChooseAvatarView : PopUpView
     {
         base.Awake();
 
-        leftButton.onClick.AddListener(PreviousAvatar);
-        rightButton.onClick.AddListener(NextAvatar);
+        // create the color ring from your enum
+        List<CellColor> colors = Enum.GetValues(typeof(CellColor))
+            .Cast<CellColor>()
+            .Where(c => c != CellColor.Empty && c != CellColor.ResetShadow && c != CellColor.Shadow)
+            .ToList();
 
-        //chooseButton.onClick.AddListener(ChooseAvatar);
+        colorList = new RingList<CellColor>(colors);
 
+        leftUIButton = UIButtonFactory.Decrement<CellColor>(leftButton, colorList, SetAvatarSprite);
+        rightUIButton = UIButtonFactory.Increment<CellColor>(rightButton, colorList, SetAvatarSprite);
         chooseUIButton = UIButtonFactory.SendPatch(chooseButton, Host, () => new AvatarPatch(avatar));  // patch always needs to send the current value
     }
 
@@ -63,8 +71,8 @@ public class ChooseAvatarView : PopUpView
             return;
         }
 
-        avatar = profile.Avatar;
-        SetAvatarSprite();
+        SetAvatarSprite(profile.Avatar);
+        colorList.SetCurrentValue(profile.Avatar);
     }
 
 
@@ -72,33 +80,9 @@ public class ChooseAvatarView : PopUpView
     // Private Methods
     // ==================================================
 
-    /*
-    private void ChooseAvatar()
+    private void SetAvatarSprite(CellColor color)
     {
-        Host.PatchUpdate(new AvatarPatch(avatar));
-    }
-    */
-
-    private void PreviousAvatar()
-    {
-        avatar--;
-        if (avatar == CellColor.Empty)
-            avatar = CellColor.WildCard;
-
-        SetAvatarSprite();
-    }
-
-    private void NextAvatar()
-    {
-        if (avatar == CellColor.WildCard)
-            avatar = CellColor.Empty;
-        avatar++;
-
-        SetAvatarSprite();
-    }
-
-    private void SetAvatarSprite()
-    {
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite(avatar);
+        avatarImage.sprite = SpriteDatabase.Instance.GetSprite(color);
+        avatar = color;
     }
 }
