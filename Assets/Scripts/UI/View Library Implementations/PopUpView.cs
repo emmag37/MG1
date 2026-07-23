@@ -20,6 +20,8 @@ public abstract class PopUpView : UIView<PopUpViewType>
     [SerializeField] private PopUpViewType popUpType;
     [SerializeField] private Button exitButton;
 
+    private UIButton exitUIButton;
+
     protected virtual void OnValidate()
     {
         Debug.Assert(exitButton != null, "Exit button not set in pop up view");
@@ -28,6 +30,8 @@ public abstract class PopUpView : UIView<PopUpViewType>
     protected virtual void Awake()
     {
         exitButton.onClick.AddListener(Host.PopView<PopUpViewType>);
+
+        exitUIButton = UIButtonFactory.ClosePopUp<PopUpViewType>(exitButton, Host);
     }
 }
 

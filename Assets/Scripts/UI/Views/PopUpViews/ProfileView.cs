@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Collections;
 using TMPro;
 
-// todo: reimplement try update username
-
 // need to decide what to do with the profanity filter
 // unity has some built in content checkers for alphanum, etc
 public class ProfileView : PopUpView
@@ -56,9 +54,13 @@ public class ProfileView : PopUpView
     {
         base.Initialize(host);
 
+        if (listView == null)
+            listView = GetComponent<ScoreHistoryScrollList>();
+
+        
         editUsernameUIButton = UIButtonFactory.EditInput(editUsernameButton, usernameInput);
         editAvatarUIButton = UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
-
+        
         usernameInput.onSubmit.AddListener(value =>
         {
             UpdateUsername(value);
@@ -98,10 +100,6 @@ public class ProfileView : PopUpView
         usernameInput.text = username;
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
 
-        // set the score list
-        if (listView == null)
-            listView = GetComponent<ScoreHistoryScrollList>();
-
         listView.Populate(profile.ScoreList.ROList);
     }
 
@@ -109,7 +107,7 @@ public class ProfileView : PopUpView
     // ==================================================
     // Private Methods
     // ==================================================
-
+    
     private void UpdateUsername(string name)
     {
         InvalidInputType error = UsernameValidator.IsUsernameValid(name);
@@ -151,5 +149,4 @@ public class ProfileView : PopUpView
 
         usernameInput.textComponent.transform.localPosition = originalPos;
     }
-
 }

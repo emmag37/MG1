@@ -46,7 +46,6 @@ public class ChooseAvatarView : PopUpView
     {
         base.Awake();
 
-        // create the color ring from your enum
         List<CellColor> colors = Enum.GetValues(typeof(CellColor))
             .Cast<CellColor>()
             .Where(c => c != CellColor.Empty && c != CellColor.ResetShadow && c != CellColor.Shadow)
