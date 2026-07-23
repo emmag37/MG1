@@ -10,4 +10,6 @@ public interface IUIViewHost
     void PopView<TType>() where TType : struct, Enum;
 
     void UpdateData(IUIData data);
+
+    void PatchUpdate(IUIPatch patch);
 }

@@ -60,3 +60,8 @@ public class LeaderboardRanking : CappedRankedList<LeaderboardData>
     public LeaderboardRanking() : base(50) { }
 }
 */
+
+// data patches
+
+public sealed record AvatarPatch(CellColor avatar) : IUIPatch;
+public sealed record UsernamePatch(string username) : IUIPatch;

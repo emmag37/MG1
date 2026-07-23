@@ -79,12 +79,26 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     public void PushView<TType>(TType type) where TType : struct, Enum
     {
+        /*
         if (typeof(TType) == typeof(BaseViewType))
             ShowBaseView((BaseViewType)(object)type);
         else if (typeof(TType) == typeof(PopUpViewType))
             PushOverlay((PopUpViewType)(object)type);
         else
             Debug.LogError($"Unsupported view type: {typeof(TType).Name}");
+        */
+
+        switch (type)
+        {
+            case BaseViewType t:
+                ShowBaseView(t);
+                break;
+            case PopUpViewType t:
+                PushOverlay(t);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(type), $"Unhandled view type: {type.GetType()}");
+        }
     }
 
     public void PopView<TType>() where TType : struct, Enum
@@ -101,6 +115,22 @@ public class UIManager : MonoBehaviour, IUIViewHost
             UpdateProfile();
         else
             Debug.LogError($"Unsupported ui data type: {typeof(IUIData).Name}");
+    }
+
+    public void PatchUpdate(IUIPatch patch)
+    {
+        switch (patch)
+        {
+            case AvatarPatch p:
+                Debug.Log("avatar patch update");
+                AvatarUpdate(p.avatar);
+                break;
+            case UsernamePatch p:
+                UsernameUpdate(p.username);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(patch), $"Unhandled patch type: {patch.GetType()}");
+        }
     }
 
 
@@ -162,14 +192,29 @@ public class UIManager : MonoBehaviour, IUIViewHost
     }
 
     // ==================================================
-    // UI Data Methods
+    // Patch Methods
     // ==================================================
+
+    private void AvatarUpdate(CellColor avatar)
+    {
+        Debug.Log("avatar update");
+
+        profile.Avatar = avatar;
+
+        baseViewController.UpdateView(BaseViewType.Home, profile);
+        popUpViewController.UpdateView(PopUpViewType.Profile, profile);
+    }
+
+    private void UsernameUpdate(string username)
+    {
+        // to do
+    }
 
     // note: this NEVER updates the score list
     private void UpdateProfile()
     {
-        baseViewController.UpdateView(BaseViewType.Home, profile);
-        popUpViewController.UpdateView(PopUpViewType.Profile, profile);
+        //baseViewController.UpdateView(BaseViewType.Home, profile);
+        //popUpViewController.UpdateView(PopUpViewType.Profile, profile);
     }
 
     // ==================================================

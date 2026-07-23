@@ -75,8 +75,11 @@ public class ChooseAvatarView : PopUpView
 
     private void ChooseAvatar()
     {
-        profile.Avatar = currentAvatar;
-        Host.UpdateData(profile);
+        //profile.Avatar = currentAvatar;
+        //Host.UpdateData(profile);
+
+        Debug.Log($"choose avatar: {currentAvatar}");
+        Host.PatchUpdate(new AvatarPatch(currentAvatar));
     }
 
     private void PreviousAvatar()
