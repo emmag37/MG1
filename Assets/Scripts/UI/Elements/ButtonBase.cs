@@ -2,32 +2,41 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class UIButton<TType> where TType : struct, Enum 
+public class UIButton
 {
     // private fields
-    private IUIViewHost host;
-    private IAudio audioService;
-
     private Button button;
-    private TType nextView;     // type of the view that this button navigates to
+    private Action action;
+    private IAudio audioService;
+    private AudioType sound;
 
     // constructor
-    public UIButton(IUIViewHost host, Button button, TType nextView)
+    public UIButton(Button button, Action action, AudioType sound = AudioType.Button)
     {
-        this.host = host;
         this.button = button;
-        this.nextView = nextView;
+        this.action = action;
+        this.sound = sound;
 
         audioService = ServiceLocator.Get<IAudio>();
-
         button.onClick.AddListener(Click);
     }
+
+    public void Dispose() => button.onClick.RemoveListener(Click);
 
     // private methods
     private void Click()
     {
         audioService.PlaySoundEffect(AudioType.Button);
-
-        host.PushView<TType>(nextView);
+        action?.Invoke();
     }
 }
+
+public static class UIButtonFactory
+{
+    public static UIButton Navigate<TType>(Button button, IUIViewHost host, TType viewType) where TType : struct, Enum
+        => new UIButton(button, () => host.PushView(viewType));
+
+    public static UIButton ClosePopUp<TType>(Button button, IUIViewHost host) where TType : struct, Enum
+        => new UIButton(button, host.PopView<TType>);
+}
+

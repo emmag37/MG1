@@ -20,9 +20,9 @@ public class HomeView : BaseView
     // ==================================================
     private ProfileData profile;
 
-    UIButton<PopUpViewType> profileUIButton;
-    UIButton<PopUpViewType> settingsUIButton;
-    UIButton<BaseViewType> playUIButton;
+    UIButton profileUIButton;
+    UIButton settingsUIButton;
+    UIButton playUIButton;
 
 
     // ==================================================
@@ -38,17 +38,16 @@ public class HomeView : BaseView
 
     void Awake()
     {
-        /*
-        profileButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Profile));
-        settingsButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.Settings));
+        profileUIButton = UIButtonFactory.Navigate<PopUpViewType>(profileButton, Host, PopUpViewType.Profile);
+        settingsUIButton = UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
+        playUIButton = UIButtonFactory.Navigate<BaseViewType>(playButton, Host, BaseViewType.GamePlay);
+    }
 
-        playButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));
-        */
-
-        profileUIButton = new UIButton<PopUpViewType>(Host, profileButton, PopUpViewType.Profile);
-        settingsUIButton = new UIButton<PopUpViewType>(Host, settingsButton, PopUpViewType.Settings);
-        playUIButton = new UIButton<BaseViewType>(Host, playButton, BaseViewType.GamePlay);
-
+    void OnDestroy()
+    {
+        profileUIButton.Dispose();
+        settingsUIButton.Dispose();
+        playUIButton.Dispose();
     }
 
     // ==================================================
