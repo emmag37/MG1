@@ -100,14 +100,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
             Debug.LogError($"Unsupported view type: {typeof(TType).Name}");
     }
 
-    public void UpdateData(IUIData data)
-    {
-        if (data is ProfileData profile)
-            UpdateProfile();
-        else
-            Debug.LogError($"Unsupported ui data type: {typeof(IUIData).Name}");
-    }
-
     public void PatchUpdate(IUIPatch patch)
     {
         switch (patch)
@@ -187,6 +179,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private void AvatarUpdate(CellColor avatar)
     {
+        if (profile.Avatar == avatar) return;
+
         profile.Avatar = avatar;
 
         baseViewController.UpdateView(BaseViewType.Home, profile);
@@ -195,15 +189,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private void UsernameUpdate(string username)
     {
-        Debug.Log("recieved username patch");
-
         profile.Username = username;
-    }
-
-    // note: this NEVER updates the score list
-    private void UpdateProfile()
-    {
-
     }
 
     // ==================================================

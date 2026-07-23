@@ -23,7 +23,5 @@ public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
     }
 
     public virtual void UpdateView(IUIData data) => SetInfo(data);
-
-    protected abstract void InitializeData(IUIData initData);   // to remove
     protected abstract void SetInfo(IUIData data = null);
 }

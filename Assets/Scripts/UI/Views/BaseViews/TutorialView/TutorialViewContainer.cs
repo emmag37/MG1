@@ -30,6 +30,5 @@ public class TutorialViewContainer : BaseView
         startPlayingUIButton = UIButtonFactory.Navigate<BaseViewType>(startPlayingButton, Host, BaseViewType.GamePlay);
     }
 
-    protected override void InitializeData(IUIData initData) { }
     protected override void SetInfo(IUIData data) { }
 }

@@ -15,6 +15,5 @@ public class PlayView : BaseView
         pauseUIButton = UIButtonFactory.Navigate<PopUpViewType>(pauseButton, Host, PopUpViewType.Pause);
     }
 
-    protected override void InitializeData(IUIData initData) { }
     protected override void SetInfo(IUIData data) { }
 }

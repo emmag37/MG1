@@ -85,8 +85,6 @@ public class ProfileView : PopUpView
         invalidInput.gameObject.SetActive(false);
     }
 
-    protected override void InitializeData(IUIData initData) { }
-
     protected override void SetInfo(IUIData data)
     {
         if (data is not ProfileData profile)

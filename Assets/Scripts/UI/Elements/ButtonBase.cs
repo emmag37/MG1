@@ -44,11 +44,10 @@ public static class UIButtonFactory
     public static UIButton EditInput(Button button, TMP_InputField inputField)
         => new UIButton(button, inputField.ActivateInputField);
 
-    // change the host method to refresh? no data?
-    /*
-    public static UIButton Refresh(Button button, IUIViewHost host)
-        => new UIButton(button, host.)
-    */
+    public static UIButton SendPatch(Button button, IUIViewHost host, Func<IUIPatch> getPatch)
+        => new UIButton(button, () => host.PatchUpdate(getPatch()));
+
+    //public static UIButton Increment();
 
     // web link action eventually
 }

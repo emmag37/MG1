@@ -20,6 +20,10 @@ public class ChooseAvatarView : PopUpView
     // ==================================================
     private CellColor avatar;
 
+    private UIButton leftUIButton;
+    private UIButton rightUIButton;
+    private UIButton chooseUIButton;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -42,15 +46,14 @@ public class ChooseAvatarView : PopUpView
         leftButton.onClick.AddListener(PreviousAvatar);
         rightButton.onClick.AddListener(NextAvatar);
 
-        chooseButton.onClick.AddListener(ChooseAvatar);
+        //chooseButton.onClick.AddListener(ChooseAvatar);
+
+        chooseUIButton = UIButtonFactory.SendPatch(chooseButton, Host, () => new AvatarPatch(avatar));  // patch always needs to send the current value
     }
 
     // ==================================================
     // Base Class Methods
     // ==================================================
-
-    // actually just remove this
-    protected override void InitializeData(IUIData initData) { }
 
     protected override void SetInfo(IUIData data)
     {
@@ -69,10 +72,12 @@ public class ChooseAvatarView : PopUpView
     // Private Methods
     // ==================================================
 
+    /*
     private void ChooseAvatar()
     {
         Host.PatchUpdate(new AvatarPatch(avatar));
     }
+    */
 
     private void PreviousAvatar()
     {

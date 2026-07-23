@@ -6,10 +6,7 @@ using System;
 public interface IUIViewHost
 {
     void PushView<TType>(TType type) where TType : struct, Enum;
-
     void PopView<TType>() where TType : struct, Enum;
-
-    void UpdateData(IUIData data);
 
     void PatchUpdate(IUIPatch patch);
 }

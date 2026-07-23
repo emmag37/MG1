@@ -58,8 +58,6 @@ public class SettingsView: PopUpView
     // Protected Methods
     // ==================================================
 
-    protected override void InitializeData(IUIData initData) { }
-
     protected override void SetInfo(IUIData data)
     {
         Debug.Log("set info");
@@ -72,20 +70,4 @@ public class SettingsView: PopUpView
 
         vibrateSlider.value = vibrateOn ? 1 : 0;
     }
-
-    // ==================================================
-    // Private Methods
-    // ==================================================
-
-    /*
-    private void UpdateMusic(bool on)
-    {
-        audioService.SetMusicOn(on);
-    }
-
-    private void UpdateSFX(bool on)
-    {
-        audioService.SetEffectsOn(on);
-    }
-    */
 }
