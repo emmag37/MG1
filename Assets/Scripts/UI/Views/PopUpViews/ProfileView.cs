@@ -95,7 +95,7 @@ public class ProfileView : PopUpView
             return;
         }
 
-        username = profile.Username.GetUsername();
+        username = profile.Username;
 
         usernameInput.text = username;
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
@@ -114,11 +114,13 @@ public class ProfileView : PopUpView
 
     private void UpdateUsername(string name)
     {
-        /*
-        InvalidInputType error = profile.Username.TrySetUsername(name);
+        InvalidInputType error = UsernameValidator.IsUsernameValid(name);
         if (error == InvalidInputType.None)
         {
+            Debug.Log("send username patch");
+
             invalidInput.gameObject.SetActive(false);
+            Host.PatchUpdate(new UsernamePatch(name));
         }
         else
         {
@@ -129,7 +131,6 @@ public class ProfileView : PopUpView
 
             StartCoroutine(ShakeTextRoutine());
         }
-        */
     }
 
     // ==================================================

@@ -28,7 +28,7 @@ public class AudioSettings
 [Serializable]
 public class ProfileData : IUIData
 {
-    public ValidatedUsername Username = new();
+    public string Username = "default-username";
     public CellColor Avatar = CellColor.Color1;
 
     public ScoreHistory ScoreList = new();

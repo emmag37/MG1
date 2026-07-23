@@ -195,14 +195,15 @@ public class UIManager : MonoBehaviour, IUIViewHost
 
     private void UsernameUpdate(string username)
     {
-        // to do
+        Debug.Log("recieved username patch");
+
+        profile.Username = username;
     }
 
     // note: this NEVER updates the score list
     private void UpdateProfile()
     {
-        //baseViewController.UpdateView(BaseViewType.Home, profile);
-        //popUpViewController.UpdateView(PopUpViewType.Profile, profile);
+
     }
 
     // ==================================================
