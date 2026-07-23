@@ -34,6 +34,7 @@ public class UIButton
 
 public static class UIButtonFactory
 {
+    // i want to add a "transition" sound when this is base view type
     public static UIButton Navigate<TType>(Button button, IUIViewHost host, TType viewType) where TType : struct, Enum
         => new UIButton(button, () => host.PushView(viewType));
 
@@ -42,6 +43,12 @@ public static class UIButtonFactory
 
     public static UIButton EditInput(Button button, TMP_InputField inputField)
         => new UIButton(button, inputField.ActivateInputField);
+
+    // change the host method to refresh? no data?
+    /*
+    public static UIButton Refresh(Button button, IUIViewHost host)
+        => new UIButton(button, host.)
+    */
 
     // web link action eventually
 }

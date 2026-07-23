@@ -25,6 +25,9 @@ public class PauseView: PopUpView
     private IAudio audioService;
     private IVibration vibrationService;
 
+    private UIButton homeUIButton;
+    private UIButton restartUIButton;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -47,8 +50,8 @@ public class PauseView: PopUpView
         audioService = ServiceLocator.Get<IAudio>();
         vibrationService = ServiceLocator.Get<IVibration>();
 
-        homeButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Home));
-        restartButton.onClick.AddListener(() => Host.PushView<PopUpViewType>(PopUpViewType.RestartGame));
+        homeUIButton = UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
+        restartUIButton = UIButtonFactory.Navigate<PopUpViewType>(restartButton, Host, PopUpViewType.RestartGame);
 
         musicSlider.onValueChanged.AddListener((value) => audioService.SetMusicOn(value > 0));   // cast to bool, 1 for on, 0 for off
         sfxSlider.onValueChanged.AddListener((value) => audioService.SetEffectsOn(value > 0));

@@ -11,6 +11,13 @@ public class SkipTutorialView : PopUpView
     [SerializeField] private Button noButton;
 
     // ==================================================
+    // Private Fields
+    // ==================================================
+
+    private UIButton yesUIButton;
+    private UIButton noUIButton;
+
+    // ==================================================
     // Unity Lifecycle
     // ==================================================
 
@@ -18,8 +25,8 @@ public class SkipTutorialView : PopUpView
     {
         base.Awake();
 
-        yesButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.Tutorial));   // goes to the end of the tutorial
-        noButton.onClick.AddListener(() => Host.PopView<PopUpViewType>());
+        yesUIButton = UIButtonFactory.Navigate<BaseViewType>(yesButton, Host, BaseViewType.Tutorial);
+        noUIButton = UIButtonFactory.ClosePopUp<PopUpViewType>(noButton, Host);
     }
 
     // base class

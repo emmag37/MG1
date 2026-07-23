@@ -11,6 +11,13 @@ public class RestartGameView : PopUpView
     [SerializeField] private Button noButton;
 
     // ==================================================
+    // Private Fields
+    // ==================================================
+
+    private UIButton yesUIButton;
+    private UIButton noUIButton;
+
+    // ==================================================
     // Unity Lifecycle
     // ==================================================
 
@@ -18,8 +25,8 @@ public class RestartGameView : PopUpView
     {
         base.Awake();
 
-        yesButton.onClick.AddListener(() => Host.PushView<BaseViewType>(BaseViewType.GamePlay));   // should close whole stack, show a new game
-        noButton.onClick.AddListener(() => Host.PopView<PopUpViewType>()); // close the whole thing - don't remember the function usage
+        yesUIButton = UIButtonFactory.Navigate<BaseViewType>(yesButton, Host, BaseViewType.Tutorial);
+        noUIButton = UIButtonFactory.ClosePopUp<PopUpViewType>(noButton, Host);
     }
 
     // base class
