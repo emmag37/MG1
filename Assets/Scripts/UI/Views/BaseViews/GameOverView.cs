@@ -16,13 +16,6 @@ public class GameOverView : BaseView
     [SerializeField] private Text gameScoreText;
     [SerializeField] private Text highScoreText;
 
-    // ==================================================
-    // Private Fields
-    // ==================================================
-    private UIButton settingsUIButton;
-    private UIButton homeUIButton;
-    private UIButton replayUIButton;
-
 
     // ==================================================
     // Unity Lifecycle
@@ -40,9 +33,10 @@ public class GameOverView : BaseView
 
     void Awake()
     {
-        settingsUIButton = UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
-        homeUIButton = UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
-        replayUIButton = UIButtonFactory.Navigate<BaseViewType>(replayButton, Host, BaseViewType.GamePlay);
+        // put these into some sort of list to dispose of later
+        UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
+        UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
+        UIButtonFactory.Navigate<BaseViewType>(replayButton, Host, BaseViewType.GamePlay);
     }
 
     // ==================================================

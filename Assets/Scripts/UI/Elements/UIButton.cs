@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using TMPro;
+
 
 public class UIButton
 {
@@ -27,7 +27,7 @@ public class UIButton
     // private methods
     private void Click()
     {
-        audioService.PlaySoundEffect(AudioType.Button);
+        audioService.PlaySoundEffect(sound);
         action?.Invoke();
     }
 }

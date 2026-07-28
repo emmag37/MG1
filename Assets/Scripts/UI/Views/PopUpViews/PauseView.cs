@@ -15,7 +15,6 @@ public class PauseView: PopUpView
 
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
-
     [SerializeField] private Slider vibrateSlider;
 
     // ==================================================
@@ -24,9 +23,6 @@ public class PauseView: PopUpView
 
     private IAudio audioService;
     private IVibration vibrationService;
-
-    private UIButton homeUIButton;
-    private UIButton restartUIButton;
 
     // ==================================================
     // Unity Lifecycle
@@ -50,13 +46,12 @@ public class PauseView: PopUpView
         audioService = ServiceLocator.Get<IAudio>();
         vibrationService = ServiceLocator.Get<IVibration>();
 
-        homeUIButton = UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
-        restartUIButton = UIButtonFactory.Navigate<PopUpViewType>(restartButton, Host, PopUpViewType.RestartGame);
+        UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
+        UIButtonFactory.Navigate<PopUpViewType>(restartButton, Host, PopUpViewType.RestartGame);
 
-        musicSlider.onValueChanged.AddListener((value) => audioService.SetMusicOn(value > 0));   // cast to bool, 1 for on, 0 for off
-        sfxSlider.onValueChanged.AddListener((value) => audioService.SetEffectsOn(value > 0));
-
-        vibrateSlider.onValueChanged.AddListener((value) => vibrationService.SetVibrationOn(value > 0));
+        new UIToggle(musicSlider, audioService.SetMusicOn);
+        new UIToggle(sfxSlider, audioService.SetEffectsOn);
+        new UIToggle(vibrateSlider, vibrationService.SetVibrationOn);
     }
 
 

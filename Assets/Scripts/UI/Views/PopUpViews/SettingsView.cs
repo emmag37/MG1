@@ -12,7 +12,6 @@ public class SettingsView: PopUpView
 
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider sfxSlider;
-
     [SerializeField] private Slider vibrateSlider;
 
     // ==================================================
@@ -47,10 +46,9 @@ public class SettingsView: PopUpView
         // link for terms and conditions
         // link for privacy policy
 
-        musicSlider.onValueChanged.AddListener((value) => audioService.SetMusicOn(value > 0));   // cast to bool, 1 for on, 0 for off
-        sfxSlider.onValueChanged.AddListener((value) => audioService.SetEffectsOn(value > 0));
-
-        vibrateSlider.onValueChanged.AddListener((value) => vibrationService.SetVibrationOn(value > 0));
+        new UIToggle(musicSlider, audioService.SetMusicOn);
+        new UIToggle(sfxSlider, audioService.SetEffectsOn);
+        new UIToggle(vibrateSlider, vibrationService.SetVibrationOn);
     }
 
 
