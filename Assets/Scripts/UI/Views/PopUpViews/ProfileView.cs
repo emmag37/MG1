@@ -19,7 +19,10 @@ public class ProfileView : PopUpView
     [SerializeField] private Button editAvatarButton;
     [SerializeField] private Image avatarImage;
 
-    [SerializeField] private ScoreHistoryScrollList listView;
+    [SerializeField] private ScoreHistoryScrollList listView;       // replace this
+
+    [SerializeField] private Transform scoreHistoryListContent;
+    [SerializeField] private GameObject scoreHistoryListItem;
 
     // ==================================================
     // Private Fields
@@ -54,13 +57,16 @@ public class ProfileView : PopUpView
     {
         base.Initialize(host);
 
+        // remove
         if (listView == null)
             listView = GetComponent<ScoreHistoryScrollList>();
-
         
         editUsernameUIButton = UIButtonFactory.EditInput(editUsernameButton, usernameInput);
         editAvatarUIButton = UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
-        
+
+
+
+
         usernameInput.onSubmit.AddListener(value =>
         {
             UpdateUsername(value);
