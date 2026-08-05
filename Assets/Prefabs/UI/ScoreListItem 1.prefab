@@ -168,8 +168,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4332283088522827252}
   - component: {fileID: 251664199772676806}
-  - component: {fileID: 3801074389803813444}
   - component: {fileID: 494231826160556697}
+  - component: {fileID: 6107167178432667636}
   m_Layer: 5
   m_Name: ScoreListItem 1
   m_TagString: Untagged
@@ -206,20 +206,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6292988861838853260}
   m_CullTransparentMesh: 1
---- !u!114 &3801074389803813444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6292988861838853260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 470515cf2854e492b9563281102ba24e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScoreItemView
-  rankText: {fileID: 1715007835450664492}
-  scoreText: {fileID: 1604340573601928020}
 --- !u!114 &494231826160556697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,3 +236,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6107167178432667636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6292988861838853260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470515cf2854e492b9563281102ba24e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreScrollItem
+  rankText: {fileID: 1715007835450664492}
+  scoreText: {fileID: 1604340573601928020}

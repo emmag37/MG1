@@ -6,7 +6,7 @@ public class LeaderboardView : PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-    private LeaderboardScrollList listView;
+    //private LeaderboardScrollList listView;
 
     // ==================================================
     // Base Class Methods

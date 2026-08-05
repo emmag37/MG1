@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LeaderboardItemView : ItemView<LeaderboardData>
+/*
+public class LeaderboardItemView : IScrollItem<LeaderboardData>
 {
     // inspector fields
     [SerializeField] private Text rankText;
@@ -10,7 +11,7 @@ public class LeaderboardItemView : ItemView<LeaderboardData>
     [SerializeField] private Text scoreText;
 
     // functions
-    public override void Set(LeaderboardData data, int index)
+    public void Set(LeaderboardData data, int index)
     {
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)data.Avatar);
         usernameText.text = data.Username;
@@ -19,3 +20,4 @@ public class LeaderboardItemView : ItemView<LeaderboardData>
         rankText.text = $"{index + 1}";
     }
 }
+*/

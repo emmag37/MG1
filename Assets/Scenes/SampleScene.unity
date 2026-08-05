@@ -9128,7 +9128,9 @@ MonoBehaviour:
   invalidInput: {fileID: 971892067}
   editAvatarButton: {fileID: 2027794461}
   avatarImage: {fileID: 1568932600}
-  listView: {fileID: 193603940}
+  scoreHistoryContent: {fileID: 653725493}
+  scoreHistoryItem1: {fileID: 6292988861838853260, guid: e3e857e5c860b44468b426f39a345881, type: 3}
+  scoreHistoryItem2: {fileID: 6292988861838853260, guid: 272c16fdeb54f4f0f8acd626c28fdf64, type: 3}
 --- !u!1001 &1214991144
 PrefabInstance:
   m_ObjectHideFlags: 0

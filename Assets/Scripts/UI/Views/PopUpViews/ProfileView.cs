@@ -19,10 +19,9 @@ public class ProfileView : PopUpView
     [SerializeField] private Button editAvatarButton;
     [SerializeField] private Image avatarImage;
 
-    [SerializeField] private ScoreHistoryScrollList listView;       // replace this
-
-    [SerializeField] private Transform scoreHistoryListContent;
-    [SerializeField] private GameObject scoreHistoryListItem;
+    [SerializeField] private Transform scoreHistoryContent;
+    [SerializeField] private GameObject scoreHistoryItem1;
+    [SerializeField] private GameObject scoreHistoryItem2;
 
     // ==================================================
     // Private Fields
@@ -36,8 +35,7 @@ public class ProfileView : PopUpView
         { InvalidInputType.Profanity, "That username isn’t allowed" }
     };
 
-    private UIButton editUsernameUIButton;
-    private UIButton editAvatarUIButton;
+    private UIAltVertScrollList<int> scoreHistoryScrollList;
 
     // ==================================================
     // Unity Lifecycle
@@ -57,15 +55,10 @@ public class ProfileView : PopUpView
     {
         base.Initialize(host);
 
-        // remove
-        if (listView == null)
-            listView = GetComponent<ScoreHistoryScrollList>();
-        
-        editUsernameUIButton = UIButtonFactory.EditInput(editUsernameButton, usernameInput);
-        editAvatarUIButton = UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
+        UIButtonFactory.EditInput(editUsernameButton, usernameInput);
+        UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
 
-
-
+        scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2);
 
         usernameInput.onSubmit.AddListener(value =>
         {
@@ -106,7 +99,7 @@ public class ProfileView : PopUpView
         usernameInput.text = username;
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
 
-        listView.Populate(profile.ScoreList.ROList);
+        scoreHistoryScrollList.Populate(profile.ScoreList.ROList);
     }
 
 

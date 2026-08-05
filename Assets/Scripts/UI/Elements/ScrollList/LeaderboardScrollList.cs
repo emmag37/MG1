@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class LeaderboardScrollList : VerticalScrollList<LeaderboardData>
+/*
+public class LeaderboardScrollList<LeaderboardData> : UIVerticalScrollList<LeaderboardData>
 {
-    
 }
+*/
