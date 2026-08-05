@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+// maybe give it a function to update so that it doesn't have to be populated every time
+// like it recieves event for a new score, then updates in the background
+    // would have to change the maintain order property to here
+    // then you would have to redo the text for the alternating list anyway
 
 public class UIVerticalScrollList<T>
 {

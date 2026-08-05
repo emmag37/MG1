@@ -12,7 +12,6 @@ public class UIToggle
     private AudioType sound;
     private IAudio audioService;
 
-
     // constructor
     public UIToggle(Slider slider, Action<bool> action, AudioType sound = AudioType.Button)
     {

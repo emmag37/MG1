@@ -60,6 +60,7 @@ public class ProfileView : PopUpView
 
         scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2);
 
+        // remove
         usernameInput.onSubmit.AddListener(value =>
         {
             UpdateUsername(value);
@@ -94,9 +95,9 @@ public class ProfileView : PopUpView
             return;
         }
 
-        username = profile.Username;
+        username = profile.Username;    // remove
 
-        usernameInput.text = username;
+        usernameInput.text = username;      // remove
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
 
         scoreHistoryScrollList.Populate(profile.ScoreList.ROList);
