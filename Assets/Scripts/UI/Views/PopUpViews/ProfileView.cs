@@ -64,23 +64,6 @@ public class ProfileView : PopUpView
 
         scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2);
         usernameInputField = new UIUsernameInputField(usernameInput, invalidInput, (string value) => Host.PatchUpdate(new UsernamePatch(value)));
-
-        // remove
-        /*
-        usernameInput.onSubmit.AddListener(value =>
-        {
-            UpdateUsername(value);
-        });
-        usernameInput.onDeselect.AddListener(_ =>
-        {
-            if (!gameObject.activeInHierarchy) return;  // keeps incorrect text on screen on exit
-            usernameInput.SetTextWithoutNotify(username);
-        });
-        usernameInput.onValueChanged.AddListener(_ =>
-        {
-            invalidInput.gameObject.SetActive(false);
-        });
-        */
     }
 
     // ==================================================
@@ -102,60 +85,8 @@ public class ProfileView : PopUpView
             return;
         }
 
-        //username = profile.Username;    // remove
-        //usernameInput.text = username;      // remove
-
-        usernameInputField.SetUsername(name);
+        usernameInputField.SetUsername(profile.Username);
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
         scoreHistoryScrollList.Populate(profile.ScoreList.ROList);
     }
-
-
-    // ==================================================
-    // Private Methods
-    // ==================================================
-    /*
-    private void UpdateUsername(string name)
-    {
-        InvalidInputType error = UsernameValidator.IsUsernameValid(name);
-        if (error == InvalidInputType.None)
-        {
-            Debug.Log("send username patch");
-
-            invalidInput.gameObject.SetActive(false);
-            Host.PatchUpdate(new UsernamePatch(name));
-        }
-        else
-        {
-            Debug.Log($"invalid input: {error}");
-
-            invalidInput.text = errorMessages[error];
-            invalidInput.gameObject.SetActive(true);
-
-            StartCoroutine(ShakeTextRoutine());
-        }
-    }
-    */
-    // ==================================================
-    // Coroutines
-    // ==================================================
-
-    /*
-    IEnumerator ShakeTextRoutine(float duration = 0.3f, float magnitude = 8f)
-    {
-        Vector3 originalPos = usernameInput.textComponent.transform.localPosition;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            float x = originalPos.x + UnityEngine.Random.Range(-1f, 1f) * magnitude;
-            usernameInput.textComponent.transform.localPosition = new Vector3(x, originalPos.y, originalPos.z);
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        usernameInput.textComponent.transform.localPosition = originalPos;
-    }
-    */
 }

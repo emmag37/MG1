@@ -37,11 +37,6 @@ public class UIUsernameInputField
         {
             UpdateUsername(value);
         });
-        inputField.onDeselect.AddListener(_ =>
-        {
-            if (!inputField.gameObject.activeInHierarchy) return;  // keeps incorrect text on screen on exit
-            inputField.SetTextWithoutNotify(username);
-        });
         inputField.onValueChanged.AddListener(_ =>
         {
             invalidInput.gameObject.SetActive(false);
