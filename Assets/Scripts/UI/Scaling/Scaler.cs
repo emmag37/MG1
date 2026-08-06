@@ -1,37 +1,15 @@
 using UnityEngine;
 
-// delete this class and rename the file
-public class CameraWidthLock : MonoBehaviour
-{
-    public float OrthoSize { get; private set; }    // remove
-
-    private Camera _cam;    // remove
-
-    // have this initialize in bootstrap, then simply call the camera's orthographic size in all other scripts
-    public void ApplyOrthographicSize()
-    {
-        _cam = GetComponent<Camera>();
-
-        float referenceAspect = UIConstants.ReferenceWidth / UIConstants.ReferenceHeight;
-        float currentAspect = (float)Screen.width / Screen.height;
-        float baseOrthoSize = (UIConstants.ReferenceHeight / UIConstants.PixelsPerUnit) / 2f;
-
-        if (currentAspect < referenceAspect)
-            _cam.orthographicSize = baseOrthoSize * (referenceAspect / currentAspect);
-        else
-            _cam.orthographicSize = baseOrthoSize;
-
-        OrthoSize = _cam.orthographicSize;      // remove
-    }
-    
-}
 
 public static class Scaler
 {
     private static float scale;         // only access for the actual scale, keeps scaling consistent across the project
+    private static Camera cam;          // camera that the scaling applies to
 
-    public static void CalculateAndSetScale(Camera cam)
+    public static void CalculateAndSetScale(Camera c)
     {
+        cam = c;
+
         float referenceAspect = UIConstants.ReferenceWidth / UIConstants.ReferenceHeight;
         float currentAspect = (float)Screen.width / Screen.height;
         float baseOrthoSize = (UIConstants.ReferenceHeight / UIConstants.PixelsPerUnit) / 2f;
@@ -58,5 +36,20 @@ public static class Scaler
         var pos = transform.position;
         pos.y *= (scale + 1) / 2;   // split the difference
         transform.position = pos;
+    }
+
+    public static void UIApplyScaledPos(Transform transform, RectTransform rect, Vector3 worldPos, float yOffset = 0)
+    {
+        float scaledOffset = scale * yOffset;
+
+        Vector2 screenPos = cam.WorldToScreenPoint(worldPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            rect,
+            screenPos,
+            null, // if overlay
+            out Vector2 uIPos
+        );
+
+        transform.localPosition = new Vector2(uIPos.x, uIPos.y + scaledOffset);
     }
 }

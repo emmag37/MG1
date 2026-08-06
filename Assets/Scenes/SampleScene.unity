@@ -4982,7 +4982,6 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5064,18 +5063,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &519420033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fccb757144b3422f9399d7ca4da79b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraWidthLock
 --- !u!1 &569730861
 GameObject:
   m_ObjectHideFlags: 0
@@ -6385,7 +6372,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 801581748}
-  - component: {fileID: 801581749}
   m_Layer: 0
   m_Name: Spawn Point
   m_TagString: Untagged
@@ -6408,18 +6394,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2022480357}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &801581749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 801581747}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dae91673d83c148a78085404f5bb745c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpawnerPositionAdjust
 --- !u!1001 &802826534
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7987,7 +7961,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1063609169}
   - component: {fileID: 1063609170}
-  - component: {fileID: 1063609171}
   m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
@@ -8069,18 +8042,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &1063609171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1063609168}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 368da47eddf4349cd804ccd99bfb220d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BackgroundScaler
 --- !u!1 &1075978487
 GameObject:
   m_ObjectHideFlags: 0

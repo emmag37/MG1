@@ -7,4 +7,6 @@ public static class UIConstants
     public const float PixelsPerUnit = 100f;
 
     public const float ReferenceOrtho = ReferenceHeight / 2f / PixelsPerUnit;
+
+    public const float ArrowOffset = 100f;
 }
