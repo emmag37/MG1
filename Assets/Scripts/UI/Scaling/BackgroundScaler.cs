@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// why is this a monobehaviour?
+// delete this class
 
 public class BackgroundScaler : MonoBehaviour
 {

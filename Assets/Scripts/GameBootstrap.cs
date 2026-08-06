@@ -15,7 +15,7 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private AudioSource sFXSource;
     [SerializeField] private AudioSource musicSource;
 
-    [SerializeField] private SpriteRenderer backgroundSprite;
+    [SerializeField] private Transform backgroundTransform;
  
     // ==================================================
     // Private Fields
@@ -58,10 +58,8 @@ public class GameBootstrap : MonoBehaviour
         Debug.Assert(board != null);
 
         // run calculations
-        float orthoSize = Scaler.OrthographicWidthLock(Camera.main);
-
-        Scaler.ApplyLocalScale(backgroundSprite.transform, orthoSize);
-
+        Scaler.CalculateAndSetScale(Camera.main);
+        Scaler.ApplyLocalScale(backgroundTransform);
 
         // inject services
         audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);

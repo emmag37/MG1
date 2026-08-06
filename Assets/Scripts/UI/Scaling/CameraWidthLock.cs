@@ -34,10 +34,10 @@ public class CameraWidthLock : MonoBehaviour
 
 public static class Scaler
 {
-    public static float OrthographicWidthLock(Camera cam)
-    {
-        Debug.Log("apply new camera scale");
+    private static float scale;         // only access for the actual scale, keeps scaling consistent across the project
 
+    public static void CalculateAndSetScale(Camera cam)
+    {
         float referenceAspect = UIConstants.ReferenceWidth / UIConstants.ReferenceHeight;
         float currentAspect = (float)Screen.width / Screen.height;
         float baseOrthoSize = (UIConstants.ReferenceHeight / UIConstants.PixelsPerUnit) / 2f;
@@ -47,13 +47,22 @@ public static class Scaler
         else
             cam.orthographicSize = baseOrthoSize;
 
-        return cam.orthographicSize;
+        scale = cam.orthographicSize / UIConstants.ReferenceOrtho;
     }
 
-    public static void ApplyLocalScale(Transform transform, float orthoSize)
+    public static void ApplyLocalScale(Transform transform)
     {
-        float scale = orthoSize / UIConstants.ReferenceOrtho;
+        Debug.Assert(scale != 0);
 
         transform.localScale = new Vector3(scale, scale, 1f);
+    }
+
+    public static void ApplyScaledYPos(Transform transform)
+    {
+        Debug.Assert(scale != 0);
+
+        var pos = transform.position;
+        pos.y *= (scale + 1) / 2;   // split the difference
+        transform.position = pos;
     }
 }

@@ -11,7 +11,7 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private SpawnerPositionAdjust spawnPointAdjuster;
+    [SerializeField] private Transform spawnPoint;
     [SerializeField] private GameObject piecePrefab;
 
     // ==================================================
@@ -19,7 +19,6 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     private PlayerColors currentColors = new PlayerColors();    // initializes with next set to a color, player empty
 
-    private Transform spawnPoint;
     private Piece playerPiece;
     private Bounds playerBounds;
 
@@ -33,7 +32,7 @@ public class PieceRegistry : MonoBehaviour
 
     public void Initialize(Bounds boardBounds)
     {
-        spawnPoint = spawnPointAdjuster.Initialize();
+        Scaler.ApplyScaledYPos(spawnPoint);       // who initializes this? you could probably get the scale
 
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;
