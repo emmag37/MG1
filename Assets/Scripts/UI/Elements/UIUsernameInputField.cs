@@ -4,6 +4,9 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 
+// figure out patch update
+// figure out the coroutine
+
 public class UIUsernameInputField
 {
     // private fields
@@ -68,8 +71,7 @@ public class UIUsernameInputField
             invalidInput.text = errorMessages[error];
             invalidInput.gameObject.SetActive(true);
 
-            //StartCoroutine(ShakeTextRoutine());
-            // figure out how to do this on a non monobehaviour class
+            CoroutineRunner.Instance.StartCoroutine(ShakeTextRoutine());
         }
     }
 
