@@ -32,7 +32,7 @@ public class PieceRegistry : MonoBehaviour
 
     public void Initialize(Bounds boardBounds)
     {
-        Scaler.ApplyScaledYPos(spawnPoint);       // who initializes this? you could probably get the scale
+        Scaler.ApplyScaledYPos(spawnPoint);
 
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;

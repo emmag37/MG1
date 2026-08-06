@@ -1,12 +1,6 @@
 using UnityEngine;
 
-// does this have to be monobehaviour??
-// what does this even do??
-// also, could this become static potentially
-
-// really just adjusts the camera's orthographic size, locking the width
-
-// delete this whole class in favor of the static one
+// delete this class and rename the file
 public class CameraWidthLock : MonoBehaviour
 {
     public float OrthoSize { get; private set; }    // remove
