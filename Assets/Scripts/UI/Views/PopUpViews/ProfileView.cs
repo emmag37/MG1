@@ -26,14 +26,18 @@ public class ProfileView : PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-    private string username;
 
+    private UIUsernameInputField usernameInputField;
+
+    /*
+    private string username;
     Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
     {
         { InvalidInputType.Short, "Username must be at least 3 characters" },
         { InvalidInputType.SpecialChars, "Only letters, numbers, and underscores allowed" },
         { InvalidInputType.Profanity, "That username isn’t allowed" }
     };
+    */
 
     private UIAltVertScrollList<int> scoreHistoryScrollList;
 
@@ -55,12 +59,14 @@ public class ProfileView : PopUpView
     {
         base.Initialize(host);
 
-        UIButtonFactory.EditInput(editUsernameButton, usernameInput);
+        UIButtonFactory.EditInput(editUsernameButton, usernameInput);       // could potentially move this to my input field script
         UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
 
         scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2);
+        usernameInputField = new UIUsernameInputField(usernameInput, invalidInput, (string value) => Host.PatchUpdate(new UsernamePatch(value)));
 
         // remove
+        /*
         usernameInput.onSubmit.AddListener(value =>
         {
             UpdateUsername(value);
@@ -74,6 +80,7 @@ public class ProfileView : PopUpView
         {
             invalidInput.gameObject.SetActive(false);
         });
+        */
     }
 
     // ==================================================
@@ -95,11 +102,11 @@ public class ProfileView : PopUpView
             return;
         }
 
-        username = profile.Username;    // remove
+        //username = profile.Username;    // remove
+        //usernameInput.text = username;      // remove
 
-        usernameInput.text = username;      // remove
+        usernameInputField.SetUsername(name);
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
-
         scoreHistoryScrollList.Populate(profile.ScoreList.ROList);
     }
 
@@ -107,7 +114,7 @@ public class ProfileView : PopUpView
     // ==================================================
     // Private Methods
     // ==================================================
-    
+    /*
     private void UpdateUsername(string name)
     {
         InvalidInputType error = UsernameValidator.IsUsernameValid(name);
@@ -128,11 +135,12 @@ public class ProfileView : PopUpView
             StartCoroutine(ShakeTextRoutine());
         }
     }
-
+    */
     // ==================================================
     // Coroutines
     // ==================================================
 
+    /*
     IEnumerator ShakeTextRoutine(float duration = 0.3f, float magnitude = 8f)
     {
         Vector3 originalPos = usernameInput.textComponent.transform.localPosition;
@@ -149,4 +157,5 @@ public class ProfileView : PopUpView
 
         usernameInput.textComponent.transform.localPosition = originalPos;
     }
+    */
 }

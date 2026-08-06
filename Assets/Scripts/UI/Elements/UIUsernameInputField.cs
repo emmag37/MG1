@@ -1,11 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// figure out patch update
-// figure out the coroutine
 
 public class UIUsernameInputField
 {
@@ -13,6 +12,8 @@ public class UIUsernameInputField
 
     private TMP_InputField inputField;
     private Text invalidInput;
+
+    private Action<string> action;
 
     private string username;
     private Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
@@ -25,10 +26,12 @@ public class UIUsernameInputField
 
     // public methods
 
-    public UIUsernameInputField(TMP_InputField inputField, Text invalidInput)
+    public UIUsernameInputField(TMP_InputField inputField, Text invalidInput, Action<string> action)
     {
         this.inputField = inputField;
         this.invalidInput = invalidInput;
+
+        this.action = action;
 
         inputField.onSubmit.AddListener(value =>
         {
@@ -61,8 +64,10 @@ public class UIUsernameInputField
         {
             Debug.Log("send username patch");
 
+            username = name;
             invalidInput.gameObject.SetActive(false);
-            //Host.PatchUpdate(new UsernamePatch(name));
+
+            action?.Invoke(name);
         }
         else
         {

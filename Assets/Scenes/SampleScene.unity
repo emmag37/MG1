@@ -2513,7 +2513,6 @@ GameObject:
   - component: {fileID: 193603939}
   - component: {fileID: 193603938}
   - component: {fileID: 193603937}
-  - component: {fileID: 193603940}
   m_Layer: 5
   m_Name: Score History Scroll View
   m_TagString: Untagged
@@ -2610,21 +2609,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 193603935}
   m_CullTransparentMesh: 1
---- !u!114 &193603940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193603935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e412ad0cce934768b3c3f018d7e0750, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScoreHistoryScrollList
-  content: {fileID: 653725493}
-  listItem: {fileID: 6292988861838853260, guid: e3e857e5c860b44468b426f39a345881, type: 3}
-  alternateListItem: {fileID: 6292988861838853260, guid: 272c16fdeb54f4f0f8acd626c28fdf64, type: 3}
 --- !u!1001 &199064725
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3539,7 +3523,6 @@ GameObject:
   - component: {fileID: 305109431}
   - component: {fileID: 305109430}
   - component: {fileID: 305109433}
-  - component: {fileID: 305109434}
   m_Layer: 5
   m_Name: Leaderboard View
   m_TagString: Untagged
@@ -3647,20 +3630,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LeaderboardView
   popUpType: 4
   exitButton: {fileID: 1353513427}
---- !u!114 &305109434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 305109426}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccce96eabc0e04d1186c85a84e79596e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LeaderboardScrollList
-  content: {fileID: 1479952829}
-  listItem: {fileID: 6292988861838853260, guid: 8eef3d4c0223943baa57ef2ff5c0f395, type: 3}
 --- !u!1 &331857020
 GameObject:
   m_ObjectHideFlags: 0
@@ -7882,50 +7851,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87867ecf35a8c4731949dfb8c6dd95a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Arrow
---- !u!1 &1013720841
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1013720843}
-  - component: {fileID: 1013720842}
-  m_Layer: 0
-  m_Name: AudioManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1013720842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1013720841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ddac7a094a5d40f9a4c1d788504363d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SoundManager
---- !u!4 &1013720843
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1013720841}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1026586114
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16954,7 +16879,6 @@ SceneRoots:
   - {fileID: 97706845}
   - {fileID: 1811068633}
   - {fileID: 2022480357}
-  - {fileID: 1013720843}
   - {fileID: 230092282}
   - {fileID: 779006562}
   - {fileID: 1582238096}
