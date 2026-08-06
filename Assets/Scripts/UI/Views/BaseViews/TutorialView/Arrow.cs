@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// todo: fix this without cells, will do when you fix the rest of the tutorial
+// this is basically just a scaler with an index property
+
 public class Arrow : MonoBehaviour
 {
     public Vector2Int Index;

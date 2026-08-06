@@ -1,9 +1,9 @@
 using UnityEngine;
 
+// why is this a monobehaviour?
+
 public class BackgroundScaler : MonoBehaviour
 {
-    private const float RefOrtho = 9.6f;
-
     private CameraWidthLock cameraWidthLock;
 
     private void Start()
@@ -19,7 +19,7 @@ public class BackgroundScaler : MonoBehaviour
 
         if (cameraWidthLock.OrthoSize == 0) cameraWidthLock.ApplyOrthographicSize();
 
-        float scale = cameraWidthLock.OrthoSize / RefOrtho; 
+        float scale = cameraWidthLock.OrthoSize / UIConstants.ReferenceOrtho; 
         transform.localScale = new Vector3(
             scale,
             scale,

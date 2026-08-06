@@ -1,14 +1,12 @@
 using UnityEngine;
 
-// todo: fix arrows
+
 public class SceneView : MonoBehaviour
 {
     // ================================
     // Inspector Fields
     // ================================
-
     [SerializeField] private Arrow[] arrows;
-
 
     // ================================
     // Public Methods
