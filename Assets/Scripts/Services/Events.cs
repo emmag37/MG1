@@ -1,12 +1,5 @@
 using UnityEngine;
 
-// ==================================================
-// Board Events
-// ==================================================
-
-// update player view
-public struct PlacePlayerEvent { public Vector2Int Index; }  // tutorial controller view
-
 
 // ==================================================
 // Player Events

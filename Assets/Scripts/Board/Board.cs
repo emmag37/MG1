@@ -16,7 +16,7 @@ public class Board : MonoBehaviour
     // Events
     // ================================
     public event Action<int, int> FullBoard;        // score, highScore
-    public event Action TutorialStepComplete;
+    public event Action<Vector2Int> TutorialStepComplete;   // index of piece placed
 
     // ================================
     // Inspector Fields
@@ -164,7 +164,8 @@ public class Board : MonoBehaviour
     // handles connection between logic and piece registry, crux that initiates a turn
     private void OnPlayerReleased(PlayerReleasedEvent e)
     {
-        Debug.Assert(!runTutorial && e.Color == pieceRegistry.Colors.PlayerColor, "player color mismatch");
+        if (!runTutorial)
+            Debug.Assert(e.Color == pieceRegistry.Colors.PlayerColor, "player color mismatch");
         
         Vector2Int index = BoardGeometry.TransformToBoardIndex(e.PlayerPosition);
         int currentScore = ExecuteTurn(e.Color, index);
@@ -173,7 +174,7 @@ public class Board : MonoBehaviour
 
         if (runTutorial)
         {
-            if (currentScore == 0) TutorialStepComplete?.Invoke();  // if points scored, invoke is timed to animation
+            if (currentScore == 0) TutorialStepComplete?.Invoke(index);  // if points scored, invoke is timed to animation
             return;
         }
 
@@ -201,7 +202,7 @@ public class Board : MonoBehaviour
         // run score animation
         if (runTutorial)
         {
-            TutorialStepComplete?.Invoke();
+            TutorialStepComplete?.Invoke(index);
         }
         else
         {
@@ -227,13 +228,15 @@ public class Board : MonoBehaviour
         Vector3 newPosition = BoardGeometry.BoardIndexToTransform(index);
         pieceRegistry.PlacePlayer(newPosition, index);
 
-        if (result.FullBoard)
+        if (runTutorial)
+        {
+            hUD.Reset();   // tutorial mode ALWAYS returns points scored, not current score
+        }
+        else if (result.FullBoard)
         {
             GameOver();
             return -1;
         }
-
-        if (runTutorial) hUD.Reset();   // tutorial mode ALWAYS returns points scored, not current score
         
         int currentScore = hUD.AddPoints(result.Points);
         if (result.Points > 0)

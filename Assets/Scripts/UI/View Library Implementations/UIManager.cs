@@ -141,6 +141,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
         else if (type == BaseViewType.Tutorial)
         {
+            Debug.Log("start tutorial");
             tutorial.StartTutorial();
         }
         else if (type == BaseViewType.Home && baseViewController.PeekViewType() != BaseViewType.None)
@@ -182,7 +183,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
         if (profile.Avatar == avatar) return;
 
         profile.Avatar = avatar;
-
         baseViewController.UpdateView(BaseViewType.Home, profile);
         popUpViewController.UpdateView(PopUpViewType.Profile, profile);
     }

@@ -35,8 +35,11 @@ public class GameBootstrap : MonoBehaviour
     private void Awake()
     {
         // load data
-        hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
-        inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
+        //hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
+        //inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
+
+        hasLaunched = false;
+        inProgress = false;
 
         GameData gameData;
         if (inProgress)
@@ -74,6 +77,8 @@ public class GameBootstrap : MonoBehaviour
         BaseViewType startScreen = BaseViewType.Home;
         if (!hasLaunched)
         {
+            Debug.Log("launch tutorial");
+
             startScreen = BaseViewType.Tutorial;
             PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);
         }

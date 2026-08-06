@@ -86,7 +86,7 @@ public class PieceRegistry : MonoBehaviour
         playerPiece = null;
 
         ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.PlacePlayer);
-        EventBus.Publish(new PlacePlayerEvent { Index = index } );
+        
     }
 
     public void ReturnPlayerToStart()

@@ -15,20 +15,6 @@ public class TutorialViewController : MonoBehaviour
     private int currentScene = 0;
 
     // ==================================================
-    // Unity Lifecycle Methods
-    // ==================================================
-
-    void OnEnable()
-    {
-        EventBus.Subscribe<PlacePlayerEvent>(OnPlacePlayer);
-    }
-
-    void OnDisable()
-    {
-        EventBus.Unsubscribe<PlacePlayerEvent>(OnPlacePlayer);
-    }
-
-    // ==================================================
     // Public Methods
     // ==================================================
 
@@ -49,17 +35,9 @@ public class TutorialViewController : MonoBehaviour
         scenes[currentScene].gameObject.SetActive(true);
     }
 
-    // ==================================================
-    // Event Handlers
-    // ==================================================
-
-    // function to remove arrow when the player is placed
-    private void OnPlacePlayer(PlacePlayerEvent e)
+    public void RemoveArrow(Vector2Int index)
     {
-        // remove the arrow associated with the index that was just placed
-        scenes[currentScene].RemoveArrow(e.Index);
+        Debug.Log("remove arrow");
+        scenes[currentScene].RemoveArrow(index);
     }
-
-    
-
 }

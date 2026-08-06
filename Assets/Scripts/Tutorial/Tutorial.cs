@@ -59,8 +59,10 @@ public class Tutorial : MonoBehaviour
     // Event Handlers
     // ==================================================
 
-    private void HandleStepComplete()
+    private void HandleStepComplete(Vector2Int index)
     {
+        viewController.RemoveArrow(index);
+
         if (turnsLeftInStep == 0) // base case
         {
             viewController.ShowNextStep(currentStep);
