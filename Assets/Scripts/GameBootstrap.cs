@@ -37,11 +37,8 @@ public class GameBootstrap : MonoBehaviour
     private void Awake()
     {
         // load data
-        //hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
-        //inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
-
-        hasLaunched = false;
-        inProgress = false;
+        hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
+        inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
 
         GameData gameData;
         if (inProgress)
@@ -69,6 +66,7 @@ public class GameBootstrap : MonoBehaviour
         ServiceLocator.Register<IVibration>(vibrationService);
 
         // initialize systems
+        // initialize the piece pool
         board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);
         if (!hasLaunched)
             tutorial.Initialize(board);

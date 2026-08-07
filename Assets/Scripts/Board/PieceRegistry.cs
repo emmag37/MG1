@@ -2,7 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// could potentially separate out some of this logic into a piece factory class
+// replace all create/destroy with a call to pool
+    // this script will no longer need the board bounds/spawn point
+
+// i'd like for this to no longer be a monobehaviour
 
 public class PieceRegistry : MonoBehaviour
 {
@@ -23,6 +26,7 @@ public class PieceRegistry : MonoBehaviour
     private Bounds playerBounds;
 
     // eventually turn this into an object pool to reuse objects
+    // replace with an instance of PiecePool
     private Piece[] pieces = new Piece[GameConstants.RowSize * GameConstants.RowSize];
 
 
@@ -95,7 +99,7 @@ public class PieceRegistry : MonoBehaviour
 
     public void PausePlayer(bool pause)
     {
-        playerPiece.Pause(pause);   
+        playerPiece.Pause(pause);
     }
 
 

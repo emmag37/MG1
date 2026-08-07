@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// this is basically just a scaler with an index property
 
 public class Arrow : MonoBehaviour
 {
