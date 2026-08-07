@@ -6,7 +6,6 @@ using PlayResult = BoardLogic.PlayResult;
 
 
 [RequireComponent(typeof(SpriteRenderer))]
-[RequireComponent(typeof(PieceRegistry))]
 [RequireComponent(typeof(GhostPreview))]
 public class Board : MonoBehaviour
 {
@@ -75,14 +74,15 @@ public class Board : MonoBehaviour
 
         // cache components
         spriteRenderer = GetComponent<SpriteRenderer>();
-        pieceRegistry = GetComponent<PieceRegistry>();
         ghostPreview = GetComponent<GhostPreview>();
 
         // initialize components
         BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);  // static class now
+
         ghostPreview.Initialize();
         hUD.Initialize(highScore);
-        pieceRegistry.Initialize(spriteRenderer.bounds, spawnPoint, piecePrefab);    // add values to initialize the active game state
+
+        pieceRegistry = new PieceRegistry(spriteRenderer.bounds, spawnPoint, piecePrefab);
 
         // load systems
         if (inProgress)

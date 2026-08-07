@@ -13824,7 +13824,6 @@ GameObject:
   - component: {fileID: 1798150610}
   - component: {fileID: 1798150611}
   - component: {fileID: 1798150614}
-  - component: {fileID: 1798150612}
   - component: {fileID: 1798150615}
   m_Layer: 6
   m_Name: Board
@@ -13967,20 +13966,6 @@ SpriteMask:
   m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
   m_MaskSource: 0
---- !u!114 &1798150612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798150608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3c4f0fe644de4ce8a6ac0ed8353828e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PieceRegistry
-  spawnPoint: {fileID: 801581748}
-  piecePrefab: {fileID: 8968158989547615814, guid: 30e2eda7f13b247728427c3a27c12b2a, type: 3}
 --- !u!114 &1798150614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13995,6 +13980,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoardView
   scoreAnimation: {fileID: 456301254}
   hUD: {fileID: 1811068634}
+  spawnPoint: {fileID: 801581748}
+  piecePrefab: {fileID: 8968158989547615814, guid: 30e2eda7f13b247728427c3a27c12b2a, type: 3}
   inProgress: 0
 --- !u!114 &1798150615
 MonoBehaviour:

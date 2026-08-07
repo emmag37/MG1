@@ -2,20 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// replace all create/destroy with a call to pool
-    // this script will no longer need the board bounds/spawn point
 
-// i'd like for this to no longer be a monobehaviour
-
-public class PieceRegistry : MonoBehaviour
+public class PieceRegistry
 {
     public PlayerColors Colors => currentColors;
-
-    // ==================================================
-    // Inspector Fields
-    // ==================================================
-    //[SerializeField] private Transform spawnPoint;
-    //[SerializeField] private GameObject piecePrefab;
 
     // ==================================================
     // Private Fields
@@ -26,7 +16,6 @@ public class PieceRegistry : MonoBehaviour
     private Bounds playerBounds;
 
     private Piece[] registry = new Piece[GameConstants.RowSize * GameConstants.RowSize];  // registry
-
     private PiecePool pool; // pool where objects are stored in memory
 
 
@@ -34,7 +23,7 @@ public class PieceRegistry : MonoBehaviour
     // Initializer
     // ==================================================
 
-    public void Initialize(Bounds boardBounds, Transform spawnPoint, GameObject piecePrefab)
+    public PieceRegistry(Bounds boardBounds, Transform spawnPoint, GameObject piecePrefab)
     {
         // calculate spawn point and bounds
         Scaler.ApplyScaledYPos(spawnPoint);
