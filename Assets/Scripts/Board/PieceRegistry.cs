@@ -63,7 +63,6 @@ public class PieceRegistry
         }
 
         currentColors.PlayerColor = color.Value;
-
         playerPiece = pool.CreatePlayer(color.Value);
 
         return currentColors.NextColor;
@@ -118,6 +117,7 @@ public class PieceRegistry
             playerPiece = null;
         }
 
+        // registry should defualt all values to null
         for (int i = 0; i < registry.Length; i++)
         {
             Piece piece = registry[i];

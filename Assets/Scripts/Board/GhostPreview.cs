@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-// deprecate the GhostPreviewEvent on the event bus
+// strong contender to remove mono behaviour, esp since you have a coroutine runner
 public class GhostPreview : MonoBehaviour
 {
     // ================================

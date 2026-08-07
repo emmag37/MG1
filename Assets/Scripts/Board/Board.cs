@@ -32,13 +32,12 @@ public class Board : MonoBehaviour
 
     private IAudio audioService;
 
-    // own its own instance of game data
-    private GameData data;
+    private GameData data;  // own its own instance of game data
 
     private BoardLogic logic = new BoardLogic();
+    private PieceRegistry pieceRegistry;
 
     private SpriteRenderer spriteRenderer;
-    private PieceRegistry pieceRegistry;
     private GhostPreview ghostPreview;
 
     private bool runTutorial;
@@ -126,7 +125,7 @@ public class Board : MonoBehaviour
         {
             Debug.Log("prepare fresh game");
 
-            Reset();
+            Reset();    // crash
             inProgress = true;
 
             SpawnPlayer();

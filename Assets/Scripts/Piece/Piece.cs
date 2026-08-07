@@ -1,13 +1,20 @@
 using UnityEngine;
 using System;
 
-// script is clean and ready to remove event bus
+// maybe add the sorting orders to game constants
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Draggable))]
 [RequireComponent(typeof(Animator))]
 public class Piece : MonoBehaviour
 {
+    // ==================================================
+    // Constants
+    // ==================================================
+
+    private const int PlayerOrder = 4;
+    private const int CellOrder = 2;
+
     // ==================================================
     // Local Events
     // ==================================================
@@ -55,8 +62,12 @@ public class Piece : MonoBehaviour
     {
         // ensure that the object was already initialized
 
+        // sets back to player if was cell previously
+        dragAndDrop.enabled = true;
+        spriteRenderer.sortingOrder = PlayerOrder;    // object reference not set to instance of object
+
         // initialize set values
-        Color = playerColor;
+        SetColor(playerColor);
         transform.position = spawnPoint;
 
         // subscribe to events
@@ -68,10 +79,10 @@ public class Piece : MonoBehaviour
     {
         // ensure that the object was already initialized
 
-        Color = color;
+        SetColor(color);
         transform.position = position;
 
-        spriteRenderer.sortingOrder = 2;
+        spriteRenderer.sortingOrder = CellOrder;
         dragAndDrop.enabled = false;
     }
 
@@ -83,13 +94,11 @@ public class Piece : MonoBehaviour
     // ==================================================
 
     /// <summary>
-	/// Sets the cell sprite to the given color.
+	/// Sets the piece sprite to the given color.
 	/// </summary>
-	/// <param name="newColor">New color for the cell.</param>
+	/// <param name="newColor">New color for the piece.</param>
     public void SetColor(CellColor newColor)
     {
-        Debug.Assert(!dragAndDrop.enabled, "Attempted to set color on active player");
-
         switch (newColor)
         {
             case CellColor.Shadow:
@@ -151,8 +160,6 @@ public class Piece : MonoBehaviour
 
     private void OnAnimationComplete()
     {
-        //SetColor(CellColor.Empty);
-
         PopFinished?.Invoke(this);
     }
 

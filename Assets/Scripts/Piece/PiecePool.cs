@@ -3,7 +3,6 @@ using UnityEngine;
 // can create players/cells (all of the same type piece)
     // consider subclassing, this is starting to get confusing
 
-
 public class PiecePool
 {
     // ==================================================
@@ -57,7 +56,9 @@ public class PiecePool
 
     public void Remove(Piece piece)
     {
-        piece.gameObject.SetActive(false);
+        if (piece == null) return;      // do this for now, more robust null check in the future
+
+        piece.gameObject.SetActive(false);      // crash here
 
         AppendToFreeList(piece);
     }
@@ -68,6 +69,8 @@ public class PiecePool
 
     private void AppendToFreeList(Piece piece)
     {
+        Debug.Log("append to free list");
+
         if (head == null)
         {
             head = piece;
@@ -86,6 +89,12 @@ public class PiecePool
 
     private Piece GetFreePiece()
     {
+        if (head == null)
+        {
+            Debug.Log("no new pieces");
+            return null;
+        }
+
         // return the head of free list, removing it from the free list
         Piece piece = head;
 

@@ -40,6 +40,8 @@ public class GameBootstrap : MonoBehaviour
         hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
         inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
 
+        inProgress = false;
+
         GameData gameData;
         if (inProgress)
             gameData = discService.Load<GameData>(DataFiles.GameData);
