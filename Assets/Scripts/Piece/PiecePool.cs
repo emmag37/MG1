@@ -41,6 +41,7 @@ public class PiecePool
     public Piece CreatePlayer(CellColor color)
     {
         Piece player = GetFreePiece();
+        
         player.InitializeAsPlayer(color);
 
         return player;

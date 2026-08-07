@@ -10,34 +10,37 @@ public class UIVerticalScrollList<T>
 {
     protected Transform content;
     protected GameObject itemView;    // prefab - must have component that extends IScrollItem
+    protected int maxItems;
+
+    protected IScrollItem<T>[] scrollItems;
     
-    public UIVerticalScrollList(Transform content, GameObject itemView)
+    public UIVerticalScrollList(Transform content, GameObject itemView, int maxItems)
     {
         this.content = content;
         this.itemView = itemView;
+        this.maxItems = maxItems;
+
+        scrollItems = new IScrollItem<T>[maxItems];
     }
 
-    public void Populate(IReadOnlyList<T> dataList)
+    // 2-phase construction
+    public virtual void Populate()
     {
-        Clear();
-
-        for (int i = 0; i < dataList.Count; i++)
+        for (int i = 0; i < maxItems; i++)
         {
-            CreateItem(dataList[i], i);
+            scrollItems[i] = Object.Instantiate(itemView, content).GetComponent<IScrollItem<T>>();
+            scrollItems[i].GameObject.SetActive(false);
         }
     }
 
-    protected virtual void CreateItem(T data, int index)
+    public void SetList(IReadOnlyList<T> dataList)
     {
-        IScrollItem<T> scrollItem = Object.Instantiate(itemView, content).GetComponent<IScrollItem<T>>();
-        scrollItem.Set(data, index);
-    }
+        // should you actually clear these? is clear necessary? 
 
-    private void Clear()
-    {
-        foreach (Transform child in content)
+        for (int i = 0; i < dataList.Count; i++)
         {
-            Object.Destroy(child.gameObject);
+            scrollItems[i].GameObject.SetActive(true);
+            scrollItems[i].Set(dataList[i], i);
         }
     }
 }

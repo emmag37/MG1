@@ -28,17 +28,6 @@ public class ProfileView : PopUpView
     // ==================================================
 
     private UIUsernameInputField usernameInputField;
-
-    /*
-    private string username;
-    Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
-    {
-        { InvalidInputType.Short, "Username must be at least 3 characters" },
-        { InvalidInputType.SpecialChars, "Only letters, numbers, and underscores allowed" },
-        { InvalidInputType.Profanity, "That username isn’t allowed" }
-    };
-    */
-
     private UIAltVertScrollList<int> scoreHistoryScrollList;
 
     // ==================================================
@@ -62,7 +51,9 @@ public class ProfileView : PopUpView
         UIButtonFactory.EditInput(editUsernameButton, usernameInput);       // could potentially move this to my input field script
         UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
 
-        scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2);
+        scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2, 10);   // put this as a const somewhere else
+        scoreHistoryScrollList.Populate();
+
         usernameInputField = new UIUsernameInputField(usernameInput, invalidInput, (string value) => Host.PatchUpdate(new UsernamePatch(value)));
     }
 
@@ -87,6 +78,6 @@ public class ProfileView : PopUpView
 
         usernameInputField.SetUsername(profile.Username);
         avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
-        scoreHistoryScrollList.Populate(profile.ScoreList.ROList);
+        scoreHistoryScrollList.SetList(profile.ScoreList.ROList);
     }
 }

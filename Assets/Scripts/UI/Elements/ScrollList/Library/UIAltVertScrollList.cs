@@ -5,20 +5,22 @@ public class UIAltVertScrollList<T> : UIVerticalScrollList<T>
 {
     private GameObject itemView2;
 
-    public UIAltVertScrollList(Transform content, GameObject itemView1, GameObject itemView2)
-        : base(content, itemView1)
+    public UIAltVertScrollList(Transform content, GameObject itemView1, GameObject itemView2, int maxItems)
+        : base(content, itemView1, maxItems)
     {
         this.itemView2 = itemView2;
     }
 
-    protected override void CreateItem(T data, int index)
+    public override void Populate()
     {
-        IScrollItem<T> scrollItem;
-        if (index % 2 == 0)
-            scrollItem = Object.Instantiate(itemView, content).GetComponent<IScrollItem<T>>();
-        else
-            scrollItem = Object.Instantiate(itemView2, content).GetComponent<IScrollItem<T>>();
+        for (int i = 0; i < maxItems; i++)
+        {
+            if (i % 2 == 0)
+                scrollItems[i] = Object.Instantiate(itemView, content).GetComponent<IScrollItem<T>>();
+            else
+                scrollItems[i] = Object.Instantiate(itemView2, content).GetComponent<IScrollItem<T>>();
 
-        scrollItem.Set(data, index);
+            scrollItems[i].GameObject.SetActive(false);
+        }
     }
 }
