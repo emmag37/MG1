@@ -24,6 +24,9 @@ public class Board : MonoBehaviour
     [SerializeField] private ScoreAnimation scoreAnimation;
     [SerializeField] private HUDController hUD;
 
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private GameObject piecePrefab;
+
     // ================================
     // Private Fields
     // ================================
@@ -79,7 +82,7 @@ public class Board : MonoBehaviour
         BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);  // static class now
         ghostPreview.Initialize();
         hUD.Initialize(highScore);
-        pieceRegistry.Initialize(spriteRenderer.bounds);    // add values to initialize the active game state
+        pieceRegistry.Initialize(spriteRenderer.bounds, spawnPoint, piecePrefab);    // add values to initialize the active game state
 
         // load systems
         if (inProgress)

@@ -51,7 +51,7 @@ public class Piece : MonoBehaviour
         dragAndDrop.Initialize(spriteRenderer, boundaries);
     }
 
-    public void InitializeAsPlayer(CellColor playerColor, Bounds boundaries)    // deprecate boundaries from this func
+    public void InitializeAsPlayer(CellColor playerColor)    // deprecate boundaries from this func
     {
         // ensure that the object was already initialized
 
@@ -59,22 +59,17 @@ public class Piece : MonoBehaviour
         Color = playerColor;
         transform.position = spawnPoint;
 
-        // cache and initialized attached components
-        //InitializeComponents(boundaries);
-
         // subscribe to events
         dragAndDrop.StartDrag += HandleStartDrag;
         dragAndDrop.Released += HandleReleased;
     }
 
-    public void InitializeAsCell(CellColor color, Vector3 position, Bounds boundaries)
+    public void InitializeAsCell(CellColor color, Vector3 position)
     {
         // ensure that the object was already initialized
 
         Color = color;
         transform.position = position;
-
-        //InitializeComponents(boundaries);
 
         spriteRenderer.sortingOrder = 2;
         dragAndDrop.enabled = false;
@@ -156,11 +151,9 @@ public class Piece : MonoBehaviour
 
     private void OnAnimationComplete()
     {
-        SetColor(CellColor.Empty);
+        //SetColor(CellColor.Empty);
 
         PopFinished?.Invoke(this);
-
-        Destroy(gameObject);    // eventually remove once you put in your object pool
     }
 
 

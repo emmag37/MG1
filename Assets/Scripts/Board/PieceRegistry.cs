@@ -14,8 +14,8 @@ public class PieceRegistry : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private GameObject piecePrefab;
+    //[SerializeField] private Transform spawnPoint;
+    //[SerializeField] private GameObject piecePrefab;
 
     // ==================================================
     // Private Fields
@@ -25,17 +25,18 @@ public class PieceRegistry : MonoBehaviour
     private Piece playerPiece;
     private Bounds playerBounds;
 
-    // eventually turn this into an object pool to reuse objects
-    // replace with an instance of PiecePool
-    private Piece[] pieces = new Piece[GameConstants.RowSize * GameConstants.RowSize];
+    private Piece[] registry = new Piece[GameConstants.RowSize * GameConstants.RowSize];  // registry
+
+    private PiecePool pool; // pool where objects are stored in memory
 
 
     // ==================================================
     // Initializer
     // ==================================================
 
-    public void Initialize(Bounds boardBounds)
+    public void Initialize(Bounds boardBounds, Transform spawnPoint, GameObject piecePrefab)
     {
+        // calculate spawn point and bounds
         Scaler.ApplyScaledYPos(spawnPoint);
 
         Vector3 min = boardBounds.min;
@@ -43,6 +44,9 @@ public class PieceRegistry : MonoBehaviour
 
         playerBounds = boardBounds;
         playerBounds.SetMinMax(min, playerBounds.max);
+
+        // initialize memory
+        pool = new PiecePool(piecePrefab, playerBounds, spawnPoint.position);
 
         currentColors.Reset();      // initializes the 'next' color
     }
@@ -71,8 +75,7 @@ public class PieceRegistry : MonoBehaviour
 
         currentColors.PlayerColor = color.Value;
 
-        playerPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-        playerPiece.InitializeAsPlayer(color.Value, playerBounds);
+        playerPiece = pool.CreatePlayer(color.Value);
 
         return currentColors.NextColor;
     }
@@ -83,9 +86,9 @@ public class PieceRegistry : MonoBehaviour
 
         int idx = TwoDimToFlatIndex(index);
         if (playerPiece.Color == CellColor.Mask)
-            DestroyPieceAt(idx);
+            pool.Remove(registry[idx]);
 
-        pieces[idx] = playerPiece;
+        registry[idx] = playerPiece;
         playerPiece = null;
 
         ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.PlacePlayer);
@@ -110,9 +113,9 @@ public class PieceRegistry : MonoBehaviour
     public bool TrySetPieceColor(Vector2Int index, CellColor color)
     {
         int idx = TwoDimToFlatIndex(index);
-        if (pieces[idx] == null) return false;
+        if (registry[idx] == null) return false;
 
-        pieces[idx].SetColor(color);
+        registry[idx].SetColor(color);
         return true;
     }
 
@@ -120,11 +123,18 @@ public class PieceRegistry : MonoBehaviour
     {
         currentColors.Reset();
 
-        if (playerPiece != null) DestroyPlayer();
-
-        for (int i = 0; i < pieces.Length; i++)
+        if (playerPiece != null)
         {
-            DestroyPieceAt(i);
+            pool.Remove(playerPiece);
+            playerPiece = null;
+        }
+
+        for (int i = 0; i < registry.Length; i++)
+        {
+            Piece piece = registry[i];
+            registry[i] = null;
+
+            pool.Remove(piece);
         }
     }
 
@@ -135,11 +145,10 @@ public class PieceRegistry : MonoBehaviour
             Vector2Int index = new Vector2Int(cell.x, cell.y);
             Vector3 position = BoardGeometry.BoardIndexToTransform(index);
 
-            Piece newPiece = Instantiate(piecePrefab, spawnPoint.position, spawnPoint.rotation).GetComponent<Piece>();
-            newPiece.InitializeAsCell((CellColor)cell.color, position, playerBounds);
+            Piece newPiece = pool.CreateCell((CellColor)cell.color, position);
 
             int flatIndex = TwoDimToFlatIndex(index);
-            pieces[flatIndex] = newPiece;
+            registry[flatIndex] = newPiece;
         }
     }
 
@@ -154,12 +163,15 @@ public class PieceRegistry : MonoBehaviour
         {
             cleared++;
             piece.PopFinished -= OnPopFinished;
+
+            pool.Remove(piece); // destroy the piece
         }
 
         // helper
         void PopPieceAt(int row, int col)
         {
-            Piece piece = RemovePieceAt(row, col);
+            Piece piece = RemoveFromRegistry(row, col);  // on pop finished does not know the index, must remove from array here
+
             piece.PopFinished += OnPopFinished;
             piece.Pop();
         }
@@ -180,7 +192,7 @@ public class PieceRegistry : MonoBehaviour
                 PopPieceAt(i, GameConstants.RowSize - 1 - i);
         }
 
-        Piece player = RemovePieceAt(index.x, index.y);
+        Piece player = RemoveFromRegistry(index.x, index.y);
         player.PopFinished += OnPopFinished;
         player.Pop();
 
@@ -201,33 +213,13 @@ public class PieceRegistry : MonoBehaviour
         return new Vector2Int(flatIndex / GameConstants.RowSize, flatIndex % GameConstants.RowSize);
     }
 
-    private void DestroyPlayer()
-    {
-        Debug.Assert(playerPiece != null, "Tried to destroy non-existent player");  // triggers on game over
-
-        Destroy(playerPiece.gameObject);
-        playerPiece = null;
-    }
-
-    private Piece RemovePieceAt(int row, int col)
+    private Piece RemoveFromRegistry(int row, int col)
     {
         int idx = TwoDimToFlatIndex(new Vector2Int(row, col));
-        Piece piece = pieces[idx];
-        pieces[idx] = null;
+        Piece piece = registry[idx];
+        registry[idx] = null;
 
         return piece;
     }
-
-    private void DestroyPieceAt(int index)
-    {
-        if (!pieces[index]) return;
-
-        Vector2Int idx = FlatToTwoDimIndex(index);
-
-        Destroy(pieces[index].gameObject);
-        pieces[index] = null;
-    }
-
-    
 
 }

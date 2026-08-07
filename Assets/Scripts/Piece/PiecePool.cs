@@ -1,7 +1,8 @@
 using UnityEngine;
 
-// creates empty pieces to be used as either a player or a cell
-// note: all pieces in this class will have game object set active to false
+// can create players/cells (all of the same type piece)
+    // consider subclassing, this is starting to get confusing
+
 
 public class PiecePool
 {
@@ -15,8 +16,8 @@ public class PiecePool
     // ==================================================
     private Piece[] pieces = new Piece[GameConstants.RowSize * GameConstants.RowSize + 1];  // game board + player
 
-    private Piece head;
-    private Piece tail;
+    private Piece head = null;
+    private Piece tail = null;
 
 
     // ==================================================
@@ -24,8 +25,7 @@ public class PiecePool
     // ==================================================
 
     // create all game pieces upon board creation
-        // this is good
-    public void Initialize(GameObject piecePrefab, Bounds boardBounds, Vector3 spawnPoint)
+    public PiecePool(GameObject piecePrefab, Bounds boardBounds, Vector3 spawnPoint)
     {
         // eager initialization for all pieces
         for (int i = 0; i < pieces.Length; i++)
@@ -39,21 +39,25 @@ public class PiecePool
         }
     }
 
-    public Piece Create()
+    public Piece CreatePlayer(CellColor color)
     {
-        // return the head of free list, removing it from the free list
-        Piece piece = head;
+        Piece player = GetFreePiece();
+        player.InitializeAsPlayer(color);
 
-        head = piece.Next;
-        piece.Next = null;
-        head.Prev = null;
+        return player;
+    }
 
-        return piece;
+    public Piece CreateCell(CellColor color, Vector3 position)
+    {
+        Piece cell = GetFreePiece();
+        cell.InitializeAsCell(color, position);
+
+        return cell;
     }
 
     public void Remove(Piece piece)
     {
-        Debug.Assert(!piece.gameObject.activeSelf, "piece must be turned off"); // might replace with something else later
+        piece.gameObject.SetActive(false);
 
         AppendToFreeList(piece);
     }
@@ -78,5 +82,19 @@ public class PiecePool
 
         piece.Next = null;
         tail = piece;
+    }
+
+    private Piece GetFreePiece()
+    {
+        // return the head of free list, removing it from the free list
+        Piece piece = head;
+
+        head = piece.Next;
+        piece.Next = null;
+        head.Prev = null;
+
+        piece.gameObject.SetActive(true);
+
+        return piece;
     }
 }

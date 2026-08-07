@@ -66,7 +66,6 @@ public class GameBootstrap : MonoBehaviour
         ServiceLocator.Register<IVibration>(vibrationService);
 
         // initialize systems
-        // initialize the piece pool
         board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);
         if (!hasLaunched)
             tutorial.Initialize(board);
