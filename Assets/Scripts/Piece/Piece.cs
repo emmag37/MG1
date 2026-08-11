@@ -99,21 +99,8 @@ public class Piece : MonoBehaviour
 	/// <param name="newColor">New color for the piece.</param>
     public void SetColor(CellColor newColor)
     {
-        switch (newColor)
-        {
-            case CellColor.Shadow:
-                spriteRenderer.sprite = SpriteDatabase.Instance.GetShadow(Color);
-                break;
-
-            case CellColor.ResetShadow:
-                spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
-                break;
-
-            default:
-                Color = newColor;
-                spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
-                break;
-        }
+        Color = newColor;
+        spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
     }
 
     public void PlacePlayer(Vector3 position)

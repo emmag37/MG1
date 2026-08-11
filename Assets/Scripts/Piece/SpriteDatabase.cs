@@ -32,7 +32,6 @@ public class SpriteDatabase : ScriptableObject
     // Inspector Fields
     // ================================
     [SerializeField] private Sprite[] sprites = new Sprite[GameConstants.NumberColors + 1]; // account for the empty sprite
-    [SerializeField] private Sprite[] shadowSprites = new Sprite[GameConstants.NumberColors + 1];
 
     // ================================
     // Private Fields
@@ -69,15 +68,4 @@ public class SpriteDatabase : ScriptableObject
 
         return sprites[index];
     }
-
-    // shadow indices must match up exactly with sprites
-    public Sprite GetShadow(CellColor color)
-    {
-        int index = (int)color;
-        Debug.Assert(index >= 0 && index < shadowSprites.Length,
-            $"Invalid index {index} for length {shadowSprites.Length}");
-
-        return shadowSprites[index];
-    }
-
 }

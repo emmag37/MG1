@@ -6300,6 +6300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 885d042ca671649b1b39518121055e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameBootstrap
+  loadScreen: {fileID: 2063402628}
   uIManager: {fileID: 230092281}
   board: {fileID: 1798150614}
   tutorial: {fileID: 1582238095}
@@ -15759,7 +15760,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2063402629
 RectTransform:
   m_ObjectHideFlags: 0

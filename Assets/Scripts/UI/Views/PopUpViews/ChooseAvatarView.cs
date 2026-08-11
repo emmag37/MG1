@@ -48,7 +48,7 @@ public class ChooseAvatarView : PopUpView
 
         List<CellColor> colors = Enum.GetValues(typeof(CellColor))
             .Cast<CellColor>()
-            .Where(c => c != CellColor.Empty && c != CellColor.ResetShadow && c != CellColor.Shadow)
+            .Where(c => c != CellColor.Empty)
             .ToList();
 
         colorList = new RingList<CellColor>(colors);

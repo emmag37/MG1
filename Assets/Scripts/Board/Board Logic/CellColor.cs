@@ -12,7 +12,5 @@ public enum CellColor
     Color5,
     Color6,
     Mask,
-    WildCard,
-    Shadow,
-    ResetShadow
+    WildCard
 }
