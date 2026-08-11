@@ -64,6 +64,6 @@ public class HomeView : BaseView
             return;
         }
 
-        avatarImage.sprite = spriteDatabase.GetSprite((CellColor)profile.Avatar);
+        avatarImage.sprite = spriteDatabase.GetSprite((int)profile.Avatar);
     }
 }

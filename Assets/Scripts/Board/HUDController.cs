@@ -73,7 +73,7 @@ public class HUDController : MonoBehaviour
     public void SetPlayerPreview(CellColor nextColor)
     {
         Debug.Log($"Preview color: {nextColor}");
-        playerPreview.sprite = spriteDatabase.GetSprite(nextColor);
+        playerPreview.sprite = spriteDatabase.GetSprite((int)nextColor);
     }
 
     public int AddPoints(int points)

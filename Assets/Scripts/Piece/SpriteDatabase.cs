@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public interface ISpriteDatabase
 {
-    Sprite GetSprite(CellColor color);
+    Sprite GetSprite(int key);
 }
 
 /// <summary>
@@ -19,8 +19,7 @@ public class SpriteDatabase : ScriptableObject, ISpriteDatabase
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private Sprite[] sprites = new Sprite[GameConstants.NumberColors + 1]; // account for the empty sprite
-
+    [SerializeField] private Sprite[] sprites;
 
     // ================================
     // Unity Lifecycle
@@ -44,12 +43,11 @@ public class SpriteDatabase : ScriptableObject, ISpriteDatabase
 	/// </summary>
 	/// <param name="color">Color sprite to get</param>
 	/// <returns>The sprite object associated with color</returns>
-    public Sprite GetSprite(CellColor color)
+    public Sprite GetSprite(int key)
     {
-        int index = (int)color;
-        Debug.Assert(index >= 0 && index < sprites.Length,
-            $"Invalid index {index} for length {sprites.Length}");
+        Debug.Assert(key >= 0 && key < sprites.Length,
+            $"Invalid index {key} for length {sprites.Length}");
 
-        return sprites[index];
+        return sprites[key];
     }
 }

@@ -84,7 +84,7 @@ public class ChooseAvatarView : PopUpView
 
     private void SetAvatarSprite(CellColor color)
     {
-        avatarImage.sprite = spriteDatabase.GetSprite(color);
+        avatarImage.sprite = spriteDatabase.GetSprite((int)color);
         avatar = color;
     }
 }

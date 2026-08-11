@@ -81,7 +81,7 @@ public class ProfileView : PopUpView
         }
 
         usernameInputField.SetUsername(profile.Username);
-        avatarImage.sprite = spriteDatabase.GetSprite((CellColor)profile.Avatar);
+        avatarImage.sprite = spriteDatabase.GetSprite((int)profile.Avatar);
         scoreHistoryScrollList.SetList(profile.ScoreList.ROList);
     }
 }

@@ -100,7 +100,7 @@ public class Piece : MonoBehaviour
     public void SetColor(CellColor newColor)
     {
         Color = newColor;
-        spriteRenderer.sprite = spriteDatabase.GetSprite(Color);
+        spriteRenderer.sprite = spriteDatabase.GetSprite((int)Color);
     }
 
     public void PlacePlayer(Vector3 position)
