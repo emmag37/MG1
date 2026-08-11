@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-// todo: reimplement update avatar
 public class ChooseAvatarView : PopUpView
 {
     // ==================================================
@@ -27,6 +26,8 @@ public class ChooseAvatarView : PopUpView
     private UIButton rightUIButton;
     private UIButton chooseUIButton;
 
+    private ISpriteDatabase spriteDatabase;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -45,6 +46,8 @@ public class ChooseAvatarView : PopUpView
     protected override void Awake()
     {
         base.Awake();
+
+        spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
         List<CellColor> colors = Enum.GetValues(typeof(CellColor))
             .Cast<CellColor>()
@@ -81,7 +84,7 @@ public class ChooseAvatarView : PopUpView
 
     private void SetAvatarSprite(CellColor color)
     {
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite(color);
+        avatarImage.sprite = spriteDatabase.GetSprite(color);
         avatar = color;
     }
 }

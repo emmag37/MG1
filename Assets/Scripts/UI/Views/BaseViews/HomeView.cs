@@ -22,6 +22,8 @@ public class HomeView : BaseView
     UIButton settingsUIButton;
     UIButton playUIButton;
 
+    ISpriteDatabase spriteDatabase;
+
 
     // ==================================================
     // Unity Lifecycle
@@ -36,6 +38,8 @@ public class HomeView : BaseView
 
     void Awake()
     {
+        spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
+
         profileUIButton = UIButtonFactory.Navigate<PopUpViewType>(profileButton, Host, PopUpViewType.Profile);
         settingsUIButton = UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
         playUIButton = UIButtonFactory.Navigate<BaseViewType>(playButton, Host, BaseViewType.GamePlay);
@@ -60,6 +64,6 @@ public class HomeView : BaseView
             return;
         }
 
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
+        avatarImage.sprite = spriteDatabase.GetSprite((CellColor)profile.Avatar);
     }
 }

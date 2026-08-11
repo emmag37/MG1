@@ -30,6 +30,8 @@ public class ProfileView : PopUpView
     private UIUsernameInputField usernameInputField;
     private UIAltVertScrollList<int> scoreHistoryScrollList;
 
+    private ISpriteDatabase spriteDatabase;
+
     // ==================================================
     // Unity Lifecycle
     // ==================================================
@@ -47,6 +49,8 @@ public class ProfileView : PopUpView
     public override void Initialize(IUIViewHost host)
     {
         base.Initialize(host);
+
+        spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
         UIButtonFactory.EditInput(editUsernameButton, usernameInput);       // could potentially move this to my input field script
         UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
@@ -77,7 +81,7 @@ public class ProfileView : PopUpView
         }
 
         usernameInputField.SetUsername(profile.Username);
-        avatarImage.sprite = SpriteDatabase.Instance.GetSprite((CellColor)profile.Avatar);
+        avatarImage.sprite = spriteDatabase.GetSprite((CellColor)profile.Avatar);
         scoreHistoryScrollList.SetList(profile.ScoreList.ROList);
     }
 }

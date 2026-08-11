@@ -35,6 +35,8 @@ public class Piece : MonoBehaviour
     private Draggable dragAndDrop;
     private Animator animator;
 
+    private ISpriteDatabase spriteDatabase;
+
     private Vector3 spawnPoint;     // feel like you could move this into some sort of game constant
 
 
@@ -47,12 +49,10 @@ public class Piece : MonoBehaviour
         this.spawnPoint = spawnPoint;
 
         // cache attached components
+        spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         dragAndDrop = GetComponent<Draggable>();
         animator = GetComponent<Animator>();
-
-        // initialize your components
-        spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
 
         Debug.Log($"sprite renderer pos: {spriteRenderer.transform.position}");
         dragAndDrop.Initialize(spriteRenderer, boundaries);
@@ -100,7 +100,7 @@ public class Piece : MonoBehaviour
     public void SetColor(CellColor newColor)
     {
         Color = newColor;
-        spriteRenderer.sprite = SpriteDatabase.Instance.GetSprite(Color);
+        spriteRenderer.sprite = spriteDatabase.GetSprite(Color);
     }
 
     public void PlacePlayer(Vector3 position)

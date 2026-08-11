@@ -22,6 +22,8 @@ public class HUDController : MonoBehaviour
     private int score;
     private int highScore;
 
+    private ISpriteDatabase spriteDatabase;
+
     // ================================
     // Unity Lifecycle Methods
     // ================================
@@ -42,6 +44,7 @@ public class HUDController : MonoBehaviour
     {
         this.highScore = highScore;
 
+        spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
         UpdateScoreText();
     }
 
@@ -70,7 +73,7 @@ public class HUDController : MonoBehaviour
     public void SetPlayerPreview(CellColor nextColor)
     {
         Debug.Log($"Preview color: {nextColor}");
-        playerPreview.sprite = SpriteDatabase.Instance.GetSprite(nextColor);
+        playerPreview.sprite = spriteDatabase.GetSprite(nextColor);
     }
 
     public int AddPoints(int points)

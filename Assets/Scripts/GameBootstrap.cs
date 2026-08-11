@@ -26,6 +26,7 @@ public class GameBootstrap : MonoBehaviour
     private DiscStorage discService = new DiscStorage();
     private AudioService audioService;
     private VibrationService vibrationService;
+    private SpriteDatabase spriteDatabase;
 
     bool hasLaunched;
     bool inProgress;
@@ -123,12 +124,16 @@ public class GameBootstrap : MonoBehaviour
         Scaler.ApplyLocalScale(backgroundTransform);
         yield return null;
 
-        // inject services
+
+        // load resources/inject services
         audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
         ServiceLocator.Register<IAudio>(audioService);
 
         vibrationService = new VibrationService(uIData.VibrationOn);
         ServiceLocator.Register<IVibration>(vibrationService);
+
+        spriteDatabase = Resources.Load<SpriteDatabase>("SpriteDatabase");
+        ServiceLocator.Register<ISpriteDatabase>(spriteDatabase);
         yield return null;
 
         // initialize systems
