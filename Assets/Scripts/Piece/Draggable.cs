@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 using System;
 
 // draggable within specified boundaries adjusted for the objects size
+// one touch at a time
+
+// consider adding a layer mask for future projects, not necessary for this one
 
 /// <summary>
 /// Performs object movement operations including user input dragging
@@ -63,11 +66,15 @@ public class Draggable : MonoBehaviour
 
         // adjust the boundaries to the player size
         float radius = GetComponent<SpriteRenderer>().bounds.extents.x;
-
         minX = boundaries.min.x + radius;
         maxX = boundaries.max.x - radius;
         minY = boundaries.min.y;
         maxY = boundaries.max.y - radius;
+
+        if (minX >= maxX || minY >= maxY)                                  // verify boundaries
+        {
+            Debug.LogError($"[Draggable] Invalid boundaries: x ({minX}, {maxX}), y ({minY}, {maxY})");
+        }
     }
 
 
@@ -75,50 +82,63 @@ public class Draggable : MonoBehaviour
     // Private Methods
     // ================================
 
-    // add event for start drag
 
     /// <summary>
 	/// Drags and drops the player from user input. Relies on Update().
 	/// </summary>
     private void Drag()
     {
-        var pointer = Pointer.current;
-        if (pointer == null) return;
+        if (cam == null) return;
 
-        Vector2 pointerScreenPos = pointer.position.ReadValue();    // obtain the mouse world coordinates
-        Vector3 pointerWorldPos = cam.ScreenToWorldPoint(pointerScreenPos);
+        Vector2 screenPos;
+        bool pressedThisFrame, isPressed, releasedThisFrame;
+
+        if (Touchscreen.current != null)                                
+        {
+            var t = Touchscreen.current.primaryTouch;                   // enforce one touch only
+            screenPos = t.position.ReadValue();
+            pressedThisFrame = t.press.wasPressedThisFrame;
+            isPressed = t.press.isPressed;
+            releasedThisFrame = t.press.wasReleasedThisFrame;
+        }
+        else if (Mouse.current != null)
+        {
+            var m = Mouse.current;                                      // for use in the editor
+            screenPos = m.position.ReadValue();
+            pressedThisFrame = m.leftButton.wasPressedThisFrame;
+            isPressed = m.leftButton.isPressed;
+            releasedThisFrame = m.leftButton.wasReleasedThisFrame;
+        }
+        else
+            return;
+
+        Vector3 pointerWorldPos = cam.ScreenToWorldPoint(screenPos);
         pointerWorldPos.z = 0;
         
-        // start moving
-        if (pointer.press.wasPressedThisFrame)
+        if (!isDragging && pressedThisFrame)                            // start moving
         {
-            Collider2D hit = Physics2D.OverlapPoint(pointerWorldPos); // check if mouse is on the collider
+            Collider2D hit = Physics2D.OverlapPoint(pointerWorldPos);   // check if mouse is on the collider
             if (hit && hit.gameObject == gameObject)
             {
                 isDragging = true;
-
                 dragOffset = transform.position - pointerWorldPos;
 
                 StartDrag?.Invoke();
             }
         }
-
-        // continue moving
-        if (isDragging && pointer.press.isPressed)
+        else if (isDragging && isPressed)                               // continue moving
         {
-            Vector3 newPos = pointerWorldPos + dragOffset;    // calculate new position
+            Vector3 newPos = pointerWorldPos + dragOffset;              // calculate new position
 
-            newPos.x = Mathf.Clamp(newPos.x, minX, maxX);   // clamp position to boundaries
+            newPos.x = Mathf.Clamp(newPos.x, minX, maxX);               // clamp position to boundaries
             newPos.y = Mathf.Clamp(newPos.y, minY, maxY);
 
             transform.position = newPos;
         }
-
-        // release
-        if (isDragging && pointer.press.wasReleasedThisFrame)
+        else if (isDragging && releasedThisFrame)                       // release
         {
             isDragging = false;
-            Released?.Invoke(transform.position);      // throw event to the player script
+            Released?.Invoke(transform.position);      
         }
     }
 }
