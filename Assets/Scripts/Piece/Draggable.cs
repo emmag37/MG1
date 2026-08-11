@@ -2,10 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
-// IF YOU MAKE REUSABLE:
-    // set camera as a serialized field
-    // add event for drag started
-
 // draggable within specified boundaries adjusted for the objects size
 
 /// <summary>
@@ -16,6 +12,9 @@ using System;
 /// <remarks>
 /// When enabled, the user can drag the object.
 /// </remarks>
+///
+// or do you require the sprite renderer component?
+[RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Collider2D))]
 public class Draggable : MonoBehaviour
 {
@@ -46,14 +45,6 @@ public class Draggable : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
-    /*
-    void Awake()
-    {
-        cam = Camera.main;
-        Debug.Assert(cam != null, "Main camera not found");
-    }
-    */
-
     void Update()
     {
         Drag();
@@ -64,14 +55,14 @@ public class Draggable : MonoBehaviour
     // Initialization
     // ================================
 
-    public void Initialize(Bounds playerBounds, Bounds boundaries, Camera cam)
+    public void Initialize(Bounds boundaries, Camera cam)
     {
         this.cam = cam;
         if (cam == null)
             Debug.LogError("[Draggable] Camera not found");
 
         // adjust the boundaries to the player size
-        float radius = playerBounds.extents.x;
+        float radius = GetComponent<SpriteRenderer>().bounds.extents.x;
 
         minX = boundaries.min.x + radius;
         maxX = boundaries.max.x - radius;
@@ -81,22 +72,10 @@ public class Draggable : MonoBehaviour
 
 
     // ================================
-    // Public Methods
-    // ================================
-
-    /// <summary>
-	/// Updates the player's transform position.
-	/// </summary>
-	/// <param name="newPosition">New position for the player.</param>
-    public void Drop(Vector3 newPosition)
-    {
-        transform.position = newPosition;
-    }
-
-
-    // ================================
     // Private Methods
     // ================================
+
+    // add event for start drag
 
     /// <summary>
 	/// Drags and drops the player from user input. Relies on Update().

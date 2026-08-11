@@ -55,7 +55,7 @@ public class Piece : MonoBehaviour
         animator = GetComponent<Animator>();
 
         Debug.Log($"sprite renderer pos: {spriteRenderer.transform.position}");
-        dragAndDrop.Initialize(spriteRenderer.bounds, boundaries, Camera.main);
+        dragAndDrop.Initialize(boundaries, Camera.main);
     }
 
     public void InitializeAsPlayer(CellColor playerColor)    // deprecate boundaries from this func
@@ -105,13 +105,13 @@ public class Piece : MonoBehaviour
 
     public void PlacePlayer(Vector3 position)
     {
-        dragAndDrop.Drop(position);
+        transform.position = position;
         TurnOffPlayer();
     }
 
     public void ReturnPlayer()
     {
-        dragAndDrop.Drop(spawnPoint);
+        transform.position = spawnPoint;
     }
 
     public void Pop()
