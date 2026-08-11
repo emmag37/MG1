@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 
 // First in script execution order (set to -10)
@@ -8,6 +9,8 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Inspector Fields
     // ==================================================
+    [SerializeField] private GameObject loadScreen;
+
     [SerializeField] private UIManager uIManager;
     [SerializeField] private Board board;
     [SerializeField] private Tutorial tutorial;
@@ -27,7 +30,7 @@ public class GameBootstrap : MonoBehaviour
     bool hasLaunched;
     bool inProgress;
 
-    bool active = true;
+    bool active;
 
 
     // ==================================================
@@ -39,56 +42,13 @@ public class GameBootstrap : MonoBehaviour
         // load data
         hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
         inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
-
-        GameData gameData;
-        if (inProgress)
-            gameData = discService.Load<GameData>(DataFiles.GameData);
-        else
-            gameData = new GameData();
-
-        UIData uIData = discService.Load<UIData>(DataFiles.UIData);
-
-        // replace these with safety checks
-        Debug.Assert(gameData != null);
-        Debug.Assert(uIData != null);
-        Debug.Assert(uIData.Profile.ScoreList != null);
-        Debug.Assert(board != null);
-
-        // run calculations
-        Scaler.CalculateAndSetScale(Camera.main);
-        Scaler.ApplyLocalScale(backgroundTransform);
-
-        // inject services
-        audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
-        ServiceLocator.Register<IAudio>(audioService);
-
-        vibrationService = new VibrationService(uIData.VibrationOn);
-        ServiceLocator.Register<IVibration>(vibrationService);
-
-        // initialize systems
-        board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);
-        if (!hasLaunched)
-            tutorial.Initialize(board);
-
-        uIManager.Initialize(uIData.Profile, board, tutorial);
     }
 
     // only runs once everything is done being loaded
     private void Start()
     {
-        // set the opening view
-        BaseViewType startScreen = BaseViewType.Home;
-        if (!hasLaunched)
-        {
-            Debug.Log("launch tutorial");
-
-            startScreen = BaseViewType.Tutorial;
-            PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);
-        }
-
-        // open the scene
-        uIManager.PushView<BaseViewType>(startScreen);
-        audioService.PlayMusic(AudioType.UIMusic);
+        // run load sequence
+        StartCoroutine(LoadSequence());
     }
 
     private void OnApplicationPause(bool pauseStatus)
@@ -115,7 +75,7 @@ public class GameBootstrap : MonoBehaviour
             Reenter();
     }
 
-    // for testing in the editor
+    // for testing in the editor - maybe keep for the build?
     private void OnApplicationQuit()
     {
         ExitAndSave();
@@ -123,8 +83,85 @@ public class GameBootstrap : MonoBehaviour
 
 
     // ==================================================
-    // Lifecycle Management Methods
+    // Private Methods
     // ==================================================
+
+    private IEnumerator LoadSequence()
+    {
+        // show the load screen
+        loadScreen.SetActive(true);
+        yield return null;
+
+        // load data
+        GameData gameData;
+        if (inProgress)
+        {
+            gameData = discService.Load<GameData>(DataFiles.GameData);
+            if (gameData == null)
+            {
+                Debug.LogError("Failed to load GameData — falling back to new game.");
+                gameData = new GameData();
+            }
+        }
+        else
+            gameData = new GameData();
+        yield return null;
+
+        UIData uIData = discService.Load<UIData>(DataFiles.UIData);
+        if (uIData == null)
+            uIData = new UIData();
+        yield return null;
+
+        // replace these with safety checks
+        Debug.Assert(gameData != null);
+        Debug.Assert(uIData != null);
+        Debug.Assert(uIData.Profile.ScoreList != null);
+        Debug.Assert(board != null);
+
+        // scaling
+        Scaler.CalculateAndSetScale(Camera.main);
+        Scaler.ApplyLocalScale(backgroundTransform);
+        yield return null;
+
+        // inject services
+        audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
+        ServiceLocator.Register<IAudio>(audioService);
+
+        vibrationService = new VibrationService(uIData.VibrationOn);
+        ServiceLocator.Register<IVibration>(vibrationService);
+        yield return null;
+
+        // initialize systems
+        board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);
+        yield return null;
+
+        if (!hasLaunched)
+            tutorial.Initialize(board);
+        yield return null;
+
+        uIManager.Initialize(uIData.Profile, board, tutorial);
+        yield return null;
+
+        // Load Complete
+        Debug.Log("load complete");
+        loadScreen.SetActive(false);
+
+        // set the opening view
+        BaseViewType startScreen = BaseViewType.Home;
+        if (!hasLaunched)
+        {
+            Debug.Log("launch tutorial");
+
+            startScreen = BaseViewType.Tutorial;
+            PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);
+        }
+
+        // open the scene
+        uIManager.PushView<BaseViewType>(startScreen);
+        audioService.PlayMusic(AudioType.UIMusic);
+
+        active = true;  // also means load complete in this instance
+    }
 
     private void ExitAndSave()
     {

@@ -11,7 +11,7 @@ namespace System.Runtime.CompilerServices
 public class UIData : IUIData
 {
     // settings
-    public AudioSettings AudioSettings;
+    public AudioSettings AudioSettings = new();
     public bool VibrationOn = true;                
 
     // profile

@@ -48,11 +48,6 @@ public class Board : MonoBehaviour
     // Unity Lifecycle
     // ================================
 
-    public void Awake()
-    {
-        SubscribeToEvents(true);
-    }
-
     public void OnDestroy()
     {
         SubscribeToEvents(false);
@@ -95,6 +90,8 @@ public class Board : MonoBehaviour
         {
             hUD.gameObject.SetActive(false);
         }
+
+        SubscribeToEvents(true);
     }
 
     public GameData Exit()

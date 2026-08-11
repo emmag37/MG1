@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ==================================================
     // Private Fields
     // ==================================================
-    private bool instantiated = false;
+    private bool instantiated = false;  // enfore single instantiation
 
     private IAudio audioService;
 
@@ -38,11 +38,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // ================================
     // Unity Lifecycle
     // ================================
-
-    public void Awake()
-    {
-        board.FullBoard += HandleGameOver;
-    }
 
     public void OnDestroy()
     {
@@ -66,6 +61,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
         popUpViewController = new ViewController<PopUpView, PopUpViewType, IUIData>(popUpViewList, PopUpViewCapacity, this);
 
         audioService = ServiceLocator.Get<IAudio>();
+
+        board.FullBoard += HandleGameOver;
     }
 
     public ProfileData Exit()
