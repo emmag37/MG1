@@ -46,11 +46,13 @@ public class Draggable : MonoBehaviour
     // Unity Lifecycle Methods
     // ================================
 
+    /*
     void Awake()
     {
         cam = Camera.main;
         Debug.Assert(cam != null, "Main camera not found");
     }
+    */
 
     void Update()
     {
@@ -62,20 +64,14 @@ public class Draggable : MonoBehaviour
     // Initialization
     // ================================
 
-    /// <summary>
-	/// Sets the boundaries for dragging the player around the screen.
-	/// </summary>
-	/// <param name="left">Left boundary.</param>
-	/// <param name="right">Right boundary.</param>
-	/// <param name="top">Top boundary.</param>
-	/// <param name="bottom">Bottom boundary.</param>
-    public void Initialize(SpriteRenderer spriteRenderer, Bounds boundaries)
+    public void Initialize(Bounds playerBounds, Bounds boundaries, Camera cam)
     {
-        // draggable must be given a sprite renderer, maybe make boundaries optional
-        // also use better calcuation of offset for reusable file
+        this.cam = cam;
+        if (cam == null)
+            Debug.LogError("[Draggable] Camera not found");
 
-        // adjust the board boundaries to the player size
-        float radius = spriteRenderer.bounds.extents.x;
+        // adjust the boundaries to the player size
+        float radius = playerBounds.extents.x;
 
         minX = boundaries.min.x + radius;
         maxX = boundaries.max.x - radius;
