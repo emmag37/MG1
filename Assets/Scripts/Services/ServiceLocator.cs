@@ -28,7 +28,7 @@ public static class ServiceLocator
             return (TService)foundService;
         }
 
-        Debug.Log("no service found");
+        Debug.LogError("no service found");
         return default;
     }
 }

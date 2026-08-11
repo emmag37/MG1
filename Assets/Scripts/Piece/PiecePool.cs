@@ -42,7 +42,7 @@ public class PiecePool
     {
         Piece player = GetFreePiece();
         
-        player.InitializeAsPlayer(color);
+        player.SetToPlayer(color);
 
         return player;
     }
@@ -50,7 +50,7 @@ public class PiecePool
     public Piece CreateCell(CellColor color, Vector3 position)
     {
         Piece cell = GetFreePiece();
-        cell.InitializeAsCell(color, position);
+        cell.SetToCell(color, position);
 
         return cell;
     }

@@ -9,13 +9,6 @@ using System;
 public class Piece : MonoBehaviour
 {
     // ==================================================
-    // Constants
-    // ==================================================
-
-    private const int PlayerOrder = 4;
-    private const int CellOrder = 2;
-
-    // ==================================================
     // Local Events
     // ==================================================
     public event Action<Piece> PopFinished;
@@ -24,6 +17,7 @@ public class Piece : MonoBehaviour
     // Public Properties
     // ==================================================
     public CellColor Color;
+    public bool IsPlayer = false;
     
     public Piece Prev = null;        // embedded free list for object pool
     public Piece Next = null;
@@ -32,7 +26,7 @@ public class Piece : MonoBehaviour
     // Private Fields
     // ==================================================
     private SpriteRenderer spriteRenderer;
-    private Draggable dragAndDrop;
+    private Draggable draggable;
     private Animator animator;
 
     private ISpriteDatabase spriteDatabase;
@@ -48,82 +42,107 @@ public class Piece : MonoBehaviour
     {
         this.spawnPoint = spawnPoint;
 
-        // cache attached components
-        spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        dragAndDrop = GetComponent<Draggable>();
+        draggable = GetComponent<Draggable>();
         animator = GetComponent<Animator>();
 
-        Debug.Log($"sprite renderer pos: {spriteRenderer.transform.position}");
-        dragAndDrop.Initialize(boundaries, Camera.main);
+        spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
+
+        draggable.Initialize(boundaries, Camera.main);
+        draggable.enabled = false;
     }
 
-    public void InitializeAsPlayer(CellColor playerColor)    // deprecate boundaries from this func
+    public void SetToPlayer(CellColor playerColor)
     {
-        // ensure that the object was already initialized
+        if (spriteRenderer == null)
+        {
+            Debug.LogError("[Piece] Components must be initialized before setting to player");
+            return;
+        }
 
-        // sets back to player if was cell previously
-        dragAndDrop.enabled = true;
-        spriteRenderer.sortingOrder = PlayerOrder;    // object reference not set to instance of object
+        if (!IsPlayer)
+        {
+            draggable.enabled = true;
+            spriteRenderer.sortingOrder = GameConstants.PlayerOrder;
 
-        // initialize set values
+            draggable.StartDrag += HandleStartDrag;
+            draggable.Released += HandleReleased;
+
+            IsPlayer = true;
+        }
+
         SetColor(playerColor);
         transform.position = spawnPoint;
-
-        // subscribe to events
-        dragAndDrop.StartDrag += HandleStartDrag;
-        dragAndDrop.Released += HandleReleased;
     }
 
-    public void InitializeAsCell(CellColor color, Vector3 position)
+    public void SetToCell(CellColor color, Vector3 position)
     {
-        // ensure that the object was already initialized
+        if (spriteRenderer == null)
+        {
+            Debug.LogError("[Piece] Components must be initialized before setting to cell");
+            return;
+        }
+
+        if (IsPlayer) TurnOffPlayer();          // ensure no event subscription
 
         SetColor(color);
         transform.position = position;
-
-        spriteRenderer.sortingOrder = CellOrder;
-        dragAndDrop.enabled = false;
     }
-
-    
 
 
     // ==================================================
     // Public Methods
     // ==================================================
 
-    /// <summary>
-	/// Sets the piece sprite to the given color.
-	/// </summary>
-	/// <param name="newColor">New color for the piece.</param>
     public void SetColor(CellColor newColor)
     {
+        if (newColor == CellColor.Empty)
+        {
+            Debug.LogError("[Piece] Cannot set piece to empty color");
+            return;
+        }
+
         Color = newColor;
         spriteRenderer.sprite = spriteDatabase.GetSprite((int)Color);
     }
 
     public void PlacePlayer(Vector3 position)
     {
+        if (!IsPlayer)
+        {
+            Debug.LogError("[Piece] Attempted to place inactive player");
+            return;
+        }
+
         transform.position = position;
         TurnOffPlayer();
     }
 
     public void ReturnPlayer()
     {
+        if (!IsPlayer)
+        {
+            Debug.LogError("[Piece] Attempted to return inactive player");
+            return;
+        }
+
         transform.position = spawnPoint;
     }
 
     public void Pop()
     {
-        Debug.Assert(!dragAndDrop.enabled, "Attempted pop animation on active player");
+        if (IsPlayer)
+        {
+            Debug.LogError("[Piece] Attempted pop animation on active player");
+            return;
+        }
 
         animator.SetTrigger("PopCell");
     }
 
     public void Pause(bool pause)
     {
-        dragAndDrop.enabled = !pause;       // pauses/resumes the player movement
+        draggable.enabled = !pause;       // pauses/resumes the player movement
     }
 
     // ==================================================
@@ -132,16 +151,12 @@ public class Piece : MonoBehaviour
 
     private void HandleStartDrag()
     {
-        Debug.Assert(dragAndDrop.enabled, "Receiving input on inactive piece");
-
         ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.PickupPlayer);
         EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = Color });
     }
 
     private void HandleReleased(Vector3 position)
     {
-        Debug.Assert(dragAndDrop.enabled, "Receiving input on inactive piece");
-
         EventBus.Publish(new PlayerReleasedEvent { PlayerPosition = position, Color = Color });
     }
 
@@ -155,12 +170,14 @@ public class Piece : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    private void TurnOffPlayer()    // leave this function for future additions, ie animations, sound effects
+    private void TurnOffPlayer()
     {
-        dragAndDrop.StartDrag -= HandleStartDrag;
-        dragAndDrop.Released -= HandleReleased;
-        dragAndDrop.enabled = false;
+        draggable.StartDrag -= HandleStartDrag;
+        draggable.Released -= HandleReleased;
 
-        spriteRenderer.sortingOrder = 2;    // object reference not set to instance of object
+        draggable.enabled = false;
+        spriteRenderer.sortingOrder = GameConstants.CellOrder;
+
+        IsPlayer = false;
     }
 }
