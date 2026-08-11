@@ -1,53 +1,29 @@
 using UnityEngine;
-using System.Collections.Generic;
+//using System.Collections.Generic;
+//using System;
 
 
 public interface ISpriteDatabase
 {
     Sprite GetSprite(int key);
+    bool TryGetSprite(int key, out Sprite sprite);
 }
 
-/// <summary>
-/// Creates a sprite database that can be set and added to in the inspector.
-/// Provides global access through Instance.
-/// </summary>
-/// <remarks> 0: empty, 1: color1, 2: color2, 3: color3, 4: color4, 5: color5, 6: color6, 7: wildcard
-/// </ remarks>
-[CreateAssetMenu(fileName = "SpriteDatabase", menuName = "Game/Sprite Database")]
-public class SpriteDatabase : ScriptableObject, ISpriteDatabase
+
+[CreateAssetMenu(fileName = "SpriteDatabase", menuName = "Scriptable Objects/Sprite Database")]
+public class SpriteDatabase : KeyedDatabase<CellColor, Sprite>, ISpriteDatabase
 {
-    // ================================
-    // Inspector Fields
-    // ================================
-    [SerializeField] private Sprite[] sprites;
-
-    // ================================
-    // Unity Lifecycle
-    // ================================
-
-    private void OnValidate()
-    {
-        // catch sprites not set
-        for (int i = 0; i < sprites.Length; i++)
-        {
-            Debug.Assert(sprites[i] != null, $"Sprite not set in database at index {i}");
-        }
-    }
-
-    // ================================
-    // Public Methods
-    // ================================
-
-    /// <summary>
-	/// Safe access to the sprite database.
-	/// </summary>
-	/// <param name="color">Color sprite to get</param>
-	/// <returns>The sprite object associated with color</returns>
     public Sprite GetSprite(int key)
     {
-        Debug.Assert(key >= 0 && key < sprites.Length,
-            $"Invalid index {key} for length {sprites.Length}");
+        if (TryGetValue((CellColor)key, out Sprite sprite))
+            return sprite;
 
-        return sprites[key];
+        Debug.LogError($"[SpriteDatabase] Invalid key {(CellColor)key} for sprite dictionary");
+        return null;
     }
+
+    public bool TryGetSprite(int key, out Sprite sprite) => TryGetValue((CellColor)key, out sprite);
 }
+
+
+

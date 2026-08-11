@@ -133,6 +133,7 @@ public class GameBootstrap : MonoBehaviour
         ServiceLocator.Register<IVibration>(vibrationService);
 
         spriteDatabase = Resources.Load<SpriteDatabase>("SpriteDatabase");
+        spriteDatabase.Initialize();
         ServiceLocator.Register<ISpriteDatabase>(spriteDatabase);
         yield return null;
 

@@ -12,23 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef29381d871f044d9886d2dbae61a980, type: 3}
   m_Name: SpriteDatabase
   m_EditorClassIdentifier: Assembly-CSharp::SpriteDatabase
-  sprites:
-  - {fileID: 1636842925818115509, guid: f7faa92dd74064ef0a4a69efe1fa566e, type: 3}
-  - {fileID: -2977406556716243900, guid: acf29f25383fb4ca38bd6249f462d885, type: 3}
-  - {fileID: -967846538808919791, guid: 572a0d84c19bb46298a85a01ec31a72a, type: 3}
-  - {fileID: -4056832293769120427, guid: fec6bb667ffd64699926ee435b53ea17, type: 3}
-  - {fileID: 8151687979706478534, guid: 703126163dfaf425988f6998a7e1467f, type: 3}
-  - {fileID: -504723936462716039, guid: 273ef196a4e3a4f71b4b02d572afe479, type: 3}
-  - {fileID: -6267238308050971812, guid: 09382fcb2dbfc41f18a2b9932d3a155f, type: 3}
-  - {fileID: -1500434286138515679, guid: c8e430e054cda4162a00595d03bf6b66, type: 3}
-  - {fileID: -4930946436470870915, guid: 3e4251806f92f472c9801386d966bf7f, type: 3}
-  shadowSprites:
-  - {fileID: -2640990870982187062, guid: 2b8f29d12bb08444782ec9f0d38cedc4, type: 3}
-  - {fileID: 8052084035165285519, guid: 08e9656d9cc1343b3b20140ddec85a56, type: 3}
-  - {fileID: -3091743565041774990, guid: 0723bf45e8b7f4090938d430ca995dd7, type: 3}
-  - {fileID: -2818604261431940685, guid: 95460919e0ada46fe9d11e4fb63a2016, type: 3}
-  - {fileID: 6882185324593700670, guid: 08ec800a62e2947e3bc21ed789ef1d85, type: 3}
-  - {fileID: -7995465322218003750, guid: 83fefe1ab9c9a4ae8a9e737dd2d5be37, type: 3}
-  - {fileID: 2648329173991914894, guid: f499f64afbba94cf583ccc4026627026, type: 3}
-  - {fileID: 7698443312416095162, guid: a6d4ef384bb114df38cf491592a51c1a, type: 3}
-  - {fileID: -5909308593152968550, guid: 89441bc7a0a9b466db9ec3e0c5aaa65c, type: 3}
+  entries:
+  - key: 0
+    value: {fileID: 1636842925818115509, guid: f7faa92dd74064ef0a4a69efe1fa566e, type: 3}
+  - key: 1
+    value: {fileID: -2977406556716243900, guid: acf29f25383fb4ca38bd6249f462d885, type: 3}
+  - key: 2
+    value: {fileID: -967846538808919791, guid: 572a0d84c19bb46298a85a01ec31a72a, type: 3}
+  - key: 3
+    value: {fileID: -4056832293769120427, guid: fec6bb667ffd64699926ee435b53ea17, type: 3}
+  - key: 4
+    value: {fileID: 8151687979706478534, guid: 703126163dfaf425988f6998a7e1467f, type: 3}
+  - key: 5
+    value: {fileID: -504723936462716039, guid: 273ef196a4e3a4f71b4b02d572afe479, type: 3}
+  - key: 6
+    value: {fileID: -6267238308050971812, guid: 09382fcb2dbfc41f18a2b9932d3a155f, type: 3}
+  - key: 7
+    value: {fileID: -1500434286138515679, guid: c8e430e054cda4162a00595d03bf6b66, type: 3}
+  - key: 8
+    value: {fileID: -4930946436470870915, guid: 3e4251806f92f472c9801386d966bf7f, type: 3}
