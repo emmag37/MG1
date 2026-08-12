@@ -74,6 +74,7 @@ public class Board : MonoBehaviour
         BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);  // static class now
 
         ghostPreview.Initialize();
+        scoreAnimation.Initialize();
         hUD.Initialize(highScore);
 
         pieceRegistry = new PieceRegistry(spriteRenderer.bounds, spawnPoint, piecePrefab);

@@ -13,31 +13,40 @@ public class ScoreAnimation : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
+    private Camera cam;
     private RectTransform canvasRect;   // parent canvas
     private Image animationImage;
-
-
-    // ==================================================
-    // Unity Lifecycle
-    // ==================================================
-
-    void Awake()
-    {
-        animationImage = GetComponent<Image>();
-        canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-    }
 
 
     // ==================================================
     // Public Methods
     // ==================================================
 
+    public void Initialize()
+    {
+        cam = Camera.main;
+        if (cam == null)
+        {
+            Debug.LogError("[ScoreAnimation] Main camera not found");
+        }
+
+        animationImage = GetComponent<Image>();
+
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("[ScoreAnimation] No Canvas found in parent hierarchy");
+            return;
+        }
+        canvasRect = canvas.GetComponent<RectTransform>();
+    }
+
     public void AnimateScore(int points, Vector3 worldPos)
     {
         pointsText.text = $"+{points}";
 
         // update the transform: world -> screen -> UI
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+        Vector2 screenPos = cam.WorldToScreenPoint(worldPos);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRect, 
             screenPos,
@@ -45,6 +54,12 @@ public class ScoreAnimation : MonoBehaviour
             out Vector2 uiPos
         );
         transform.localPosition = uiPos;
+
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.LogError("[ScoreAnimation] Called animate score on inactive score animation");
+            return;
+        }
 
         StartCoroutine(AnimatePointsRoutine());
     }
