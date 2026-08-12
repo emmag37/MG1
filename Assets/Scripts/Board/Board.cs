@@ -268,7 +268,7 @@ public class Board : MonoBehaviour
 
     private void GameOver()
     {
-        (int, int) finalScores = hUD.GameOver();
+        (int, int) finalScores = hUD.GetScores();
         inProgress = false;
 
         audioService.PlaySoundEffect(AudioType.GameOver);

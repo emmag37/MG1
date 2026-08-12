@@ -24,6 +24,11 @@ public class GhostPreview : MonoBehaviour
     // Unity Lifecycle
     // ================================
 
+    void OnValidate()
+    {
+        Debug.Assert(shadowSprite != null, "[GhostPreview] Shadow sprite not set");
+    }
+
     void OnDestroy()
     {
         EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDragging);
@@ -37,12 +42,6 @@ public class GhostPreview : MonoBehaviour
 
     public void Initialize()
     {
-        if (shadowSprite == null)
-        {
-            Debug.LogError("[GhostPreview] Shadow sprite is uninitialized");
-            return;
-        }
-
         previewSet = false;
         shadowSprite.enabled = false;
 
