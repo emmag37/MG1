@@ -11,18 +11,16 @@ public class PieceRegistry
     // Private Fields
     // ==================================================
     private PlayerColors currentColors = new PlayerColors();    // initializes with next set to a color, player empty
-
     private Piece playerPiece;
-    private Bounds playerBounds;
 
-    private Piece[] registry = new Piece[GameConstants.RowSize * GameConstants.RowSize];  // registry
-    private PiecePool pool; // pool where objects are stored in memory
+    private Piece[] registry = new Piece[GameConstants.NumberCells];
+    private GameObjectPool<Piece, PieceData> piecePool;
 
 
     // ==================================================
     // Initializer
     // ==================================================
-
+    
     public PieceRegistry(Bounds boardBounds, Transform spawnPoint, GameObject piecePrefab)
     {
         // calculate spawn point and bounds
@@ -31,11 +29,11 @@ public class PieceRegistry
         Vector3 min = boardBounds.min;
         min.y = spawnPoint.position.y;
 
-        playerBounds = boardBounds;
+        Bounds playerBounds = boardBounds;
         playerBounds.SetMinMax(min, playerBounds.max);
 
-        // initialize memory
-        pool = new PiecePool(piecePrefab, playerBounds, spawnPoint.position);
+        PieceData pieceData = new PieceData { boundaries = playerBounds, spawnPoint = spawnPoint.position };
+        piecePool = new GameObjectPool<Piece, PieceData>(GameConstants.NumberCells + 1, piecePrefab, pieceData);
 
         currentColors.Reset();      // initializes the 'next' color
     }
@@ -63,7 +61,9 @@ public class PieceRegistry
         }
 
         currentColors.PlayerColor = color.Value;
-        playerPiece = pool.CreatePlayer(color.Value);
+
+        piecePool.TryGetObject(out playerPiece);
+        playerPiece.SetToPlayer(color.Value);
 
         return currentColors.NextColor;
     }
@@ -74,7 +74,7 @@ public class PieceRegistry
 
         int idx = TwoDimToFlatIndex(index);
         if (playerPiece.Color == CellColor.Mask)
-            pool.Remove(registry[idx]);
+            piecePool.RemoveObject(playerPiece);
 
         registry[idx] = playerPiece;
         playerPiece = null;
@@ -113,7 +113,7 @@ public class PieceRegistry
 
         if (playerPiece != null)
         {
-            pool.Remove(playerPiece);
+            piecePool.RemoveObject(playerPiece);
             playerPiece = null;
         }
 
@@ -123,7 +123,7 @@ public class PieceRegistry
             Piece piece = registry[i];
             registry[i] = null;
 
-            pool.Remove(piece);
+            piecePool.RemoveObject(piece);
         }
     }
 
@@ -134,7 +134,8 @@ public class PieceRegistry
             Vector2Int index = new Vector2Int(cell.x, cell.y);
             Vector3 position = BoardGeometry.BoardIndexToTransform(index);
 
-            Piece newPiece = pool.CreateCell((CellColor)cell.color, position);
+            piecePool.TryGetObject(out Piece newPiece);
+            newPiece.SetToCell((CellColor)cell.color, position);
 
             int flatIndex = TwoDimToFlatIndex(index);
             registry[flatIndex] = newPiece;
@@ -152,8 +153,7 @@ public class PieceRegistry
         {
             cleared++;
             piece.PopFinished -= OnPopFinished;
-
-            pool.Remove(piece); // destroy the piece
+            piecePool.RemoveObject(piece);
         }
 
         // helper

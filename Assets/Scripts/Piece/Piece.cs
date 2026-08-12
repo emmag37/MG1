@@ -1,12 +1,17 @@
 using UnityEngine;
 using System;
 
-// maybe add the sorting orders to game constants
+
+public struct PieceData
+{
+    public Bounds boundaries;
+    public Vector3 spawnPoint;
+}
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Draggable))]
 [RequireComponent(typeof(Animator))]
-public class Piece : MonoBehaviour
+public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 {
     // ==================================================
     // Local Events
@@ -18,9 +23,9 @@ public class Piece : MonoBehaviour
     // ==================================================
     public CellColor Color;
     public bool IsPlayer = false;
-    
-    public Piece Prev = null;        // embedded free list for object pool
-    public Piece Next = null;
+
+    public Piece Next { get; set; }
+    public Piece Prev { get; set; }
 
     // ==================================================
     // Private Fields
@@ -38,9 +43,12 @@ public class Piece : MonoBehaviour
     // Initialization
     // ==================================================
 
-    public void InitializeComponents(Bounds boundaries, Vector3 spawnPoint)
+    public void Initialize(PieceData data)
     {
-        this.spawnPoint = spawnPoint;
+        spawnPoint = data.spawnPoint;
+
+        Next = null;
+        Prev = null;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         draggable = GetComponent<Draggable>();
@@ -48,7 +56,7 @@ public class Piece : MonoBehaviour
 
         spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
-        draggable.Initialize(boundaries, Camera.main);
+        draggable.Initialize(data.boundaries, Camera.main);
         draggable.enabled = false;
     }
 
