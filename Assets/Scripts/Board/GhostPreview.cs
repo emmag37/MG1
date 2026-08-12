@@ -24,16 +24,8 @@ public class GhostPreview : MonoBehaviour
     // Unity Lifecycle
     // ================================
 
-    void OnEnable()
+    void OnDestroy()
     {
-        // Player Events
-        EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDragging);
-        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerRelease);
-    }
-
-    void OnDisable()
-    {
-        // Player Events
         EventBus.Unsubscribe<PlayerDraggingEvent>(OnPlayerDragging);
         EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerRelease);
     }
@@ -45,8 +37,17 @@ public class GhostPreview : MonoBehaviour
 
     public void Initialize()
     {
+        if (shadowSprite == null)
+        {
+            Debug.LogError("[GhostPreview] Shadow sprite is uninitialized");
+            return;
+        }
+
         previewSet = false;
         shadowSprite.enabled = false;
+
+        EventBus.Subscribe<PlayerDraggingEvent>(OnPlayerDragging);
+        EventBus.Subscribe<PlayerReleasedEvent>(OnPlayerRelease);
     }
 
 
@@ -56,6 +57,10 @@ public class GhostPreview : MonoBehaviour
 
     public void SetPreview(Vector2Int index)
     {
+        Debug.Assert(index.x >= 0 && index.x < GameConstants.RowSize &&
+            index.y >= 0 && index.y < GameConstants.RowSize,
+            $"[GhostPreview] Attempted to set preview to out of bounds index: {index}");
+
         // set the preview
         previewSet = true;
         previewIndex = index;
@@ -71,15 +76,30 @@ public class GhostPreview : MonoBehaviour
 
     private void OnPlayerDragging(PlayerDraggingEvent e)
     {
+        Debug.Assert(!previewSet, "[GhostPreview] Preview set before a player was dragging");
+
         // start the ghost preview
+        if (!gameObject.activeInHierarchy)
+        {
+            Debug.LogError("[GhostPreview] Ran ghost preview from inactive object");
+            return;
+        }
+        if (e.PlayerTransform == null)
+        {
+            Debug.LogError("[GhostPreview] PlayerDraggingEvent had a null PlayerTransform");
+            return;
+        }
         preview = StartCoroutine(PreviewLoop(e.PlayerTransform, e.Color));
     }
 
     private void OnPlayerRelease(PlayerReleasedEvent e)
     {
-        // stop the ghost preview
-        StopCoroutine(preview);
-        ClearPreview();
+        if (preview != null)
+        {
+            StopCoroutine(preview);
+            preview = null;
+            ClearPreview();
+        }
     }
 
 
@@ -101,7 +121,6 @@ public class GhostPreview : MonoBehaviour
             if (previewSet && index != previewIndex)
             {
                 ClearPreview();
-
                 TryGhostPreview?.Invoke(index, color);
             }
             else if (!previewSet)
