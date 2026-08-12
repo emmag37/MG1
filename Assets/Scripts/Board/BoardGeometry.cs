@@ -1,7 +1,9 @@
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Performs the index and world coordinate calculations of the board.
+/// FOR BOARDS MADE OF SQUARES ONLY
 /// </summary>
 public static class BoardGeometry
 {
@@ -32,6 +34,17 @@ public static class BoardGeometry
 	/// <param name="board">Boundaries of box that holds the board.</param>
     public static void Initialize(int rows, int cols, Bounds board)
     {
+        if (rows <= 0 || cols <= 0)
+        {
+            Debug.LogError($"[BoardGeometry] Invalid number of rows ({rows}) or columns ({cols}) passed to initializer");
+            return;
+        }
+        else if (board.size == Vector3.zero)
+        {
+            Debug.LogError($"[BoardGeometry] Invalid bounds passed to initializer: {board}");
+            return;
+        }
+
         numRows = rows;
         numCols = cols;
 
@@ -59,7 +72,8 @@ public static class BoardGeometry
 	/// <returns>The board index (row, col) corresponding to the board array.</returns>
     public static Vector2Int TransformToBoardIndex(Vector3 position)
     {
-        Debug.Assert(initialized, "Board geometry accessed without being initialized");
+        if (!initialized)
+            throw new InvalidOperationException("[BoardGeometry] Used before Initialize() succeeded");
 
         int r = Mathf.Clamp(Mathf.RoundToInt((zeroY - position.y) / cellWidth), -1, numRows);
         int c = Mathf.Clamp(Mathf.RoundToInt((position.x - zeroX) / cellWidth), -1, numCols);
@@ -74,7 +88,8 @@ public static class BoardGeometry
 	/// <returns>The world positon of the cell.</returns>
     public static Vector3 BoardIndexToTransform(Vector2Int index)
     {
-        Debug.Assert(initialized, "Board geometry accessed without being initialized");
+        if (!initialized)
+            throw new InvalidOperationException("[BoardGeometry] Used before Initialize() succeeded");
 
         Vector3 newTransform = Vector3.zero;
 
