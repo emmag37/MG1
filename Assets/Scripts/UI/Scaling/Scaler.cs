@@ -38,6 +38,12 @@ public static class Scaler
         transform.position = pos;
     }
 
+    public static Vector3 CalculateScaledYPos(Vector3 pos)
+    {
+        pos.y *= (scale + 1) / 2;
+        return pos;
+    }
+
     public static void UIApplyScaledPos(Transform transform, RectTransform rect, Vector3 worldPos, float yOffset = 0)
     {
         float scaledOffset = scale * yOffset;

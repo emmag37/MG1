@@ -37,7 +37,6 @@ public class Board : MonoBehaviour
     private BoardLogic logic = new BoardLogic();
     private PieceRegistry pieceRegistry;
 
-    private SpriteRenderer spriteRenderer;
     private GhostPreview ghostPreview;
 
     private bool runTutorial;
@@ -64,20 +63,23 @@ public class Board : MonoBehaviour
         this.inProgress = inProgress;
         this.runTutorial = runTutorial;
 
-        audioService = ServiceLocator.Get<IAudio>();
-
         // cache components
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        audioService = ServiceLocator.Get<IAudio>();
         ghostPreview = GetComponent<GhostPreview>();
+        SpriteRenderer boardSprite = GetComponent<SpriteRenderer>();
+
+        // run calculations
+        PieceData pieceData = CalculatePieceData(spawnPoint.position, boardSprite.bounds);
 
         // initialize components
-        BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, spriteRenderer.bounds);  // static class now
+        BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, boardSprite.bounds);
 
         ghostPreview.Initialize();
         scoreAnimation.Initialize();
         hUD.Initialize(highScore);
 
-        pieceRegistry = new PieceRegistry(spriteRenderer.bounds, spawnPoint, piecePrefab);
+        GameObjectPool<Piece, PieceData> pool = new GameObjectPool<Piece, PieceData>(GameConstants.NumberCells + 1, piecePrefab, pieceData);
+        pieceRegistry = new PieceRegistry(pool);
 
         // load systems
         if (inProgress)
@@ -299,5 +301,18 @@ public class Board : MonoBehaviour
             ghostPreview.TryGhostPreview -= HandleGhostPreview;
             EventBus.Unsubscribe<PlayerReleasedEvent>(OnPlayerReleased);
         }
+    }
+
+    private PieceData CalculatePieceData(Vector3 spawnPos, Bounds boardBounds)
+    {
+        spawnPos = Scaler.CalculateScaledYPos(spawnPos);
+
+        Vector3 min = boardBounds.min;
+        min.y = spawnPos.y;
+
+        Bounds playerBounds = boardBounds;
+        playerBounds.SetMinMax(min, playerBounds.max);
+
+        return new PieceData { boundaries = playerBounds, spawnPoint = spawnPos };
     }
 }

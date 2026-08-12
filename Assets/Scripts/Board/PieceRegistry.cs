@@ -1,10 +1,14 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 
 public class PieceRegistry
 {
+    // ==================================================
+    // Public Fields
+    // ==================================================
     public PlayerColors Colors => currentColors;
 
     // ==================================================
@@ -13,29 +17,24 @@ public class PieceRegistry
     private PlayerColors currentColors = new PlayerColors();    // initializes with next set to a color, player empty
     private Piece playerPiece;
 
-    private Piece[] registry = new Piece[GameConstants.NumberCells];
-    private GameObjectPool<Piece, PieceData> piecePool;
+    private Piece[] registry = new Piece[GameConstants.NumberCells];    // reference for piece indices (instant access)
+    private GameObjectPool<Piece, PieceData> piecePool;                 // storage in memory (where the instance actually lives)
 
 
     // ==================================================
     // Initializer
     // ==================================================
-    
-    public PieceRegistry(Bounds boardBounds, Transform spawnPoint, GameObject piecePrefab)
+
+    public PieceRegistry(GameObjectPool<Piece, PieceData> piecePool)
     {
-        // calculate spawn point and bounds
-        Scaler.ApplyScaledYPos(spawnPoint);
+        if (piecePool == null)
+        {
+            throw new ArgumentNullException(nameof(piecePool), "PieceRegistry requires non-null game object pool");
+            return;
+        }
 
-        Vector3 min = boardBounds.min;
-        min.y = spawnPoint.position.y;
-
-        Bounds playerBounds = boardBounds;
-        playerBounds.SetMinMax(min, playerBounds.max);
-
-        PieceData pieceData = new PieceData { boundaries = playerBounds, spawnPoint = spawnPoint.position };
-        piecePool = new GameObjectPool<Piece, PieceData>(GameConstants.NumberCells + 1, piecePrefab, pieceData);
-
-        currentColors.Reset();      // initializes the 'next' color
+        this.piecePool = piecePool;
+        currentColors.Reset();      // initializes the 'next' color -- validate?
     }
 
     public void LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
