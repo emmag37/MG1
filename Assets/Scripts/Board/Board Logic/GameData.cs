@@ -26,6 +26,12 @@ public class PlayerColors
     public void Reset()
     {
         PlayerColor = CellColor.Empty;
+        NextColor = CellColor.Empty;
+    }
+
+    public void InitializeNextColor()
+    {
+        PlayerColor = CellColor.Empty;
         NextColor = PlayerPicker.ChooseColor();
     }
 }
@@ -55,5 +61,15 @@ public struct CellEntry
     public int x, y;
     public CellColor color;
 
-    public CellEntry(int x, int y, CellColor color) { this.x = x; this.y = y; this.color = color; }
+    public CellEntry(int x, int y, CellColor color)
+    {
+        if (x < 0 || x >= GameConstants.ColSize || y < 0 || y >= GameConstants.RowSize)
+            throw new ArgumentOutOfRangeException(nameof(x), $"CellEntry index out of bounds: ({x}, {y})");
+        if (!Enum.IsDefined(typeof(CellColor), color) || color == CellColor.Empty)
+            throw new ArgumentOutOfRangeException(nameof(color), $"CellEntry constructed with invalid color: {color}");
+
+        this.x = x;
+        this.y = y;
+        this.color = color;
+    }
 }

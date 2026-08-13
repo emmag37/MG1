@@ -31,7 +31,7 @@ public class PieceRegistry
         if (piecePool == null)
             throw new ArgumentNullException(nameof(piecePool), "PieceRegistry requires non-null game object pool");
 
-        currentColors.Reset();
+        currentColors.InitializeNextColor();
         if (currentColors.NextColor == CellColor.Empty)
         {
             Debug.LogError("[PieceRegistry] CurrentColors.NextColor failed initialization");
@@ -169,7 +169,7 @@ public class PieceRegistry
 
     public void ResetPieces()
     {
-        currentColors.Reset();
+        currentColors.InitializeNextColor();
 
         if (playerPiece != null)
         {

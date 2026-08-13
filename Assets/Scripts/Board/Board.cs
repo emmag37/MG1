@@ -261,10 +261,10 @@ public class Board : MonoBehaviour
     {
         Debug.Assert(logic != null, "null logic");
 
+        data.Reset();
         logic.ResetBoard();
         pieceRegistry.ResetPieces();
         hUD.Reset();
-        data.Reset();
     }
 
     private void GameOver()
