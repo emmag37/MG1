@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-// if you want to log errors you're going to have to build a logger service
+// if you want to isolate this script from the static classes it access you'll have to dependency inject
 
 /// <summary>
 /// Manages a representation of the board.
@@ -265,6 +265,28 @@ public class BoardLogic
         }
     }
 
+    // for the live zone - tutorial use only
+    private bool IsLivePos((int, int) index)
+    {
+        if (index.Item1 < 0 || index.Item1 >= RowSize || index.Item2 < 0 || index.Item2 >= RowSize)
+            throw new IndexOutOfRangeException($"{index}");
+
+        if (liveZone == null)
+            return true;
+
+        foreach ((int, int) pos in liveZone)
+        {
+            if (index == pos)
+                return true;
+        }
+
+        return false;
+    }
+
+    // ================================
+    // Play Result Helper Methods
+    // ================================
+
     // sets the number of points scored in result
     private int CalculatePoints(PlayResult result)
     {
@@ -352,18 +374,6 @@ public class BoardLogic
         }
 
         numSpotsFilled -= 4;
-    }
-
-    // for the live zone - tutorial use only
-    private bool IsLivePos((int, int) index)
-    {
-        if (liveZone == null) return true;
-
-        foreach ((int, int) pos in liveZone)
-        {
-            if (index == pos) return true;
-        }
-        return false;
     }
 
 }
