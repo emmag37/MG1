@@ -22,24 +22,50 @@ public class PieceRegistry
 
 
     // ==================================================
-    // Initializer
+    // Initializers
     // ==================================================
 
     public PieceRegistry(GameObjectPool<Piece, PieceData> piecePool)
     {
+        this.piecePool = piecePool;
         if (piecePool == null)
             throw new ArgumentNullException(nameof(piecePool), "PieceRegistry requires non-null game object pool");
 
-        this.piecePool = piecePool;
-        currentColors.Reset();      // initializes the 'next' color -- validate?
+        currentColors.Reset();
+        if (currentColors.NextColor == CellColor.Empty)
+        {
+            Debug.LogError("[PieceRegistry] CurrentColors.NextColor failed initialization");
+        }
     }
 
-    public void LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
+    public bool LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
     {
-        currentColors.NextColor = colors.NextColor;
-        SpawnNewPlayer(colors.PlayerColor);
+        if (colors == null || colors.NextColor == CellColor.Empty)
+        {
+            Debug.LogError($"[PieceRegistry] Passed invalid colors to LoadGame: {colors}");
+            return false;
+        }
+        if (cells == null)
+        {
+            Debug.LogError("[PieceRegistry] Passed null cell entry list to LoadGame");
+            return false;
+        }
 
-        LoadBoardPieces(cells);
+        currentColors.NextColor = colors.NextColor;
+        if (!TrySpawnNewPlayer(out _, colors.PlayerColor))
+        {
+            Debug.LogError("[PieceRegistry] Unsuccessful player spawn in LoadGame");
+            return false;
+        }
+
+        int cellsLoaded = LoadBoardPieces(cells);
+        if (cellsLoaded < cells.Count)
+        {
+            Debug.LogError($"[PieceRegistry] Unsuccessful LoadBoardPieces, only loaded {cellsLoaded} / {cells.Count} cells");
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -47,9 +73,20 @@ public class PieceRegistry
     // Public Methods - Player
     // ==================================================
 
-    // next should always be set
-    public CellColor SpawnNewPlayer(CellColor? color = null)
+    // null - generate a brand new color from next; value - use passed color and maintain current next color
+    public bool TrySpawnNewPlayer(out CellColor nextColor, CellColor? color = null)
     {
+        nextColor = currentColors.NextColor;
+
+        if (currentColors.NextColor == CellColor.Empty)
+            throw new InvalidOperationException("[PieceRegistry] SpawnNewPlayer called with uninitialized NextColor.");
+
+        if (!piecePool.TryGetObject(out playerPiece))
+        {
+            Debug.LogError("[PieceRegistry] Failed to retrieve memory for player in SpawnNewPlayer");
+            return false;
+        }
+
         if (!color.HasValue)
         {
             color = currentColors.NextColor;
@@ -57,11 +94,10 @@ public class PieceRegistry
         }
 
         currentColors.PlayerColor = color.Value;
-
-        piecePool.TryGetObject(out playerPiece);
         playerPiece.SetToPlayer(color.Value);
 
-        return currentColors.NextColor;
+        nextColor = currentColors.NextColor;
+        return true;
     }
 
     public void PlacePlayer(Vector3 position, Vector2Int index)
@@ -123,19 +159,43 @@ public class PieceRegistry
         }
     }
 
-    public void LoadBoardPieces(IReadOnlyList<CellEntry> cells)
+    // returns number of pieces successfully loaded
+    public int LoadBoardPieces(IReadOnlyList<CellEntry> cells)
     {
+        int numLoaded = 0;
+
+        if (cells == null)
+        {
+            Debug.LogError("[PieceRegistry] Passed null cells to LoadBoardPieces");
+            return numLoaded;
+        }
+        
         foreach (CellEntry cell in cells)
         {
+            if (cell.x < 0 || cell.x >= GameConstants.RowSize || cell.y < 0 || cell.y >= GameConstants.RowSize ||
+                !Enum.IsDefined(typeof(CellColor), cell.color) || (CellColor)cell.color == CellColor.Empty)
+            {
+                Debug.LogError($"[PieceRegistry] Invalid cell entry in cells passed to LoadBoardPieces: {cell}");
+                continue;
+            }
+
+            if (!piecePool.TryGetObject(out Piece newPiece))
+            {
+                Debug.LogError("[PieceRegistry] Failed to retrieve memory for new piece in LoadBoardPieces");
+                return numLoaded;
+            }
+
             Vector2Int index = new Vector2Int(cell.x, cell.y);
             Vector3 position = BoardGeometry.BoardIndexToTransform(index);
-
-            piecePool.TryGetObject(out Piece newPiece);
-            newPiece.SetToCell((CellColor)cell.color, position);
-
             int flatIndex = TwoDimToFlatIndex(index);
+
+            newPiece.SetToCell((CellColor)cell.color, position);
             registry[flatIndex] = newPiece;
+
+            numLoaded++;
         }
+
+        return numLoaded;
     }
 
     // Coroutine for popping pieces animation

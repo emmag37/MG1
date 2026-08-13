@@ -147,7 +147,7 @@ public class Board : MonoBehaviour
         }
         else
         {
-            pieceRegistry.SpawnNewPlayer(playerColor);
+            pieceRegistry.TrySpawnNewPlayer(out _, playerColor);
         }
 
         logic.AddLiveZone(liveZone);
@@ -253,8 +253,7 @@ public class Board : MonoBehaviour
 
     private void SpawnPlayer()
     {
-        CellColor nextColor = pieceRegistry.SpawnNewPlayer();
-
+        pieceRegistry.TrySpawnNewPlayer(out CellColor nextColor);
         hUD.SetPlayerPreview(nextColor);
     }
 
