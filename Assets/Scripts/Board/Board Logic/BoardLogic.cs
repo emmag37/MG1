@@ -66,7 +66,10 @@ public class BoardLogic
         int numAdded = 0;
 
         if (cells == null)
+        {
+            Logger.Error("[BoardLogic] Cells passed to AddCellsToBoard are null");
             return numAdded;
+        }
 
         foreach (CellEntry cell in cells)
         {
@@ -77,8 +80,15 @@ public class BoardLogic
         return numAdded;
     }
 
-    public void FillBoardData(BoardData data)
+    public int FillBoardData(BoardData data)
     {
+        int numPieces = 0;
+        if (data == null)
+        {
+            Logger.Error("[BoardLogic] Null data passed to FillBoardData");
+            return numPieces;
+        }
+
         for (int row = 0; row < RowSize; row++)
         {
             for (int col = 0; col < RowSize; col++)
@@ -87,13 +97,20 @@ public class BoardLogic
                 {
                     CellEntry entry = new CellEntry(row, col, gridColors[row, col]);
                     data.Set(entry);
+
+                    numPieces++;
                 }
             }
         }
+
+        return numPieces;
     }
 
     public CellColor GetCellColor(int row, int col)
     {
+        if (row < 0 || row >= RowSize || col < 0 || col >= RowSize)
+            throw new IndexOutOfRangeException($"({row}, {col})");
+
         return gridColors[row, col];
     }
 
@@ -111,8 +128,7 @@ public class BoardLogic
             IsLivePos((row, col)) &&
             (row >= 0 && row < RowSize) &&
             (col >= 0 && col < RowSize) &&
-            (color == Mask ||
-            gridColors[row, col] == Empty);
+            (color == Mask || gridColors[row, col] == Empty);
 
         return valid;
     }
@@ -148,39 +164,34 @@ public class BoardLogic
 	/// <returns><c>true</c> if the index and color were valid; otherwise <c>false</c>.</returns>
     public bool TryPlacePlayer(int row, int col, CellColor color, out PlayResult result)
     {
-        if (!ValidCell(row, col, color) || color == Empty)
-        {
-            result = new PlayResult();
+        result = new PlayResult();
+        if (!ValidCell(row, col, color) || !AddToBoard(row, col, color))    // !ValidCell is expected case - don't want to log error message for it
             return false;
-        }
 
-        AddToBoard(row, col, color);
-        result = CalculateLines(row, col, color);
+        result = CalculateLines(row, col, color);       // big one that needs to be validated
 
         return true;
     }
 
     public void AddLiveZone((int, int)[] indices)
     {
+        // remember to check these on access
         liveZone = indices;
     }
-   
+
 
     // ================================
     // Internal Methods - Testing Only
     // ================================
 
-    internal int GetSpotsFilled()
-    {
-        return numSpotsFilled;
-    }
-
+    internal int GetSpotsFilled() => numSpotsFilled;
 
     // ================================
     // Private Methods
     // ================================
 
     // places the player on the board and sets play result values
+    // assumes row, col, and color are correct
     private PlayResult CalculateLines(int row, int col, CellColor color)
     {
         PlayResult result = new PlayResult();
@@ -217,12 +228,16 @@ public class BoardLogic
         return result;
     }
 
-    // unfinished - but will be okay
     private bool AddToBoard(int row, int col, CellColor color)
     {
         // check out of bounds/bad color
+        if (color == Empty || !ValidCell(row, col, color))
+        {
+            Logger.Error($"[BoardLogic] Invalid args passed to AddToBoard: ({row}, {col}, {color})");
+            return false;
+        }
 
-        // increase the counts
+        // increase the counts if not mask
         if (gridColors[row, col] == Empty)
         {
             rowCounts[row]++;
