@@ -25,7 +25,6 @@ public class PlayerColors
 
     public void Reset()
     {
-        // this initializes the colors using picker itself
         PlayerColor = CellColor.Empty;
         NextColor = PlayerPicker.ChooseColor();
     }

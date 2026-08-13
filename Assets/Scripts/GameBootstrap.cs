@@ -124,7 +124,6 @@ public class GameBootstrap : MonoBehaviour
         Scaler.ApplyLocalScale(backgroundTransform);
         yield return null;
 
-
         // load resources/inject services
         audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
         ServiceLocator.Register<IAudio>(audioService);

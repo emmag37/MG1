@@ -28,10 +28,7 @@ public class PieceRegistry
     public PieceRegistry(GameObjectPool<Piece, PieceData> piecePool)
     {
         if (piecePool == null)
-        {
             throw new ArgumentNullException(nameof(piecePool), "PieceRegistry requires non-null game object pool");
-            return;
-        }
 
         this.piecePool = piecePool;
         currentColors.Reset();      // initializes the 'next' color -- validate?
