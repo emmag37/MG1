@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+// if you want to log errors you're going to have to build a logger service
+
 /// <summary>
 /// Manages a representation of the board.
 /// Respsonsible for row checking/clearing logic and point calculation.
@@ -58,14 +60,21 @@ public class BoardLogic
     // Public Methods
     // ================================
 
-    // relies on default constructor
-
-    public void AddCellsToBoard(IReadOnlyList<CellEntry> cells)
+    // unfinished - add log messages
+    public int AddCellsToBoard(IReadOnlyList<CellEntry> cells)
     {
+        int numAdded = 0;
+
+        if (cells == null)
+            return numAdded;
+
         foreach (CellEntry cell in cells)
         {
-            AddToBoard(cell.x, cell.y, cell.color);
+            if (AddToBoard(cell.x, cell.y, cell.color))
+                numAdded++;
         }
+
+        return numAdded;
     }
 
     public void FillBoardData(BoardData data)
@@ -208,8 +217,11 @@ public class BoardLogic
         return result;
     }
 
-    private void AddToBoard(int row, int col, CellColor color)
+    // unfinished - but will be okay
+    private bool AddToBoard(int row, int col, CellColor color)
     {
+        // check out of bounds/bad color
+
         // increase the counts
         if (gridColors[row, col] == Empty)
         {
@@ -223,6 +235,7 @@ public class BoardLogic
 
         // set the color
         gridColors[row, col] = color;
+        return true;
     }
 
     // sets grid colors to empty

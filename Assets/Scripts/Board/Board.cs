@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using PlayResult = BoardLogic.PlayResult;
 
 
+// thinking if any of the load steps fail, you just start a fresh game?
+// or quit?
+
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(GhostPreview))]
 public class Board : MonoBehaviour

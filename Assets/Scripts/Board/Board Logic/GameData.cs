@@ -63,7 +63,7 @@ public struct CellEntry
 
     public CellEntry(int x, int y, CellColor color)
     {
-        if (x < 0 || x >= GameConstants.ColSize || y < 0 || y >= GameConstants.RowSize)
+        if (x < 0 || x >= GameConstants.RowSize || y < 0 || y >= GameConstants.RowSize)
             throw new ArgumentOutOfRangeException(nameof(x), $"CellEntry index out of bounds: ({x}, {y})");
         if (!Enum.IsDefined(typeof(CellColor), color) || color == CellColor.Empty)
             throw new ArgumentOutOfRangeException(nameof(color), $"CellEntry constructed with invalid color: {color}");

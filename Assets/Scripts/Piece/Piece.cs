@@ -166,7 +166,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
     {
         PopFinished?.Invoke(this);
     }
-
+    
 
     // ==================================================
     // Private Methods
