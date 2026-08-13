@@ -106,7 +106,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
     {
         if (newColor == CellColor.Empty)
         {
-            Debug.LogError("[Piece] Cannot set piece to empty color");
+            Debug.LogWarning("[Piece] Cannot set piece to empty color");
             return;
         }
 
@@ -116,11 +116,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 
     public void PlacePlayer(Vector3 position)
     {
-        if (!IsPlayer)
-        {
-            Debug.LogError("[Piece] Attempted to place inactive player");
-            return;
-        }
+        Debug.Assert(IsPlayer, "[Piece] Attempted to place inactive player");
 
         transform.position = position;
         TurnOffPlayer();
@@ -128,11 +124,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 
     public void ReturnPlayer()
     {
-        if (!IsPlayer)
-        {
-            Debug.LogError("[Piece] Attempted to return inactive player");
-            return;
-        }
+        Debug.Assert(IsPlayer, "[Piece] Attempted to return inactive player");
 
         transform.position = spawnPoint;
     }
@@ -150,6 +142,8 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 
     public void Pause(bool pause)
     {
+        Debug.Assert(IsPlayer, "[Piece] Attempted to pause/resume inactive player");
+
         draggable.enabled = !pause;       // pauses/resumes the player movement
     }
 

@@ -100,28 +100,52 @@ public class PieceRegistry
         return true;
     }
 
-    public void PlacePlayer(Vector3 position, Vector2Int index)
+    public bool PlacePlayer(Vector3 position, Vector2Int index)
     {
-        playerPiece.PlacePlayer(position);
+        if (playerPiece == null)
+        {
+            Debug.LogError("[PieceRegistry] PlacePlayer called with no active playerPiece");
+            return false;
+        }
 
         int idx = TwoDimToFlatIndex(index);
-        if (playerPiece.Color == CellColor.Mask)
-            piecePool.RemoveObject(playerPiece);
 
-        registry[idx] = playerPiece;
+        Debug.Assert(playerPiece.Color != CellColor.Empty, $"[PieceRegistry] playerPiece has invalid CellColor.Empty in PlacePlayer");
+        if (playerPiece.Color == CellColor.Mask && !piecePool.RemoveObject(registry[idx]))
+        {
+            Debug.LogError("[PieceRegistry] Unsucessful mask removal from piece pool in PlacePlayer");
+            return false;
+        }
+
+        playerPiece.PlacePlayer(position);
+
+        registry[idx] = playerPiece;        // moves reference from player piece to the registry
         playerPiece = null;
 
-        ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.PlacePlayer);
-        
+        ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.PlacePlayer);        
+
+        return true;
     }
 
     public void ReturnPlayerToStart()
     {
+        if (playerPiece == null)
+        {
+            Debug.LogError("[PieceRegistry] ReturnPlayerToStart called with no active playerPiece");
+            return;
+        }
+
         playerPiece.ReturnPlayer();
     }
 
     public void PausePlayer(bool pause)
     {
+        if (playerPiece == null)
+        {
+            Debug.LogError("[PieceRegistry] PausePlayer called with no active playerPiece");
+            return;
+        }
+
         playerPiece.Pause(pause);
     }
 
@@ -130,10 +154,14 @@ public class PieceRegistry
     // Public Methods - Cell
     // ==================================================
 
-    public bool TrySetPieceColor(Vector2Int index, CellColor color)
+    public bool SetPieceColor(Vector2Int index, CellColor color)
     {
         int idx = TwoDimToFlatIndex(index);
-        if (registry[idx] == null) return false;
+        if (registry[idx] == null)
+        {
+            Debug.LogError($"[PieceRegistry] Attempted SetPieceColor on null piece at index {index}");
+            return false;
+        }
 
         registry[idx].SetColor(color);
         return true;
@@ -145,7 +173,7 @@ public class PieceRegistry
 
         if (playerPiece != null)
         {
-            piecePool.RemoveObject(playerPiece);
+            piecePool.RemoveObject(playerPiece);        
             playerPiece = null;
         }
 
@@ -155,7 +183,8 @@ public class PieceRegistry
             Piece piece = registry[i];
             registry[i] = null;
 
-            piecePool.RemoveObject(piece);
+            if (piece != null)
+                piecePool.RemoveObject(piece);      
         }
     }
 
@@ -172,22 +201,20 @@ public class PieceRegistry
         
         foreach (CellEntry cell in cells)
         {
-            if (cell.x < 0 || cell.x >= GameConstants.RowSize || cell.y < 0 || cell.y >= GameConstants.RowSize ||
-                !Enum.IsDefined(typeof(CellColor), cell.color) || (CellColor)cell.color == CellColor.Empty)
+            Vector2Int index = new Vector2Int(cell.x, cell.y);
+            Vector3 position = BoardGeometry.BoardIndexToTransform(index);
+            int flatIndex = TwoDimToFlatIndex(index);                       // throws error if out of bounds
+
+            if (!Enum.IsDefined(typeof(CellColor), cell.color) || (CellColor)cell.color == CellColor.Empty)
             {
-                Debug.LogError($"[PieceRegistry] Invalid cell entry in cells passed to LoadBoardPieces: {cell}");
+                Debug.LogError($"[PieceRegistry] Invalid color in cell entry passed to LoadBoardPieces: {cell}");
                 continue;
             }
-
             if (!piecePool.TryGetObject(out Piece newPiece))
             {
                 Debug.LogError("[PieceRegistry] Failed to retrieve memory for new piece in LoadBoardPieces");
                 return numLoaded;
             }
-
-            Vector2Int index = new Vector2Int(cell.x, cell.y);
-            Vector3 position = BoardGeometry.BoardIndexToTransform(index);
-            int flatIndex = TwoDimToFlatIndex(index);
 
             newPiece.SetToCell((CellColor)cell.color, position);
             registry[flatIndex] = newPiece;
@@ -199,58 +226,83 @@ public class PieceRegistry
     }
 
     // Coroutine for popping pieces animation
-    // note: the pieces currently destroy themselves after animation, would like to add object pool for later
     public IEnumerator PopPieces(BoardLogic.PlayResult r, Vector2Int index)
     {
         int cleared = 0;
         int total = (r.ClearRow ? 4 : 0) + (r.ClearCol ? 4 : 0) + (r.ClearRDiag ? 4 : 0) + (r.ClearLDiag ? 4 : 0) + 1;
+        if (total == 1)
+            yield break;
 
+        // helpers
+        List<Piece> pending = new List<Piece>();
         void OnPopFinished(Piece piece)
         {
             cleared++;
+
             piece.PopFinished -= OnPopFinished;
+            pending.Remove(piece);
             piecePool.RemoveObject(piece);
         }
-
-        // helper
         void PopPieceAt(int row, int col)
         {
-            Piece piece = RemoveFromRegistry(row, col);  // on pop finished does not know the index, must remove from array here
+            Piece piece = RemoveFromRegistry(row, col);
+            if (piece == null)
+            {
+                Debug.LogError($"[PieceRegistry] Attempted to pop piece at a null index: ({row}, {col})");
+                return;
+            }
 
             piece.PopFinished += OnPopFinished;
+            pending.Add(piece);
             piece.Pop();
         }
-
-        // pop the pieces in filled lines EXCEPT player
-        for (int i = 0; i < GameConstants.RowSize; i++)
+        
+        try
         {
-            if (r.ClearRow && i != index.y)    // i is not the player
-                PopPieceAt(index.x, i);
+            PopPieceAt(index.x, index.y);   // pop the player
 
-            if (r.ClearCol && i != index.x)
-                PopPieceAt(i, index.y);
+            // pop the pieces in filled lines EXCEPT player and ensures that each piece is only ever popped once
+            for (int i = 0; i < GameConstants.RowSize; i++)
+            {
+                if (r.ClearRow && i != index.y)    // i is not the player
+                    PopPieceAt(index.x, i);
 
-            if (r.ClearRDiag && i != index.x)
-                PopPieceAt(i, i);
+                if (r.ClearCol && i != index.x)
+                    PopPieceAt(i, index.y);
 
-            if (r.ClearLDiag && i != index.x)   // start with top left
-                PopPieceAt(i, GameConstants.RowSize - 1 - i);
+                if (r.ClearRDiag && i != index.x)
+                    PopPieceAt(i, i);
+
+                if (r.ClearLDiag && i != index.x)   // start with top left
+                    PopPieceAt(i, GameConstants.RowSize - 1 - i);
+            }
+
+            float timeout = 1.5f;
+            yield return new WaitUntil(() => cleared >= total || (timeout -= Time.deltaTime) <= 0);
+            if (cleared < total)
+                Debug.LogError($"[PieceRegistry] PopPieces timed out — {cleared}/{total} pieces reported finished");
         }
-
-        Piece player = RemoveFromRegistry(index.x, index.y);
-        player.PopFinished += OnPopFinished;
-        player.Pop();
-
-        yield return new WaitUntil(() => cleared >= total);
+        finally
+        {
+            // cleanup in case this function exits abnormally
+            foreach (Piece piece in pending)
+                piece.PopFinished -= OnPopFinished;
+        }
+        
     }
 
     // ==================================================
     // Private Methods
     // ==================================================
 
+    // returns -1 if invalid
     private int TwoDimToFlatIndex(Vector2Int index)
     {
-        return index.x * GameConstants.RowSize + index.y;     // x: row, y: column
+        int idx = index.x * GameConstants.RowSize + index.y;     // x: row, y: column
+        if (idx < 0 || idx >= GameConstants.NumberCells)
+            throw new IndexOutOfRangeException($"Index {index} is out of range for row size {GameConstants.RowSize}");
+
+        return idx;
     }
 
     private Vector2Int FlatToTwoDimIndex(int flatIndex)
@@ -261,6 +313,7 @@ public class PieceRegistry
     private Piece RemoveFromRegistry(int row, int col)
     {
         int idx = TwoDimToFlatIndex(new Vector2Int(row, col));
+
         Piece piece = registry[idx];
         registry[idx] = null;
 

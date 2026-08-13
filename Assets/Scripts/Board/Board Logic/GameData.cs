@@ -39,8 +39,6 @@ public class BoardData
 
     public void Set(CellEntry entry)
     {
-        if (entry == null)
-
         int i = cells.FindIndex(c => c.x == entry.x && c.y == entry.y);
         if (i >= 0)
             cells[i] = entry;

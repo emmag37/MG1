@@ -44,12 +44,6 @@ public class GameObjectPool<TObj, TData> where TObj : Component, ILinkable<TObj,
 
     public bool RemoveObject(TObj obj)
     {
-        if (obj == null || obj == head || obj.Next != null || obj == tail)  // test to make sure it catches all items in free list, and none outside of it - move these to append free list
-        {
-            Debug.LogError("[GameObjectPool] Attempted to remove a null object");
-            return false;
-        }
-
         return AppendToFreeList(obj);
     }
 
