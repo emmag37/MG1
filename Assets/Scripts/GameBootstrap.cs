@@ -137,11 +137,17 @@ public class GameBootstrap : MonoBehaviour
         yield return null;
 
         // initialize systems
-        board.Initialize(gameData, uIData.Profile.ScoreList.HighScore(), !hasLaunched, inProgress);
+        board.Initialize(uIData.Profile.ScoreList.HighScore());
         yield return null;
 
         if (!hasLaunched)
+        {
+            board.RunTutorial();
             tutorial.Initialize(board);
+        }
+        else if (inProgress)
+            board.Load(gameData);
+            
         yield return null;
 
         uIManager.Initialize(uIData.Profile, board, tutorial);

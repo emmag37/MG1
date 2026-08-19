@@ -23,12 +23,9 @@ public static class ServiceLocator
     // get a service
     public static TService Get<TService>()
     {
-        if (services.TryGetValue(typeof(TService), out object foundService))
-        {
-            return (TService)foundService;
-        }
+        if (!services.TryGetValue(typeof(TService), out object foundService))
+            throw new InvalidOperationException($"[ServiceLocator] No service registered for {typeof(TService)}");
 
-        Debug.LogError($"[ServiceLocator] No service found of type {typeof(TService)}");
-        return default;
+        return (TService)foundService;
     }
 }

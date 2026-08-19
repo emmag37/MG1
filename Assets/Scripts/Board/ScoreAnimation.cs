@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(Image))]
 public class ScoreAnimation : MonoBehaviour
@@ -26,18 +27,13 @@ public class ScoreAnimation : MonoBehaviour
     {
         cam = Camera.main;
         if (cam == null)
-        {
-            Debug.LogError("[ScoreAnimation] Main camera not found");
-        }
-
-        animationImage = GetComponent<Image>();
+            throw new InvalidOperationException("[Score Animation] Main camera not found during initialize");
 
         Canvas canvas = GetComponentInParent<Canvas>();
         if (canvas == null)
-        {
-            Debug.LogError("[ScoreAnimation] No Canvas found in parent hierarchy");
-            return;
-        }
+            throw new MissingComponentException("[Score Animation] Canvas in parent not found during initialize");
+
+        animationImage = GetComponent<Image>();
         canvasRect = canvas.GetComponent<RectTransform>();
     }
 

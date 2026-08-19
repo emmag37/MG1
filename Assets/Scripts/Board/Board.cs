@@ -5,9 +5,6 @@ using System.Collections.Generic;
 using PlayResult = BoardLogic.PlayResult;
 
 
-// thinking if any of the load steps fail, you just start a fresh game?
-// or quit?
-
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(GhostPreview))]
 public class Board : MonoBehaviour
@@ -23,7 +20,7 @@ public class Board : MonoBehaviour
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private ScoreAnimation scoreAnimation;
+    [SerializeField] private ScoreAnimation scoreAnimation;     // might take these off of this script
     [SerializeField] private HUDController hUD;
 
     [SerializeField] private Transform spawnPoint;
@@ -50,6 +47,14 @@ public class Board : MonoBehaviour
     // Unity Lifecycle
     // ================================
 
+    public void OnValidate()
+    {
+        Debug.Assert(scoreAnimation != null, "[Board] Score Animation is null");
+        Debug.Assert(hUD != null, "[Board] HUD is null");
+        Debug.Assert(spawnPoint != null, "[Board] Spawn Point is null");
+        Debug.Assert(piecePrefab != null, "[Board] Piece Prefab is null");
+    }
+
     public void OnDestroy()
     {
         SubscribeToEvents(false);
@@ -59,13 +64,9 @@ public class Board : MonoBehaviour
     // Initializers
     // ================================
 
-    // initialize with the game load data
-    public void Initialize(GameData data, int highScore, bool runTutorial, bool inProgress)
+    // initialize with the game load data - throws exceptions if unsuccessful
+    public void Initialize(int highScore)
     {
-        this.data = data;
-        this.inProgress = inProgress;
-        this.runTutorial = runTutorial;
-
         // cache components
         audioService = ServiceLocator.Get<IAudio>();
         ghostPreview = GetComponent<GhostPreview>();
@@ -74,30 +75,38 @@ public class Board : MonoBehaviour
         // run calculations
         PieceData pieceData = CalculatePieceData(spawnPoint.position, boardSprite.bounds);
 
-        // initialize components
+        // initialize guaranteed components
         BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, boardSprite.bounds);
-
         ghostPreview.Initialize();
+        
+        // initialize unguaranteed components (can throw exceptions)
         scoreAnimation.Initialize();
         hUD.Initialize(highScore);
 
-        GameObjectPool<Piece, PieceData> pool = new GameObjectPool<Piece, PieceData>(GameConstants.NumberCells + 1, piecePrefab, pieceData);
+        var pool = new GameObjectPool<Piece, PieceData>(GameConstants.NumberCells + 1, piecePrefab, pieceData);
         pieceRegistry = new PieceRegistry(pool);
 
-        // load systems
-        if (inProgress)
-        {
-            hUD.LoadGame(data.Score, data.PlayerColors.NextColor);
-            pieceRegistry.LoadGame(data.PlayerColors, data.Board.Cells);
-            logic.AddCellsToBoard(data.Board.Cells);
-        }
-
-        if (runTutorial)
-        {
-            hUD.gameObject.SetActive(false);
-        }
-
         SubscribeToEvents(true);
+    }
+
+    public void Load(GameData data)
+    {
+        if (data == null)
+            throw new ArgumentNullException(nameof(data), "[Board] Requires non-null Game Data for Load");
+
+        this.data = data;
+        inProgress = true;
+
+        hUD.LoadGame(data.Score, data.PlayerColors.NextColor);
+        pieceRegistry.LoadGame(data.PlayerColors, data.Board.Cells);
+        logic.AddCellsToBoard(data.Board.Cells);
+    }
+
+    public void RunTutorial()
+    {
+        runTutorial = true;
+
+        hUD.gameObject.SetActive(false);
     }
 
     public GameData Exit()
@@ -305,6 +314,7 @@ public class Board : MonoBehaviour
         }
     }
 
+    // spawn pos and board bounds are guarenteed
     private PieceData CalculatePieceData(Vector3 spawnPos, Bounds boardBounds)
     {
         spawnPos = Scaler.CalculateScaledYPos(spawnPos);

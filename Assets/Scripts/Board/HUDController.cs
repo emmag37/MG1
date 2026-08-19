@@ -63,7 +63,7 @@ public class HUDController : MonoBehaviour
 
     public (int score, int highScore) GetScores()
     {
-        return (score, highScore);
+        return (score, highScore);  // could probably just return the record here
     }
 
     public void Reset()

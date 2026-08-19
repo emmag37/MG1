@@ -20,6 +20,8 @@ public class PieceRegistry
     private Piece[] registry = new Piece[GameConstants.NumberCells];    // reference for piece indices (instant access)
     private GameObjectPool<Piece, PieceData> piecePool;                 // storage in memory (where the instance actually lives)
 
+    private IAudio audio;
+
 
     // ==================================================
     // Initializers
@@ -31,11 +33,8 @@ public class PieceRegistry
         if (piecePool == null)
             throw new ArgumentNullException(nameof(piecePool), "PieceRegistry requires non-null game object pool");
 
+        audio = ServiceLocator.Get<IAudio>();
         currentColors.InitializeNextColor();
-        if (currentColors.NextColor == CellColor.Empty)
-        {
-            Debug.LogError("[PieceRegistry] CurrentColors.NextColor failed initialization");
-        }
     }
 
     public bool LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
@@ -122,7 +121,7 @@ public class PieceRegistry
         registry[idx] = playerPiece;        // moves reference from player piece to the registry
         playerPiece = null;
 
-        ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.PlacePlayer);        
+        audio.PlaySoundEffect(AudioType.PlacePlayer);        
 
         return true;
     }
