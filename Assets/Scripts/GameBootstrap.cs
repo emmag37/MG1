@@ -1,7 +1,15 @@
 using UnityEngine;
 using System;
 using System.Collections;
+//using System.Threading.Tasks; --- not sure if i want to use this or not
 
+// todo:
+    // try/catch for init/load gameplay
+        // move each into their own function
+        // create the try-catch statement
+        // implement what to do on fail
+        // go through and add load exceptions to each scricpt for fatal load/init
+    // consider using threads for loading
 
 // First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
@@ -28,29 +36,48 @@ public class GameBootstrap : MonoBehaviour
     private VibrationService vibrationService;
     private SpriteDatabase spriteDatabase;
 
-    bool hasLaunched;
-    bool inProgress;
+    private bool hasLaunched;
+    private bool inProgress;
 
-    bool active;
+    private UIData uIData;
+    private GameData gameData;
+
+    private bool active;
 
 
     // ==================================================
     // Unity Lifecycle
     // ==================================================
 
+    // synchronous for now, move to async
     private void Awake()
     {
-        // load data
-        hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
-        inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
+        // show the load screen
+        loadScreen.SetActive(true);
+
+        // run the tasks - all must be run after one another
+        try
+        {
+            LoadData();
+            InitServices();
+            InitSystems();
+        }
+        catch (Exception e)
+        {
+            // implement what to do on an exception
+        }
+
+        // loading done
+        StartGame();
     }
 
     // only runs once everything is done being loaded
+    /*
     private void Start()
     {
         // run load sequence
         StartCoroutine(LoadSequence());
-    }
+    }*/
 
     private void OnApplicationPause(bool pauseStatus)
     {
@@ -87,6 +114,89 @@ public class GameBootstrap : MonoBehaviour
     // Private Methods
     // ==================================================
 
+    // turn this into a task
+    // first: separate out sub tasks into their own functions
+
+    // task #1: load data
+    private void LoadData()
+    {
+        hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
+        inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
+
+        if (inProgress)
+        {
+            gameData = discService.Load<GameData>(DataFiles.GameData);
+            if (gameData == null)
+            {
+                Debug.LogError("Failed to load GameData — falling back to new game.");
+                gameData = new GameData();
+            }
+        }
+        else
+            gameData = new GameData();
+
+        uIData = discService.Load<UIData>(DataFiles.UIData);
+        if (uIData == null)
+            uIData = new UIData();
+    }
+
+    // task #2: initialize services
+    private void InitServices()
+    {
+        audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
+        ServiceLocator.Register<IAudio>(audioService);
+
+        vibrationService = new VibrationService(uIData.VibrationOn);
+        ServiceLocator.Register<IVibration>(vibrationService);
+
+        spriteDatabase = Resources.Load<SpriteDatabase>("SpriteDatabase");
+        spriteDatabase.Initialize();
+        ServiceLocator.Register<ISpriteDatabase>(spriteDatabase);
+    }
+
+    // task #3: calculations and initialize system - REQUIRES services/data
+    private void InitSystems()
+    {
+        // scaling
+        Scaler.CalculateAndSetScale(Camera.main);
+        Scaler.ApplyLocalScale(backgroundTransform);
+
+        board.Initialize(uIData.Profile.ScoreList.HighScore());
+        if (!hasLaunched)
+        {
+            board.RunTutorial();
+            tutorial.Initialize(board);
+        }
+        else if (inProgress)
+            board.Load(gameData);
+
+        uIManager.Initialize(uIData.Profile, board, tutorial);
+    }
+
+    // task #4: open scene and start game
+    private void StartGame()
+    {
+        Debug.Log("load complete");
+        loadScreen.SetActive(false);
+
+        // set the opening view
+        BaseViewType startScreen = BaseViewType.Home;
+        if (!hasLaunched)
+        {
+            Debug.Log("launch tutorial");
+
+            startScreen = BaseViewType.Tutorial;
+            PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);
+        }
+
+        // open the scene
+        uIManager.PushView<BaseViewType>(startScreen);
+        audioService.PlayMusic(AudioType.UIMusic);
+
+        active = true;  // also means load complete in this instance
+    }
+
+    /*
     private IEnumerator LoadSequence()
     {
         // show the load screen
@@ -137,6 +247,8 @@ public class GameBootstrap : MonoBehaviour
         yield return null;
 
         // initialize systems
+        // put try/catch here for init and then load
+
         board.Initialize(uIData.Profile.ScoreList.HighScore());
         yield return null;
 
@@ -172,7 +284,7 @@ public class GameBootstrap : MonoBehaviour
         audioService.PlayMusic(AudioType.UIMusic);
 
         active = true;  // also means load complete in this instance
-    }
+    }*/
 
     private void ExitAndSave()
     {
