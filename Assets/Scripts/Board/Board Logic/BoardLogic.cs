@@ -133,7 +133,7 @@ public class BoardLogic
         return valid;
     }
 
-    /// <summary>
+    /// <summary>3
 	/// Resets the board for a new game.
 	/// </summary>
     public void ResetBoard()

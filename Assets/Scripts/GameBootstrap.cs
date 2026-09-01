@@ -5,11 +5,13 @@ using System.Collections;
 
 // todo:
     // try/catch for init/load gameplay
-        // move each into their own function
-        // create the try-catch statement
-        // implement what to do on fail
-        // go through and add load exceptions to each scricpt for fatal load/init
+        // write exceptions for each step in load/init, maintain list
+        // create error message ui
+        // write switch statement for recoverable load errors, manage retry loop
+        
     // consider using threads for loading
+    // i'm also rethinking implementing my leaderboard
+        // would need a report function for unkind usernames
 
 // First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
@@ -31,7 +33,7 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
     // Private Fields
     // ==================================================
-    private DiscStorage discService = new DiscStorage();
+    private JsonFileStorage fileService;
     private AudioService audioService;
     private VibrationService vibrationService;
     private SpriteDatabase spriteDatabase;
@@ -58,26 +60,22 @@ public class GameBootstrap : MonoBehaviour
         // run the tasks - all must be run after one another
         try
         {
-            LoadData();
+            LoadData();         // current work place
             InitServices();
             InitSystems();
+
+            // loading done
+            StartGame();
         }
         catch (Exception e)
         {
-            // implement what to do on an exception
-        }
+            Debug.LogError($"[GameBootstrap] Load/Initialization failed with {e}");
 
-        // loading done
-        StartGame();
+            // show a init/load error screen with retry option
+                // only retry if error is recoverable
+        }
     }
 
-    // only runs once everything is done being loaded
-    /*
-    private void Start()
-    {
-        // run load sequence
-        StartCoroutine(LoadSequence());
-    }*/
 
     private void OnApplicationPause(bool pauseStatus)
     {
@@ -120,12 +118,15 @@ public class GameBootstrap : MonoBehaviour
     // task #1: load data
     private void LoadData()
     {
-        hasLaunched = PlayerPrefsStorage.GetBool(InitKeys.HasLaunched, false);
-        inProgress = PlayerPrefsStorage.GetBool(InitKeys.InProgress, false);
+        fileService = new JsonFileStorage();
+
+        uIData = fileService.Load<UIData>(DataFiles.UIData);    // ensure this never returns null - throw exception if issue
+        hasLaunched = uIData.HasLaunched;
+        inProgress = uIData.InProgress;
 
         if (inProgress)
         {
-            gameData = discService.Load<GameData>(DataFiles.GameData);
+            gameData = fileService.Load<GameData>(DataFiles.GameData);
             if (gameData == null)
             {
                 Debug.LogError("Failed to load GameData — falling back to new game.");
@@ -134,10 +135,6 @@ public class GameBootstrap : MonoBehaviour
         }
         else
             gameData = new GameData();
-
-        uIData = discService.Load<UIData>(DataFiles.UIData);
-        if (uIData == null)
-            uIData = new UIData();
     }
 
     // task #2: initialize services
@@ -186,7 +183,7 @@ public class GameBootstrap : MonoBehaviour
             Debug.Log("launch tutorial");
 
             startScreen = BaseViewType.Tutorial;
-            PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);
+            hasLaunched = true;
         }
 
         // open the scene
@@ -196,116 +193,27 @@ public class GameBootstrap : MonoBehaviour
         active = true;  // also means load complete in this instance
     }
 
-    /*
-    private IEnumerator LoadSequence()
-    {
-        // show the load screen
-        loadScreen.SetActive(true);
-        yield return null;
-
-        // load data
-        GameData gameData;
-        if (inProgress)
-        {
-            gameData = discService.Load<GameData>(DataFiles.GameData);
-            if (gameData == null)
-            {
-                Debug.LogError("Failed to load GameData — falling back to new game.");
-                gameData = new GameData();
-            }
-        }
-        else
-            gameData = new GameData();
-        yield return null;
-
-        UIData uIData = discService.Load<UIData>(DataFiles.UIData);
-        if (uIData == null)
-            uIData = new UIData();
-        yield return null;
-
-        // replace these with safety checks
-        Debug.Assert(gameData != null);
-        Debug.Assert(uIData != null);
-        Debug.Assert(uIData.Profile.ScoreList != null);
-        Debug.Assert(board != null);
-
-        // scaling
-        Scaler.CalculateAndSetScale(Camera.main);
-        Scaler.ApplyLocalScale(backgroundTransform);
-        yield return null;
-
-        // load resources/inject services
-        audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
-        ServiceLocator.Register<IAudio>(audioService);
-
-        vibrationService = new VibrationService(uIData.VibrationOn);
-        ServiceLocator.Register<IVibration>(vibrationService);
-
-        spriteDatabase = Resources.Load<SpriteDatabase>("SpriteDatabase");
-        spriteDatabase.Initialize();
-        ServiceLocator.Register<ISpriteDatabase>(spriteDatabase);
-        yield return null;
-
-        // initialize systems
-        // put try/catch here for init and then load
-
-        board.Initialize(uIData.Profile.ScoreList.HighScore());
-        yield return null;
-
-        if (!hasLaunched)
-        {
-            board.RunTutorial();
-            tutorial.Initialize(board);
-        }
-        else if (inProgress)
-            board.Load(gameData);
-            
-        yield return null;
-
-        uIManager.Initialize(uIData.Profile, board, tutorial);
-        yield return null;
-
-        // Load Complete
-        Debug.Log("load complete");
-        loadScreen.SetActive(false);
-
-        // set the opening view
-        BaseViewType startScreen = BaseViewType.Home;
-        if (!hasLaunched)
-        {
-            Debug.Log("launch tutorial");
-
-            startScreen = BaseViewType.Tutorial;
-            PlayerPrefsStorage.SetBool(InitKeys.HasLaunched, true);
-        }
-
-        // open the scene
-        uIManager.PushView<BaseViewType>(startScreen);
-        audioService.PlayMusic(AudioType.UIMusic);
-
-        active = true;  // also means load complete in this instance
-    }*/
-
     private void ExitAndSave()
     {
         if (!active) return;
 
-        // player prefs save
         Debug.Log($"in progress: {board.InProgress}");
-        PlayerPrefsStorage.SetBool(InitKeys.InProgress, board.InProgress);
 
-        // exit systems
+        // prepare UIData
         UIData uIData = new UIData();
+        uIData.HasLaunched = hasLaunched;
+        uIData.InProgress = board.InProgress;
         uIData.Profile = uIManager.Exit();
         uIData.AudioSettings = audioService.GetSettings();
         uIData.VibrationOn = vibrationService.GetSettings();
 
+        // exit systems
         GameData gameData = board.Exit();
 
         // disc save
-        discService.Save<UIData>(DataFiles.UIData, uIData);
+        fileService.Save<UIData>(DataFiles.UIData, uIData);
         if (board.InProgress)
-            discService.Save<GameData>(DataFiles.GameData, gameData);
+            fileService.Save<GameData>(DataFiles.GameData, gameData);
 
         active = false;
     }

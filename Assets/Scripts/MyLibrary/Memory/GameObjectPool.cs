@@ -54,7 +54,7 @@ public class GameObjectPool<TObj, TData> where TObj : Component, ILinkable<TObj,
 
     private bool AppendToFreeList(TObj obj)
     {
-        Debug.Assert(obj != null, "[GameObjectPool] Attempted to add a null object to free list");  // should never happen
+        Debug.Assert(obj != null, "[GameObjectPool] Attempted to add a null object to free list");
 
         if (obj == head || obj.Next != null || obj == tail)
         {

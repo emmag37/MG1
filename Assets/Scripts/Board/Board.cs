@@ -32,7 +32,7 @@ public class Board : MonoBehaviour
 
     private IAudio audioService;
 
-    private GameData data;  // own its own instance of game data
+    private GameData data = new GameData();  // own its own instance of game data
 
     private BoardLogic logic = new BoardLogic();
     private PieceRegistry pieceRegistry;
@@ -74,9 +74,9 @@ public class Board : MonoBehaviour
 
         // run calculations
         PieceData pieceData = CalculatePieceData(spawnPoint.position, boardSprite.bounds);
+        BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, boardSprite.bounds);
 
         // initialize guaranteed components
-        BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, boardSprite.bounds);
         ghostPreview.Initialize();
         
         // initialize unguaranteed components (can throw exceptions)
@@ -97,7 +97,7 @@ public class Board : MonoBehaviour
         this.data = data;
         inProgress = true;
 
-        hUD.LoadGame(data.Score, data.PlayerColors.NextColor);
+        hUD.LoadGame(data.Score, data.PlayerColors.NextColor);      // throw or log error? 
         pieceRegistry.LoadGame(data.PlayerColors, data.Board.Cells);
         logic.AddCellsToBoard(data.Board.Cells);
     }

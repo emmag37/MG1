@@ -10,12 +10,16 @@ namespace System.Runtime.CompilerServices
 [Serializable]
 public class UIData : IUIData
 {
-    // settings
-    public AudioSettings AudioSettings = new();
-    public bool VibrationOn = true;                
+    // init flags - could turn these into the actual flag data type
+    public bool HasLaunched = false;
+    public bool InProgress = false;
 
     // profile
     public ProfileData Profile = new();
+
+    // settings - move these to player prefs
+    public AudioSettings AudioSettings = new();
+    public bool VibrationOn = true;
 }
 
 [Serializable]
