@@ -2,7 +2,10 @@ using UnityEngine;
 using System.IO;
 using System;
 
-// separate out the reusable pieces to put into library
+// todo:
+    // separate out reusable pieces for your library
+    // finish BackupCorruptData
+    // error check save
 
 public static class DataFiles
 {
@@ -74,6 +77,8 @@ public class JsonFileStorage : IStorage
     private void BackupCorruptData(string path)
     {
         // show error message
+
+        // keep track of the number of backups?
 
         try
         {

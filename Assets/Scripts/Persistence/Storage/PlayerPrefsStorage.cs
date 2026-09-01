@@ -8,6 +8,8 @@ public static class InitKeys
 
 public static class PlayerPrefsStorage
 {
+    // all get methods - do they need to throw exceptions?
+
     // get/set bool - needs to be stored as an int
     public static bool GetBool(string key, bool defaultValue)
     {
