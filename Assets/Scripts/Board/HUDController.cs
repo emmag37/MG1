@@ -86,11 +86,13 @@ public class HUDController : MonoBehaviour
 
     public int AddPoints(int points)
     {
-        if (points <= 0)
+        if (points < 0)
         {
             Debug.LogWarning($"[HUDController] Non-positive value passed to AddPoints: {points}");
             return 0;
         }
+        else if (points == 0)
+            return 0;
 
         score += points;
         if (score > highScore)

@@ -125,10 +125,10 @@ public class BoardLogic
     public bool ValidCell(int row, int col, CellColor color)
     {
         bool valid =
-            IsLivePos((row, col)) &&
             (row >= 0 && row < RowSize) &&
             (col >= 0 && col < RowSize) &&
-            (color == Mask || gridColors[row, col] == Empty);
+            (color == Mask || gridColors[row, col] == Empty) &&
+            IsLivePos((row, col));
 
         return valid;
     }
