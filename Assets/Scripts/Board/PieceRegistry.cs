@@ -110,7 +110,7 @@ public class PieceRegistry
         int idx = TwoDimToFlatIndex(index);
 
         Debug.Assert(playerPiece.Color != CellColor.Empty, $"[PieceRegistry] playerPiece has invalid CellColor.Empty in PlacePlayer");
-        if (playerPiece.Color == CellColor.Mask && !piecePool.RemoveObject(registry[idx]))
+        if (playerPiece.Color == CellColor.Mask && registry[idx] != null && !piecePool.RemoveObject(registry[idx]))
         {
             Debug.LogError("[PieceRegistry] Unsucessful mask removal from piece pool in PlacePlayer");
             return false;
