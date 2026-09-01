@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.IO;
+using System;
+
+// separate out the reusable pieces to put into library
 
 public static class DataFiles
 {
@@ -15,8 +18,11 @@ public interface IStorage
 
 public class JsonFileStorage : IStorage
 {
-    private string GetPath(string fileName)
+    private string GetPath(string fileName) // what does this function do on faluire?
     {
+        if (string.IsNullOrEmpty(fileName))
+            throw new ArgumentException("[JsonFileStorage] File name is null or empty", nameof(fileName));
+
         return Path.Combine(Application.persistentDataPath, fileName);
     }
 
@@ -27,18 +33,57 @@ public class JsonFileStorage : IStorage
         File.WriteAllText(path, json);
     }
 
+    // exceptions thrown (recoverable): file not found, io, and unauthorized access
     public T Load<T>(string fileName) where T : new()
     {
-        string path = GetPath(fileName);
+        string path = GetPath(fileName);    // safe
 
-        if (!File.Exists(path))
+        if (!File.Exists(path)) // safe
             return new T();
 
-        string json = File.ReadAllText(path);
+        string json = File.ReadAllText(path);   // catch exceptions in bootstrap - retry loading
 
         if (string.IsNullOrEmpty(json))
+        {
+            Debug.LogWarning($"[JsonFileStorage] Null or empty read from file {fileName}");
             return new T();
+        }
 
-        return JsonUtility.FromJson<T>(json);
+        try
+        {
+            T result = JsonUtility.FromJson<T>(json);
+            if (result == null)
+            {
+                Debug.LogError("[JsonFileStorage] From Json returned null result");
+                BackupCorruptData(path);
+
+                return new T();
+            }
+
+            return result;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[JsonFileStorage] From Json failed with exception {e}");
+            BackupCorruptData(path);
+
+            return new T();
+        }
+    }
+
+    private void BackupCorruptData(string path)
+    {
+        // show error message
+
+        try
+        {
+            string backupPath = $"{path}.corrupt_{DateTime.UtcNow:yyyyMMdd_HHmmss}.bak";
+            File.Move(path, backupPath);
+            Debug.LogWarning($"[JsonFileStorage] Moved corrupt data file from {path} to {backupPath}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[JsonFileStorage] Failed to backup data at {path} with exception {e}");
+        }
     }
 }

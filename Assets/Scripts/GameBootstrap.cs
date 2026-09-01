@@ -1,12 +1,13 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.IO;
 //using System.Threading.Tasks; --- not sure if i want to use this or not
 
 // todo:
     // try/catch for init/load gameplay
         // write exceptions for each step in load/init, maintain list
-        // create error message ui
+        // create error message ui - retry load, corrupt data error message
         // write switch statement for recoverable load errors, manage retry loop
         
     // consider using threads for loading
@@ -71,8 +72,16 @@ public class GameBootstrap : MonoBehaviour
         {
             Debug.LogError($"[GameBootstrap] Load/Initialization failed with {e}");
 
-            // show a init/load error screen with retry option
-                // only retry if error is recoverable
+            bool retry = RecoverableLoadException(e);
+
+            if (RecoverableLoadException(e))
+            {
+                // give retry option
+            }
+            else
+            {
+                // alert that load failed
+            }
         }
     }
 
@@ -112,29 +121,33 @@ public class GameBootstrap : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    // turn this into a task
-    // first: separate out sub tasks into their own functions
+    // check load exceptions
+    private bool RecoverableLoadException(Exception e)
+    {
+        switch (e)
+        {
+            case FileNotFoundException:
+                return true;
+            case IOException:
+                return true;
+            case UnauthorizedAccessException:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     // task #1: load data
     private void LoadData()
     {
         fileService = new JsonFileStorage();
 
-        uIData = fileService.Load<UIData>(DataFiles.UIData);    // ensure this never returns null - throw exception if issue
+        uIData = fileService.Load<UIData>(DataFiles.UIData);
         hasLaunched = uIData.HasLaunched;
         inProgress = uIData.InProgress;
 
         if (inProgress)
-        {
             gameData = fileService.Load<GameData>(DataFiles.GameData);
-            if (gameData == null)
-            {
-                Debug.LogError("Failed to load GameData — falling back to new game.");
-                gameData = new GameData();
-            }
-        }
-        else
-            gameData = new GameData();
     }
 
     // task #2: initialize services
