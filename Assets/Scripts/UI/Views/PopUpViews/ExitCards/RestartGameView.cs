@@ -25,7 +25,7 @@ public class RestartGameView : PopUpView
     {
         base.Awake();
 
-        yesUIButton = UIButtonFactory.Navigate<BaseViewType>(yesButton, Host, BaseViewType.Tutorial);
+        yesUIButton = UIButtonFactory.Navigate<BaseViewType>(yesButton, Host, BaseViewType.GamePlay);
         noUIButton = UIButtonFactory.ClosePopUp<PopUpViewType>(noButton, Host);
     }
 

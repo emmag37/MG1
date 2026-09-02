@@ -156,10 +156,7 @@ public class GameBootstrap : MonoBehaviour
         inProgress = loadUIData.InProgress;
 
         if (inProgress)
-        {
             loadGameData = fileService.Load<GameData>(DataFiles.GameData);
-            BoardDataPrinter.PrintGrid(loadGameData.Board);
-        }
             
     }
 
@@ -239,11 +236,7 @@ public class GameBootstrap : MonoBehaviour
         // disc save
         fileService.Save<UIData>(DataFiles.UIData, exitUIData);
         if (board.InProgress)
-        {
             fileService.Save<GameData>(DataFiles.GameData, exitGameData);
-            BoardDataPrinter.PrintGrid(exitGameData.Board);
-        }
-            
 
         active = false;
     }
