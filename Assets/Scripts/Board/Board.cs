@@ -39,8 +39,8 @@ public class Board : MonoBehaviour
 
     private GhostPreview ghostPreview;
 
-    private bool runTutorial;
-    public bool inProgress;
+    private bool runTutorial = false;
+    public bool inProgress = false;
 
 
     // ================================
@@ -68,23 +68,21 @@ public class Board : MonoBehaviour
     public void Initialize(int highScore)
     {
         // cache components
-        audioService = ServiceLocator.Get<IAudio>();
-        ghostPreview = GetComponent<GhostPreview>();
-        SpriteRenderer boardSprite = GetComponent<SpriteRenderer>();
+        audioService = ServiceLocator.Get<IAudio>();                        
+        ghostPreview = GetComponent<GhostPreview>();                        
+        SpriteRenderer boardSprite = GetComponent<SpriteRenderer>();        
 
         // run calculations
-        PieceData pieceData = CalculatePieceData(spawnPoint.position, boardSprite.bounds);
-        BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, boardSprite.bounds);
+        PieceData pieceData = CalculatePieceData(spawnPoint.position, boardSprite.bounds);              
+        BoardGeometry.Initialize(GameConstants.RowSize, GameConstants.RowSize, boardSprite.bounds);     
 
-        // initialize guaranteed components
-        ghostPreview.Initialize();
-        
-        // initialize unguaranteed components (can throw exceptions)
-        scoreAnimation.Initialize();
-        hUD.Initialize(highScore);
+        // initialize components
+        ghostPreview.Initialize();      
+        scoreAnimation.Initialize();    
+        hUD.Initialize(highScore);      
 
         var pool = new GameObjectPool<Piece, PieceData>(GameConstants.NumberCells + 1, piecePrefab, pieceData);
-        pieceRegistry = new PieceRegistry(pool);
+        pieceRegistry = new PieceRegistry(pool);        
 
         SubscribeToEvents(true);
     }
@@ -300,8 +298,6 @@ public class Board : MonoBehaviour
     // true to subscribe, false to unsubscribe
     private void SubscribeToEvents(bool subscribe)
     {
-        Debug.Log($"subscribe to events: {subscribe}");
-
         if (subscribe)
         {
             ghostPreview.TryGhostPreview += HandleGhostPreview;

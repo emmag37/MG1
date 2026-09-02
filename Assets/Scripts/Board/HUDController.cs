@@ -82,6 +82,8 @@ public class HUDController : MonoBehaviour
 
         if (spriteDatabase.TryGetSprite((int)nextColor, out Sprite previewSprite))
             playerPreview.sprite = previewSprite;
+        else
+            Debug.LogWarning($"[HUDController] Could not access sprite for {nextColor}");
     }
 
     public int AddPoints(int points)

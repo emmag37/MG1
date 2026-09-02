@@ -35,15 +35,9 @@ public static class BoardGeometry
     public static void Initialize(int rows, int cols, Bounds board)
     {
         if (rows <= 0 || cols <= 0)
-        {
-            Debug.LogError($"[BoardGeometry] Invalid number of rows ({rows}) or columns ({cols}) passed to initializer");
-            return;
-        }
-        else if (board.size == Vector3.zero)
-        {
-            Debug.LogError($"[BoardGeometry] Invalid bounds passed to initializer: {board}");
-            return;
-        }
+            throw new ArgumentOutOfRangeException($"[BoardGeometry] Number of rows ({rows}) and columns ({cols}) must be greater than 0");
+        if (board.size == Vector3.zero)
+            throw new ArgumentException($"[BoardGeometry] Invalid bounds passed to initializer: {board}");
 
         numRows = rows;
         numCols = cols;
