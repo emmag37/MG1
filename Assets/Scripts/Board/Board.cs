@@ -92,12 +92,14 @@ public class Board : MonoBehaviour
         if (data == null)
             throw new ArgumentNullException(nameof(data), "[Board] Requires non-null Game Data for Load");
 
-        this.data = data;
+        this.data = data;       
         inProgress = true;
 
-        hUD.LoadGame(data.Score, data.PlayerColors.NextColor);      // throw or log error? 
-        pieceRegistry.LoadGame(data.PlayerColors, data.Board.Cells);
-        logic.AddCellsToBoard(data.Board.Cells);
+        if (!pieceRegistry.LoadGame(data.PlayerColors, data.Board.Cells))
+            throw new GameLoadException("[Board] Error rendering saved game state");
+
+        hUD.LoadGame(data.Score, data.PlayerColors.NextColor);          
+        logic.AddCellsToBoard(data.Board.Cells);                        
     }
 
     public void RunTutorial()

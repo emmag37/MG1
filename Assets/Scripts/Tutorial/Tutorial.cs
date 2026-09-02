@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 // eventually make the steps serializable to only load in when tutorial is actually used
     // data-driven
+[RequireComponent(typeof(TutorialViewController))]
 public class Tutorial : MonoBehaviour
 {
     // ==================================================
@@ -20,6 +21,9 @@ public class Tutorial : MonoBehaviour
     // ==================================================
     public void Initialize(Board board)
     {
+        if (board == null)
+            throw new ArgumentNullException(nameof(board));
+
         this.board = board;
 
         viewController = GetComponent<TutorialViewController>();

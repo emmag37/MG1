@@ -10,9 +10,11 @@ using System.IO;
         // create error message ui - retry load, corrupt data error message
         // write switch statement for recoverable load errors, manage retry loop
         
-    // consider using threads for loading
-    // i'm also rethinking implementing my leaderboard
-        // would need a report function for unkind usernames
+    // future features:
+        // data validators so info passed to systems can be assumed safe
+	    // consider using threads for loading
+        // i'm also rethinking implementing my leaderboard
+            // would need a report function for unkind usernames
 
 // First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
@@ -61,9 +63,9 @@ public class GameBootstrap : MonoBehaviour
         // run the tasks - all must be run after one another
         try
         {
-            LoadData();         // current work place
+            LoadData();         
             InitServices();
-            InitSystems();
+            InitSystems();      // current workplace
 
             // loading done
             StartGame();
@@ -124,28 +126,39 @@ public class GameBootstrap : MonoBehaviour
         switch (e)
         {
             case FileNotFoundException:
+                // retry
                 return true;
             case IOException:
+                // retry
                 return true;
             case UnauthorizedAccessException:
+                // retry
+                return true;
+            case GameLoadException:
+                // implement a fresh game instead, show message
+                // should also backup the data that resulted in bad load
                 return true;
             default:
-                // all other exceptions
+                // all other exceptions - just display error loading game???
                 return false;
         }
     }
 
-    // task #1: load data
+    // task #1: load data - validate here?
     private void LoadData()
     {
         fileService = new JsonFileStorage();
 
         uIData = fileService.Load<UIData>(DataFiles.UIData);
+        // validate the UIData
         hasLaunched = uIData.HasLaunched;
         inProgress = uIData.InProgress;
 
         if (inProgress)
+        {
             gameData = fileService.Load<GameData>(DataFiles.GameData);
+            // validate the game data
+        }
     }
 
     // task #2: initialize services
@@ -169,19 +182,19 @@ public class GameBootstrap : MonoBehaviour
     private void InitSystems()
     {
         // scaling
-        Scaler.CalculateAndSetScale(Camera.main);
-        Scaler.ApplyLocalScale(backgroundTransform);
+        Scaler.CalculateAndSetScale(Camera.main);           // various arg exceptions
+        Scaler.ApplyLocalScale(backgroundTransform);        // invalid op
 
-        board.Initialize(uIData.Profile.ScoreList.HighScore());
+        board.Initialize(uIData.Profile.ScoreList.HighScore());     // various arg exceptions, invalid op
         if (!hasLaunched)
         {
-            board.RunTutorial();
-            tutorial.Initialize(board);
+            board.RunTutorial();            // safe
+            tutorial.Initialize(board);     // check this
         }
         else if (inProgress)
-            board.Load(gameData);
+            board.Load(gameData);           // check this - need to write data validators
 
-        uIManager.Initialize(uIData.Profile, board, tutorial);
+        uIManager.Initialize(uIData.Profile, board, tutorial);      // check this
     }
 
     // task #4: open scene and start game
