@@ -51,7 +51,13 @@ public class UIManager : MonoBehaviour, IUIViewHost
     public void Initialize(ProfileData profile, Board board, Tutorial tutorial)
     {
         Debug.Assert(!instantiated, "Instance of UIManager already exists.");
-        instantiated = true;
+
+        if (profile == null)
+            throw new ArgumentNullException(nameof(profile));
+        if (board == null)
+            throw new ArgumentNullException(nameof(board));
+        if (tutorial == null)
+            throw new ArgumentNullException(nameof(tutorial));
 
         this.profile = profile;
         this.board = board;
@@ -63,6 +69,8 @@ public class UIManager : MonoBehaviour, IUIViewHost
         audioService = ServiceLocator.Get<IAudio>();
 
         board.FullBoard += HandleGameOver;
+
+        instantiated = true;
     }
 
     public ProfileData Exit()
@@ -138,7 +146,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
         else if (type == BaseViewType.Tutorial)
         {
-            Debug.Log("start tutorial");
             tutorial.StartTutorial();
         }
         else if (type == BaseViewType.Home && baseViewController.PeekViewType() != BaseViewType.None)

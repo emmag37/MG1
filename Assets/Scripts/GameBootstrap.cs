@@ -2,13 +2,15 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.IO;
-//using System.Threading.Tasks; --- not sure if i want to use this or not
 
 // todo:
     // try/catch for init/load gameplay
-        // write exceptions for each step in load/init, maintain list
         // create error message ui - retry load, corrupt data error message
         // write switch statement for recoverable load errors, manage retry loop
+
+    // then:
+        // Exit and Save
+        // Start Game
         
     // future features:
         // data validators so info passed to systems can be assumed safe
@@ -44,8 +46,8 @@ public class GameBootstrap : MonoBehaviour
     private bool hasLaunched;
     private bool inProgress;
 
-    private UIData uIData;
-    private GameData gameData;
+    private UIData loadUIData;
+    private GameData loadGameData;
 
     private bool active;
 
@@ -63,12 +65,12 @@ public class GameBootstrap : MonoBehaviour
         // run the tasks - all must be run after one another
         try
         {
-            LoadData();         
+            LoadData();
             InitServices();
-            InitSystems();      // current workplace
+            InitSystems();
 
             // loading done
-            StartGame();
+            StartGame();        // current workplace
         }
         catch (Exception e)
         {
@@ -149,25 +151,25 @@ public class GameBootstrap : MonoBehaviour
     {
         fileService = new JsonFileStorage();
 
-        uIData = fileService.Load<UIData>(DataFiles.UIData);
-        // validate the UIData
-        hasLaunched = uIData.HasLaunched;
-        inProgress = uIData.InProgress;
+        loadUIData = fileService.Load<UIData>(DataFiles.UIData);
+        hasLaunched = loadUIData.HasLaunched;
+        inProgress = loadUIData.InProgress;
 
         if (inProgress)
         {
-            gameData = fileService.Load<GameData>(DataFiles.GameData);
-            // validate the game data
+            loadGameData = fileService.Load<GameData>(DataFiles.GameData);
+            BoardDataPrinter.PrintGrid(loadGameData.Board);
         }
+            
     }
 
     // task #2: initialize services
     private void InitServices()
     {
-        audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);  
+        audioService = new AudioService(loadUIData.AudioSettings, musicSource, sFXSource);  
         ServiceLocator.Register<IAudio>(audioService);                                  
 
-        vibrationService = new VibrationService(uIData.VibrationOn);                    
+        vibrationService = new VibrationService(loadUIData.VibrationOn);                    
         ServiceLocator.Register<IVibration>(vibrationService);                          
 
         spriteDatabase = Resources.Load<SpriteDatabase>("SpriteDatabase");              
@@ -182,33 +184,30 @@ public class GameBootstrap : MonoBehaviour
     private void InitSystems()
     {
         // scaling
-        Scaler.CalculateAndSetScale(Camera.main);           // various arg exceptions
-        Scaler.ApplyLocalScale(backgroundTransform);        // invalid op
+        Scaler.CalculateAndSetScale(Camera.main);
+        Scaler.ApplyLocalScale(backgroundTransform);
 
-        board.Initialize(uIData.Profile.ScoreList.HighScore());     // various arg exceptions, invalid op
+        board.Initialize(loadUIData.Profile.ScoreList.HighScore());
         if (!hasLaunched)
         {
-            board.RunTutorial();            // safe
-            tutorial.Initialize(board);     // check this
+            board.RunTutorial();
+            tutorial.Initialize(board);
         }
         else if (inProgress)
-            board.Load(gameData);           // check this - need to write data validators
+            board.Load(loadGameData);           // can throw a recoverable exception (need to figure out the recovery logic)
 
-        uIManager.Initialize(uIData.Profile, board, tutorial);      // check this
+        uIManager.Initialize(loadUIData.Profile, board, tutorial);
     }
 
     // task #4: open scene and start game
     private void StartGame()
     {
-        Debug.Log("load complete");
         loadScreen.SetActive(false);
 
         // set the opening view
         BaseViewType startScreen = BaseViewType.Home;
         if (!hasLaunched)
         {
-            Debug.Log("launch tutorial");
-
             startScreen = BaseViewType.Tutorial;
             hasLaunched = true;
         }
@@ -227,20 +226,24 @@ public class GameBootstrap : MonoBehaviour
         Debug.Log($"in progress: {board.InProgress}");
 
         // prepare UIData
-        UIData uIData = new UIData();
-        uIData.HasLaunched = hasLaunched;
-        uIData.InProgress = board.InProgress;
-        uIData.Profile = uIManager.Exit();
-        uIData.AudioSettings = audioService.GetSettings();
-        uIData.VibrationOn = vibrationService.GetSettings();
+        UIData exitUIData = new UIData();
+        exitUIData.HasLaunched = hasLaunched;
+        exitUIData.InProgress = board.InProgress;
+        exitUIData.Profile = uIManager.Exit();
+        exitUIData.AudioSettings = audioService.GetSettings();
+        exitUIData.VibrationOn = vibrationService.GetSettings();
 
         // exit systems
-        GameData gameData = board.Exit();
-
+        GameData exitGameData = board.Exit();
+        
         // disc save
-        fileService.Save<UIData>(DataFiles.UIData, uIData);
+        fileService.Save<UIData>(DataFiles.UIData, exitUIData);
         if (board.InProgress)
-            fileService.Save<GameData>(DataFiles.GameData, gameData);
+        {
+            fileService.Save<GameData>(DataFiles.GameData, exitGameData);
+            BoardDataPrinter.PrintGrid(exitGameData.Board);
+        }
+            
 
         active = false;
     }

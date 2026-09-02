@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 [Serializable]
 public class GameData
@@ -53,6 +54,37 @@ public class BoardData
     }
 
     public void Reset() => cells.Clear();
+}
+
+public static class BoardDataPrinter
+{
+    public static void PrintGrid(BoardData data)
+    {
+        int size = GameConstants.RowSize;
+
+        var lookup = new Dictionary<(int x, int y), CellEntry>();
+        foreach (var entry in data.Cells)
+            lookup[(entry.x, entry.y)] = entry;
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"Board state ({data.Cells.Count} cells):");
+
+        for (int y = size - 1; y >= 0; y--) // top row first
+        {
+            sb.Append('|');
+            for (int x = 0; x < size; x++)
+            {
+                string cellText = lookup.TryGetValue((x, y), out var entry)
+                    ? ((int)entry.color).ToString()
+                    : "-"; // empty cell (no CellEntry present)
+
+                sb.Append(cellText.PadLeft(2)).Append('|');
+            }
+            sb.AppendLine();
+        }
+
+        Debug.Log(sb.ToString());
+    }
 }
 
 [Serializable]

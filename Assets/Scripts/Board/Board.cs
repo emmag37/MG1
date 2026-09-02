@@ -117,7 +117,9 @@ public class Board : MonoBehaviour
             data.Score = hUD.Score;
             data.PlayerColors = pieceRegistry.Colors;
 
-            logic.FillBoardData(data.Board);
+            data.Board = logic.FillBoardData();
+
+            BoardDataPrinter.PrintGrid(data.Board);
         }
         return data;
     }
@@ -155,13 +157,9 @@ public class Board : MonoBehaviour
     public void StartTutorialStep(CellColor playerColor, (int, int)[] liveZone, IReadOnlyList<CellEntry> cells = null)
     {
         if (playerColor == CellColor.Empty)
-        {
             Reset();
-        }
         else
-        {
             pieceRegistry.TrySpawnNewPlayer(out _, playerColor);
-        }
 
         logic.AddLiveZone(liveZone);
 

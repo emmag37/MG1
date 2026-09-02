@@ -80,14 +80,9 @@ public class BoardLogic
         return numAdded;
     }
 
-    public int FillBoardData(BoardData data)
+    public BoardData FillBoardData()
     {
-        int numPieces = 0;
-        if (data == null)
-        {
-            Logger.Error("[BoardLogic] Null data passed to FillBoardData");
-            return numPieces;
-        }
+        BoardData data = new BoardData();
 
         for (int row = 0; row < RowSize; row++)
         {
@@ -97,13 +92,11 @@ public class BoardLogic
                 {
                     CellEntry entry = new CellEntry(row, col, gridColors[row, col]);
                     data.Set(entry);
-
-                    numPieces++;
                 }
             }
         }
 
-        return numPieces;
+        return data;
     }
 
     public CellColor GetCellColor(int row, int col)

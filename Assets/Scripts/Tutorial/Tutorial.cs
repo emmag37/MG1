@@ -45,7 +45,7 @@ public class Tutorial : MonoBehaviour
         CellColor playerColor = CellColor.Color1;
 
         // run step in board
-        board.StartTutorialStep(playerColor, liveZone);
+        board.StartTutorialStep(playerColor, liveZone);     // check this
     }
 
     public void SkipTutorial()
