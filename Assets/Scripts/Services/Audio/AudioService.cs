@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 
 public class AudioService : IAudio
@@ -14,6 +15,13 @@ public class AudioService : IAudio
     // constructor
     public AudioService(AudioSettings settings, AudioSource musicSource, AudioSource sFXSource)
     {
+        if (settings == null)
+            throw new ArgumentNullException(nameof(settings));
+        if (musicSource == null)
+            throw new ArgumentNullException(nameof(musicSource));
+        if (sFXSource == null)
+            throw new ArgumentNullException(nameof(sFXSource));
+
         this.settings = settings;
         this.musicSource = musicSource;
         this.sFXSource = sFXSource;
@@ -23,9 +31,14 @@ public class AudioService : IAudio
 
         // load in all of the audio clips
         var audioClipObjects = Resources.LoadAll<AudioClipData>("AudioClips");
-        foreach (AudioClipData data in audioClipObjects)
+        if (audioClipObjects == null)
+            throw new InvalidOperationException("[AudioService] No AudioClipData found under Resources/AudioClips");
+
+        foreach (AudioClipData clip in audioClipObjects)
         {
-            clipLookup.Add(data.type, data);
+            if (clip == null)
+                throw new InvalidOperationException("[AudioService] Null audio clip loaded from Resources/AudioClips");
+            clipLookup.Add(clip.type, clip);
         }
     }
 

@@ -7,13 +7,17 @@ public static class ServiceLocator
     // uses a dictionary to store the services <interface, implementation>
     private static readonly Dictionary<Type, object> services = new();
 
-    // register a service
+    // register a service - adds new entry if TService hasn't been registered, replaces if it does
+    // requires non-null service
     public static void Register<TService>(TService service)
     {
-        services.Add(typeof(TService), service);
+        if (service == null)
+            throw new ArgumentNullException(nameof(service));
+
+        services[typeof(TService)] = service;
     }
 
-    // remove a service - true if found and removed, false if not found
+    // remove a service
     public static void Remove<TService>(TService service)
     {
         services.Remove(typeof(TService));

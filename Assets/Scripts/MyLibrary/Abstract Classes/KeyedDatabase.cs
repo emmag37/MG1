@@ -19,6 +19,9 @@ public abstract class KeyedDatabase<TKey, TValue> : ScriptableObject
     // initialization
     public void Initialize()
     {
+        if (entries == null)
+            throw new InvalidOperationException("[KeyedDatabase] Requires non-null entries array for initialization");
+
         foreach (Entry entry in entries)
         {
             if (dict.ContainsKey(entry.key))

@@ -71,9 +71,6 @@ public class GameBootstrap : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"[GameBootstrap] Load/Initialization failed with {e}");
-
-            bool retry = RecoverableLoadException(e);
-
             if (RecoverableLoadException(e))
             {
                 // give retry option
@@ -133,6 +130,7 @@ public class GameBootstrap : MonoBehaviour
             case UnauthorizedAccessException:
                 return true;
             default:
+                // all other exceptions
                 return false;
         }
     }
@@ -153,15 +151,18 @@ public class GameBootstrap : MonoBehaviour
     // task #2: initialize services
     private void InitServices()
     {
-        audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);
-        ServiceLocator.Register<IAudio>(audioService);
+        audioService = new AudioService(uIData.AudioSettings, musicSource, sFXSource);  
+        ServiceLocator.Register<IAudio>(audioService);                                  
 
-        vibrationService = new VibrationService(uIData.VibrationOn);
-        ServiceLocator.Register<IVibration>(vibrationService);
+        vibrationService = new VibrationService(uIData.VibrationOn);                    
+        ServiceLocator.Register<IVibration>(vibrationService);                          
 
-        spriteDatabase = Resources.Load<SpriteDatabase>("SpriteDatabase");
-        spriteDatabase.Initialize();
-        ServiceLocator.Register<ISpriteDatabase>(spriteDatabase);
+        spriteDatabase = Resources.Load<SpriteDatabase>("SpriteDatabase");              
+        if (spriteDatabase == null)
+            throw new InvalidOperationException("[GameBootstrap] No SpriteDatabase found under Resources/SpriteDatabase");
+
+        spriteDatabase.Initialize();                                                    
+        ServiceLocator.Register<ISpriteDatabase>(spriteDatabase);                       
     }
 
     // task #3: calculations and initialize system - REQUIRES services/data
