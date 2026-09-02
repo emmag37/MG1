@@ -29,14 +29,16 @@ public class PieceRegistry
 
     public PieceRegistry(GameObjectPool<Piece, PieceData> piecePool)
     {
-        this.piecePool = piecePool;
         if (piecePool == null)
             throw new ArgumentNullException(nameof(piecePool), "PieceRegistry requires non-null game object pool");
+
+        this.piecePool = piecePool;
 
         audio = ServiceLocator.Get<IAudio>();
         currentColors.InitializeNextColor();
     }
 
+    // i'm going to move all of these checks to a data validator
     public bool LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
     {
         if (colors == null || colors.NextColor == CellColor.Empty)

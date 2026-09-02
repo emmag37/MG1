@@ -28,11 +28,19 @@ public class ViewController<TView, TType, TData>
 
     public ViewController(TView[] viewList, int stackCapacity, IUIViewHost host)
     {
-        // error: stack capacity must be greater than 0
+        if (viewList == null)
+            throw new ArgumentNullException(nameof(viewList));
+        if (stackCapacity <= 0)
+            throw new ArgumentOutOfRangeException(nameof(stackCapacity), "[ViewController] Argument must be greater than 0");
+        if (host == null)
+            throw new ArgumentNullException(nameof(host));
 
-        // initialize the dictionary
+        this.stackCapacity = stackCapacity;
+
+        viewStack = new Stack<TView>(capacity: stackCapacity);
         viewDictionary = new Dictionary<TType, TView>();
 
+        // initialize the dictionary
         foreach (TView view in viewList)
         {
             if (viewDictionary.ContainsKey(view.Type))
@@ -44,10 +52,6 @@ public class ViewController<TView, TType, TData>
             view.Initialize(host);
             viewDictionary.Add(view.Type, view);
         }
-
-        // initialize the stack
-        this.stackCapacity = stackCapacity;
-        viewStack = new Stack<TView>(capacity: stackCapacity);
     }
 
 

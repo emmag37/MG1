@@ -21,7 +21,6 @@ public static class ServiceLocator
     public static void Remove<TService>(TService service)
     {
         services.Remove(typeof(TService));
-        
     }
 
     // get a service

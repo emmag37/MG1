@@ -93,13 +93,14 @@ public class Board : MonoBehaviour
             throw new ArgumentNullException(nameof(data), "[Board] Requires non-null Game Data for Load");
 
         this.data = data;       
-        inProgress = true;
-
+        
         if (!pieceRegistry.LoadGame(data.PlayerColors, data.Board.Cells))
             throw new GameLoadException("[Board] Error rendering saved game state");
 
         hUD.LoadGame(data.Score, data.PlayerColors.NextColor);          
-        logic.AddCellsToBoard(data.Board.Cells);                        
+        logic.AddCellsToBoard(data.Board.Cells);
+
+        inProgress = true;
     }
 
     public void RunTutorial()

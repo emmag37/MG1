@@ -19,7 +19,6 @@ public class GameObjectPool<TObj, TData> where TObj : Component, ILinkable<TObj,
     {
         if (prefab == null)
             throw new ArgumentNullException(nameof(prefab), "Object pool requires a valid prefab.");
-
         if (!prefab.TryGetComponent<TObj>(out _))
             throw new ArgumentException($"Prefab '{prefab.name}' has no {typeof(TObj)} component.", nameof(prefab));
 
