@@ -144,12 +144,12 @@ public class Board : MonoBehaviour
             SpawnPlayer();
         }
 
+        PauseGame(false);
         audioService.PlayMusic(AudioType.GameMusic);
     }
 
     public void PauseGame(bool pause)
     {
-        Debug.Log("player paused");
         pieceRegistry.PausePlayer(pause);
     }
 

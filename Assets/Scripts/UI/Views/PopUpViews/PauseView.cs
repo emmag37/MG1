@@ -66,9 +66,9 @@ public class PauseView: PopUpView
         AudioSettings audioSettings = audioService.GetSettings();
         bool vibrateOn = vibrationService.GetSettings();
 
-        musicSlider.value = audioSettings.MusicOn ? 1 : 0;
-        sfxSlider.value = audioSettings.SFXOn ? 1 : 0;
+        musicSlider.SetValueWithoutNotify(audioSettings.MusicOn ? 1 : 0);
+        sfxSlider.SetValueWithoutNotify(audioSettings.SFXOn ? 1 : 0);
 
-        vibrateSlider.value = vibrateOn ? 1 : 0;
+        vibrateSlider.SetValueWithoutNotify(vibrateOn ? 1 : 0);
     }
 }
