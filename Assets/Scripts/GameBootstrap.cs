@@ -58,6 +58,7 @@ public class GameBootstrap : MonoBehaviour
     private async void Awake()
     {
         loadScreen.SetActive(true);
+        await Task.Delay(1000);         // fake a longer load time to see animation
 
         try
         {
