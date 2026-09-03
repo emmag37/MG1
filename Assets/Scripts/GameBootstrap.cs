@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.IO;
+using System.Threading.Tasks;
 
 // todo:
     // try/catch for init/load gameplay
@@ -56,43 +57,31 @@ public class GameBootstrap : MonoBehaviour
     // Unity Lifecycle
     // ==================================================
 
-    // synchronous for now, move to async
-    private void Awake()
+    private async void Awake()
     {
-        // show the load screen
         loadScreen.SetActive(true);
 
-        // run the tasks - all must be run after one another
         try
         {
-            LoadData();
+            await LoadDataWithRecovery(0);
+
             InitServices();
             InitSystems();
 
-            // loading done
-            StartGame();        // current workplace
+            StartGame();
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GameBootstrap] Load/Initialization failed with {e}");
-            if (RecoverableLoadException(e))
-            {
-                // give retry option
-            }
-            else
-            {
-                // alert that load failed
-            }
+            Debug.LogError($"[GameBootstrap] Fatal exception {e} during load/init");
+            Application.Quit();
         }
     }
-
 
     private void OnApplicationPause(bool pauseStatus)
     {
         // app is being backgrounded
         if (pauseStatus)
         {
-            Debug.Log("pause application");
             ExitAndSave();
         }
         else
@@ -104,7 +93,6 @@ public class GameBootstrap : MonoBehaviour
         // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
         if (!hasFocus)
         {
-            Debug.Log("lose focus");
             ExitAndSave();
         }
         else
@@ -122,31 +110,7 @@ public class GameBootstrap : MonoBehaviour
     // Private Methods
     // ==================================================
 
-    // check load exceptions
-    private bool RecoverableLoadException(Exception e)
-    {
-        switch (e)
-        {
-            case FileNotFoundException:
-                // retry
-                return true;
-            case IOException:
-                // retry
-                return true;
-            case UnauthorizedAccessException:
-                // retry
-                return true;
-            case GameLoadException:
-                // implement a fresh game instead, show message
-                // should also backup the data that resulted in bad load
-                return true;
-            default:
-                // all other exceptions - just display error loading game???
-                return false;
-        }
-    }
-
-    // task #1: load data - validate here?
+    // task #1: load data
     private void LoadData()
     {
         fileService = new JsonFileStorage();
@@ -157,8 +121,32 @@ public class GameBootstrap : MonoBehaviour
 
         if (inProgress)
             loadGameData = fileService.Load<GameData>(DataFiles.GameData);
-            
     }
+    private async Task LoadDataWithRecovery(int attempt)
+    {
+        try
+        {
+            LoadData();
+        }
+        catch (FileNotFoundException)
+        {
+            throw new FileLoadException();
+        }
+        catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+        {
+            Debug.LogError($"[GameBootstrap] Load data failed attempt {attempt} with {e}");
+            int retries = e is UnauthorizedAccessException ? 2 : 3;
+            if (attempt < retries)
+            {
+                // need to add delay
+                await Task.Delay(100);
+                await LoadDataWithRecovery(attempt + 1);
+            }
+            else
+                throw new FileLoadException();      // for outer func to catch and kill program
+        }
+    }
+
 
     // task #2: initialize services
     private void InitServices()
@@ -191,7 +179,17 @@ public class GameBootstrap : MonoBehaviour
             tutorial.Initialize(board);
         }
         else if (inProgress)
-            board.Load(loadGameData);           // can throw a recoverable exception (need to figure out the recovery logic)
+        {
+            try
+            {
+                board.Load(loadGameData);           // can throw a recoverable exception (need to figure out the recovery logic)
+            }
+            catch (GameLoadException)
+            {
+                fileService.BackupCorruptData(DataFiles.GameData);
+                Debug.LogError("[GameBootstrap] Failed to load saved game");
+            }
+        }
 
         uIManager.Initialize(loadUIData.Profile, board, tutorial);
     }

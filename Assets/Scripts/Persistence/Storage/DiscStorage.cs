@@ -74,7 +74,7 @@ public class JsonFileStorage : IStorage
         }
     }
 
-    private void BackupCorruptData(string path)
+    public void BackupCorruptData(string path)
     {
         // show error message
 

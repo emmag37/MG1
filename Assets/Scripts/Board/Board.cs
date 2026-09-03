@@ -118,8 +118,6 @@ public class Board : MonoBehaviour
             data.PlayerColors = pieceRegistry.Colors;
 
             data.Board = logic.FillBoardData();
-
-            BoardDataPrinter.PrintGrid(data.Board);
         }
         return data;
     }
