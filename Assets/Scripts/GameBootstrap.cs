@@ -57,8 +57,9 @@ public class GameBootstrap : MonoBehaviour
 
     private async void Awake()
     {
-        loadScreen.SetActive(true);
-        await Task.Delay(1000);         // fake a longer load time to see animation
+        // place to insert the splash screen
+
+        loadScreen.SetActive(true);     // game loads so fast that you don't even see the screen
 
         try
         {
