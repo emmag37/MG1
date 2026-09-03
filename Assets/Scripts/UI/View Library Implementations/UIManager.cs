@@ -128,8 +128,9 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // rename to show base view
     private void ShowBaseView(BaseViewType type)
     {
-        if (popUpViewController.Count > 0) popUpViewController.ClearViews();
+        ClearOverlay();
 
+        // update reliant game/tutorial states and sound effects
         if (type == BaseViewType.GamePlay && baseViewController.PeekViewType() == BaseViewType.GamePlay)
         {
             board.PlayGame(restart: true);
@@ -138,8 +139,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         {
             audioService.PlaySoundEffect(AudioType.Transition);
             board.PlayGame();
-        }
-        else if (type == BaseViewType.Tutorial && baseViewController.PeekViewType() == BaseViewType.Tutorial)
+        } else if (type == BaseViewType.Tutorial && baseViewController.PeekViewType() == BaseViewType.Tutorial)
         {
             tutorial.SkipTutorial();
             return;
@@ -152,6 +152,12 @@ public class UIManager : MonoBehaviour, IUIViewHost
         {
             audioService.PlaySoundEffect(AudioType.Transition);
         }
+
+        // choose music
+        if (type == BaseViewType.GamePlay)
+            audioService.PlayMusic(AudioType.GameMusic);
+        else
+            audioService.PlayMusic(AudioType.UIMusic);
         
         baseViewController.PushView(type, profile);
     }
@@ -172,10 +178,19 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         if (popUpViewController.PeekViewType() == PopUpViewType.Pause)
         {
+            Debug.Log("pop pause");
             board.PauseGame(false);
         }
 
         popUpViewController.PopView();
+    }
+
+    private void ClearOverlay()
+    {
+        while (popUpViewController.Count > 0)
+        {
+            PopOverlay();
+        }
     }
 
     // ==================================================

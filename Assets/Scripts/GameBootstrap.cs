@@ -209,7 +209,6 @@ public class GameBootstrap : MonoBehaviour
 
         // open the scene
         uIManager.PushView<BaseViewType>(startScreen);
-        audioService.PlayMusic(AudioType.UIMusic);
 
         active = true;  // also means load complete in this instance
     }

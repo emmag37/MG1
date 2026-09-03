@@ -149,6 +149,7 @@ public class Board : MonoBehaviour
 
     public void PauseGame(bool pause)
     {
+        Debug.Log("player paused");
         pieceRegistry.PausePlayer(pause);
     }
 
