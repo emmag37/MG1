@@ -5,9 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 // todo:
-    // try/catch for init/load gameplay
-        // create error message ui - retry load, corrupt data error message
-        // write switch statement for recoverable load errors, manage retry loop
+    // new load screen w/ animation
 
     // then:
         // Exit and Save
@@ -217,8 +215,6 @@ public class GameBootstrap : MonoBehaviour
     private void ExitAndSave()
     {
         if (!active) return;
-
-        Debug.Log($"in progress: {board.InProgress}");
 
         // prepare UIData
         UIData exitUIData = new UIData();
