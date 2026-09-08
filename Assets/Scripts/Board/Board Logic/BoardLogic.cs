@@ -80,7 +80,7 @@ public class BoardLogic
         return numAdded;
     }
 
-    // can throw argument out of range exceptions - done
+    // can throw argument out of range exceptions, unlikely - done
     public BoardData FillBoardData()
     {
         BoardData data = new BoardData();
