@@ -1,12 +1,12 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using System.Text;
+
 
 [Serializable]
 public class GameData
 {
-    public int Score = 0;   // should always default to 0
+    public int Score;
     public PlayerColors PlayerColors = new();
     public BoardData Board = new();
 
@@ -37,57 +37,32 @@ public class PlayerColors
     }
 }
 
-// sparse list to store board data, only ever read from for a list traversal
+
 [Serializable]
 public class BoardData
 {
-    [SerializeField] private List<CellEntry> cells = new();
+    [SerializeField] private List<CellEntry> cells = new();     // sparse list to store board data
     public IReadOnlyList<CellEntry> Cells => cells;
 
     public void Set(CellEntry entry)
     {
-        int i = cells.FindIndex(c => c.x == entry.x && c.y == entry.y);     // rewrite to for loop to avoid lambda allocation per iteration
-        if (i >= 0)
-            cells[i] = entry;
-        else
-            cells.Add(entry);
+        for (int i = 0; i < cells.Count; i++)
+        {
+            CellEntry c = cells[i];
+            if (c.x == entry.x && c.y == entry.y)
+            {
+                cells[i] = entry;
+                return;
+            }
+        }
+
+        cells.Add(entry);
     }
 
     public void Reset() => cells.Clear();
 }
 
-public static class BoardDataPrinter
-{
-    public static void PrintGrid(BoardData data)
-    {
-        int size = GameConstants.RowSize;
 
-        var lookup = new Dictionary<(int x, int y), CellEntry>();
-        foreach (var entry in data.Cells)
-            lookup[(entry.x, entry.y)] = entry;
-
-        var sb = new StringBuilder();
-        sb.AppendLine($"Board state ({data.Cells.Count} cells):");
-
-        for (int x = size - 1; x >= 0; x--) // x = row, top row first
-        {
-            sb.Append('|');
-            for (int y = 0; y < size; y++) // y = column
-            {
-                string cellText = lookup.TryGetValue((x, y), out var entry)
-                    ? ((int)entry.color).ToString()
-                    : "-"; // empty cell (no CellEntry present)
-
-                sb.Append(cellText.PadLeft(2)).Append('|');
-            }
-            sb.AppendLine();
-        }
-
-        Debug.Log(sb.ToString());
-    }
-}
-
-// done
 [Serializable]
 public struct CellEntry
 {
@@ -106,3 +81,4 @@ public struct CellEntry
         this.color = color;
     }
 }
+

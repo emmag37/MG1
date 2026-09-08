@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-// if you want to isolate this script from the static classes it access you'll have to dependency inject
 
 /// <summary>
 /// Manages a representation of the board.
@@ -9,10 +8,9 @@ using System.Collections.Generic;
 /// </summary>
 public class BoardLogic
 {
-    // ================================
+    // ==================================================
     // Constants
-    // ================================
-
+    // ==================================================
     private const int NumSpots = RowSize * RowSize;
     private const int RowSize = GameConstants.RowSize;
 
@@ -20,14 +18,9 @@ public class BoardLogic
     private const CellColor Mask = CellColor.Mask;
     private const CellColor WildCard = CellColor.WildCard;
 
-    // ================================
+    // ==================================================
     // Public Types
-    // ================================
-
-    /// <summary>
-    /// Result of placing a piece on the board.
-    /// Contains line clear information, score, and whether or not the board is full.
-    /// </summary>
+    // ==================================================
     public struct PlayResult
     {
         public int Points;
@@ -41,10 +34,9 @@ public class BoardLogic
 
     }
 
-    // ================================
+    // ==================================================
     // Private Fields
-    // ================================
-
+    // ==================================================
     private int[] rowCounts = new int[RowSize];
     private int[] colCounts = new int[RowSize];
     private int rDiagCount = 0;
@@ -55,12 +47,10 @@ public class BoardLogic
 
     private (int, int)[] liveZone;
 
-
-    // ================================
+    // ==================================================
     // Public Methods
-    // ================================
+    // ==================================================
 
-    // unfinished - add log messages
     public int AddCellsToBoard(IReadOnlyList<CellEntry> cells)
     {
         int numAdded = 0;
@@ -80,7 +70,6 @@ public class BoardLogic
         return numAdded;
     }
 
-    // can throw argument out of range exceptions, unlikely - done
     public BoardData FillBoardData()
     {
         BoardData data = new BoardData();
@@ -108,14 +97,6 @@ public class BoardLogic
         return gridColors[row, col];
     }
 
-    /// <summary>
-    /// Checks whether the index is within bounds and open.
-    /// </summary>
-    /// <param name="row">The row to check.</param>
-    /// <param name="col">The column to check.</param>
-    /// <returns>
-    /// <c>true</c> if the index is valid; otherwise <c>false</c>
-    /// </returns>
     public bool ValidCell(int row, int col, CellColor color)
     {
         bool valid =
@@ -127,9 +108,6 @@ public class BoardLogic
         return valid;
     }
 
-    /// <summary>3
-	/// Resets the board for a new game.
-	/// </summary>
     public void ResetBoard()
     {
         for (int i = 0; i < RowSize; i++)
@@ -140,49 +118,40 @@ public class BoardLogic
         rDiagCount = 0;
         lDiagCount = 0;
 
-        // Reset the grid
+        // reset the grid
         numSpotsFilled = 0;
         ResetColors();
 
         AddLiveZone(null);
     }
 
-    /// <summary>
-	/// If the parameters are valid, adds the player to the board and
-	/// checks the internal state for wins.
-	/// </summary>
-	/// <param name="row">Row of the player.</param>
-	/// <param name="col">Column of the player.</param>
-	/// <param name="color">Color of the player.</param>
-	/// <param name="result">Contains information about the play.</param>
-	/// <returns><c>true</c> if the index and color were valid; otherwise <c>false</c>.</returns>
     public bool TryPlacePlayer(int row, int col, CellColor color, out PlayResult result)
     {
         result = new PlayResult();
-        if (!ValidCell(row, col, color) || !AddToBoard(row, col, color))    // !ValidCell is expected case - don't want to log error message for it
+        if (!ValidCell(row, col, color) || !AddToBoard(row, col, color))
             return false;
 
-        result = CalculateLines(row, col, color);       // big one that needs to be validated
+        result = CalculateLines(row, col, color);
 
         return true;
     }
 
+    // indices must be checked on access
     public void AddLiveZone((int, int)[] indices)
     {
-        // remember to check these on access
         liveZone = indices;
     }
 
 
-    // ================================
+    // ==================================================
     // Internal Methods - Testing Only
-    // ================================
+    // ==================================================
 
     internal int GetSpotsFilled() => numSpotsFilled;
 
-    // ================================
+    // ==================================================
     // Private Methods
-    // ================================
+    // ==================================================
 
     // places the player on the board and sets play result values
     // assumes row, col, and color are correct
@@ -190,7 +159,7 @@ public class BoardLogic
     {
         PlayResult result = new PlayResult();
 
-        // Check for full and matching lines
+        // check for full and matching lines
         result.ClearRow =
             (rowCounts[row] == RowSize) &&
             LineColorsMatch(i => (row, i), color);
@@ -207,7 +176,7 @@ public class BoardLogic
             (lDiagCount == RowSize) &&
             LineColorsMatch(i => (RowSize - 1 - i, i), color);
 
-        // Clear any filled lines
+        // clear any filled lines
         if (result.ClearRow) ClearRow(row);
         if (result.ClearCol) ClearColumn(col);
         if (result.ClearRDiag) ClearRDiagonal();
@@ -277,9 +246,9 @@ public class BoardLogic
         return false;
     }
 
-    // ================================
+    // ==================================================
     // Play Result Helper Methods
-    // ================================
+    // ==================================================
 
     // sets the number of points scored in result
     private int CalculatePoints(PlayResult result)
@@ -369,5 +338,4 @@ public class BoardLogic
 
         numSpotsFilled -= 4;
     }
-
 }

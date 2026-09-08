@@ -1,7 +1,7 @@
-using UnityEngine;
 
 public static class GameConstants
 {
+    // gameplay numbers
     public const int RowSize = 5;
     public const int NumberCells = RowSize * RowSize;
 
