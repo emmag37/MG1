@@ -110,15 +110,19 @@ public class Board : MonoBehaviour
         hUD.gameObject.SetActive(false);
     }
 
-    public GameData Exit()
+    // can throw arg out of range exception, unlikely - done
+    public GameData GetGameData()
     {
-        if (inProgress)
-        {
-            data.Score = hUD.Score;
-            data.PlayerColors = pieceRegistry.Colors;
+        if (data == null)
+            throw new InvalidOperationException("[Board] Cannot mutate null data to return");
 
-            data.Board = logic.FillBoardData();
-        }
+        if (!inProgress)
+            Debug.LogWarning("[Board] Requested game data while in inactive state");
+
+        data.Score = hUD.Score;
+        data.PlayerColors = pieceRegistry.Colors;
+		data.Board = logic.FillBoardData();
+
         return data;
     }
 

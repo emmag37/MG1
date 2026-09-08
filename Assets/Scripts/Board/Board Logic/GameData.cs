@@ -46,7 +46,7 @@ public class BoardData
 
     public void Set(CellEntry entry)
     {
-        int i = cells.FindIndex(c => c.x == entry.x && c.y == entry.y);
+        int i = cells.FindIndex(c => c.x == entry.x && c.y == entry.y);     // rewrite to for loop to avoid lambda allocation per iteration
         if (i >= 0)
             cells[i] = entry;
         else
@@ -87,6 +87,7 @@ public static class BoardDataPrinter
     }
 }
 
+// done
 [Serializable]
 public struct CellEntry
 {

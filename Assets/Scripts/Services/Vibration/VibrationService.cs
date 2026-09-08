@@ -23,6 +23,7 @@ public class VibrationService : IVibration
         vibrationOn = on;
     }
 
+    // done
     public bool GetSettings()
     {
         return vibrationOn;

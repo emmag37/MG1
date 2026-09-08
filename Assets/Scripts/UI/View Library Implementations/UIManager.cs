@@ -73,8 +73,12 @@ public class UIManager : MonoBehaviour, IUIViewHost
         instantiated = true;
     }
 
+    // done
     public ProfileData Exit()
     {
+        if (profile == null)
+            throw new InvalidOperationException("[UIManager] Null profile during Exit");
+
         return profile;
     }
 
@@ -125,7 +129,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // View Controller Methods
     // ==================================================
 
-    // rename to show base view
+    // add error checking
     private void ShowBaseView(BaseViewType type)
     {
         ClearOverlay();

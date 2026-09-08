@@ -4,18 +4,6 @@ using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
 
-// todo:
-    // new load screen w/ animation
-
-    // then:
-        // Exit and Save
-        // Start Game
-        
-    // future features:
-        // data validators so info passed to systems can be assumed safe
-	    // consider using threads for loading
-        // i'm also rethinking implementing my leaderboard
-            // would need a report function for unkind usernames
 
 // First in script execution order (set to -10)
 public class GameBootstrap : MonoBehaviour
@@ -55,15 +43,14 @@ public class GameBootstrap : MonoBehaviour
     // Unity Lifecycle
     // ==================================================
 
+    // done
     private async void Awake()
     {
-        // place to insert the splash screen
-
-        loadScreen.SetActive(true);     // game loads so fast that you don't even see the screen
+        loadScreen.SetActive(true);
 
         try
         {
-            await LoadDataWithRecovery(0);
+            await LoadData();
 
             InitServices();
             InitSystems();
@@ -82,10 +69,10 @@ public class GameBootstrap : MonoBehaviour
         // app is being backgrounded
         if (pauseStatus)
         {
-            ExitAndSave();
+            ExitAndSave();  // ???
         }
         else
-            Reenter();
+            Reenter();      // ???
     }
 
     private void OnApplicationFocus(bool hasFocus)
@@ -111,42 +98,17 @@ public class GameBootstrap : MonoBehaviour
     // ==================================================
 
     // task #1: load data
-    private void LoadData()
+    private async Task LoadData()
     {
         fileService = new JsonFileStorage();
 
-        loadUIData = fileService.Load<UIData>(DataFiles.UIData);
+        loadUIData = await fileService.LoadWithRetries<UIData>(DataFiles.UIData);
         hasLaunched = loadUIData.HasLaunched;
         inProgress = loadUIData.InProgress;
 
         if (inProgress)
-            loadGameData = fileService.Load<GameData>(DataFiles.GameData);
+            loadGameData = await fileService.LoadWithRetries<GameData>(DataFiles.GameData);
     }
-    private async Task LoadDataWithRecovery(int attempt)
-    {
-        try
-        {
-            LoadData();
-        }
-        catch (FileNotFoundException)
-        {
-            throw new FileLoadException();
-        }
-        catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
-        {
-            Debug.LogError($"[GameBootstrap] Load data failed attempt {attempt} with {e}");
-            int retries = e is UnauthorizedAccessException ? 2 : 3;
-            if (attempt < retries)
-            {
-                // need to add delay
-                await Task.Delay(100);
-                await LoadDataWithRecovery(attempt + 1);
-            }
-            else
-                throw new FileLoadException();      // for outer func to catch and kill program
-        }
-    }
-
 
     // task #2: initialize services
     private void InitServices()
@@ -217,21 +179,40 @@ public class GameBootstrap : MonoBehaviour
     {
         if (!active) return;
 
-        // prepare UIData
+        // prepare all data
         UIData exitUIData = new UIData();
+        GameData exitGameData = null;
+        try
+        {
+            exitUIData.Profile = uIManager.Exit();
+            exitUIData.AudioSettings = audioService.GetSettings();
+            exitUIData.VibrationOn = vibrationService.GetSettings();
+        }
+        catch (Exception e)     // known: invalid operation
+        {
+            Debug.LogError($"[GameBootstrap] Caught exception {e} while accessing UIData, saving loaded data instead");
+            exitUIData = loadUIData;
+        }
+        exitUIData.InProgress = board.InProgress;       // must always be consistent w/ board, safe call
         exitUIData.HasLaunched = hasLaunched;
-        exitUIData.InProgress = board.InProgress;
-        exitUIData.Profile = uIManager.Exit();
-        exitUIData.AudioSettings = audioService.GetSettings();
-        exitUIData.VibrationOn = vibrationService.GetSettings();
 
-        // exit systems
-        GameData exitGameData = board.Exit();
-        
+        if (exitUIData.InProgress)
+        {
+            try
+            {
+                exitGameData = board.GetGameData();
+            }
+            catch (Exception e)     // known: invalid operation, argument out of range
+            {
+                Debug.LogError($"[GameBootstrap] Caught exception {e} while accessing GameData, no game save");
+                exitUIData.InProgress = false;
+            }
+        }
+
         // disc save
-        fileService.Save<UIData>(DataFiles.UIData, exitUIData);
-        if (board.InProgress)
-            fileService.Save<GameData>(DataFiles.GameData, exitGameData);
+        fileService.Save<UIData>(DataFiles.UIData, exitUIData);     // check
+        if (exitUIData.InProgress)
+            fileService.Save<GameData>(DataFiles.GameData, exitGameData);       // check
 
         active = false;
     }

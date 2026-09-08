@@ -94,8 +94,12 @@ public class AudioService : IAudio
     }
 
     // settings
+    // done
     public AudioSettings GetSettings()
     {
+        if (settings == null)
+            throw new InvalidOperationException("[AudioService] Cannot return null settings from GetSettings");
+
         return settings;
     }
 }
