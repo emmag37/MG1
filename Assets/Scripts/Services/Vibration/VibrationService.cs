@@ -3,15 +3,25 @@ using UnityEngine;
 
 public class VibrationService : IVibration
 {
+    // ==================================================
+    // Private Fields
+    // ==================================================
     private bool vibrationOn;
 
-    // constructor
+    // ==================================================
+    // Constructor
+    // ==================================================
+
     public VibrationService(bool vibrationOn)
     {
         this.vibrationOn = vibrationOn;
     }
 
-    // interface methods
+
+    // ==================================================
+    // Interface Methods
+    // ==================================================
+
     public void ShortVibration()
     {
         if (vibrationOn)
@@ -23,9 +33,5 @@ public class VibrationService : IVibration
         vibrationOn = on;
     }
 
-    // done
-    public bool GetSettings()
-    {
-        return vibrationOn;
-    }
+    public bool GetSettings() => vibrationOn;
 }
