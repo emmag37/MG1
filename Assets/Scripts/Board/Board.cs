@@ -87,6 +87,7 @@ public class Board : MonoBehaviour
         SubscribeToEvents(true);
     }
 
+    // done
     public void Load(GameData data)
     {
         if (data == null)
@@ -100,7 +101,7 @@ public class Board : MonoBehaviour
         hUD.LoadGame(data.Score, data.PlayerColors.NextColor);          
         logic.AddCellsToBoard(data.Board.Cells);
 
-        inProgress = true;
+        inProgress = true;          // only set if no exceptions thrown
     }
 
     public void RunTutorial()
@@ -111,6 +112,7 @@ public class Board : MonoBehaviour
     }
 
     // can throw arg out of range exception, unlikely - done
+    // ensures non-null return value
     public GameData GetGameData()
     {
         if (data == null)

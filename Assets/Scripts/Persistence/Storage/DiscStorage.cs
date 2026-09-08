@@ -32,6 +32,7 @@ public class JsonFileStorage : IStorage
 
     // check
     // requires non-null data and file name
+    // doesn't check any of its exceptions
     public void Save<T>(string fileName, T data)
     {
         Debug.Assert(data != null, "[JsonFileStorage] Attempted save with null data");
@@ -39,18 +40,33 @@ public class JsonFileStorage : IStorage
         string path = GetPath(fileName);
         string json = JsonUtility.ToJson(data, true);
 
-        try
-        {
-            File.WriteAllText(path, json);                  // check
-        }
-        catch (Exception e)
-        {
-
-        }
-
-        
+        File.WriteAllText(path, json);
     }
 
+    // done
+    // requires generic exception catch for all other exceptions
+    // note : file save exception is not built in
+    public async Task SaveWithRetries<T>(string fileName, T data, int retries = 3)
+    {
+        for (int i = 1; i <= retries; i++)
+        {
+            try
+            {
+                Save<T>(fileName, data);
+                return;
+            }
+            catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+            {
+                Debug.LogError($"[JsonFileStorage] Save {fileName} failed attempt {i} with {e}");
+                if (i < retries)
+                    await Task.Delay(100);
+                else
+                    throw e;
+            }
+        }
+    }
+
+    // done
     // exceptions thrown (recoverable): file not found, io, and unauthorized access
     public T Load<T>(string fileName) where T : new()
     {
@@ -89,6 +105,7 @@ public class JsonFileStorage : IStorage
         }
     }
 
+    // done
     // throws FileLoadException
     public async Task<T> LoadWithRetries<T>(string fileName, int retries = 3) where T : new()
     {
@@ -104,15 +121,16 @@ public class JsonFileStorage : IStorage
                 if (i < retries)
                     await Task.Delay(100);
                 else
-                    throw new FileLoadException();
+                    throw e;
             }
         }
         throw new FileLoadException(); // unreachable, for compiler
     }
-     
+
+    // done
+    // keep track of the number of backups?
     public void BackupCorruptData(string path)
     {
-        // keep track of the number of backups?
         try
         {
             string backupPath = $"{path}.corrupt_{DateTime.UtcNow:yyyyMMdd_HHmmss}.bak";

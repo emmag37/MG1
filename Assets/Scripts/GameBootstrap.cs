@@ -43,7 +43,6 @@ public class GameBootstrap : MonoBehaviour
     // Unity Lifecycle
     // ==================================================
 
-    // done
     private async void Awake()
     {
         loadScreen.SetActive(true);
@@ -64,33 +63,34 @@ public class GameBootstrap : MonoBehaviour
         }
     }
 
-    private void OnApplicationPause(bool pauseStatus)
+    private async void OnApplicationPause(bool pauseStatus)
     {
         // app is being backgrounded
         if (pauseStatus)
         {
-            ExitAndSave();  // ???
-        }
-        else
-            Reenter();      // ???
-    }
-
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
-        if (!hasFocus)
-        {
-            ExitAndSave();
+            await Save();
         }
         else
             Reenter();
     }
 
-    // for testing in the editor - maybe keep for the build?
-    private void OnApplicationQuit()
+    private async void OnApplicationFocus(bool hasFocus)
     {
-        ExitAndSave();
+        // app lost focus (backgrounded on some platforms, alt-tabbed on desktop)
+        if (!hasFocus)
+        {
+            await Save();
+        }
+        else
+            Reenter();
     }
+
+    #if UNITY_EDITOR
+    private async void OnApplicationQuit()
+    {
+        await Save();
+    }
+    #endif
 
 
     // ==================================================
@@ -144,12 +144,12 @@ public class GameBootstrap : MonoBehaviour
         {
             try
             {
-                board.Load(loadGameData);           // can throw a recoverable exception (need to figure out the recovery logic)
+                board.Load(loadGameData);
             }
-            catch (GameLoadException)
+            catch (Exception e)
             {
+                Debug.LogError($"[GameBootstrap] Failed to load saved game with {e}, start with fresh game");
                 fileService.BackupCorruptData(DataFiles.GameData);
-                Debug.LogError("[GameBootstrap] Failed to load saved game");
             }
         }
 
@@ -172,10 +172,10 @@ public class GameBootstrap : MonoBehaviour
         // open the scene
         uIManager.PushView<BaseViewType>(startScreen);
 
-        active = true;  // also means load complete in this instance
+        active = true;  // load complete
     }
 
-    private void ExitAndSave()
+    private async Task Save()
     {
         if (!active) return;
 
@@ -210,9 +210,16 @@ public class GameBootstrap : MonoBehaviour
         }
 
         // disc save
-        fileService.Save<UIData>(DataFiles.UIData, exitUIData);     // check
-        if (exitUIData.InProgress)
-            fileService.Save<GameData>(DataFiles.GameData, exitGameData);       // check
+        try
+        {
+            await fileService.SaveWithRetries<UIData>(DataFiles.UIData, exitUIData);
+            if (exitUIData.InProgress)
+                await fileService.SaveWithRetries<GameData>(DataFiles.GameData, exitGameData);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameBootstrap] Save failed with {e}");        // log and move on
+        }
 
         active = false;
     }
