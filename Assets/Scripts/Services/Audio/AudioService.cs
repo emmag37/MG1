@@ -5,6 +5,9 @@ using System;
 
 public class AudioService : IAudio
 {
+    // ==================================================
+    // Private Fields
+    // ==================================================
     private AudioSettings settings;
 
     private AudioSource musicSource;
@@ -12,7 +15,11 @@ public class AudioService : IAudio
 
     private Dictionary<AudioType, AudioClipData> clipLookup = new Dictionary<AudioType, AudioClipData>();
 
-    // constructor
+
+    // ==================================================
+    // Constructor
+    // ==================================================
+
     public AudioService(AudioSettings settings, AudioSource musicSource, AudioSource sFXSource)
     {
         if (settings == null)
@@ -42,31 +49,31 @@ public class AudioService : IAudio
         }
     }
 
-    // interface methods
+    // ==================================================
+    // Interface Methods - Background Music
+    // ==================================================
 
-    // background music functions
     public void PlayMusic(AudioType audioType)
     {
-        Debug.Log($"play music: {audioType}");
+        if (!clipLookup.ContainsKey(audioType))
+        {
+            Debug.LogError($"[AudioService] No clip found with type {audioType}");
+            return;
+        }
 
-        AudioClip clip = clipLookup[audioType].clip;
-        musicSource.clip = clip;
-
+        musicSource.clip = clipLookup[audioType].clip;
         if (settings.MusicOn)
             musicSource.Play();
     }
 
     public void StopMusic()
     {
-        Debug.Log("stop music");
-
         musicSource.Stop();
     }
 
-    public void SetMusicOn(bool on) // used for continuous audio clips
+    // used for continuous audio clips
+    public void SetMusicOn(bool on)
     {
-        Debug.Log($"pause/unpause music");
-
         if (settings.MusicOn == on) return;
 
         if (on)
@@ -77,15 +84,21 @@ public class AudioService : IAudio
         settings.MusicOn = on;
     }
 
-    // sound effects functions
+
+    // ==================================================
+    // Interface Methods - Sound Effects
+    // ==================================================
+
     public void PlaySoundEffect(AudioType audioType)
     {
-        if (!settings.SFXOn) return;
+        if (!clipLookup.ContainsKey(audioType))
+        {
+            Debug.LogError($"[AudioService] No clip found with type {audioType}");
+            return;
+        }
 
-        Debug.Log($"play effect: {audioType}");
-
-        AudioClip clip = clipLookup[audioType].clip;
-        sFXSource.PlayOneShot(clip);
+        if (settings.SFXOn)
+            sFXSource.PlayOneShot(clipLookup[audioType].clip);
     }
 
     public void SetEffectsOn(bool on)
@@ -93,8 +106,10 @@ public class AudioService : IAudio
         settings.SFXOn = on;
     }
 
-    // settings
-    // done
+    // ==================================================
+    // Interface Methods - Settings
+    // ==================================================
+
     public AudioSettings GetSettings()
     {
         if (settings == null)
