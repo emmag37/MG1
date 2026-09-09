@@ -2,12 +2,6 @@ using UnityEngine;
 using System;
 
 
-public struct PieceData
-{
-    public Bounds boundaries;
-    public Vector3 spawnPoint;
-}
-
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Draggable))]
 [RequireComponent(typeof(Animator))]
@@ -36,7 +30,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 
     private ISpriteDatabase spriteDatabase;
 
-    private Vector3 spawnPoint;     // feel like you could move this into some sort of game constant
+    private Vector3 spawnPoint;
 
 
     // ==================================================
@@ -131,11 +125,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 
     public void Pop()
     {
-        if (IsPlayer)
-        {
-            Debug.LogError("[Piece] Attempted pop animation on active player");
-            return;
-        }
+        Debug.Assert(!IsPlayer, "[Piece] Attempted pop animation on active player");
 
         animator.SetTrigger("PopCell");
     }
@@ -144,7 +134,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
     {
         Debug.Assert(IsPlayer, "[Piece] Attempted to pause/resume inactive player");
 
-        draggable.enabled = !pause;       // pauses/resumes the player movement
+        draggable.enabled = !pause;       // true: stop moving, false: start moving
     }
 
     // ==================================================
