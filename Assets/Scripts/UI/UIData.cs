@@ -4,20 +4,21 @@ using System.Collections.Generic;
 
 namespace System.Runtime.CompilerServices
 {
-    internal static class IsExternalInit { }
+    internal static class IsExternalInit { }        // for records
 }
+
 
 [Serializable]
 public class UIData : IUIData
 {
-    // init flags - could turn these into the actual flag data type
+    // init flags
     public bool HasLaunched = false;
     public bool InProgress = false;
 
     // profile
     public ProfileData Profile = new();
 
-    // settings - move these to player prefs
+    // settings
     public AudioSettings AudioSettings = new();
     public bool VibrationOn = true;
 }
@@ -41,8 +42,7 @@ public class ProfileData : IUIData
 [Serializable]
 public class ScoreHistory : CappedRankedList<int>
 {
-    // only hold top 10 scores in score history
-    public ScoreHistory() : base(10) { }
+    public ScoreHistory() : base(UIConstants.NumScores) { }
 
     public int HighScore()
     {
@@ -53,19 +53,8 @@ public class ScoreHistory : CappedRankedList<int>
     }
 }
 
-public sealed record FinalScoreData(int score, int highScore) : IUIData; // this is what is passed to the game over screen
-
-/* to be implemented in the future
- * 
-[Serializable]
-public class LeaderboardRanking : CappedRankedList<LeaderboardData>
-{
-    // hold the top 50 scores
-    public LeaderboardRanking() : base(50) { }
-}
-*/
+public sealed record FinalScoreData(int score, int highScore) : IUIData;
 
 // data patches
-
 public sealed record AvatarPatch(CellColor avatar) : IUIPatch;
 public sealed record UsernamePatch(string username) : IUIPatch;

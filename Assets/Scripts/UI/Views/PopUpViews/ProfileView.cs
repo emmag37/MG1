@@ -59,7 +59,7 @@ public class ProfileView : PopUpView
         UIButtonFactory.EditInput(editUsernameButton, usernameInput);
         UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
 
-        scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2, 10);
+        scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2, UIConstants.NumScores);
         scoreHistoryScrollList.Populate();
 
         usernameInputField = new UIUsernameInputField(usernameInput, invalidInput, (string value) => Host.PatchUpdate(new UsernamePatch(value)));

@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-// todo: replace settings service with a UI data service
 
 public class UIManager : MonoBehaviour, IUIViewHost
 {
@@ -10,14 +9,13 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Constants
     // ==================================================
     private const int BaseViewCapacity = 1;
-    private const int PopUpViewCapacity = 3;    // think it might be two, but just to be safe
+    private const int PopUpViewCapacity = 3;
 
     // ==================================================
     // Inspector Fields
     // ==================================================
     [SerializeField] private BaseView[] baseViewList;
     [SerializeField] private PopUpView[] popUpViewList;
-
 
     // ==================================================
     // Private Fields
@@ -39,13 +37,21 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // Unity Lifecycle
     // ================================
 
-    public void OnDestroy()
+    void OnValidate()
+    {
+        if (baseViewList.Length == 0)
+            Debug.LogWarning("[UIManager] Empty base view list");
+        if (popUpViewList.Length == 0)
+            Debug.LogWarning("[UIManager] Empty pop up view list");
+    }
+
+    void OnDestroy()
     {
         board.FullBoard -= HandleGameOver;
     }
 
     // ==================================================
-    // Initialize/Exit
+    // Initialize/Data
     // ==================================================
 
     public void Initialize(ProfileData profile, Board board, Tutorial tutorial)
@@ -71,14 +77,14 @@ public class UIManager : MonoBehaviour, IUIViewHost
         instantiated = true;
     }
 
-    // done
-    public ProfileData Exit()
+    public ProfileData GetProfileData()
     {
         if (profile == null)
-            throw new InvalidOperationException("[UIManager] Null profile during Exit");
+            throw new InvalidOperationException("[UIManager] Null profile during GetProfileData");
 
         return profile;
     }
+
 
     // ==================================================
     // Interface Method Delegation
@@ -95,7 +101,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
                 PushOverlay(t);
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(type), $"Unhandled view type: {type.GetType()}");
+                throw new ArgumentOutOfRangeException(nameof(type), $"[UIManager] Unhandled view type: {type.GetType()}");
         }
     }
 
@@ -104,7 +110,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         if (typeof(TType) == typeof(PopUpViewType))
             PopOverlay();
         else
-            Debug.LogError($"Unsupported view type: {typeof(TType).Name}");
+            Debug.LogError($"[UIManager] Unsupported view type: {typeof(TType).Name}");
     }
 
     public void PatchUpdate(IUIPatch patch)
@@ -118,7 +124,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
                 UsernameUpdate(p.username);
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(patch), $"Unhandled patch type: {patch.GetType()}");
+                throw new ArgumentOutOfRangeException(nameof(patch), $"[UIManager] Unhandled patch type: {patch.GetType()}");
         }
     }
 
@@ -127,12 +133,11 @@ public class UIManager : MonoBehaviour, IUIViewHost
     // View Controller Methods
     // ==================================================
 
-    // add error checking
     private void ShowBaseView(BaseViewType type)
     {
         ClearOverlay();
 
-        // update reliant game/tutorial states and sound effects
+        // update game/tutorial states and sound effects
         if (type == BaseViewType.GamePlay && baseViewController.PeekViewType() == BaseViewType.GamePlay)
         {
             board.PlayGame(restart: true);
@@ -166,7 +171,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
         baseViewController.PushView(type, profile);
     }
 
-    // rename to push pop up view
     private void PushOverlay(PopUpViewType type, bool playSound = true)
     {
         if (type == PopUpViewType.Pause)
@@ -177,7 +181,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
         popUpViewController.PushView(type, profile);
     }
 
-    // rename to pop pop up view
     private void PopOverlay()
     {
         if (popUpViewController.PeekViewType() == PopUpViewType.Pause)
@@ -197,6 +200,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
     }
 
+
     // ==================================================
     // Patch Methods
     // ==================================================
@@ -214,6 +218,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         profile.Username = username;
     }
+
 
     // ==================================================
     // Event Handlers

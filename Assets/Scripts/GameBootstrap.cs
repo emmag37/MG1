@@ -186,7 +186,7 @@ public class GameBootstrap : MonoBehaviour
         GameData exitGameData = null;
         try
         {
-            exitUIData.Profile = uIManager.Exit();
+            exitUIData.Profile = uIManager.GetProfileData();
             exitUIData.AudioSettings = audioService.GetSettings();
             exitUIData.VibrationOn = vibrationService.GetSettings();
         }

@@ -1,4 +1,3 @@
-using UnityEngine;
 
 public static class UIConstants
 {
@@ -9,4 +8,6 @@ public static class UIConstants
     public const float ReferenceOrtho = ReferenceHeight / 2f / PixelsPerUnit;
 
     public const float ArrowOffset = 100f;
+
+    public const int NumScores = 10;
 }
