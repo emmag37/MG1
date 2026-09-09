@@ -14,13 +14,13 @@ public class Board : MonoBehaviour
     // ================================
     // Events
     // ================================
-    public event Action<int, int> FullBoard;        // score, highScore
+    public event Action<int score, int highScore> FullBoard;                // score, highScore
     public event Action<Vector2Int> TutorialStepComplete;   // index of piece placed
 
     // ================================
     // Inspector Fields
     // ================================
-    [SerializeField] private ScoreAnimation scoreAnimation;     // might take these off of this script
+    [SerializeField] private ScoreAnimation scoreAnimation;
     [SerializeField] private HUDController hUD;
 
     [SerializeField] private Transform spawnPoint;

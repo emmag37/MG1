@@ -214,7 +214,7 @@ public class PieceRegistry
         return numLoaded;
     }
 
-    // Coroutine for popping pieces animation
+    // coroutine for popping pieces animation
     public IEnumerator PopPieces(BoardLogic.PlayResult r, Vector2Int index)
     {
         int cleared = 0;
