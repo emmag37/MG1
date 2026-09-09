@@ -5,30 +5,31 @@ using UnityEngine.UI;
 
 public class HUDController : MonoBehaviour
 {
-    // ================================
+    // ==================================================
     // Public Fields
-    // ================================
+    // ==================================================
     public int Score => score;
 
-    // ================================
+    // ==================================================
     // Inspector Fields
-    // ================================
+    // ==================================================
     [SerializeField] private Image HUDPanel;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text highScoreText;
     [SerializeField] private Image playerPreview;
 
-    // ================================
+    // ==================================================
     // Private Fields
-    // ================================
+    // ==================================================
     private int score;
     private int highScore;
 
     private ISpriteDatabase spriteDatabase;
 
-    // ================================
+
+    // ==================================================
     // Unity Lifecycle Methods
-    // ================================
+    // ==================================================
 
     void OnValidate()
     {
@@ -38,9 +39,10 @@ public class HUDController : MonoBehaviour
         Debug.Assert(playerPreview != null, "[HUDController] Player preview not set");
     }
 
-    // ================================
-    // Public Methods
-    // ================================
+
+    // ==================================================
+    // Initialization
+    // ==================================================
 
     public void Initialize(int highScore)
     {
@@ -61,16 +63,12 @@ public class HUDController : MonoBehaviour
         SetPlayerPreview(previewColor);
     }
 
-    public (int score, int highScore) GetScores()
-    {
-        return (score, highScore);  // could probably just return the record here
-    }
 
-    public void Reset()
-    {
-        score = 0;
-        UpdateScoreText();
-    }
+    // ==================================================
+    // Public Methods
+    // ==================================================
+
+    public (int score, int highScore) GetScores() => (score, highScore);
 
     public void SetPlayerPreview(CellColor nextColor)
     {
@@ -104,10 +102,16 @@ public class HUDController : MonoBehaviour
         return score;
     }
 
+    public void Reset()
+    {
+        score = 0;
+        UpdateScoreText();
+    }
 
-    // ================================
+
+    // ==================================================
     // Private Methods
-    // ================================
+    // ==================================================
 
     private void UpdateScoreText()
     {

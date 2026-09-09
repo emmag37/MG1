@@ -39,6 +39,8 @@ public class ScoreAnimation : MonoBehaviour
 
     public void AnimateScore(int points, Vector3 worldPos)
     {
+        Debug.Assert(points > 0, $"Animated score with zero or negative points {points}");
+
         pointsText.text = $"+{points}";
 
         // update the transform: world -> screen -> UI

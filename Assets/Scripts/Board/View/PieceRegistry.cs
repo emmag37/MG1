@@ -34,11 +34,10 @@ public class PieceRegistry
 
         this.piecePool = piecePool;
 
-        audio = ServiceLocator.Get<IAudio>();
+        audio = ServiceLocator.Get<IAudio>();   // invalid op exception
         currentColors.InitializeNextColor();
     }
-
-    // i'm going to move all of these checks to a data validator
+    
     public bool LoadGame(PlayerColors colors, IReadOnlyList<CellEntry> cells)
     {
         if (colors == null || colors.NextColor == CellColor.Empty)
@@ -74,7 +73,8 @@ public class PieceRegistry
     // Public Methods - Player
     // ==================================================
 
-    // null - generate a brand new color from next; value - use passed color and maintain current next color
+    // null color - generate a brand new color from next
+	// value color - use passed color and maintain current next color
     public bool TrySpawnNewPlayer(out CellColor nextColor, CellColor? color = null)
     {
         nextColor = currentColors.NextColor;
@@ -101,17 +101,13 @@ public class PieceRegistry
         return true;
     }
 
+    // returns true on success
     public bool PlacePlayer(Vector3 position, Vector2Int index)
     {
-        if (playerPiece == null)
-        {
-            Debug.LogError("[PieceRegistry] PlacePlayer called with no active playerPiece");
-            return false;
-        }
+        Debug.Assert(playerPiece != null, "[PieceRegistry] PlacePlayer called with no active playerPiece");
+        Debug.Assert(playerPiece.Color != CellColor.Empty, $"[PieceRegistry] playerPiece has invalid CellColor.Empty in PlacePlayer");
 
         int idx = TwoDimToFlatIndex(index);
-
-        Debug.Assert(playerPiece.Color != CellColor.Empty, $"[PieceRegistry] playerPiece has invalid CellColor.Empty in PlacePlayer");
         if (playerPiece.Color == CellColor.Mask && registry[idx] != null && !piecePool.RemoveObject(registry[idx]))
         {
             Debug.LogError("[PieceRegistry] Unsucessful mask removal from piece pool in PlacePlayer");
@@ -130,22 +126,14 @@ public class PieceRegistry
 
     public void ReturnPlayerToStart()
     {
-        if (playerPiece == null)
-        {
-            Debug.LogError("[PieceRegistry] ReturnPlayerToStart called with no active playerPiece");
-            return;
-        }
+        Debug.Assert(playerPiece != null, "[PieceRegistry] ReturnPlayerToStart called with no active playerPiece");
 
         playerPiece.ReturnPlayer();
     }
 
     public void PausePlayer(bool pause)
     {
-        if (playerPiece == null)
-        {
-            Debug.LogError("[PieceRegistry] PausePlayer called with no active playerPiece");
-            return;
-        }
+        Debug.Assert(playerPiece != null, "[PieceRegistry] PausePlayer called with no active playerPiece");
 
         playerPiece.Pause(pause);
     }
@@ -160,7 +148,7 @@ public class PieceRegistry
         int idx = TwoDimToFlatIndex(index);
         if (registry[idx] == null)
         {
-            Debug.LogError($"[PieceRegistry] Attempted SetPieceColor on null piece at index {index}");
+            Debug.LogWarning($"[PieceRegistry] Attempted SetPieceColor on null piece at index {index}");
             return false;
         }
 
@@ -196,7 +184,7 @@ public class PieceRegistry
 
         if (cells == null)
         {
-            Debug.LogError("[PieceRegistry] Passed null cells to LoadBoardPieces");
+            Debug.LogWarning("[PieceRegistry] Passed null cells to LoadBoardPieces");
             return numLoaded;
         }
         
@@ -296,18 +284,19 @@ public class PieceRegistry
     // Private Methods
     // ==================================================
 
-    // returns -1 if invalid
     private int TwoDimToFlatIndex(Vector2Int index)
     {
-        int idx = index.x * GameConstants.RowSize + index.y;     // x: row, y: column
-        if (idx < 0 || idx >= GameConstants.NumberCells)
-            throw new IndexOutOfRangeException($"Index {index} is out of range for row size {GameConstants.RowSize}");
+        if (index.x < 0 || index.x >= GameConstants.RowSize || index.y < 0 || index.y >= GameConstants.RowSize)
+            throw new ArgumentOutOfRangeException(nameof(index));
 
-        return idx;
+        return index.x * GameConstants.RowSize + index.y;     // x: row, y: column
     }
 
     private Vector2Int FlatToTwoDimIndex(int flatIndex)
     {
+        if (flatIndex < 0 || flatIndex >= GameConstants.NumberCells)
+            throw new ArgumentOutOfRangeException(nameof(flatIndex));
+
         return new Vector2Int(flatIndex / GameConstants.RowSize, flatIndex % GameConstants.RowSize);
     }
 

@@ -2,27 +2,27 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-// strong contender to remove mono behaviour, esp since you have a coroutine runner
+
 public class GhostPreview : MonoBehaviour
 {
-    // ================================
+    // ==================================================
     // Events
-    // ================================
+    // ==================================================
     public event Action<Vector2Int, CellColor> TryGhostPreview;
 
-    // ================================
+    // ==================================================
     // Private Fields
-    // ================================
+    // ==================================================
     [SerializeField] private SpriteRenderer shadowSprite;
 
     private Coroutine preview;
     private bool previewSet;
     private Vector2Int previewIndex;
 
-    
-    // ================================
+
+    // ==================================================
     // Unity Lifecycle
-    // ================================
+    // ==================================================
 
     void OnValidate()
     {
@@ -36,9 +36,9 @@ public class GhostPreview : MonoBehaviour
     }
 
 
-    // ================================
+    // ==================================================
     // Initialization
-    // ================================
+    // ==================================================
 
     public void Initialize()
     {
@@ -50,9 +50,9 @@ public class GhostPreview : MonoBehaviour
     }
 
 
-    // ================================
+    // ==================================================
     // Public Methods
-    // ================================
+    // ==================================================
 
     public void SetPreview(Vector2Int index)
     {
@@ -69,9 +69,9 @@ public class GhostPreview : MonoBehaviour
     }
 
 
-    // ================================
+    // ==================================================
     // Event Bus Handlers
-    // ================================
+    // ==================================================
 
     private void OnPlayerDragging(PlayerDraggingEvent e)
     {
@@ -99,12 +99,16 @@ public class GhostPreview : MonoBehaviour
             preview = null;
             ClearPreview();
         }
+        else
+        {
+            Debug.LogWarning("[GhostPreview] Player released with null preview");
+        }
     }
 
 
-    // ================================
-    // Coroutine
-    // ================================
+    // ==================================================
+    // Coroutines
+    // ==================================================
 
     IEnumerator PreviewLoop(Transform player, CellColor color)
     {
@@ -132,16 +136,14 @@ public class GhostPreview : MonoBehaviour
     }
 
 
-    // ================================
+    // ==================================================
     // Private Methods
-    // ================================
+    // ==================================================
 
     private void ClearPreview()
     {
         previewSet = false;
-
-        // clear the preview sprite
-        shadowSprite.enabled = false;
+        shadowSprite.enabled = false;   // clear the preview sprite
     }
 
 }
