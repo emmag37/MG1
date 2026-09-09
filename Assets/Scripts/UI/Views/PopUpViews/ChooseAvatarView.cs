@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+
 public class ChooseAvatarView : PopUpView
 {
     // ==================================================
@@ -15,18 +16,14 @@ public class ChooseAvatarView : PopUpView
     [SerializeField] private Button rightButton;
     [SerializeField] private Button chooseButton;
 
-
     // ==================================================
     // Private Fields
     // ==================================================
     private CellColor avatar;
     private RingList<CellColor> colorList;
 
-    private UIButton leftUIButton;
-    private UIButton rightUIButton;
-    private UIButton chooseUIButton;
-
     private ISpriteDatabase spriteDatabase;
+
 
     // ==================================================
     // Unity Lifecycle
@@ -36,16 +33,21 @@ public class ChooseAvatarView : PopUpView
     {
         base.OnValidate();
 
-        Debug.Assert(avatarImage != null, "Avatar image not set in choose avatar view");
+        Debug.Assert(avatarImage != null, "[ChooseAvatarView] Null avatar image");
 
-        Debug.Assert(leftButton != null, "Left button not set in choose avatar view");
-        Debug.Assert(rightButton != null, "Right button not set in choose avatar view");
-        Debug.Assert(chooseButton != null, "Choose button not set in choose avatar view");
+        Debug.Assert(leftButton != null, "[ChooseAvatarView] Null left button");
+        Debug.Assert(rightButton != null, "[ChooseAvatarView] Null right button");
+        Debug.Assert(chooseButton != null, "[ChooseAvatarView] Null choose button");
     }
 
-    protected override void Awake()
+
+    // ==================================================
+    // Inherited Methods
+    // ==================================================
+
+    public override void Initialize(IUIViewHost host)
     {
-        base.Awake();
+        base.Initialize(host);
 
         spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
@@ -56,20 +58,16 @@ public class ChooseAvatarView : PopUpView
 
         colorList = new RingList<CellColor>(colors);
 
-        leftUIButton = UIButtonFactory.Decrement<CellColor>(leftButton, colorList, SetAvatarSprite);
-        rightUIButton = UIButtonFactory.Increment<CellColor>(rightButton, colorList, SetAvatarSprite);
-        chooseUIButton = UIButtonFactory.SendPatch(chooseButton, Host, () => new AvatarPatch(avatar));  // patch always needs to send the current value
+        UIButtonFactory.Decrement<CellColor>(leftButton, colorList, SetAvatarSprite);
+        UIButtonFactory.Increment<CellColor>(rightButton, colorList, SetAvatarSprite);
+        UIButtonFactory.SendPatch(chooseButton, Host, () => new AvatarPatch(avatar));  // patch always needs to send the current value
     }
-
-    // ==================================================
-    // Base Class Methods
-    // ==================================================
 
     protected override void SetInfo(IUIData data)
     {
         if (data is not ProfileData profile)
         {
-            Debug.LogError($"Data type mismatch, wanted ProfileData, recieved {data?.GetType().Name}");
+            Debug.LogError($"[ChooseAvatarView] Data type mismatch, wanted ProfileData, recieved {data?.GetType().Name}");
             return;
         }
 
@@ -84,6 +82,8 @@ public class ChooseAvatarView : PopUpView
 
     private void SetAvatarSprite(CellColor color)
     {
+        Debug.Assert(color != CellColor.Empty, "[ChooseAvatarView] Attempted to set avatar sprite to empty");
+
         avatarImage.sprite = spriteDatabase.GetSprite((int)color);
         avatar = color;
     }

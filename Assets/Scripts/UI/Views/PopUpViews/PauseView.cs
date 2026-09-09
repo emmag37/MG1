@@ -2,10 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-/// <summary>
-/// UI view for the settings menu.
-/// </summary>
-public class PauseView: PopUpView
+public class PauseView : PopUpView
 {
     // ==================================================
     // Inspector Fields
@@ -20,9 +17,9 @@ public class PauseView: PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-
     private IAudio audioService;
     private IVibration vibrationService;
+
 
     // ==================================================
     // Unity Lifecycle
@@ -32,16 +29,21 @@ public class PauseView: PopUpView
     {
         base.OnValidate();
 
-        Debug.Assert(homeButton != null, "Home button not set in pause view");
-        Debug.Assert(restartButton != null, "Restart button not set in pause view");
+        Debug.Assert(homeButton != null, "[PauseView] Null home button");
+        Debug.Assert(restartButton != null, "[PauseView] Null restart button");
 
-        Debug.Assert(musicSlider != null, "Music slider not set in pause view");
-        Debug.Assert(sfxSlider != null, "Effects slider not set in pause view");
+        Debug.Assert(musicSlider != null, "[PauseView] Null music slider");
+        Debug.Assert(sfxSlider != null, "[PauseView] Null sfx slider");
     }
 
-    protected override void Awake()
+
+    // ==================================================
+    // Inherited Methods
+    // ==================================================
+
+    public override void Initialize(IUIViewHost host)
     {
-        base.Awake();
+        base.Initialize(host);
 
         audioService = ServiceLocator.Get<IAudio>();
         vibrationService = ServiceLocator.Get<IVibration>();
@@ -54,15 +56,8 @@ public class PauseView: PopUpView
         new UIToggle(vibrateSlider, vibrationService.SetVibrationOn);
     }
 
-
-    // ==================================================
-    // Base Class Methods
-    // ==================================================
-
     protected override void SetInfo(IUIData data)
     {
-        Debug.Log("set info");
-
         AudioSettings audioSettings = audioService.GetSettings();
         bool vibrateOn = vibrationService.GetSettings();
 

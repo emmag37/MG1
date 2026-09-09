@@ -4,23 +4,36 @@ using UnityEngine.UI;
 
 public abstract class PopUpView : UIView<PopUpViewType>
 {
+    // ==================================================
+    // Public Fields
+    // ==================================================
     public override PopUpViewType Type => popUpType;
-    
+
+    // ==================================================
+    // Inspector Fields
+    // ==================================================
     [SerializeField] private PopUpViewType popUpType;
     [SerializeField] private Button exitButton;
 
-    private UIButton exitUIButton;
+
+    // ==================================================
+    // Unity Lifecycle
+    // ==================================================
 
     protected virtual void OnValidate()
     {
         Debug.Assert(exitButton != null, "[PopUpView] Null exit button");
     }
 
-    protected virtual void Awake()
-    {
-        exitButton.onClick.AddListener(Host.PopView<PopUpViewType>);
 
-        exitUIButton = UIButtonFactory.ClosePopUp<PopUpViewType>(exitButton, Host);
+    // ==================================================
+    // Inherited Methods
+    // ==================================================
+
+    public override void Initialize(IUIViewHost host)
+    {
+        base.Initialize(host);
+
+        UIButtonFactory.ClosePopUp<PopUpViewType>(exitButton, Host);
     }
 }
-

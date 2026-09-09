@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class SettingsView: PopUpView
+public class SettingsView : PopUpView
 {
     // ==================================================
     // Inspector Fields
@@ -17,9 +17,9 @@ public class SettingsView: PopUpView
     // ==================================================
     // Private Fields
     // ==================================================
-
     private IAudio audioService;
     private IVibration vibrationService;
+
 
     // ==================================================
     // Unity Lifecycle
@@ -29,16 +29,21 @@ public class SettingsView: PopUpView
     {
         base.OnValidate();
 
-        Debug.Assert(termCondButton != null, "Terms and conditions button not set in settings view");
-        Debug.Assert(privacyPolButton != null, "Privacy policy button not set in settings view");
+        Debug.Assert(termCondButton != null, "[SettingsView] Null terms and conditions button");
+        Debug.Assert(privacyPolButton != null, "[SettingsView] Null privacy policy button");
 
-        Debug.Assert(musicSlider != null, "Music slider not set in settings view");
-        Debug.Assert(sfxSlider != null, "Effects slider not set in settings view");
+        Debug.Assert(musicSlider != null, "[SettingsView] Null music slider");
+        Debug.Assert(sfxSlider != null, "[SettingsView] Null sfx slider");
     }
 
-    protected override void Awake()
+
+    // ==================================================
+    // Inherited Methods
+    // ==================================================
+
+    public override void Initialize(IUIViewHost host)
     {
-        base.Awake();
+        base.Initialize(host);
 
         audioService = ServiceLocator.Get<IAudio>();
         vibrationService = ServiceLocator.Get<IVibration>();
@@ -51,15 +56,8 @@ public class SettingsView: PopUpView
         new UIToggle(vibrateSlider, vibrationService.SetVibrationOn);
     }
 
-
-    // ==================================================
-    // Protected Methods
-    // ==================================================
-
-    protected override void SetInfo(IUIData data)
+    protected override void SetInfo(IUIData data)                           // ignore data parameter
     {
-        Debug.Log("set info");
-
         AudioSettings audioSettings = audioService.GetSettings();
         bool vibrateOn = vibrationService.GetSettings();
 
