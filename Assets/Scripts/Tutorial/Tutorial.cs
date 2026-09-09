@@ -2,16 +2,14 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-// eventually make the steps serializable to only load in when tutorial is actually used
-    // data-driven
-[RequireComponent(typeof(TutorialViewController))]
-public class Tutorial : MonoBehaviour
+
+public class Tutorial
 {
     // ==================================================
     // Private Fields
     // ==================================================
     private Board board;
-    private TutorialViewController viewController;
+    private TutorialHost tutorialHost;
 
     private int currentStep;
     private int turnsLeftInStep;    // makeshift recursion
@@ -19,14 +17,16 @@ public class Tutorial : MonoBehaviour
     // ==================================================
     // Initializer
     // ==================================================
-    public void Initialize(Board board)
+
+    public Tutorial(Board board, TutorialHost tutorialHost)
     {
         if (board == null)
             throw new ArgumentNullException(nameof(board));
+        if (tutorialHost == null)
+            throw new ArgumentNullException(nameof(tutorialHost));
 
         this.board = board;
-
-        viewController = GetComponent<TutorialViewController>();
+        this.tutorialHost = tutorialHost;
 
         currentStep = 0;
         turnsLeftInStep = 0;
@@ -45,7 +45,7 @@ public class Tutorial : MonoBehaviour
         CellColor playerColor = CellColor.Color1;
 
         // run step in board
-        board.StartTutorialStep(playerColor, liveZone);     // check this
+        board.StartTutorialStep(playerColor, liveZone);
     }
 
     public void SkipTutorial()
@@ -56,7 +56,7 @@ public class Tutorial : MonoBehaviour
         cells.Add(new CellEntry(2, 2, CellColor.Color4));
 
         board.StartTutorialStep(CellColor.Empty, null, cells);      // set the board to the ending state - empty triggers board reset
-        viewController.SkipTutorial();
+        tutorialHost.SkipTutorial();
     }
 
     // ==================================================
@@ -65,11 +65,11 @@ public class Tutorial : MonoBehaviour
 
     private void HandleStepComplete(Vector2Int index)
     {
-        viewController.RemoveArrow(index);
+        tutorialHost.RemoveArrow(index);
 
         if (turnsLeftInStep == 0) // base case
         {
-            viewController.ShowNextStep(currentStep);
+            tutorialHost.ShowNextStep(currentStep);
             currentStep++;
         }
 

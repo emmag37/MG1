@@ -2,7 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class TutorialViewController : MonoBehaviour
+// better name for this script would be host
+public class TutorialHost : MonoBehaviour
 {
     // ==================================================
     // Inspector Fields
@@ -13,6 +14,15 @@ public class TutorialViewController : MonoBehaviour
     // Private Fields
     // ==================================================
     private int currentScene = 0;
+
+    // ==================================================
+    // Unity Lifecycle
+    // ==================================================
+
+    public void OnValidate()
+    {
+        Debug.Assert(scenes.Length > 0, "[TutorialHost] Scenes is empty");
+    }
 
     // ==================================================
     // Public Methods
@@ -26,7 +36,12 @@ public class TutorialViewController : MonoBehaviour
 
     public void ShowNextStep(int stepCompleted)
     {
-        Debug.Assert(stepCompleted == currentScene, "Tutorial step mismatch");
+        Debug.Assert(stepCompleted == currentScene, "[TutorialHost] Tutorial step mismatch");
+        if (stepCompleted + 1 == scenes.Length)
+        {
+            Debug.LogError("[TutorialHost] Attempted to show step past final scene");
+            return;
+        }
 
         // update view to the next step
         scenes[currentScene].gameObject.SetActive(false);
@@ -37,7 +52,9 @@ public class TutorialViewController : MonoBehaviour
 
     public void RemoveArrow(Vector2Int index)
     {
-        Debug.Log("remove arrow");
+        if (index.x < 0 || index.x >= GameConstants.RowSize || index.y < 0 || index.y > GameConstants.RowSize)
+            throw new ArgumentOutOfRangeException($"[TutorialHost] Index {index} out of range");
+
         scenes[currentScene].RemoveArrow(index);
     }
 }

@@ -15,7 +15,7 @@ public class GameBootstrap : MonoBehaviour
 
     [SerializeField] private UIManager uIManager;
     [SerializeField] private Board board;
-    [SerializeField] private Tutorial tutorial;
+    [SerializeField] private TutorialHost tutorialHost;
 
     [SerializeField] private AudioSource sFXSource;
     [SerializeField] private AudioSource musicSource;
@@ -35,6 +35,8 @@ public class GameBootstrap : MonoBehaviour
 
     private UIData loadUIData;
     private GameData loadGameData;
+
+    private Tutorial tutorial;
 
     private bool active;
 
@@ -138,7 +140,7 @@ public class GameBootstrap : MonoBehaviour
         if (!hasLaunched)
         {
             board.RunTutorial();
-            tutorial.Initialize(board);
+            tutorial = new Tutorial(board, tutorialHost);
         }
         else if (inProgress)
         {

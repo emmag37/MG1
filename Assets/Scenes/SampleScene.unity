@@ -6303,7 +6303,7 @@ MonoBehaviour:
   loadScreen: {fileID: 2063402628}
   uIManager: {fileID: 230092281}
   board: {fileID: 1798150614}
-  tutorial: {fileID: 1582238095}
+  tutorialHost: {fileID: 1413417920}
   sFXSource: {fileID: 1882221852}
   musicSource: {fileID: 649134239}
   backgroundTransform: {fileID: 1063609169}
@@ -10424,6 +10424,7 @@ GameObject:
   - component: {fileID: 1413417916}
   - component: {fileID: 1413417915}
   - component: {fileID: 1413417919}
+  - component: {fileID: 1413417920}
   m_Layer: 5
   m_Name: Tutorial Container View
   m_TagString: Untagged
@@ -10538,6 +10539,26 @@ MonoBehaviour:
   skipButton: {fileID: 934248314}
   exitButton: {fileID: 772730468}
   startPlayingButton: {fileID: 1302226673}
+--- !u!114 &1413417920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413417911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c1d683a15f3141b48fef3dc4711e23b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialViewController
+  scenes:
+  - {fileID: 1167536213}
+  - {fileID: 2121240231}
+  - {fileID: 67008804}
+  - {fileID: 1634547016}
+  - {fileID: 1742734055}
+  - {fileID: 1739384993}
+  - {fileID: 1308369574}
 --- !u!1 &1426371168
 GameObject:
   m_ObjectHideFlags: 0
@@ -11720,71 +11741,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5184943337357373849, guid: c8d3640fe00b349429934612bbb3fbd9, type: 3}
   m_PrefabInstance: {fileID: 1580264049}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1582238094
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1582238096}
-  - component: {fileID: 1582238095}
-  - component: {fileID: 1582238097}
-  m_Layer: 0
-  m_Name: Tutorial
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1582238095
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582238094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 562edce8541e149488bc61641897b3a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Tutorial
---- !u!4 &1582238096
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582238094}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.06292, y: -0.75164, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1582238097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582238094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c1d683a15f3141b48fef3dc4711e23b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TutorialViewController
-  scenes:
-  - {fileID: 1167536213}
-  - {fileID: 2121240231}
-  - {fileID: 67008804}
-  - {fileID: 1634547016}
-  - {fileID: 1742734055}
-  - {fileID: 1739384993}
-  - {fileID: 1308369574}
 --- !u!1 &1593412189
 GameObject:
   m_ObjectHideFlags: 0
@@ -17188,6 +17144,5 @@ SceneRoots:
   - {fileID: 2022480357}
   - {fileID: 230092282}
   - {fileID: 779006562}
-  - {fileID: 1582238096}
   - {fileID: 1613353154}
   - {fileID: 55911020}
