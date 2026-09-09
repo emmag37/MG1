@@ -1,16 +1,18 @@
 using UnityEngine;
 using System;
 
+
 /// <summary>
-/// Performs the index and world coordinate calculations of the board.
-/// FOR BOARDS MADE OF SQUARES ONLY
+/// Performs the index and world coordinate calculations of a 2D grid on a board.
 /// </summary>
+/// <remarks>
+/// For boards made of squares only.
+/// </remarks>
 public static class BoardGeometry
 {
     // ==================================================
     // Private Fields
     // ==================================================
-
     private static int numRows;
     private static int numCols;
 
