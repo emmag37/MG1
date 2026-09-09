@@ -50,6 +50,11 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 
         spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
+        // adjust to keep lower bound at spawn point
+        Vector3 min = data.boundaries.min;
+        min.y -= spriteRenderer.bounds.extents.y;
+        data.boundaries.min = min;
+
         draggable.Initialize(data.boundaries, Camera.main);
         draggable.enabled = false;
     }

@@ -2,29 +2,25 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
-// draggable within specified boundaries adjusted for the objects size
-// one touch at a time
-
-// consider adding a layer mask for future projects, not necessary for this one
 
 /// <summary>
-/// Performs object movement operations including user input dragging
-/// and dropping the object at specified position.
-/// 
+/// Performs user input dragging for a game object. Releases when and where the touch ends.
 /// </summary>
 /// <remarks>
-/// When enabled, the user can drag the object.
+/// Draggable within specified boundaries adjusted for the objects size.
+/// ie, keeps the object inside the box outlined by boundaries.
+/// Only one touch at a time.
 /// </remarks>
-///
-// or do you require the sprite renderer component?
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Collider2D))]
 public class Draggable : MonoBehaviour
 {
-    // ================================
+    // ==================================================
     // Events
-    // ================================
-
+    // ==================================================
+    /// <summary>
+	/// Invoked when the user touches the player.
+	/// </summary>
     public event Action StartDrag;
 
     /// <summary>
@@ -32,10 +28,9 @@ public class Draggable : MonoBehaviour
 	/// </summary>
     public event Action<Vector3> Released;
 
-    // ================================
+    // ==================================================
     // Private Fields
-    // ================================
-
+    // ==================================================
     private Camera cam;
 
     private bool isDragging = false;
@@ -44,9 +39,9 @@ public class Draggable : MonoBehaviour
     private float minX, maxX, minY, maxY;
 
 
-    // ================================
+    // ==================================================
     // Unity Lifecycle Methods
-    // ================================
+    // ==================================================
 
     void Update()
     {
@@ -54,10 +49,15 @@ public class Draggable : MonoBehaviour
     }
 
 
-    // ================================
+    // ==================================================
     // Initialization
-    // ================================
+    // ==================================================
 
+    /// <summary>
+	/// Initializes the drag movement with the specified boundaries and camera.
+	/// </summary>
+	/// <param name="boundaries">Bounds of movement area, exclusive to the object.</param>
+	/// <param name="cam">Camera to track movement.</param>
     public void Initialize(Bounds boundaries, Camera cam)
     {
         this.cam = cam;
@@ -65,23 +65,23 @@ public class Draggable : MonoBehaviour
             Debug.LogError("[Draggable] Camera not found");
 
         // adjust the boundaries to the player size
-        float radius = GetComponent<SpriteRenderer>().bounds.extents.x;
-        minX = boundaries.min.x + radius;
-        maxX = boundaries.max.x - radius;
-        minY = boundaries.min.y;
-        maxY = boundaries.max.y - radius;
+        Vector3 objExtents = GetComponent<SpriteRenderer>().bounds.extents;
+        float xRadius = objExtents.x;
+        float yRadius = objExtents.y;
 
-        if (minX >= maxX || minY >= maxY)                                  // verify boundaries
-        {
+        minX = boundaries.min.x + xRadius;
+        maxX = boundaries.max.x - xRadius;
+        minY = boundaries.min.y + yRadius;
+        maxY = boundaries.max.y - yRadius;
+
+        if (minX >= maxX || minY >= maxY)
             Debug.LogError($"[Draggable] Invalid boundaries: x ({minX}, {maxX}), y ({minY}, {maxY})");
-        }
     }
 
 
-    // ================================
+    // ==================================================
     // Private Methods
-    // ================================
-
+    // ==================================================
 
     /// <summary>
 	/// Drags and drops the player from user input. Relies on Update().
@@ -117,7 +117,6 @@ public class Draggable : MonoBehaviour
         
         if (!isDragging && pressedThisFrame)                            // start moving
         {
-            Debug.Log("start drag");
             Collider2D hit = Physics2D.OverlapPoint(pointerWorldPos);   // check if mouse is on the collider
             if (hit && hit.gameObject == gameObject)
             {

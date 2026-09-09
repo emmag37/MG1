@@ -43,6 +43,11 @@ public class ViewController<TView, TType, TData>
         // initialize the dictionary
         foreach (TView view in viewList)
         {
+            if (view == null)
+            {
+                Debug.LogError($"[ViewController] Null view in view list");
+                continue;
+            }
             if (viewDictionary.ContainsKey(view.Type))
             {
                 Debug.LogError($"Duplicate view type: {view.Type}");
