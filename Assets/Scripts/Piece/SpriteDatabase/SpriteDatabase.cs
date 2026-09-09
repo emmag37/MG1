@@ -1,12 +1,4 @@
 using UnityEngine;
-//using System;
-
-
-public interface ISpriteDatabase
-{
-    Sprite GetSprite(int key);
-    bool TryGetSprite(int key, out Sprite sprite);
-}
 
 
 [CreateAssetMenu(fileName = "SpriteDatabase", menuName = "Scriptable Objects/Sprite Database")]
@@ -23,6 +15,3 @@ public class SpriteDatabase : KeyedDatabase<CellColor, Sprite>, ISpriteDatabase
 
     public bool TryGetSprite(int key, out Sprite sprite) => TryGetValue((CellColor)key, out sprite);
 }
-
-
-

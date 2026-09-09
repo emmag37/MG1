@@ -11,28 +11,27 @@ public class Board : MonoBehaviour
 {
     public bool InProgress => inProgress;
 
-    // ================================
+    // ==================================================
     // Events
-    // ================================
-    public event Action<int score, int highScore> FullBoard;                // score, highScore
+    // ==================================================
+    public event Action<int, int> FullBoard;                // score, highScore
     public event Action<Vector2Int> TutorialStepComplete;   // index of piece placed
 
-    // ================================
+    // ==================================================
     // Inspector Fields
-    // ================================
+    // ==================================================
     [SerializeField] private ScoreAnimation scoreAnimation;
     [SerializeField] private HUDController hUD;
 
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private GameObject piecePrefab;
 
-    // ================================
+    // ==================================================
     // Private Fields
-    // ================================
-
+    // ==================================================
     private IAudio audioService;
 
-    private GameData data = new GameData();  // own its own instance of game data
+    private GameData data = new GameData();
 
     private BoardLogic logic = new BoardLogic();
     private PieceRegistry pieceRegistry;
@@ -43,9 +42,9 @@ public class Board : MonoBehaviour
     public bool inProgress = false;
 
 
-    // ================================
+    // ==================================================
     // Unity Lifecycle
-    // ================================
+    // ==================================================
 
     public void OnValidate()
     {
@@ -60,11 +59,10 @@ public class Board : MonoBehaviour
         SubscribeToEvents(false);
     }
 
-    // ================================
+    // ==================================================
     // Initializers
-    // ================================
-
-    // initialize with the game load data - throws exceptions if unsuccessful
+    // ==================================================
+    
     public void Initialize(int highScore)
     {
         // cache components
@@ -87,7 +85,6 @@ public class Board : MonoBehaviour
         SubscribeToEvents(true);
     }
 
-    // done
     public void Load(GameData data)
     {
         if (data == null)
@@ -107,11 +104,9 @@ public class Board : MonoBehaviour
     public void RunTutorial()
     {
         runTutorial = true;
-
         hUD.gameObject.SetActive(false);
     }
 
-    // can throw arg out of range exception, unlikely - done
     // ensures non-null return value
     public GameData GetGameData()
     {
@@ -135,16 +130,16 @@ public class Board : MonoBehaviour
     // reset on game start
     public void PlayGame(bool restart = false)
     {
-        if (runTutorial) TurnOffTutorial();
+        if (runTutorial)
+            TurnOffTutorial();
 
-        if (restart) inProgress = false;
+        if (restart)
+            inProgress = false;
 
         // prepare a fresh game
         if (!inProgress)
         {
-            Debug.Log("prepare fresh game");
-
-            Reset();    // crash
+            Reset();
             inProgress = true;
 
             SpawnPlayer();
@@ -297,8 +292,7 @@ public class Board : MonoBehaviour
     private void TurnOffTutorial()
     {
         runTutorial = false;
-
-        hUD.gameObject.SetActive(true); // need to put this somewhere else
+        hUD.gameObject.SetActive(true);
     }
 
     // true to subscribe, false to unsubscribe
@@ -316,7 +310,6 @@ public class Board : MonoBehaviour
         }
     }
 
-    // spawn pos and board bounds are guarenteed
     private PieceData CalculatePieceData(Vector3 spawnPos, Bounds boardBounds)
     {
         spawnPos = Scaler.CalculateScaledYPos(spawnPos);
