@@ -1,17 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum PopUpViewType
-{
-    None,
-    Pause,
-    Settings,
-    Profile,
-    Leaderboard,
-    ChooseAvatar,
-    RestartGame,
-    SkipTutorial
-}
 
 public abstract class PopUpView : UIView<PopUpViewType>
 {
@@ -24,7 +13,7 @@ public abstract class PopUpView : UIView<PopUpViewType>
 
     protected virtual void OnValidate()
     {
-        Debug.Assert(exitButton != null, "Exit button not set in pop up view");
+        Debug.Assert(exitButton != null, "[PopUpView] Null exit button");
     }
 
     protected virtual void Awake()

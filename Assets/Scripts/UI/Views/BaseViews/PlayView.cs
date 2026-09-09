@@ -1,19 +1,35 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// UI view for the game play scene.
-/// </summary>
+
 public class PlayView : BaseView
 {
+    // ==================================================
+    // Inspector Fields
+    // ==================================================
     [SerializeField] private Button pauseButton;
 
-    private UIButton pauseUIButton;
 
-    void Awake()
+    // ==================================================
+    // Unity Lifecycle
+    // ==================================================
+
+    void OnValidate()
     {
-        pauseUIButton = UIButtonFactory.Navigate<PopUpViewType>(pauseButton, Host, PopUpViewType.Pause);
+        Debug.Assert(pauseButton != null, "[PlayView] Null pause button");
     }
 
-    protected override void SetInfo(IUIData data) { }
+
+    // ==================================================
+    // Inherited Methods
+    // ==================================================
+
+    public override void Initialize(IUIViewHost host)
+    {
+        base.Initialize(host);
+
+        UIButtonFactory.Navigate<PopUpViewType>(pauseButton, Host, PopUpViewType.Pause);
+    }
+
+    protected override void SetInfo(IUIData data) { }   // empty method for required inheritance
 }

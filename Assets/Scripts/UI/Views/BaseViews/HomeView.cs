@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// UI view for the home screen.
-/// </summary>
+
 public class HomeView : BaseView
 {
     // ==================================================
@@ -18,10 +16,6 @@ public class HomeView : BaseView
     // ==================================================
     // Private Fields
     // ==================================================
-    UIButton profileUIButton;
-    UIButton settingsUIButton;
-    UIButton playUIButton;
-
     ISpriteDatabase spriteDatabase;
 
 
@@ -31,30 +25,26 @@ public class HomeView : BaseView
 
     void OnValidate()
     {
-        Debug.Assert(profileButton != null, "Profile button not set in home view");
-        Debug.Assert(settingsButton != null, "Settings button not set in home view");
-        Debug.Assert(playButton != null, "Play button not set in home view");
+        Debug.Assert(profileButton != null, "[HomeView] Null profile button");
+        Debug.Assert(settingsButton != null, "[HomeView] Null settings button");
+        Debug.Assert(playButton != null, "[HomeView] Null play button");
     }
 
-    void Awake()
+
+    // ==================================================
+    // Inherited Methods
+    // ==================================================
+
+    public override void Initialize(IUIViewHost host)
     {
+        base.Initialize(host);
+
         spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
-        profileUIButton = UIButtonFactory.Navigate<PopUpViewType>(profileButton, Host, PopUpViewType.Profile);
-        settingsUIButton = UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
-        playUIButton = UIButtonFactory.Navigate<BaseViewType>(playButton, Host, BaseViewType.GamePlay);
+        UIButtonFactory.Navigate<PopUpViewType>(profileButton, Host, PopUpViewType.Profile);
+        UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
+        UIButtonFactory.Navigate<BaseViewType>(playButton, Host, BaseViewType.GamePlay);
     }
-
-    void OnDestroy()
-    {
-        profileUIButton.Dispose();
-        settingsUIButton.Dispose();
-        playUIButton.Dispose();
-    }
-
-    // ==================================================
-    // Public Methods
-    // ==================================================
 
     protected override void SetInfo(IUIData data)
     {

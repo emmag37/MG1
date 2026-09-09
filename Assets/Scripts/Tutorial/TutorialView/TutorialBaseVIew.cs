@@ -22,18 +22,20 @@ public class TutorialBaseView : BaseView
         Debug.Assert(exitButton != null, "[TutorialBaseView] Exit button is null");
         Debug.Assert(startPlayingButton != null, "[TutorialBaseView] Start playing button is null");
     }
-    
-    void Awake()
-    {
-        UIButtonFactory.Navigate<PopUpViewType>(skipButton, Host, PopUpViewType.SkipTutorial);
-        UIButtonFactory.Navigate<BaseViewType>(exitButton, Host, BaseViewType.Home);
-        UIButtonFactory.Navigate<BaseViewType>(startPlayingButton, Host, BaseViewType.GamePlay);
-    }
 
 
     // ==================================================
     // Inherited Methods
     // ==================================================
+
+    public override void Initialize(IUIViewHost host)
+    {
+        base.Initialize(host);
+
+        UIButtonFactory.Navigate<PopUpViewType>(skipButton, Host, PopUpViewType.SkipTutorial);
+        UIButtonFactory.Navigate<BaseViewType>(exitButton, Host, BaseViewType.Home);
+        UIButtonFactory.Navigate<BaseViewType>(startPlayingButton, Host, BaseViewType.GamePlay);
+    }
 
     protected override void SetInfo(IUIData data) { }
 }

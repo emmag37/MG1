@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// UI view for the game over screen.
-/// </summary>
+
 public class GameOverView : BaseView
 {
     // ==================================================
@@ -23,31 +21,33 @@ public class GameOverView : BaseView
 
     void OnValidate()
     {
-        Debug.Assert(settingsButton != null, "Settings button not set in game over view");
-        Debug.Assert(homeButton != null, "Home button not set in game over view");
-        Debug.Assert(replayButton != null, "Replay button not set in game over view");
+        Debug.Assert(settingsButton != null, "[GameOverView] Null settings button");
+        Debug.Assert(homeButton != null, "[GameOverView] Null home button");
+        Debug.Assert(replayButton != null, "[GameOverView] Null replay button");
 
-        Debug.Assert(gameScoreText != null, "Game score text not set in game over view");
-        Debug.Assert(highScoreText != null, "High score text not set in game over view");
+        Debug.Assert(gameScoreText != null, "[GameOverView] Null game score text");
+        Debug.Assert(highScoreText != null, "[GameOverView] Null high score text");
     }
 
-    void Awake()
-    {
-        // put these into some sort of list to dispose of later
-        UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
-        UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
-        UIButtonFactory.Navigate<BaseViewType>(replayButton, Host, BaseViewType.GamePlay);
-    }
 
     // ==================================================
     // Inherited Methods
     // ==================================================
 
+    public override void Initialize(IUIViewHost host)
+    {
+        base.Initialize(host);
+
+        UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
+        UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
+        UIButtonFactory.Navigate<BaseViewType>(replayButton, Host, BaseViewType.GamePlay);
+    }
+
     protected override void SetInfo(IUIData data)
     {
         if (data is not FinalScoreData scoreData)
         {
-            Debug.Log($"data passed to game over view is not final score data, type: {data?.GetType().Name}");
+            Debug.LogError($"[GameOverView] Data passed to set info is not final score data, type: {data?.GetType().Name}");
             return;
         }
 

@@ -56,8 +56,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
             throw new ArgumentNullException(nameof(profile));
         if (board == null)
             throw new ArgumentNullException(nameof(board));
-        if (tutorial == null)
-            throw new ArgumentNullException(nameof(tutorial));
 
         this.profile = profile;
         this.board = board;
