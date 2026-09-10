@@ -72,7 +72,7 @@ public class ChooseAvatarView : PopUpView
         }
 
         SetAvatarSprite(profile.Avatar);
-        colorList.SetCurrentValue(profile.Avatar);
+        colorList.SetCurrentIndexAtValue(profile.Avatar);
     }
 
 
