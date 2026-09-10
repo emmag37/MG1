@@ -2,19 +2,45 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-// no need for factory, these only send a bool to some other method that is given
 
+/// <summary>
+/// Wraps a <see cref="Slider"/> as a two-state on/off toggle, constraining it to
+/// whole number values 0 and 1, playing a sound on change, and invoking a callback
+/// with the resulting boolean state.
+/// </summary>
 public class UIToggle
 {
-    // private fields
+    // ==================================================
+    // Private Fields
+    // ==================================================
     private Slider slider;
     private Action<bool> action;
     private AudioType sound;
     private IAudio audioService;
 
-    // constructor
+    // ==================================================
+    // Constructor
+    // ==================================================
+
+    /// <summary>
+	/// Configures the given slider as a binary toggle (0 or 1 only) and subscribes to
+	/// its value changed event.
+	/// </summary>
+	/// <param name="slider">The slider to configure as a toggle.</param>
+	/// <param name="action">Callback invoked with the new toggle state whenever the slider value changes.</param>
+	/// <param name="sound">The sound effect played each time the toggle is moved.</param>
+	/// <exception cref="ArgumentNullException">
+	/// Thrown when <paramref name="slider"/>, <paramref name="action"/>, or <paramref name="sound"/> is null.
+	/// </exception>
     public UIToggle(Slider slider, Action<bool> action, AudioType sound = AudioType.Button)
     {
+        if (slider == null)
+            throw new ArgumentNullException(nameof(slider));
+        if (action == null)
+            throw new ArgumentNullException(nameof(action));
+        if (sound == null)
+            throw new ArgumentNullException(nameof(sound));
+
         this.slider = slider;
         this.action = action;
         this.sound = sound;
@@ -28,8 +54,27 @@ public class UIToggle
         slider.onValueChanged.AddListener(Moved);
     }
 
+
+    // ==================================================
+    // Public Methods
+    // ==================================================
+
+    /// <summary>
+	/// Unsubscribes from the slider's value changed event. Should be called when
+	/// this toggle is no longer neede to avoid a dangling listener.
+	/// </summary>
     public void Dispose() => slider.onValueChanged.RemoveListener(Moved);
 
+
+    // ==================================================
+    // Private Methods
+    // ==================================================
+
+    /// <summary>
+	/// Handles the slider's value changed event. Plays the configured sound and invokes
+	/// the callback with the value interpreted as a boolean (0 is <c>false</c>).
+	/// </summary>
+	/// <param name="v">The slider's vew value (0 or 1).</param>
     private void Moved(float v)
     {
         audioService.PlaySoundEffect(sound);
