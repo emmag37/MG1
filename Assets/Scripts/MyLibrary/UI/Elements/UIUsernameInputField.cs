@@ -16,11 +16,11 @@ public class UIUsernameInputField
     private Action<string> action;
 
     private string username;
-    private Dictionary<InvalidInputType, string> errorMessages = new Dictionary<InvalidInputType, string>
+    private Dictionary<InvalidUsernameType, string> errorMessages = new Dictionary<InvalidUsernameType, string>
     {
-        { InvalidInputType.Short, "Username must be at least 3 characters" },
-        { InvalidInputType.SpecialChars, "Only letters, numbers, and underscores allowed" },
-        { InvalidInputType.Profanity, "That username isn’t allowed" }
+        { InvalidUsernameType.Short, "Username must be at least 3 characters" },
+        { InvalidUsernameType.SpecialChars, "Only letters, numbers, and underscores allowed" },
+        { InvalidUsernameType.Profanity, "That username isn’t allowed" }
     };
 
 
@@ -54,8 +54,8 @@ public class UIUsernameInputField
     // need to send a return value to profile view
     private void UpdateUsername(string name)
     {
-        InvalidInputType error = UsernameValidator.IsUsernameValid(name);
-        if (error == InvalidInputType.None)
+        InvalidUsernameType error = UsernameValidator.IsUsernameValid(name);
+        if (error == InvalidUsernameType.None)
         {
             Debug.Log("send username patch");
 

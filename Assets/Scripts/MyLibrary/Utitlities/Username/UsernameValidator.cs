@@ -1,15 +1,11 @@
 using UnityEngine;
 using System.Text.RegularExpressions;
+using PF = ProfanityFilter.ProfanityFilter;
 
-
-public enum InvalidInputType
-{
-    None,
-    Short,
-    SpecialChars,
-    Profanity
-}
-
+/// <summary>
+/// Static class to validate a username against length, special characters,
+/// and profanity.
+/// </summary>
 public static class UsernameValidator
 {
     // ==================================================
@@ -23,27 +19,36 @@ public static class UsernameValidator
     // ==================================================
     // Private Fields
     // ==================================================
-    private static ProfanityService profanityDetector = new ProfanityService();
+    private static PF filter = new PF();
 
 
     // ==================================================
     // Public Methods
     // ==================================================
 
-    public static InvalidInputType IsUsernameValid(string name)
+    /// <summary>
+	/// Validates a username against length, special characters, and profanity.
+	/// </summary>
+	/// <param name="name">The username to validate.</param>
+	/// <returns>
+	/// <see cref="InvalidUsernameType.None"/> if the username passes all checks, otherwise the
+	/// specific <see cref="InvalidUsernameType"/> indicating why it failed. Checks are evaluated
+	/// in order (length, then characters, then profanity), so only the first failure is returned.
+	/// </returns>
+    public static InvalidUsernameType IsUsernameValid(string name)
     {
         // correct length
         if (name.Length < LowerBound)
-            return InvalidInputType.Short;
+            return InvalidUsernameType.Short;
 
         // no special chars
         if (!Regex.IsMatch(name, Chars))
-            return InvalidInputType.SpecialChars;
+            return InvalidUsernameType.SpecialChars;
 
         // no profanity
-        if (profanityDetector.ContainsProfanity(name))
-            return InvalidInputType.Profanity;
+        if (filter.ContainsProfanity(name))
+            return InvalidUsernameType.Profanity;
 
-        return InvalidInputType.None;
+        return InvalidUsernameType.None;
     }
 }
