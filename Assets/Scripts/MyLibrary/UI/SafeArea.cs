@@ -1,9 +1,22 @@
 using UnityEngine;
 
+
+/// <summary>
+/// Adjusts this RectTransform's anchors to fit within the device's safe area
+/// (excluding nothces, cutouts, and rounded corners), applying extra top/bottom
+/// insets on notched devices to keep content clear of the cutout.
+/// </summary>
+[RequireComponent(typeof(RectTransform))]
 public class SafeAreaPanel : MonoBehaviour
 {
-    RectTransform rectTransform;
-    Rect lastSafeArea;
+    // ==================================================
+    // Private Fields
+    // ==================================================
+    private RectTransform rectTransform;
+
+    // ==================================================
+    // Unity Lifecycle
+    // ==================================================
 
     void Awake()
     {
@@ -11,11 +24,20 @@ public class SafeAreaPanel : MonoBehaviour
         ApplySafeArea();
     }
 
-    void ApplySafeArea()
+
+    // ==================================================
+    // Private Methods
+    // ==================================================
+
+    /// <summary>
+	/// Recalculates and applies the RectTransform's anchors from the current
+	/// <see cref="Screen.safeArea"/>. No-ops if the safe area hasn't changed since the
+	/// last call. Applies additional top/bottom (and optionally side) insets on devices
+	/// with a notch or cutout before converting it to normalized anchor coordinates.
+	/// </summary>
+    private void ApplySafeArea()
     {
         Rect safeArea = Screen.safeArea;
-        if (safeArea == lastSafeArea) return;
-        lastSafeArea = safeArea;
 
         // only apply reduction if device actually has a notch/cutout
         bool hasNotch = safeArea.yMin > 0 || safeArea.yMax < Screen.height
