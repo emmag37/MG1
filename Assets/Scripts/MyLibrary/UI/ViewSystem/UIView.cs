@@ -66,9 +66,18 @@ public abstract class UIView<TType> : MonoBehaviour where TType : struct, Enum
 
     /// <summary>
 	/// Refreshes this view's contents with new data without changing its active state.
+	/// Logs an error and does nothing if <paramref name="data"/> is null.
 	/// </summary>
-	/// <param name="data">The data to update the view with.</param>
-    public virtual void UpdateView(IUIData data) => SetInfo(data);
+	/// <param name="data">The data to update the view with. Must not be null.</param>
+    public virtual void UpdateView(IUIData data)
+    {
+        if (data == null)
+        {
+            Debug.LogError("[UIView] Attempted to update view with null data");
+            return;
+        }
+        SetInfo(data);
+    }
 
     // ==================================================
     // Protected Methods
