@@ -1,6 +1,11 @@
-using UnityEngine;
 
-// holds any public fields necessary for ui views
-public interface IUIData { }        // implements concrete data types to be saved - classes
+/// <summary>
+/// Empty interface to hold data types for UIViews.
+/// </summary>
+public interface IUIData { }
 
-public interface IUIPatch { }       // data patches for updates - records
+/// <summary>
+/// Empty interface to hold data types that will be passed
+/// from UIView back to UIViewHost for updates.
+/// </summary>
+public interface IUIPatch { }
