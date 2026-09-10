@@ -1,6 +1,7 @@
 using UnityEngine;
 
-
+// alt : alternating item view prefabs
+/*
 public class UIAltVertScrollList<T> : UIVerticalScrollList<T>
 {
     private GameObject itemView2;
@@ -24,3 +25,4 @@ public class UIAltVertScrollList<T> : UIVerticalScrollList<T>
         }
     }
 }
+*/

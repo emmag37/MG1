@@ -26,7 +26,7 @@ public class ProfileView : PopUpView
     // Private Fields
     // ==================================================
     private UIUsernameInputField usernameInputField;
-    private UIAltVertScrollList<int> scoreHistoryScrollList;
+    private UIVerticalScrollList<int> scoreHistoryScrollList;
 
     private ISpriteDatabase spriteDatabase;
 
@@ -59,8 +59,8 @@ public class ProfileView : PopUpView
         UIButtonFactory.EditInput(editUsernameButton, usernameInput);
         UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
 
-        scoreHistoryScrollList = new UIAltVertScrollList<int>(scoreHistoryContent, scoreHistoryItem1, scoreHistoryItem2, UIConstants.NumScores);
-        scoreHistoryScrollList.Populate();
+        scoreHistoryScrollList = new UIVerticalScrollList<int>(scoreHistoryContent, scoreHistoryItem1, UIConstants.NumScores);
+        scoreHistoryScrollList.PopulateAlternating(scoreHistoryItem2);
 
         usernameInputField = new UIUsernameInputField(usernameInput, invalidInput, (string value) => Host.PatchUpdate(new UsernamePatch(value)));
     }
@@ -82,6 +82,6 @@ public class ProfileView : PopUpView
 
         usernameInputField.SetUsername(profile.Username);
         avatarImage.sprite = spriteDatabase.GetSprite((int)profile.Avatar);
-        scoreHistoryScrollList.SetList(profile.ScoreList.ROList);
+        scoreHistoryScrollList.SetData(profile.ScoreList.ROList);
     }
 }

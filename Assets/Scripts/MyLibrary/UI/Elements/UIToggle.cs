@@ -30,7 +30,7 @@ public class UIToggle
 	/// <param name="action">Callback invoked with the new toggle state whenever the slider value changes.</param>
 	/// <param name="sound">The sound effect played each time the toggle is moved.</param>
 	/// <exception cref="ArgumentNullException">
-	/// Thrown when <paramref name="slider"/>, <paramref name="action"/>, or <paramref name="sound"/> is null.
+	/// Thrown when <paramref name="slider"/> or <paramref name="action"/> is null.
 	/// </exception>
     public UIToggle(Slider slider, Action<bool> action, AudioType sound = AudioType.Button)
     {
@@ -38,8 +38,6 @@ public class UIToggle
             throw new ArgumentNullException(nameof(slider));
         if (action == null)
             throw new ArgumentNullException(nameof(action));
-        if (sound == null)
-            throw new ArgumentNullException(nameof(sound));
 
         this.slider = slider;
         this.action = action;
