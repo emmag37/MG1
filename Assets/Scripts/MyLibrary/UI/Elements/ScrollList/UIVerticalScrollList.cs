@@ -56,8 +56,7 @@ public class UIVerticalScrollList<T>
     /// <summary>
 	/// Instantiates <see cref="maxItems"/> copies of <see cref="itemView"/> under
 	/// <see cref="content"/>, populating <see cref="scrollItems"/> and hiding each one
-	/// until data is set. Separated from the constructor so derived classes can
-	/// customize instantiation after the base pool is built. Logs a warning and does nothing if
+	/// until data is set. Logs a warning and does nothing if
 	/// the list has already been populated.
 	/// </summary>
     public void Populate()
