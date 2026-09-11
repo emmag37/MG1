@@ -133,7 +133,7 @@ public class GameBootstrap : MonoBehaviour
     private void InitSystems()
     {
         // scaling
-        Scaler.CalculateAndSetScale(Camera.main);
+        Scaler.CalculateAndSetScale(Camera.main, UIConstants.ReferenceHeight, UIConstants.ReferenceWidth, UIConstants.PixelsPerUnit);
         Scaler.ApplyLocalScale(backgroundTransform);
 
         board.Initialize(loadUIData.Profile.ScoreList.HighScore());

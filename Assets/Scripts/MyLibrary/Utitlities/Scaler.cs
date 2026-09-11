@@ -21,16 +21,22 @@ public static class Scaler
     // ==================================================
 
     /// <summary>
-	/// Calculates the current scale factor from the given orthographic camera and the
-	/// reference resolution defined in <see cref="UIConstants"/>, then adjusts the
+	/// Calculates the current scale factor from the given orthographic camera and
+	/// reference resolution, then adjusts the
 	/// camera's orthographic size to match the current screen aspect ratio. Must be called
 	/// before any other method on this class.
 	/// </summary>
 	/// <param name="c">The orthographic camera to calculate and apply scale for.</param>
+	/// <param name="refHeight">The reference height used to calculate scale.</param>
+	/// <param name="refWidth">The reference width used to calculate scale.</param>
+	/// <param name="ppu">Pixels per unit used to calculate scale.</param>
 	/// <exception cref="ArgumentNullException">Thrown if <paramref name="c"/> is null.</exception>
 	/// <exception cref="ArgumentException">Thrown if <paramref name="c"/> is not orthograpic.</exception>
-	/// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="c"/>'s orthographic size is less than or equal to 0.</exception>
-    public static void CalculateAndSetScale(Camera c)
+	/// <exception cref="ArgumentOutOfRangeException">
+	/// Thrown if <paramref name="c"/>'s orthographic size, <paramref name="refHeight"/>,
+	/// <paramref name="refWidth"/>, or <paramref name="ppu"/> is less than or equal to 0.
+	/// </exception>
+    public static void CalculateAndSetScale(Camera c, float refHeight, float refWidth, float ppu)
     {
         if (c == null)
             throw new ArgumentNullException(nameof(c));
@@ -39,18 +45,26 @@ public static class Scaler
         if (c.orthographicSize <= 0)
             throw new ArgumentOutOfRangeException(nameof(c.orthographicSize), "[Scalar] Camera.orthographicSize must be greater than 0");
 
+        if (refHeight <= 0)
+            throw new ArgumentOutOfRangeException(nameof(refHeight), "[Scaler] refHeight must be greater than 0");
+        if (refWidth <= 0)
+            throw new ArgumentOutOfRangeException(nameof(refWidth), "[Scaler] refWidth must be greater than 0");
+        if (ppu <= 0)
+            throw new ArgumentOutOfRangeException(nameof(ppu), "[Scaler] ppu must be greater than 0");
+
         cam = c;
 
-        float referenceAspect = UIConstants.ReferenceWidth / UIConstants.ReferenceHeight;
+        float referenceAspect = refWidth / refHeight;
         float currentAspect = (float)Screen.width / Screen.height;
-        float baseOrthoSize = (UIConstants.ReferenceHeight / UIConstants.PixelsPerUnit) / 2f;
+        float baseOrthoSize = (refHeight / ppu) / 2f;
 
         if (currentAspect < referenceAspect)
             cam.orthographicSize = baseOrthoSize * (referenceAspect / currentAspect);
         else
             cam.orthographicSize = baseOrthoSize;
 
-        scale = cam.orthographicSize / UIConstants.ReferenceOrtho;
+        float refOrtho = refHeight / 2f / ppu;
+        scale = cam.orthographicSize / refOrtho;
     }
 
     // ==================================================
