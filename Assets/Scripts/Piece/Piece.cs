@@ -28,6 +28,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
     private Draggable draggable;
     private Animator animator;
 
+    private IAudio audioService;
     private ISpriteDatabase spriteDatabase;
 
     private Vector3 spawnPoint;
@@ -48,6 +49,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
         draggable = GetComponent<Draggable>();
         animator = GetComponent<Animator>();
 
+        audioService = ServiceLocator.Get<IAudio>();
         spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
         // adjust to keep lower bound at spawn point
@@ -148,7 +150,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 
     private void HandleStartDrag()
     {
-        ServiceLocator.Get<IAudio>().PlaySoundEffect(AudioType.PickupPlayer);
+        audioService.PlaySoundEffect((int)AudioType.PickupPlayer);
         EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = Color });
     }
 

@@ -144,7 +144,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         }
         else if (type == BaseViewType.GamePlay)
         {
-            audioService.PlaySoundEffect(AudioType.Transition);
+            audioService.PlaySoundEffect((int)AudioType.Transition);
             board.PlayGame();
         } else if (type == BaseViewType.Tutorial && baseViewController.PeekViewType() == BaseViewType.Tutorial)
         {
@@ -159,14 +159,14 @@ public class UIManager : MonoBehaviour, IUIViewHost
         {
             board.PauseGame(true);
             if (baseViewController.PeekViewType() != BaseViewType.None)
-                audioService.PlaySoundEffect(AudioType.Transition);
+                audioService.PlaySoundEffect((int)AudioType.Transition);
         }
 
         // choose music
         if (type == BaseViewType.GamePlay)
-            audioService.PlayMusic(AudioType.GameMusic);
+            audioService.PlayMusic((int)AudioType.GameMusic);
         else
-            audioService.PlayMusic(AudioType.UIMusic);
+            audioService.PlayMusic((int)AudioType.UIMusic);
         
         baseViewController.PushView(type, profile);
     }
@@ -185,7 +185,6 @@ public class UIManager : MonoBehaviour, IUIViewHost
     {
         if (popUpViewController.PeekViewType() == PopUpViewType.Pause)
         {
-            Debug.Log("pop pause");
             board.PauseGame(false);
         }
 

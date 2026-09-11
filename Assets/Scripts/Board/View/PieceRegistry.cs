@@ -119,7 +119,7 @@ public class PieceRegistry
         registry[idx] = playerPiece;        // moves reference from player piece to the registry
         playerPiece = null;
 
-        audio.PlaySoundEffect(AudioType.PlacePlayer);        
+        audio.PlaySoundEffect((int)AudioType.PlacePlayer);        
 
         return true;
     }

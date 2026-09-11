@@ -15,7 +15,7 @@ public class UIToggle
     // ==================================================
     private Slider slider;
     private Action<bool> action;
-    private AudioType sound;
+    private int sound;
     private IAudio audioService;
 
     // ==================================================
@@ -32,7 +32,7 @@ public class UIToggle
 	/// <exception cref="ArgumentNullException">
 	/// Thrown when <paramref name="slider"/> or <paramref name="action"/> is null.
 	/// </exception>
-    public UIToggle(Slider slider, Action<bool> action, AudioType sound = AudioType.Button)
+    public UIToggle(Slider slider, Action<bool> action, int sound = 0)      // should require sound now
     {
         if (slider == null)
             throw new ArgumentNullException(nameof(slider));

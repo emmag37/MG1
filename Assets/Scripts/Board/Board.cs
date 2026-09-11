@@ -146,7 +146,7 @@ public class Board : MonoBehaviour
         }
 
         PauseGame(false);
-        audioService.PlayMusic(AudioType.GameMusic);
+        audioService.PlayMusic((int)AudioType.GameMusic);
     }
 
     public void PauseGame(bool pause)
@@ -255,7 +255,7 @@ public class Board : MonoBehaviour
         if (result.Points > 0)
         {
             StartCoroutine(WinAnimationRoutine(result, index));
-            audioService.PlaySoundEffect(AudioType.Win);
+            audioService.PlaySoundEffect((int)AudioType.Win);
             ServiceLocator.Get<IVibration>().ShortVibration();
         }
 
@@ -283,8 +283,8 @@ public class Board : MonoBehaviour
         (int, int) finalScores = hUD.GetScores();
         inProgress = false;
 
-        audioService.PlaySoundEffect(AudioType.GameOver);
-        audioService.PlayMusic(AudioType.UIMusic);
+        audioService.PlaySoundEffect((int)AudioType.GameOver);
+        audioService.PlayMusic((int)AudioType.UIMusic);
 
         FullBoard?.Invoke(finalScores.Item1, finalScores.Item2);
     }

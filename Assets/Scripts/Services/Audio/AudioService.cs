@@ -53,8 +53,10 @@ public class AudioService : IAudio
     // Interface Methods - Background Music
     // ==================================================
 
-    public void PlayMusic(AudioType audioType)
+    public void PlayMusic(int audioID)
     {
+        AudioType audioType = (AudioType)audioID;
+
         if (!clipLookup.ContainsKey(audioType))
         {
             Debug.LogError($"[AudioService] No clip found with type {audioType}");
@@ -89,8 +91,10 @@ public class AudioService : IAudio
     // Interface Methods - Sound Effects
     // ==================================================
 
-    public void PlaySoundEffect(AudioType audioType)
+    public void PlaySoundEffect(int audioID)
     {
+        AudioType audioType = (AudioType)audioID;
+
         if (!clipLookup.ContainsKey(audioType))
         {
             Debug.LogError($"[AudioService] No clip found with type {audioType}");
