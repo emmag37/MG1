@@ -24,13 +24,6 @@ public class UIData : IUIData
 }
 
 [Serializable]
-public class AudioSettings
-{
-    public bool MusicOn = true;
-    public bool SFXOn = true;
-}
-
-[Serializable]
 public class ProfileData : IUIData
 {
     public string Username = "default-username";
