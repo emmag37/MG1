@@ -1,10 +1,5 @@
 using UnityEngine;
 
-public static class InitKeys
-{
-    public const string HasLaunched = "init.hasLaunched";
-    public const string InProgress = "init.inProgress";
-}
 
 public static class PlayerPrefsStorage
 {

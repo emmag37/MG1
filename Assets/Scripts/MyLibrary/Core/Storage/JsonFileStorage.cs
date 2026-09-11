@@ -3,24 +3,8 @@ using System.IO;
 using System;
 using System.Threading.Tasks;
 
-// todo:
-    // separate out reusable pieces for your library
-    // finish BackupCorruptData
-    // error check save
 
-public static class DataFiles
-{
-    public const string UIData = "uIData.json";
-    public const string GameData = "gameData.json";
-}
-
-public interface IStorage
-{
-    void Save<T>(string fileName, T data);
-    T Load<T>(string fileName) where T : new();
-}
-
-public class JsonFileStorage : IStorage
+public class JsonFileStorage : IFileStorage
 {
     private string GetPath(string fileName)
     {
