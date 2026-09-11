@@ -31,8 +31,8 @@ public class RestartGameView : PopUpView
     {
         base.Initialize(host);
 
-        UIButtonFactory.Navigate<BaseViewType>(yesButton, Host, BaseViewType.GamePlay);
-        UIButtonFactory.ClosePopUp<PopUpViewType>(noButton, Host);
+        UIButtonFactory.Navigate<BaseViewType>(yesButton, Host, BaseViewType.GamePlay, (int)AudioType.Button);
+        UIButtonFactory.ClosePopUp<PopUpViewType>(noButton, Host, (int)AudioType.Button);
     }
     
     protected override void SetInfo(IUIData data) { }       // empty func to satisfy required inheritance

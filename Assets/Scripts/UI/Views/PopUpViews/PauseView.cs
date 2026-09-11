@@ -48,12 +48,12 @@ public class PauseView : PopUpView
         audioService = ServiceLocator.Get<IAudio>();
         vibrationService = ServiceLocator.Get<IVibration>();
 
-        UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
-        UIButtonFactory.Navigate<PopUpViewType>(restartButton, Host, PopUpViewType.RestartGame);
+        UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home, (int)AudioType.Button);
+        UIButtonFactory.Navigate<PopUpViewType>(restartButton, Host, PopUpViewType.RestartGame, (int)AudioType.Button);
 
-        new UIToggle(musicSlider, audioService.SetMusicOn);
-        new UIToggle(sfxSlider, audioService.SetEffectsOn);
-        new UIToggle(vibrateSlider, vibrationService.SetVibrationOn);
+        new UIToggle(musicSlider, audioService.SetMusicOn, (int)AudioType.Button);
+        new UIToggle(sfxSlider, audioService.SetEffectsOn, (int)AudioType.Button);
+        new UIToggle(vibrateSlider, vibrationService.SetVibrationOn, (int)AudioType.Button);
     }
 
     protected override void SetInfo(IUIData data)

@@ -41,9 +41,9 @@ public class HomeView : BaseView
 
         spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
-        UIButtonFactory.Navigate<PopUpViewType>(profileButton, Host, PopUpViewType.Profile);
-        UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
-        UIButtonFactory.Navigate<BaseViewType>(playButton, Host, BaseViewType.GamePlay);
+        UIButtonFactory.Navigate<PopUpViewType>(profileButton, Host, PopUpViewType.Profile, (int)AudioType.Button);
+        UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings, (int)AudioType.Button);
+        UIButtonFactory.Navigate<BaseViewType>(playButton, Host, BaseViewType.GamePlay, (int)AudioType.Button);
     }
 
     protected override void SetInfo(IUIData data)

@@ -34,6 +34,6 @@ public abstract class PopUpView : UIView<PopUpViewType>
     {
         base.Initialize(host);
 
-        UIButtonFactory.ClosePopUp<PopUpViewType>(exitButton, Host);
+        UIButtonFactory.ClosePopUp<PopUpViewType>(exitButton, Host, (int)AudioType.Button);
     }
 }

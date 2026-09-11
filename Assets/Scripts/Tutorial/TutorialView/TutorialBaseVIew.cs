@@ -32,9 +32,9 @@ public class TutorialBaseView : BaseView
     {
         base.Initialize(host);
 
-        UIButtonFactory.Navigate<PopUpViewType>(skipButton, Host, PopUpViewType.SkipTutorial);
-        UIButtonFactory.Navigate<BaseViewType>(exitButton, Host, BaseViewType.Home);
-        UIButtonFactory.Navigate<BaseViewType>(startPlayingButton, Host, BaseViewType.GamePlay);
+        UIButtonFactory.Navigate<PopUpViewType>(skipButton, Host, PopUpViewType.SkipTutorial, (int)AudioType.Button);
+        UIButtonFactory.Navigate<BaseViewType>(exitButton, Host, BaseViewType.Home, (int)AudioType.Button);
+        UIButtonFactory.Navigate<BaseViewType>(startPlayingButton, Host, BaseViewType.GamePlay, (int)AudioType.Button);
     }
 
     protected override void SetInfo(IUIData data) { }

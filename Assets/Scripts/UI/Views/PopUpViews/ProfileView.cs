@@ -56,8 +56,8 @@ public class ProfileView : PopUpView
 
         spriteDatabase = ServiceLocator.Get<ISpriteDatabase>();
 
-        UIButtonFactory.EditInput(editUsernameButton, usernameInput);
-        UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar);
+        UIButtonFactory.EditInput(editUsernameButton, usernameInput, (int)AudioType.Button);
+        UIButtonFactory.Navigate<PopUpViewType>(editAvatarButton, Host, PopUpViewType.ChooseAvatar, (int)AudioType.Button);
 
         scoreHistoryScrollList = new UIVerticalScrollList<int>(scoreHistoryContent, scoreHistoryItem1, UIConstants.NumScores);
         scoreHistoryScrollList.PopulateAlternating(scoreHistoryItem2);

@@ -32,7 +32,7 @@ public class UIToggle
 	/// <exception cref="ArgumentNullException">
 	/// Thrown when <paramref name="slider"/> or <paramref name="action"/> is null.
 	/// </exception>
-    public UIToggle(Slider slider, Action<bool> action, int sound = 0)      // should require sound now
+    public UIToggle(Slider slider, Action<bool> action, int sound)
     {
         if (slider == null)
             throw new ArgumentNullException(nameof(slider));

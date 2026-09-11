@@ -28,7 +28,7 @@ public class PlayView : BaseView
     {
         base.Initialize(host);
 
-        UIButtonFactory.Navigate<PopUpViewType>(pauseButton, Host, PopUpViewType.Pause);
+        UIButtonFactory.Navigate<PopUpViewType>(pauseButton, Host, PopUpViewType.Pause, (int)AudioType.Button);
     }
 
     protected override void SetInfo(IUIData data) { }   // empty method for required inheritance

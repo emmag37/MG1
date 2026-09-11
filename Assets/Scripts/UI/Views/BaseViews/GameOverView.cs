@@ -38,9 +38,9 @@ public class GameOverView : BaseView
     {
         base.Initialize(host);
 
-        UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings);
-        UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home);
-        UIButtonFactory.Navigate<BaseViewType>(replayButton, Host, BaseViewType.GamePlay);
+        UIButtonFactory.Navigate<PopUpViewType>(settingsButton, Host, PopUpViewType.Settings, (int)AudioType.Button);
+        UIButtonFactory.Navigate<BaseViewType>(homeButton, Host, BaseViewType.Home, (int)AudioType.Button);
+        UIButtonFactory.Navigate<BaseViewType>(replayButton, Host, BaseViewType.GamePlay, (int)AudioType.Button);
     }
 
     protected override void SetInfo(IUIData data)

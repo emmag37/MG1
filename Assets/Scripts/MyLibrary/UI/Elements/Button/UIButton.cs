@@ -28,7 +28,7 @@ public class UIButton
 	/// <param name="action">Callback invoked each time the button is clicked.</param>
 	/// <param name="sound">The sound effect played each time the button is clicked.</param>
 	/// <exception cref="ArgumentNullException">Thrown if <paramref name="button"/> or <paramref name="action"/> is null.</exception>
-    public UIButton(Button button, Action action, int sound = 0)    // should require sound now
+    public UIButton(Button button, Action action, int sound)    // should require sound now
     {
         if (button == null)
             throw new ArgumentNullException(nameof(button));

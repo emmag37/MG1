@@ -58,9 +58,9 @@ public class ChooseAvatarView : PopUpView
 
         colorList = new RingList<CellColor>(colors);
 
-        UIButtonFactory.Decrement<CellColor>(leftButton, colorList, SetAvatarSprite);
-        UIButtonFactory.Increment<CellColor>(rightButton, colorList, SetAvatarSprite);
-        UIButtonFactory.SendPatch(chooseButton, Host, () => new AvatarPatch(avatar));  // patch always needs to send the current value
+        UIButtonFactory.Decrement<CellColor>(leftButton, colorList, SetAvatarSprite, (int)AudioType.Button);
+        UIButtonFactory.Increment<CellColor>(rightButton, colorList, SetAvatarSprite, (int)AudioType.Button);
+        UIButtonFactory.SendPatch(chooseButton, Host, () => new AvatarPatch(avatar), (int)AudioType.Button);  // patch always needs to send the current value
     }
 
     protected override void SetInfo(IUIData data)

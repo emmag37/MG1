@@ -31,8 +31,8 @@ public class SkipTutorialView : PopUpView
     {
         base.Initialize(host);
 
-        UIButtonFactory.Navigate<BaseViewType>(yesButton, Host, BaseViewType.Tutorial);
-        UIButtonFactory.ClosePopUp<PopUpViewType>(noButton, Host);
+        UIButtonFactory.Navigate<BaseViewType>(yesButton, Host, BaseViewType.Tutorial, (int)AudioType.Button);
+        UIButtonFactory.ClosePopUp<PopUpViewType>(noButton, Host, (int)AudioType.Button);
     }
 
     protected override void SetInfo(IUIData data) { }       // empty func to satisfy required inheritance
