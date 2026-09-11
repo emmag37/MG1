@@ -1,15 +1,42 @@
 
+/// <summary>
+/// Provides a playback control for music and sound effects, identified by audio ID.
+/// </summary>
 public interface IAudio
 {
-    // for continuous audio - only one active at a time
+    /// <summary>
+	/// Plays the music track associated with the given audio ID. Stops any currently playing
+	/// music first.
+	/// </summary>
+	/// <param name="audioID">Identifier of the music track to play.</param>
     void PlayMusic(int audioID);
+
+    /// <summary>
+	/// Stops the currently playing music, if any.
+	/// </summary>
     void StopMusic();
+
+    /// <summary>
+	/// Enables or disables music playback.
+	/// </summary>
+	/// <param name="on">True to enable music, false to disable it.</param>
     void SetMusicOn(bool on);
 
-    // for one shot audio
+    /// <summary>
+	/// Plays the one shot sound effect associated with the given audio ID.
+	/// </summary>
+	/// <param name="audioID">Identifier of the sound effect to play.</param>
     void PlaySoundEffect(int audioID);
+
+	/// <summary>
+	/// Enables or disables sound effect playback.
+	/// </summary>
+	/// <param name="on">True to enable sound effects, false to disable them.</param>
     void SetEffectsOn(bool on);
 
-    // settings
+    /// <summary>
+	/// Gets the current audio settings.
+	/// </summary>
+	/// <returns>The current <see cref="AudioSettings"/>.</returns>
     AudioSettings GetSettings();
 }
