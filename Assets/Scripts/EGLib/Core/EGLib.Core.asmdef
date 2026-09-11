@@ -1,5 +1,5 @@
 {
-    "name": "Core",
+    "name": "EGLib.Core",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [],
