@@ -1,6 +1,6 @@
 using UnityEngine;
+using System;
 using System.Text.RegularExpressions;
-using PF = ProfanityFilter.ProfanityFilter;
 
 /// <summary>
 /// Static class to validate a username against length, special characters,
@@ -19,12 +19,25 @@ public static class UsernameValidator
     // ==================================================
     // Private Fields
     // ==================================================
-    private static PF filter = new PF();
+    private static IProfanityFilter profanityFilter;
 
 
     // ==================================================
     // Public Methods
     // ==================================================
+
+    /// <summary>
+	/// Initializes the <see cref="UsernameValidator"/> with a required profanity filter dependency.
+	/// </summary>
+	/// <param name="profanityFilter"The profanity filter instance used to validate usernames.></param>
+	/// <exception cref="ArgumentNullException">Thrown whten <paramref name="profanityFilter"/> is null.</exception>
+    public static void Initialize(IProfanityFilter profanityFilter)
+    {
+        if (profanityFilter == null)
+            throw new ArgumentNullException(nameof(profanityFilter));
+
+        UsernameValidator.profanityFilter = profanityFilter;
+    }
 
     /// <summary>
 	/// Validates a username against length, special characters, and profanity.
@@ -35,8 +48,12 @@ public static class UsernameValidator
 	/// specific <see cref="InvalidUsernameType"/> indicating why it failed. Checks are evaluated
 	/// in order (length, then characters, then profanity), so only the first failure is returned.
 	/// </returns>
+	/// <exception cref="InvalidOperationException">Thrown if this method is called before <see cref="Initialize(IProfanityFilter)"/>.</exception>
     public static InvalidUsernameType IsUsernameValid(string name)
     {
+        if (profanityFilter == null)
+            throw new InvalidOperationException("[UsernameValidator] Must initialize before calling IsUsernameValid");
+
         // correct length
         if (name.Length < LowerBound)
             return InvalidUsernameType.Short;
@@ -46,7 +63,7 @@ public static class UsernameValidator
             return InvalidUsernameType.SpecialChars;
 
         // no profanity
-        if (filter.ContainsProfanity(name))
+        if (profanityFilter.ContainsProfanity(name))
             return InvalidUsernameType.Profanity;
 
         return InvalidUsernameType.None;

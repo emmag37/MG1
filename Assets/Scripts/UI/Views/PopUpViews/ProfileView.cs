@@ -62,6 +62,7 @@ public class ProfileView : PopUpView
         scoreHistoryScrollList = new UIVerticalScrollList<int>(scoreHistoryContent, scoreHistoryItem1, UIConstants.NumScores);
         scoreHistoryScrollList.PopulateAlternating(scoreHistoryItem2);
 
+        UsernameValidator.Initialize(new ProfFilter());
         usernameInputField = new UIUsernameInputField(usernameInput, invalidInput, (string value) => Host.PatchUpdate(new UsernamePatch(value)));
     }
 
