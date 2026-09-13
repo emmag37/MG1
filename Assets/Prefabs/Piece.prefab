@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 705697017876349499}
   - component: {fileID: 3736130039767495234}
-  - component: {fileID: 4541751183235437602}
   - component: {fileID: 3920129676715257415}
   - component: {fileID: 6144515952642211450}
   - component: {fileID: 6629412417387222252}
+  - component: {fileID: 6840964871781419739}
   m_Layer: 0
   m_Name: Piece
   m_TagString: Untagged
@@ -95,18 +95,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &4541751183235437602
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8968158989547615814}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf95b7d42c5a348bcb518a35e2dcb6fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Draggable
 --- !u!95 &3920129676715257415
 Animator:
   serializedVersion: 7
@@ -179,3 +167,15 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.93
+--- !u!114 &6840964871781419739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8968158989547615814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcf161c7617aa4e978c5fdb2eecfaaf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: EGLIb.Mechanics::Draggable

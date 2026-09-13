@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5184943337357373849}
   - component: {fileID: 4959907295299835505}
   - component: {fileID: 7229262046139084973}
-  - component: {fileID: 3847979183411939565}
+  - component: {fileID: 8461588517770838648}
   m_Layer: 5
   m_Name: Safe Area Panel
   m_TagString: Untagged
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3847979183411939565
+--- !u!114 &8461588517770838648
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,6 +85,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6215879989289645597}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dad431187358d4e7c9f9a354a5b0e9c3, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f6954b7ca59048439672990bd5a8239, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SafeAreaPanel
+  m_EditorClassIdentifier: EGLib.UI::SafeAreaPanel
