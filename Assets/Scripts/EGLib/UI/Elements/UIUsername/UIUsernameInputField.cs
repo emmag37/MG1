@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using System;
 using System.Collections;
@@ -67,6 +68,11 @@ public class UIUsernameInputField
         {
             invalidInput.gameObject.SetActive(false);
         });
+        inputField.onSelect.AddListener(_ =>
+        {
+            if (invalidInput.enabled)
+                inputField.text = String.Empty;
+        });
     }
 
 
@@ -90,7 +96,6 @@ public class UIUsernameInputField
         username = name;
         inputField.text = name;
     }
-
 
     // ==================================================
     // Private Methods
@@ -124,6 +129,8 @@ public class UIUsernameInputField
             invalidInput.gameObject.SetActive(true);
 
             CoroutineRunner.Instance.StartCoroutine(ShakeTextRoutine());
+
+
         }
     }
 
@@ -133,7 +140,7 @@ public class UIUsernameInputField
 
     /// <summary>
 	/// Horizontally shakes the input field's text for the given duration to signal
-	/// invalid input, then restores its original position.
+	/// invalid input, then restores its original position, then clears the test.
 	/// </summary>
 	/// <param name="duration">Length of the shake in seconds, defaults to 0.3f.</param>
 	/// <param name="magnitude">The maximum horizontal offset applied each frame in local units, defaults to 8f.</param>
