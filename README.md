@@ -10,11 +10,11 @@ beach themed puzzle.
  
 | Home | Gameplay | Game Over |
 |------|----------|-----------|
-| _screenshot_ | _screenshot_ | _screenshot_ |
+| ![Home screen](Screenshots/MG1-Home.jpeg) | ![Gameplay screen](Screenshots/MG1-GamePlay.jpeg) | ![Game over screen](Screenshots/MG1-GameOver.jpeg) |
  
 | Profile | Pause | Tutorial |
 |---------|----------|----------|
-| _screenshot_ | _screenshot_ | _screenshot_ |
+| ![Profile menu](Screenshots/MG1-Profile.jpeg) | ![Pause menu](Screenshots/MG1-Pause.jpeg) | ![Tutorial screen](Screenshots/MG1-Tutorial.jpeg) |
 
 ## Demo Video
 
