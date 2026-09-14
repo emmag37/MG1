@@ -12,7 +12,7 @@ beach themed puzzle.
 |------|----------|-----------|
 | _screenshot_ | _screenshot_ | _screenshot_ |
  
-| Profile | Settings | Tutorial |
+| Profile | Pause | Tutorial |
 |---------|----------|----------|
 | _screenshot_ | _screenshot_ | _screenshot_ |
 
