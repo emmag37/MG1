@@ -1,6 +1,6 @@
 # MG1: Sparkle Shell Smash
 
-*Match, place, and clear the tide of colorful pastel shells before your beach fills up! A laid back,
+Match, place, and clear the tide of colorful pastel shells before your beach fills up! A laid back,
 beach themed puzzle.
 
 ## Screenshots
