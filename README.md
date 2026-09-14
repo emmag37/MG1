@@ -4,17 +4,14 @@ Match, place, and clear the tide of colorful pastel shells before your beach fil
 beach themed puzzle.
 
 ## Screenshots
-
-<!-- Drop image files into a /screenshots folder next to this README and
-     reference them below, e.g. ![Home screen](screenshots/home.png) -->
  
 | Home | Gameplay | Game Over |
 |------|----------|-----------|
-| ![Home screen](Screenshots/MG1-Home.jpeg) | ![Gameplay screen](Screenshots/MG1-GamePlay.jpeg) | ![Game over screen](Screenshots/MG1-GameOver.jpeg) |
+| <img src="Screenshots/MG1-Home.jpeg" width="300" alt="Home screen"> | <img src="Screenshots/MG1-GamePlay.jpeg" width="300" alt="Gameplay screen"> |<img src="Screenshots/MG1-GameOver.jpeg" width="300" alt="Game over screen"> |
  
 | Profile | Pause | Tutorial |
 |---------|----------|----------|
-| ![Profile menu](Screenshots/MG1-Profile.jpeg) | ![Pause menu](Screenshots/MG1-Pause.jpeg) | ![Tutorial screen](Screenshots/MG1-Tutorial.jpeg) |
+| <img src="Screenshots/MG1-Profile.jpeg" width="300" alt="Profile menu"> | <img src="Screenshots/MG1-Pause.jpeg" width="300" alt="Pause menu"> | <img src="Screenshots/MG1-Tutorial.jpeg" width="300" alt="Tutorial menu"> |
 
 ## Demo Video
  
