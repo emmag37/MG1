@@ -108,10 +108,6 @@ public class GameBootstrap : MonoBehaviour
         hasLaunched = loadUIData.HasLaunched;
         inProgress = loadUIData.InProgress;
 
-        loadUIData = new UIData();
-        hasLaunched = false;
-        inProgress = false;
-
         if (inProgress)
             loadGameData = await fileService.LoadWithRetries<GameData>(DataFiles.GameData);
     }
@@ -140,7 +136,7 @@ public class GameBootstrap : MonoBehaviour
         Scaler.CalculateAndSetScale(Camera.main, UIConstants.ReferenceHeight, UIConstants.ReferenceWidth, UIConstants.PixelsPerUnit);
         Scaler.ApplyLocalScale(backgroundTransform);
 
-        board.Initialize(/*loadUIData.Profile.ScoreList.HighScore()*/ 0);
+        board.Initialize(0);
         if (!hasLaunched)
         {
             board.RunTutorial();
