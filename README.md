@@ -15,7 +15,7 @@ beach themed puzzle.
 
 ## Demo Video
  
-[![Gameplay demo](Screenshots/MG1-Home.jpeg)](https://github.com/emmag37/MG1/issues/1)
+[<img src="Screenshots/MG1-Home.jpeg" width="300" alt="Demo">](https://github.com/emmag37/MG1/issues/1)
 
  ## Overview
 
