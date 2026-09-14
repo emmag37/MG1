@@ -86,9 +86,9 @@ Core board logic (placement validity, line clearing across rows/columns/both dia
 
 ## Project Background
 
-This was a solo project build to learn Unity end to end: following a project from start to finish, understanding the game engine and the game loop, and practicing production quality code habits (layered architecture, error-handling discipline, save/load robustness, git commits, and a reusable library extracted along the way - see [EGLib](../EGLib)).
+This was a solo project build to learn Unity end to end: following a project from start to finish, understanding the game engine and the game loop, and practicing production quality code habits (layered architecture, error-handling discipline, save/load robustness, git commits, and a reusable library extracted along the way, see [EGLib](../EGLib)).
 
-Sparkle Shell Smash is not currently planned for publication. If it were released, it would be monetized with an ad banner and a full-screen ad at game over - no IAP.
+Sparkle Shell Smash is not currently planned for publication. If it were released, it would be monetized with an ad banner and a full-screen ad at game over.
 
 ## Credits
 
