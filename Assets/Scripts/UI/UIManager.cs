@@ -160,10 +160,11 @@ public class UIManager : MonoBehaviour, IUIViewHost
             board.PauseGame(true);
         }
 
-        // choose music/play effect
+        // play effect
         if (baseViewController.PeekViewType() != BaseViewType.None)
             audioService.PlaySoundEffect((int)AudioType.Transition);
 
+        // choose music
         if (type == BaseViewType.GamePlay)
             audioService.PlayMusic((int)AudioType.GameMusic);
         else
