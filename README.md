@@ -79,8 +79,6 @@ Core board logic (placement validity, line clearing across rows/columns/both dia
 - Formatted for mobile devices only
 - Published to TestFlight
 
-**TestFlight link:** _paste link here_
-
 ## Project Background
 
 This was a solo project build to learn Unity end to end: following a project from start to finish, understanding the game engine and the game loop, and practicing production quality code habits (layered architecture, error-handling discipline, save/load robustness, git commits, and a reusable library extracted along the way, see [EGLib](../EGLib)).
