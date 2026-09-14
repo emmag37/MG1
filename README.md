@@ -80,6 +80,7 @@ Core board logic (placement validity, line clearing across rows/columns/both dia
 ## Requirements / Platform
 
 - Builds for both iOS and Android
+- Formatted for mobile devices only
 - Published to TestFlight
 
 **TestFlight link:** _paste link here_
