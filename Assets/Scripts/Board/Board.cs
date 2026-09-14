@@ -161,13 +161,15 @@ public class Board : MonoBehaviour
         else
             pieceRegistry.TrySpawnNewPlayer(out _, playerColor);
 
-        logic.AddLiveZone(liveZone);
-
+        
         if (cells != null)
         {
+            logic.AddLiveZone(null);
             logic.AddCellsToBoard(cells);
             pieceRegistry.LoadBoardPieces(cells);
         }
+
+        logic.AddLiveZone(liveZone);
     }
 
     // ================================
@@ -293,6 +295,8 @@ public class Board : MonoBehaviour
     {
         runTutorial = false;
         hUD.gameObject.SetActive(true);
+
+        hUD.Initialize(0);  // have to reset the highscore before starting game
     }
 
     // true to subscribe, false to unsubscribe
