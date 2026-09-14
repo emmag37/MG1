@@ -1,32 +1,25 @@
-# MG1: Sparkle Shell Smash
+# MG1: Shell Smash
 
-*Match, place, and clear the tide of colorful pastel shells before your beach fills up! A laid back,
+Match, place, and clear the tide of colorful pastel shells before your beach fills up! A laid back,
 beach themed puzzle.
 
 ## Screenshots
-
-<!-- Drop image files into a /screenshots folder next to this README and
-     reference them below, e.g. ![Home screen](screenshots/home.png) -->
  
 | Home | Gameplay | Game Over |
 |------|----------|-----------|
-| _screenshot_ | _screenshot_ | _screenshot_ |
+| <img src="Screenshots/MG1-Home.jpeg" width="300" alt="Home screen"> | <img src="Screenshots/MG1-GamePlay.jpeg" width="300" alt="Gameplay screen"> |<img src="Screenshots/MG1-GameOver.jpeg" width="300" alt="Game over screen"> |
  
 | Profile | Pause | Tutorial |
 |---------|----------|----------|
-| _screenshot_ | _screenshot_ | _screenshot_ |
+| <img src="Screenshots/MG1-Profile.jpeg" width="300" alt="Profile menu"> | <img src="Screenshots/MG1-Pause.jpeg" width="300" alt="Pause menu"> | <img src="Screenshots/MG1-Tutorial.jpeg" width="300" alt="Tutorial menu"> |
 
 ## Demo Video
-
-<!-- Link to or embed a gameplay clip, e.g.
-     [![Gameplay demo](screenshots/thumbnail.png)](https://link-to-video)
-     or a raw link if your host doesn't support embeds. -->
  
-_video link goes here_
+[![Gameplay demo](Screenshots/MG1-Home.jpeg)](https://youtube.com/shorts/mWYeDXYz94k?feature=share)
 
  ## Overview
 
- Sparkle Shell Smash is a mobile puzzle game built around a 5x5 beach themed board. Each turn you're
+ Shell Smash is a mobile puzzle game built around a 5x5 beach themed board. Each turn you're
  given a single colorful pastel shell piece and drag it onto an open cell on the board. Filling an 
  entire row, column, or diagonal with matching shell colors clears that line and scores points.
  Clearing multiple lines with a single placement multiplies the score. The board persists between 
@@ -82,8 +75,6 @@ Core board logic (placement validity, line clearing across rows/columns/both dia
 - Builds for both iOS and Android
 - Formatted for mobile devices only
 - Published to TestFlight
-
-**TestFlight link:** _paste link here_
 
 ## Project Background
 
