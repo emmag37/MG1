@@ -96,7 +96,3 @@ Sparkle Shell Smash is not currently planned for publication. If it were release
 - **Sound effects & music** - sourced from [Pixabay](https://pixabay.com), used under the [Pixabay Content License](https://pixabay.com/service/license-summary/).
 - **Font** - Roboto (Google Fonts).
 - **Profanity filter** - third party plugin, MIT license.
-
-## License
-
-[license]
