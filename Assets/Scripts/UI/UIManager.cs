@@ -155,14 +155,15 @@ public class UIManager : MonoBehaviour, IUIViewHost
         {
             tutorial.StartTutorial();
         }
-        else if (type == BaseViewType.Home)
+        else if (type == BaseViewType.Home && baseViewController.PeekViewType() == BaseViewType.GamePlay)
         {
             board.PauseGame(true);
-            if (baseViewController.PeekViewType() != BaseViewType.None)
-                audioService.PlaySoundEffect((int)AudioType.Transition);
         }
 
-        // choose music
+        // choose music/play effect
+        if (baseViewController.PeekViewType() != BaseViewType.None)
+            audioService.PlaySoundEffect((int)AudioType.Transition);
+
         if (type == BaseViewType.GamePlay)
             audioService.PlayMusic((int)AudioType.GameMusic);
         else
