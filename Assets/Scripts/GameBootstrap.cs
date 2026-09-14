@@ -108,6 +108,9 @@ public class GameBootstrap : MonoBehaviour
         hasLaunched = loadUIData.HasLaunched;
         inProgress = loadUIData.InProgress;
 
+        hasLaunched = false;
+        inProgress = false;
+
         if (inProgress)
             loadGameData = await fileService.LoadWithRetries<GameData>(DataFiles.GameData);
     }
