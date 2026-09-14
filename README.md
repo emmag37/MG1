@@ -1,4 +1,4 @@
-# MG1: Sparkle Shell Smash
+# MG1: Shell Smash
 
 Match, place, and clear the tide of colorful pastel shells before your beach fills up! A laid back,
 beach themed puzzle.
@@ -17,12 +17,8 @@ beach themed puzzle.
 | ![Profile menu](Screenshots/MG1-Profile.jpeg) | ![Pause menu](Screenshots/MG1-Pause.jpeg) | ![Tutorial screen](Screenshots/MG1-Tutorial.jpeg) |
 
 ## Demo Video
-
-<!-- Link to or embed a gameplay clip, e.g.
-     [![Gameplay demo](screenshots/thumbnail.png)](https://link-to-video)
-     or a raw link if your host doesn't support embeds. -->
  
-_video link goes here_
+[![Gameplay demo](Screenshots/MG1-Home.jpeg)](https://youtube.com/shorts/mWYeDXYz94k?feature=share)
 
  ## Overview
 
