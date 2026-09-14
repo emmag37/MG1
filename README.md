@@ -19,7 +19,7 @@ beach themed puzzle.
 
  ## Overview
 
- Sparkle Shell Smash is a mobile puzzle game built around a 5x5 beach themed board. Each turn you're
+ Shell Smash is a mobile puzzle game built around a 5x5 beach themed board. Each turn you're
  given a single colorful pastel shell piece and drag it onto an open cell on the board. Filling an 
  entire row, column, or diagonal with matching shell colors clears that line and scores points.
  Clearing multiple lines with a single placement multiplies the score. The board persists between 
