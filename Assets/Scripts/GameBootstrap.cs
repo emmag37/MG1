@@ -48,6 +48,9 @@ public class GameBootstrap : MonoBehaviour
     private async void Awake()
     {
         loadScreen.SetActive(true);
+        
+        // setup
+        Application.targetFrameRate = 30;   // simple game
 
         try
         {
