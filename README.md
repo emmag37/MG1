@@ -3,6 +3,8 @@
 Match, place, and clear the tide of colorful pastel shells before your beach fills up! A laid back,
 beach themed puzzle game.
 
+[**Install current version via TestFlight!**](https://testflight.apple.com/join/abQfn8Yq)
+
 ## Screenshots
  
 | Home | Gameplay | Game Over |
@@ -74,6 +76,7 @@ Core board logic (placement validity, line clearing across rows/columns/both dia
 
 - Builds for both iOS and Android
 - Formatted for mobile devices only
+- Currently published to TestFlight (iOS only)
 
 ## Project Background
 
