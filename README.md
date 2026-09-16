@@ -74,7 +74,6 @@ Core board logic (placement validity, line clearing across rows/columns/both dia
 
 - Builds for both iOS and Android
 - Formatted for mobile devices only
-- Published to TestFlight
 
 ## Project Background
 
