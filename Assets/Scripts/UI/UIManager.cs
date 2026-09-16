@@ -179,6 +179,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         {
             board.PauseGame(true);
         }
+        baseViewController.PauseTopView(true);
 
         popUpViewController.PushView(type, profile);
     }
@@ -189,6 +190,7 @@ public class UIManager : MonoBehaviour, IUIViewHost
         {
             board.PauseGame(false);
         }
+        baseViewController.PauseTopView(false);
 
         popUpViewController.PopView();
     }
