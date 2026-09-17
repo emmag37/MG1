@@ -10,4 +10,8 @@ public static class GameConstants
     // sorting orders
     public const int PlayerOrder = 4;
     public const int CellOrder = 2;
+    
+    // FPS
+    public const int IdleFPS = 30;
+    public const int ActiveFPS = 60;
 }

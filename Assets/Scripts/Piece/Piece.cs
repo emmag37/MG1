@@ -61,9 +61,10 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
         draggable.enabled = false;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void SetToPlayer(CellColor playerColor)
     {
-        if (spriteRenderer == null)
+        if (!spriteRenderer)
         {
             Debug.LogError("[Piece] Components must be initialized before setting to player");
             return;
@@ -86,7 +87,7 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
 
     public void SetToCell(CellColor color, Vector3 position)
     {
-        if (spriteRenderer == null)
+        if (!spriteRenderer)
         {
             Debug.LogError("[Piece] Components must be initialized before setting to cell");
             return;
@@ -151,11 +152,13 @@ public class Piece : MonoBehaviour, ILinkable<Piece, PieceData>
     private void HandleStartDrag()
     {
         audioService.PlaySoundEffect((int)AudioType.PickupPlayer);
+        Application.targetFrameRate = GameConstants.ActiveFPS;
         EventBus.Publish(new PlayerDraggingEvent { PlayerTransform = transform, Color = Color });
     }
 
     private void HandleReleased(Vector3 position)
     {
+        Application.targetFrameRate = GameConstants.IdleFPS;
         EventBus.Publish(new PlayerReleasedEvent { PlayerPosition = position, Color = Color });
     }
 

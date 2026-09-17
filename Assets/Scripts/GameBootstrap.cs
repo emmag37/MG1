@@ -50,7 +50,7 @@ public class GameBootstrap : MonoBehaviour
         loadScreen.SetActive(true);
         
         // setup
-        Application.targetFrameRate = 30;   // simple game
+        Application.targetFrameRate = GameConstants.IdleFPS;
 
         try
         {
