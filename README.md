@@ -86,7 +86,7 @@ Sparkle Shell Smash is not currently planned for publication. If it were release
 
 ## Credits
 
-- **Art** - all UI elements, backgrounds, and game visuals were made by me, with two exceptions: the shell piece images and the palm tree on the home screen background are AI-generated.
+- **Art** - all UI elements, backgrounds, and game visuals were made by me
 - **Sound effects & music** - sourced from [Pixabay](https://pixabay.com), used under the [Pixabay Content License](https://pixabay.com/service/license-summary/).
 - **Font** - Roboto (Google Fonts).
 - **Profanity filter** - third party plugin, MIT license.
